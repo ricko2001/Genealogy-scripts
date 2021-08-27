@@ -1,0 +1,12 @@
+
+# ignore shortcut files
+*.lnk
+
+# ignore RootsMagic database file
+*.rmgc
+
+# ignore test DB folder
+test DB-convert fam /
+
+
+log of facts converted.txt
