@@ -1,0 +1,6266 @@
+﻿======================================
+2018-1-1-01
+Waldzell
+
+===Vacant
+
+======================================
+2018-1-1-02
+1995-10
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8971.JPG
+Images 2018\IMG_8972.JPG
+-----------------------------------
+MICHAEL OTTER
+1911 - 1984
+ADELINDE OTTER
+1912 - 1993
+
+KOHLHEPP
+FRANZISKA  1874 - 1941
+JOHANN     1865 - 1944
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_053.JPG
+K800_Gräber Waldzell_054.JPG
+-----------------------------------
+Michael Otter
+1911 - 1984
+Adelinde Otter
+1912 - 1993
+
+Kohlhepp
+Franziska  1874 - 1941
+Johann     1865 - 1944
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Michael Otter
+1911 - 1984
+Adelinde Otter
+1912 - 1993
+Kohlhepp
+Franziska  1874 - 1941
+Johann     1865 - 1944
+-----------------------------------
+
+===Notes:
+no change in 2018
+no change in 2011
+
+1995 transcription used U&L case.
+Same marker, no changes.
+
+===Interpretation:
+Adelinde  | Otter       geb  Kohlhepp 
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210327280 | LTV4-N6F |  2166 | Franziska | Kohlhepp    |        1874 |        1941 |   ||s_nm fc_n 
+| 210327280 | LTV4-N6F |  2166 | Franziska | Möhler      |        1874 |        1941 | b ||s_nm fc_n
+| 210327476 | LTVC-XTJ |  2165 | Johann    | Kohlhepp    |        1865 |        1944 |   ||s_nm fc_n
+| 210326701 | LTV3-5H6 |  2159 | Michael   | Otter       |        1911 |        1984 |   ||s_nm fc_n
+| 210327178 | LTV3-GVN |  2160 | Adelinde  | Otter       |        1912 |        1993 |   ||s_nm fc_y
+| 210327178 | LTV3-GVN |  2160 | Adelinde  | Kohlhepp    |        1912 |        1993 | b ||s_nm fc_y
+
+======================================
+2018-1-1-03
+1995-02
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8970.JPG
+-----------------------------------
+JOSEF MÖHLER
+1932 - 2017
+STEFAN MÖHLER
+1964 - 1983
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_051.JPG
+K800_Gräber Waldzell_052.JPG
+-----------------------------------
+Für ehtet Euch nicht-
+Er ist auferstanden
+
+Engelbert Möhler
+1889 - 1965
+Maria geb. Rüb
+1896 - 1971
+Stefan Möhler
+1964 - 1983
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Für ehtet Euch nicht-
+Er ist auferstanden
+
+Engelbert Möhler
+1889 - 1965
+Maria geb. Rüb
+1896 - 1971
+Stefan Möhler
+1964 - 1983
+-----------------------------------
+
+===Notes:
+new maker in 2018
+no change in 2011
+
+1995, 2011 transcription used U&L case.
+Same marker, no changes.
+
+===Interpretation:
+Stefan=son of Josef = son of Engelbert
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN           | b           | d           | T |
+|-----------|----------|-------|-----------|--------------|-------------|-------------|---|
+| 210328201 | L1ML-P8N |  1072 | Josef     | Möhler       | 1932        | 2017        |   ||s_n fc_y
+| 210328790 | LTVM-NCW |  1076 | Stefan    | Möhler       | 1964        | 1983        |   ||s_n fc_y
+| 210327951 | LTVM-NPX |  1052 | Engelbert | Möhler       | 1889        | 1965        |   ||
+| 210328087 | LTVM-FX6 |  1054 | Maria     | Möhler       | 1896        | 1971        |   ||
+| 210328087 | LTVM-FX6 |  1054 | Maria     | Rüb          | 1896        | 1971        | b ||
+
+======================================
+2018-1-1-04
+1995-03
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8969.JPG
+-----------------------------------
+ALFONS RÜB
+1902 ✠ 1945
+HEDWIG RÜB
+1937 - 1961
+IDA RÜB
+1899 - 1987
+
+1871  ANTON  1960
+JUSTINA  U  MARGARETTA RÜB
+1877-1917   1880-1960
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_049.JPG
+-----------------------------------
+Alfons Rüb
+1902 (ic) 1945
+Hedwig Rüb
+1937 - 1961
+Ida Rüb
+1899 - 1987
+1871 - Anton - 1960
+Justina     u.  Margaretta Rüb
+1877-1917       1880-1960
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Alfons Rüb
+1902 (ic) 1945
+Hedwig Rüb
+1937 - 1961
+Joa Rüb
+1899 - 1987
+1871 - Anton - 1960
+Justina     u.  Margaretta Rüb
+1877-1917       1880-1960
+-----------------------------------
+
+===Notes:
+no change in 2011
+Corrected in 2011 from photo.
+
+1995 transcription used U&L case.
+Same marker, no changes.
+
+===Interpretation:
+in 1995 RJO lists as “Joa Rüb. Probably “Ida Rüb” because dates match Ida.
+
+Justina    | Rüb         | Otter
+Margaretta | Rüb         | Wack
+Ida        | Rüb         | Möhler
+Hedwig     | Rüb         | Rüb
+
+
+===Table
+| FaG       | FS       | TMG   | FN         | LN          | b           | d           | T |
+|-----------|----------|-------|------------|-------------|-------------|-------------|---|
+| 210332939 | LTVM-64V |   865 | Anton      | Rüb         |        1871 |        1960 |   ||
+| 210332980 | LTVM-DGY |   866 | Justina    | Rüb         |        1877 |        1917 |   ||
+| 210332980 | LTVM-DGY |   866 | Justina    | Otter       |        1877 |        1917 | b ||
+| 210333025 | LTVM-JDN |  1662 | Margaretta | Rüb         |        1880 |        1960 |   ||
+| 210333025 | LTVM-JDN |  1662 | Margaretta | Wack        |        1880 |        1960 | b ||
+| 210329257 | LTVM-FC9 |  1066 | Alfons     | Rüb         |        1902 |        1945 |   ||
+| 210329599 | LTVM-XCF |  1065 | Ida        | Rüb         |        1899 |        1987 |   ||
+| 210329599 | LTVM-XCF |  1065 | Ida        | Möhler      |        1899 |        1987 | b ||
+| 210332817 | LTVM-FC8 |  1069 | Hedwig     | Rüb         |        1937 |        1961 |   ||
+
+======================================
+2018-1-1-05
+1995-04
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8968.JPG
+-----------------------------------
+WINFRIED
+1934 - 1994
+
+HELMUT
+1928 - 1995
+
+GERTRAUD MÖHLER
+1888 - 1973
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_048.JPG
+-----------------------------------
+Winfried
+1934 - 1994
+Helmut
+1928 - 1995
+Gertraud Möhler
+1888 - 1973
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Gertraud Möhler
+1888 - 1973
+
+<wooden cross>
+Helmut Möhler
+1928 - 1995
+
+<wooden cross>
+Winfried Möhler
+1934 - 1994
+-----------------------------------
+
+===Notes:
+no change in 2018
+added Helmut & Winfried names in 2011, or maybe it's a new marker.
+
+1995- Helmut & Winfried names on separate wooden crosses.
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Helmut and Winfried are brothers
+Gertraud was their aunt.
+None were married.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210333183 | LTVM-NHV |  1961 | Gertraud | Möhler      |        1888 |        1973 |   ||
+| 210333206 | LTVM-NPK |  1074 | Winfried | Möhler      |        1934 |        1994 |   ||
+| 210333214 | LTVM-FXF |  1071 | Helmut   | Möhler      |        1928 |        1995 |   ||
+
+======================================
+2018-1-1-06
+1995-05
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8965.JPG
+Images 2018\IMG_8966.JPG
+Images 2018\IMG_8967.JPG
+-----------------------------------
+GERTRAUD HARTMANN
+*2.8.1887  ✝22.7.1962
+MARTIN HARTMANN
+*21.9.1889  ✝8.12.1973
+
+ROMAN SCHUBERT
+*27.8.1924  ✝9.2.2007
+HEDWIG SCHUBERT
+*12.9.1922  ✝8.11.2008
+
+1919 RICHARD 1941 ✠ 1916 JOSEF 1944
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_047.JPG
+-----------------------------------
+Gertraud Hartmann
+(b) 2.8.1887  (d) 22.7.1962
+Martin Hartmann
+(b) 21.9.1889  (d) 8.12.1973
+
+Roman Schubert
+(b) 27.8.1924  (d) 9.2.2007
+Hedwig Schubert
+(b) 12.9.1922 (d)  8.11.2008
+
+1919 Richard 1941 (ic)  1916 Josef 1944
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Gertraud Hartmann
+(b) 2.8.1887  (d) 22.7.1962
+Martin Hartmann
+(b) 21.9.1889  (d) 8.12.1973
+
+1919 Richard 1941 (ic) 1916 Josef 1944
+-----------------------------------
+
+===Notes:
+no change in 2018
+Added Hedwig and Roman, or could be a new stone
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+2011-06-09: Mostly confirmed from a clear photogragh taken 2011-06-02 by Herbert Krug, image 047.
+Bottom row of text obscured by vegetation.
+
+===Interpretation:
+
+Richard and Josef are Hartmann's, as per memorial plaques.
+
+Gertraud Hartmann    geb Möhler
+Hedwig   Schubert    geb Hartmann
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210341442 | G3L2-C6T |   297 | Gertraud | Hartmann    | 02 Aug 1887 | 22 Jul 1962 |   ||
+| 210341442 | G3L2-C6T |   297 | Gertraud | Öhring      | 02 Aug 1887 | 22 Jul 1962 | b ||
+| 210341551 | LTJG 6BB |   298 | Martin   | Hartmann    | 21 Sep 1889 | 08 Dec 1973 |   ||
+| 210341764 | LTJG-N25 |   296 | Roman    | Schubert    | 27 Aug 1924 | 09 Feb 2007 |   ||
+| 210341853 | LTJG-JP1 |   299 | Hedwig   | Schubert    | 12 Sep 1922 | 08 Nov 2008 |   ||
+| 210341853 | LTJG-JP1 |   299 | Hedwig   | Hartmann    | 12 Sep 1922 | 08 Nov 2008 | b ||
+| 210341932 | LTVH-HB6 |  2167 | Richard  | Hartmann    |        1919 |        1941 |   ||
+| 210341968 | LTV7-W1X |  2168 | Josef    | Hartmann    |        1916 |        1944 |   ||
+
+======================================
+2018-1-1-07
+Waldzell
+
+===Vacant
+
+======================================
+2018-1-1-08
+1995-06
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8964.JPG
+-----------------------------------
+MISTLER
+AUGUST   * 31.12.1913
+         ✝ 24.7.1988
+
+ANNA     * 26.3.1920
+         ✝ 12.6.1999
+
+SCHUBERT    EMMA         MARTIN      JOSEF
+          1887-1928    1882-1949   1922-1945
+
+ANNA WATZ   1897 - 1979
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Mistler
+August (b) 31.12.1913
+       (d)  24.7.1988
+
+Schubert    Emma         Martin      Josef
+            1887-1928    1882-1949   1922-1945
+
+Anna Watz  1897 - 1979
+-----------------------------------
+
+===Notes:
+no change in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Emma     Schubert   geb  Watz
+Anna     Mistler    geb  Schubert
+
+
+===Table
+| FaG       | FS       | TMG   | FN         | LN          |  b          | d           | T |
+|-----------|----------|-------|------------|-------------|-------------|-------------|---|
+| 210342417 | LTJG-3CY |   337 | Emma       | Schubert    |        1887 |        1928 |   ||
+| 210342417 | LTJG-3CY |   337 | Emma       | Watz        |        1887 |        1928 | b ||
+| 210343599 | LTJG-ZVW |   289 | Martin     | Schubert    |        1882 |        1949 |   ||
+| 210343679 | LTVM-6TN |   348 | August     | Mistler     | 31 Dec 1913 | 24 Jul 1988 |   ||
+| 210343755 | L1MG-CB1 |   339 | Anna       | Mistler     | 26 Mar 1920 | 12 Jun 1999 |   ||
+| 210343755 | L1MG-CB1 |   339 | Anna       | Schubert    | 26 Mar 1920 | 12 Jun 1999 | b ||
+| 210343833 | L1MP-HBJ |   341 | Josef      | Schubert    |        1922 |        1945 |   ||
+| 210343933 | LTKN-VMH |  2213 | Anna       | Watz        |        1897 |        1979 |   ||
+
+======================================
+2018-1-1-09
+Waldzell
+
+===Vacant
+
+======================================
+2018-1-2-01
+1995-07
+Waldzell
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8983.JPG
+-----------------------------------
+SCHUBERT
+ALFRED 
+* 16 11 1912   ✝ 21 8 1985
+
+MARIA  1878 - 1948
+GEORG  1878 - 1956
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Ruhestätte - Schubert
+hier ruht in Frieden
+
+Maria Schubert
+geb. Schubert
+(b) 2.11.1878  -  27.1.1948 (d)
+Georg Schubert
+Tünchnermeister
+(b) 18.2.1878  -  7.1.1956 (d)
+Alfred Schubert
+(b) 16.11.1912  -  21.8.1985 (d)
+-----------------------------------
+
+===Notes:
+new marker in 2018, has less info, same names !
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+According to Alban Otter, these Schuberts not directly related.
+Same family as stone #07, 49, 80.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210344160 | L1MX-L9R |  7071 | Maria    | Schubert    | 02 Nov 1878 | 27 Jan 1948 | b ||
+| 210344160 | L1MX-L9R |  7071 | Maria    | Schubert    | 02 Nov 1878 | 27 Jan 1948 |   ||
+| 210345685 | L1MF-74H |  7072 | Georg    | Schubert    | 18 Feb 1878 | 07 Jan 1956 |   ||
+| 210345778 | LTVQ-P9V |   885 | Alfred   | Schubert    | 16 Nov 1912 | 21 Aug 1985 |   ||
+
+======================================
+2018-1-2-02
+1995-08
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8984.JPG
+-----------------------------------
+Berthold
+Oehring
+1939 - 1985
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Berthold
+Oehring
+1939 - 1985
+-----------------------------------
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210348225 | LTVM-F4X |   265 | Berthold | Oehring     |        1939 |        1985 |   ||
+
+======================================
+2018-1-2-03
+1995-09
+Waldzell
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8985.JPG
+-----------------------------------
+Riedmann
+Valentin   1908 ✠ 1944
+Rosa       1914 -  1974
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_059.JPG
+-----------------------------------
+Riedmann
+Valentin   1908 (ic) 1944
+Rosa        1914  -  1974
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Riedmann
+Valentin   1908 (ic) 1944
+Rosa        1914  -  1974
+-----------------------------------
+
+===Notes:
+no change in 2018
+no change in 2011
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Rosa     | Riedmann  geb Rüb
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210348296 | LTVM-FZK |   325 | Valentin | Riedmann    |        1908 |        1944 |   ||
+| 210348362 | LTVC-VNT |   324 | Rosa     | Riedmann    |        1914 |        1974 |   ||
+| 210348362 | LTVC-VNT |   324 | Rosa     | Rüb         |        1914 |        1974 | b ||
+
+======================================
+2018-1-2-04
+1995-10
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8986.JPG
+-----------------------------------
+HIER RUHEN IN GOTT
+
+JOHANN MÖHLER
+* 20.9.1857  ✝ 9.5.1947
+
+JUSTINA MÖHLER
+GEB. MEHLING
+* 27.9.1859  ✝ 28.1.1916
+
+MICHAEL RÜB
+* 30.5.1887  ✝ 24.7.1966
+
+KRESZENTIA RÜB
+GEB. MÖHLER
+* 7.12.1889  ✝ 10.7.1968
+
+✠ ZUM EHRENDEN GEDENKEN ✠
+AN UNSEREN LB. SOHN U. BRUDER
+ALBAN RÜB  SOLDAT 1. E1 JNF. REGT.
+* 6.2.1921  GEF. 22.6.1942 I. RUSSLAND
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Hier Ruhen in Gott
+Johann Möhler
+(b) 20.9.1857  (d) 9.5.1947
+Justina Möhler
+Geb. Mehling
+(b) 27.9.1859  (d) 28.1.1916
+
+Michael Rüb
+(b) 30.5.1887  (d) 24.7.1966
+Kreszentia Rüb
+Geb. Möhler
+(b) 7.12.1889   (d) 10.7.1968
+
+(ic) Zum ehrenden Gedenken (ic)
+An unseren Lb. Sohn u. Bruder
+Alban Rüb  soldat 1. E1 Jnf. Regt.
+(b) 6.2.1921  Gef. 22.6.1942  Russland
+-----------------------------------
+
+===Notes:
+no change in 2018
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN         | LN          | b           | d           | T |
+|-----------|----------|-------|------------|-------------|-------------|-------------|---|
+| 210348529 | LTVQ-9Z6 |   808 | Johann     | Möhler      | 20 Sep 1857 | 09 May 1947 |   ||
+| 210348696 | LTV3-2CT |   809 | Justina    | Möhler      | 27 Sep 1859 | 28 Jan 1916 |   ||
+| 210348696 | LTV3-2CT |   809 | Justina    | Mehling     | 27 Sep 1859 | 28 Jan 1916 | b ||
+| 210348805 | LTV3-P9T |   371 | Michael    | Rüb         | 30 May 1887 | 24 Jul 1966 |   ||
+| 210348857 | LTV3-GFB |   372 | Kreszentia | Rüb         | 07 Dec 1889 | 10 Jul 1968 |   ||
+| 210348857 | LTV3-GFB |   372 | Kreszentia | Möhler      | 07 Dec 1889 | 10 Jul 1968 | b ||
+| 210349130 | LTV3-L1Q |   374 | Alban      | Rüb         | 06 Feb 1921 | 22 Jun 1942 |   ||
+
+======================================
+2018-1-2-05
+1995-11
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8987.JPG
+-----------------------------------
+Robert Röder
+* 22.6.1916  ✝ 24.10.2002
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Anna Ühlein
+1900 - 1981
+Anton Ühlein
+1903 - 1986
+
+Familie Ühlein und Michler
+-----------------------------------
+
+===Notes:
+Plot has new marker, new family in 2018
+this seems to be in the plot occupied by Ühlein in 1995.
+Current markers on both sides match 1995.
+
+===Interpretation:
+Guess that Anna is a geb Michler, given the inscription on marker.
+Anna     | Ühlein     geb  Michler
+
+
+===Table
+| FaG       | FS       | TMG   | FN         | LN          | b           | d           | T |
+|-----------|----------|-------|------------|-------------|-------------|-------------|---|
+| 210350129 | G7KG-7LZ |     0 | Anna       | Ühlein      |        1900 |        1981 |   ||s_n fc_n
+| 210350129 | G7KG-7LZ |     0 | Anna       | Michler     |        1900 |        1981 | b ||s_n fc_n
+| 210350253 | G92W-BKR |     0 | Anton      | Ühlein      |        1903 |        1986 |   ||s_n fc_y
+| 210349306 | G35T-KW7 |     0 | Robert     | Röder       | 22 Jun 1916 | 24 Oct 2002 |   ||s_n fc_y
+
+======================================
+2018-1-2-08
+1995-12
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8988.JPG
+Images 2018\IMG_8989.JPG
+-----------------------------------
+CHRISTINE MARSCHALL
+13.7.1898 - 4.9.1970
+
+HEINRICH MARSCHALL
+19.8.1894 - 22.6.1983
+
+<wooden cross>
+Erwin Marschall
+26.02.1931 -  19.11.2017
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Christine Marschall
+13.7.1898 - 4.9.1970
+
+Heinrich Marschall
+19.8.1894 - 22.6.1983
+-----------------------------------
+
+===Notes:
+Only new info is the wooden cross
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Christine | Marschall   | Möhler
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN           | b           | d           | T |
+|-----------|----------|-------|-----------|--------------|-------------|-------------|---|
+| 210351394 | LTVM-NC3 |   859 | Christine | Marschall    | 13 Jul 1898 | 04 Sep 1970 |   ||
+| 210351394 | LTVM-NC3 |   859 | Christine | Möhler       | 13 Jul 1898 | 04 Sep 1970 | b ||
+| 210351547 | LTVM-J5S |   858 | Heinrich  | Marschall    | 19 Aug 1894 | 22 Jun 1983 |   ||
+| 210351616 | L1M5-3Q9 |   276 | Erwin     | Marschall    | 26 Feb 1931 | 19 Nov 2017 |   ||
+
+======================================
+2018-1-2-09
+1995-13
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8990.JPG
+Images 2018\IMG_8991.JPG
+-----------------------------------
+STEFAN HEIDENFELDER
+1900 - 1969
+
+HEDWIG HEIDENFELDER
+1906  -  1999
+
+BLANDINA HEIDENFELDER
+1933  -  1996
+
+BARBARA - JOHANN HEIDENFELDER
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Stefan Heidenfelder
+1900 - 1969
+
+Barbara - Johann Heidenfelder
+-----------------------------------
+
+===Notes:
+new names added in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Guess Hedwig Heidenfelder was wife of Stefan.
+Birth dates are consistent.
+Barbara  | Heidenfelder  geb Eirich
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN            | b           | d           | T |
+|-----------|----------|-------|----------|---------------|-------------|-------------|---|
+| 210352192 | GMWH-YXQ |   854 | Johann   | Heidenfelder  |             |             |   ||
+| 210352358 | GMWH-1S9 |   855 | Barbara  | Heidenfelder  |             |             |   ||
+| 210352358 | GMWH-1S9 |   855 | Barbara  | Eirich        |             |             | b ||
+| 210352416 | LTVM-F6G |   948 | Stefan   | Heidenfelder  |        1900 |        1969 |   ||
+| 210352483 | L199-2WH |  2218 | Hedwig   | Heidenfelder  |        1906 |        1999 |   ||
+| 210352483 | L199-2WH |  2218 | Hedwig   | Eirich        |        1906 |        1999 | b ||
+| 210352556 | LTVW-BZ1 |  2345 | Blandina | Heidenfelder  |        1933 |        1996 |   ||
+
+======================================
+2018-1-3-01
+Waldzell
+
+===Vacant
+
+======================================
+2018-1-3-02
+Waldzell
+
+===Vacant
+
+======================================
+2018-1-3-03
+Waldzell
+
+===Vacant
+
+======================================
+2018-1-3-04
+1995-14
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8995.JPG
+-----------------------------------
+Geier
+Thomas   * 7.2.1978  ✝ 8.6.2005
+
+Priska    1928  -  2006
+Waltraud  1959  -  2005
+
+Kreser
+Winfried   1930  -  1978
+Hans       1957  -  1988
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Winfried Kreser
+1930 - 1978
+
+Hans Kreser
+1957 - 1988
+
+Herrmann - Marg. u. Irma
+-----------------------------------
+
+===Notes:
+new marker in 2018
+Some names overlap.
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN           | b           | d           | T |
+|-----------|----------|-------|-----------|--------------|-------------|-------------|---|
+| 210356002 | G727-C9K |     0 | Margareta | Herrmann     |             |             |   ||s_n fc_n s_am
+| 210356034 | G727-CVP |     0 | Irma      | Herrmann     |             |             |   ||s_n fc_n s_am
+| 210355947 | G3PF-CFF |     0 | Winfried  | Kreser       |        1930 |        1978 |   ||s_n fc_y
+| 210355982 | G3PJ-6TC |     0 | Hans      | Kreser       |        1957 |        1988 |   ||s_n fc_y
+| 210352798 | G3PP-KY8 |     0 | Thomas    | Geier        | 07 Feb 1978 | 08 Jun 2005 |   ||s_n fc_y
+| 210352855 | G3P2-F15 |     0 | Priska    | Geier        |        1928 |        2006 |   ||s_n fc_y
+| 210352855 | G3P2-F15 |     0 | Priska    | Möhler       |        1928 |        2006 | b ||s_n fc_y
+| 210353059 | G7KG-L6P |     0 | Waltraud  | Geier        |        1959 |        2005 |   ||s_n fc_n
+
+======================================
+2018-1-3-05
+Waldzell
+
+===Vacant
+
+======================================
+2018-1-3-06
+1995-15
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8994.JPG
+-----------------------------------
+Riedmann
+
+Karl
+* 27.1.1915  ✝ 12.11.2005
+
+Christel
+* 5.6.1924  ✝ 13.1.2017
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_042.JPG
+-----------------------------------
+Riedmann
+Karl
+(b) 27.1.1915   (d) 12.11.2005
+-----------------------------------
+
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+hier ruhen in Gottes frieden
+unser lb. Vater
+
+Vinzenz Riedmann
+(b) 17.7.1870
+(d) 23.8.1935
+
+Unsere lb. Mütter
+
+Theresa Riedmann
+geb. Ehehalt
+(b) 3.4.1883
+(d) 19.2.1950
+-----------------------------------
+
+===Notes:
+Transcription of photo by RJOtter, 2011-06-05
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Theresa  | Riedmann    geb Ehehalt
+Christel | Riedmann    geb Kulosa
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN            | b           | d           | T |
+|-----------|----------|-------|----------|---------------|-------------|-------------|---|
+| 210356354 | LTVM-F5S |   837 | Vinzenz  | Riedmann      | 17 Jul 1870 | 23 Aug 1935 |   ||s_n fc_n
+| 210356394 | LTVM-FZT |   838 | Theresa  | Riedmann      | 03 Apr 1883 | 19 Feb 1950 |   ||s_n fc_n
+| 210356394 | LTVM-FZT |   838 | Theresa  | Ehehalt       | 03 Apr 1883 | 19 Feb 1950 | b ||s_n fc_n
+| 210356436 | LTVW-TJH |  4728 | Karl     | Riedmann      | 27 Jan 1915 | 12 Nov 2005 |   ||
+| 210356491 | L199-5JV |  4729 | Christel | Riedmann      | 05 Jun 1924 | 13 Jan 2017 |   ||
+| 210356491 | L199-5JV |  4729 | Christel | Kulosa        | 05 Jun 1924 | 13 Jan 2017 | b ||
+
+======================================
+2018-1-3-07
+1995-16
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8993.JPG
+-----------------------------------
+DIE HOFFUNG LEBT RUHLOS IRREND
+
+FRIEDRICH BAUER
+1916  -  1993
+
+ELISABETH BAUER
+1914  -  2002
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Die
+Hoffung
+Lebt - Ruhlos
+Irrend
+
+Friedrich Bauer
+1916 - 1993
+-----------------------------------
+
+===Notes:
+New name added in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210356760 | G7K5-ZHB |     0 | Friedrich | Bauer       |        1916 |        1993 |   ||
+| 210356839 | G7K5-4FX |     0 | Elisabeth | Bauer       |        1914 |        2002 |   ||
+
+======================================
+2018-1-3-08
+1995-17
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Franz Schindler
+22.12.1901 - 2.1.1971
+
+Luzia Schindler
+2.11.1907 - 3.9.1980
+-----------------------------------
+
+===Notes:
+Marker probably removed by 2018.
+plot empty.
+Plot 18, at end of row, now has a new marker.
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+WWII refugee family not originally from Waldzell. -AJO
+
+===Interpretation:
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210359203 | G7KR-CG8 |     0 | Franz    | Schindler   | 22 Dec 1901 | 02 Jan 1971 |   ||s_n fc_n
+| 210359229 | G7KR-HSY |     0 | Luzia    | Schindler   | 02 Nov 1907 | 03 Mar 1980 |   ||s_n fc_n
+
+======================================
+2018-1-3-09
+1995-18
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8992.JPG
+-----------------------------------
+Schubert
+
+Engelbert
+*17.8.1923
+✝29.8.2012
+
+Hiltrud
+*2.1.1931
+✝1.1.2016
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Ludwig Mich. Joha
+(b) 21.8.1864  (d) 27.5.1956
+
+Elisabeth Joha
+geb. Dürmich
+(b) 14.11.1873  (d) 7.9.1959
+-----------------------------------
+
+===Notes:
+New marker in 2018
+New family. No name overlap.
+1995- stone very worn. transcription not complete. 2 more names, data not certain
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+
+
+===Table
+| FaG       | FS       | TMG   | FN             | LN          | b           | d           | T |
+|-----------|----------|-------|----------------|-------------|-------------|-------------|---|
+| 210360094 | G7KR-89P |     0 | Ludwig Michael | Joha        | 21 Aug 1864 | 27 May 1956 |   ||s_n fc_n
+| 210360117 | G7KR-ZXY |     0 | Elisabeth      | Joha        | 14 Nov 1873 | 07 Sep 1959 |   ||s_n fc_n
+| 210360117 | G7KR-ZXY |     0 | Elisabeth      | Dürmich     | 14 Nov 1873 | 07 Sep 1959 | b ||s_n fc_n
+| 210360318 | L19Z-5P6 |   340 | Engelbert      | Schubert    | 17 Aug 1923 | 29 Aug 2012 |   ||
+| 210360366 | L19Z-P7B |   353 | Hiltrud        | Schubert    | 02 Jan 1931 | 01 Jan 2016 |   ||
+| 210360366 | L19Z-P7B |   353 | Hiltrud        | Schneider   | 02 Jan 1931 | 01 Jan 2016 | b ||
+
+======================================
+2018-1-L-01
+1995-19
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8974.JPG
+-----------------------------------
+ZUM GEDENKEN
+
+TH LOSCHERT
+STIFTER
+DER HIESIGEN
+KAPLANEI
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Zum Gedenken
+
+TH LOSCHERT
+
+STIFTER
+DER HIESIGEN
+KAPLANEI
+-----------------------------------
+
+===Notes:
+Founder of the local chaplaincy
+no dates or other info.
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210360422 | G7GS-NR3 |     0 | Thomas   | Loschert    |             |             |   ||
+
+======================================
+2018-1-L-02
+1995-20
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8975.JPG
+-----------------------------------
+Apollonia Rüb
+1879 - 1918
+
+Roman Rüb
+1911 - 1919
+
+Lydia Rüb
+1916 - 1999
+
+Agnes Rüb
+1914 - 2003
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_056.JPG
+-----------------------------------
+Apollonia Rüb
+1879 - 1918
+
+Roman Rüb
+1911 - 1919
+
+Lydia Rüb
+1916 - 1999
+
+Agnes Rüb
+1914 - 2003
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Apollonia Rüb
+1879 - 1918
+
+Roman Rüb
+1911 - 1919
+-----------------------------------
+
+===Notes:
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210375197 | LTJF-LQT |     0 | Apollonia | Rüb         |        1879 |        1918 |   ||
+| 210375197 | LTJF-LQT |     0 | Apollonia | Oehring     |        1879 |        1918 | b ||
+| 210375313 | LTVH-J4Z |  4747 | Roman     | Rüb         |        1911 |        1919 |   ||
+| 210375372 | LTV3-PK6 |   311 | Lydia     | Rüb         |        1916 |        1999 |   ||
+| 210375413 | LTJF-K9D |   312 | Agnes     | Rüb         |        1914 |        2003 |   ||
+
+======================================
+2018-1-L-03
+1995-new in 2018
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8976.JPG
+-----------------------------------
+SCHNELL
+
+BERNHARD
+1894 - 1969
+
+ANNI
+1916 - 2002
+
+JOSEFINE MÜLLER  1900 - 1982
+-----------------------------------
+
+===Notes:
+2020-05-29: just noticed Josefine Müller at bottom. Added her. to 2018 transcription.
+
+===Interpretation:
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210375552 | G72M-LW1 |     0 | Bernhard | Schnell     |        1894 |        1969 |   ||
+| 210375591 | G72M-VJT |     0 | Anni     | Schnell     |        1916 |        2002 |   ||
+| 210574554 | G7GH-RKP |     0 | Josefine | Müller      |        1900 |        1982 |   ||
+
+======================================
+2018-1-L-04
+1995-new in 2018
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8977.JPG
+-----------------------------------
+SCHWAB
+
+JOHANN    1909 - 1996
+MARIA     1919 - 2008
+FREDI     1953 - 2004
+-----------------------------------
+
+===Notes:
+
+===Interpretation:
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210396658 | G723-HTD |     0 | Johann   | Schwab      |       1909  |        1996 |   ||
+| 210396691 | G723-RSQ |     0 | Maria    | Schwab      |       1919  |        2008 |   ||
+| 210396727 | G723-2H6 |     0 | Fredi    | Schwab      |       1953  |        2004 |   ||
+
+======================================
+2018-1-L-05
+1995-21
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8978.JPG
+-----------------------------------
+RÜB
+ENGELBERT
+*27.11.1909  ✝23.8.1995
+GERTRAUD
+*30.6.1911  ✝13.1.1999
+
+OTTER
+VALENTIN
+1877 - 1948
+EVA
+1876 - 1944
+✠
+ALBIN
+1909 - 1942
+FERDINAND
+1915 - 1943
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_041.JPG
+-----------------------------------
+Rüb
+Engelbert
+(b) 27.11.1909  (d) 23.8.1995
+Gertraud
+(b) 30.6.1911  (d) 13.1.1999
+
+Otter
+Valentin
+1877 - 1948
+Eva
+1876 - 1944
+(ic)
+Albin
+1909 - 1942
+Ferdinand
+1915 - 1943
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Otter
+Valentin
+1877 - 1948
+Eva
+1876 - 1944
+(ic)
+Albin
+1909 - 1942
+Ferdinand
+1915 - 1943
+-----------------------------------
+
+===Notes:
+New names added on left side of stone.
+Might be a new stone in 2011.
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Eva       | Otter     geb Öhring
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210396820 | LTVM-V9X |  2151 | Engelbert | Rüb         | 27 Nov 1909 | 23 Aug 1995 |   ||
+| 210396852 | LTVM-KMV |  2149 | Gertraud  | Rüb         | 30 Jun 1911 | 13 Jan 1999 |   ||
+| 210396852 | LTVM-KMV |  2149 | Gertraud  | Otter       | 30 Jun 1911 | 13 Jan 1999 | b ||
+| 210396871 | LTVM-JX8 |  2144 | Valentin  | Otter       |        1877 |        1948 |   ||
+| 210396901 | LTVM-VJX |  2143 | Eva       | Otter       |        1876 |        1944 |   ||
+| 210396901 | LTVM-VJX |  2143 | Eva       | Öhring      |        1876 |        1944 | b ||
+| 210396930 | LTVM-NXG |  2147 | Albin     | Otter       |        1909 |        1942 |   ||
+| 210396952 | LTVM-VMT |  2148 | Ferdinand | Otter       |        1915 |        1943 |   ||
+
+======================================
+2018-1-R-02
+1995-23
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8960.JPG
+-----------------------------------
+HEIDENFELDER
+KILIAN  1935 - 1988
+
+HÖFLING
+GEORG  1910  ✠  1945
+BETTY  1911  -  1996
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_046.JPG
+-----------------------------------
+Heidenfelder
+Kilian  1935 - 1988
+
+Höfling
+Georg  1910 (ic) 1945
+Betty  1911   -   1996
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 23 (exp 1).jpg
+-----------------------------------
+Heidenfelder
+Kilian  1935 - 1988
+
+Höfling
+Georg  1910 (ic) 1945
+-----------------------------------
+
+===Notes:
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+Corrected transcription error made 2 times. Georg died in 1945.
+
+Not clear that the relationships are correct.
+This shows Kilian Heidenfelder's wife had 2 sibs- Georg and Betty.
+
+===Interpretation:
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN           | b           | d           | T |
+|-----------|----------|-------|----------|--------------|-------------|-------------|---|
+| 186594046 | LTVM-VF2 |  2219 | Kilian   | Heidenfelder |        1935 |        1988 |   ||s_a
+| 186594047 | LTVC-JM3 |  2237 | Georg    | Höfling      |        1910 |        1945 |   ||s_a
+| 210379006 | LT29-ZP8 |  4727 | Betty    | Höfling      |        1911 |        1996 |   ||
+
+======================================
+2018-1-R-03
+1995-22
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8961.JPG
+-----------------------------------
+EUGEN MÖHLER
+25·7·1893 - 1·10·1968
+
+MAGDALENA MÖHLER
+11·5·1902 - 10·11·1976
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 22 (exp 0).jpg
+-----------------------------------
+Eugen Möhler
+25.7.1893 - 1.10.1968
+
+Magdalena Möhler
+11.5.1902 - 10.11.1976
+-----------------------------------
+
+===Notes:
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+Alban Otter calls them “Schmeid Möhler”, like stone #22, 82.
+
+===Interpretation:
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210407704 | G723-XCJ |  7089 | Eugen     | Möhler      | 25 Jul 1893 | 10 Jan 1968 |   ||
+| 210407905 | G723-D7J |  7090 | Magdalena | Möhler      | 05 Nov 1902 | 11 Oct 1976 |   ||
+| 210407905 | G723-D7J |  7090 | Magdalena | Rüb         | 05 Nov 1902 | 11 Oct 1976 | b ||
+
+======================================
+2018-1-R-04
+Waldzell
+
+===Vacant
+
+======================================
+2018-2-1-01
+1995-24
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8996.JPG
+-----------------------------------
+OEHRING
+1906  AGNES   1971
+1898  LONGIN  1980
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 24 (exp 2).jpg
+-----------------------------------
+Oehring
+1906  Agnes   1971
+1898  Longin  1980
+-----------------------------------
+
+===Notes:
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Agnes    | Oehring    geb Ludwig
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 186594000 | LTJG-8PF |   266 | Agnes    | Oehring     |        1906 |        1971 |   ||s_a
+| 186594000 | LTJG-8PF |   266 | Agnes    | Ludwig      |        1906 |        1971 | b ||s_a
+| 186594001 | LTVM-6GC |   267 | Longin   | Oehring     |        1898 |        1980 |   ||s_a
+
+======================================
+2018-2-1-02
+Waldzell
+
+===Vacant
+
+======================================
+2018-2-1-03
+Waldzell
+
+===Vacant
+
+======================================
+2018-2-1-04
+Waldzell
+
+===Vacant
+
+======================================
+2018-2-1-05
+Waldzell
+
+===Vacant
+
+======================================
+2018-2-1-06
+1995-25
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Hier ruhen in frieden
+
+Johann Riedmann
+Gastwirt
+(b) 17.1.1877  (d) 15.5.1927
+
+Maria Riedmann
+geb. Herrmann
+(b) 4.2.1883  (d) 7.4.1966
+
+Berta Riedmann
+(b) 20.10.1915  (d) 20.10.1941
+
+Franz Riedmann
+(b) 22.6.1880  (d) 9.4.1966
+-----------------------------------
+
+===Notes:
+TODO
+Possibly the current vacant plot 2-1-6.
+
+not yet matched with 2018 photo
+
+stone no longer in cemetery as of 2018
+Which plot is it in?
+probably plot 25 which is empty in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Johann and Maria were married.
+Franz was Johann's brother.
+Berta was Franz' daughter.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210410433 | G723-F12 |  7173 | Johann   | Riedmann    | 17 Jan 1877 | 15 May 1927 |   ||s_n fc_n
+| 210410503 | G728-7NH |  7168 | Maria    | Riedmann    | 04 Feb 1883 | 07 Apr 1966 |   ||s_n fc_n
+| 210410503 | G728-7NH |  7168 | Maria    | Herrmann    | 04 Feb 1883 | 07 Apr 1966 | b ||s_n fc_n
+| 210410626 | G728-V71 |  7301 | Berta    | Riedmann    | 20 Oct 1915 | 20 Oct 1941 |   ||s_n fc_n
+| 210410678 | G728-RH1 |  7288 | Franz    | Riedmann    | 22 Jun 1880 | 09 Apr 1966 |   ||s_n fc_n
+
+======================================
+2018-2-1-07
+1995-26
+Waldzell
+ 
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8997.JPG
+Images 2018\IMG_8998.JPG
+-----------------------------------
+OTTO RÜB
+* 27.9.1893  ✝ 14.12.1960
+
+LUDWINA RÜB
+* 6.8.1895  ✝ 9.1.1978
+
+WINFRIED RÜB
+* 27.8.1961  ✝ 14.11.2003
+
+HILDEGARD RÜB
+* 14.3.1928  ✝ 2.4.2015
+
+MICHAEL JOS.    u.    APOLLONIA
+1853 - 1931    RÜB    1860 - 1937
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_037.JPG
+-----------------------------------
+Otto Rüb
+(b) 27.9.1893  (d) 14.12.1960
+Ludwina Rüb
+(b) 6.8.1895  (d) 9.1.1978
+Winfried Rüb
+(b) 27.8.1961  (d) 14.11.2003
+
+Michael Jos.    u.    Apollonia
+1853 - 1931    Rüb    1860 - 1937
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 26 (exp 3).jpg
+-----------------------------------
+Otto Rüb
+(b) 27.9.1893  (d) 14.12.1960
+Ludwina Rüb
+(b) 6.8.1895  (d) 9.1.1978
+
+Michael Jos.    u.    Apollonia
+1853 - 1931    Rüb    1860 - 1937
+-----------------------------------
+
+===Notes:
+added name in 2018
+new marker in 2011 (?)
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+Fixed transcription error made 3 times!. Otto Rüb was born in 1893.
+
+===Interpretation:
+Jos. => Josef
+Apollonia     | Rüb        geb Oehring
+Ludwina       | Rüb        geb Möhler
+
+
+===Table
+| FaG       | FS       | TMG   | FN            | LN          | b           | d           | T |
+|-----------|----------|-------|---------------|-------------|-------------|-------------|---|
+| 186596292 | LTV4-NY1 |  2009 | Michael Josef | Rüb         |        1853 |        1931 |   ||
+| 186596293 | LTV4-NBM |  2010 | Apollonia     | Rüb         |        1860 |        1937 |   ||s_a 
+| 186596290 | LTVM-NPR |  1056 | Otto          | Rüb         | 27 Sep 1893 | 14 Dec 1960 |   ||s_a
+| 186596291 | LTVM-FXB |  1055 | Ludwina       | Rüb         | 06 Aug 1895 | 09 Jan 1978 |   ||s_a
+| 186596291 | LTVM-FXB |  1055 | Ludwina       | Möhler      | 06 Aug 1895 | 09 Jan 1978 | b ||s_a
+| 210411081 | L19V-MR6 |  1057 | Hildegard     | Rüb         | 14 Mar 1928 | 02 Apr 2015 |   ||
+| 210411360 | LTVW-5CH |  1060 | Winfried      | Rüb         | 27 Aug 1961 | 14 Nov 2003 |   ||
+
+======================================
+2018-2-1-08
+1995-27
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8999.JPG
+-----------------------------------
+EMIL HARTUNG
+GASTWIRT
+* 16.10.1890 ✝ 3.10.1956
+
+ANNA HARTUNG
+* 6.1.1893   ✝ 21.1.1983
+
+DIETER HARTUNG
+* 2.8.1946   ✝ 10.7.1999
+
+GEORG HARTUNG
+* 20.6.1918  ✝ 3.1.1983
+
+LEOPOLDINE HARTUNG
+* 3.7.1921  ✝ 4.6.2005
+
+RUHET IN FRIEDEN!
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Emil Hartung
+Gastwirt
+(b) 16.10.1890  (d) 3.10.1956
+Anna Hartung
+(b) 6.1.1893  (d) 21.1.1983
+Georg Hartung
+(b) 20.6.1918  (d) 3.1.1983
+-----------------------------------
+
+===Notes:
+none are known
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+none are known
+
+
+===Table
+| FaG       | FS       | TMG   | FN         | LN          | b           | d           | T |
+|-----------|----------|-------|------------|-------------|-------------|-------------|---|
+| 210413043 | G72D-R64 |     0 | Emil       | Hartung     | 16 Oct 1890 | 03 Oct 1956 |   ||
+| 210413953 | G3PP-L9C |     0 | Anna       | Hartung     | 06 Jan 1893 | 21 Jan 1983 |   ||
+| 210413953 | G3PP-L9C |     0 | Anna       | Hermes      | 06 Jan 1893 | 21 Jan 1983 | b ||
+| 210414127 | G3PG-1B2 |     0 | Dieter     | Hartung     | 02 Aug 1946 | 10 Jul 1999 |   ||
+| 210414041 | G726-9JC |     0 | Georg      | Hartung     | 20 Jun 1918 | 03 Jan 1983 |   ||
+| 210414192 | G3PJ-RWZ |     0 | Leopoldine | Hartung     | 03 Jul 1921 | 04 Jun 2005 |   ||
+| 210414192 | G3PJ-RWZ |     0 | Leopoldine | Aringer     | 03 Jul 1921 | 04 Jun 2005 | b ||
+
+======================================
+2018-2-1-09
+1995-28
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9000.JPG
+-----------------------------------
+JOHANN RAUCH
+* 18.1.1888  ✝ 23.8.1932
+
+KAROLINA RAUCH
+GEB. MEHLING
+* 21.8.1891  ✝ 20.4.1964
+
+OSKAR RAUCH
+* 10.3.1926  GEF. 17.12.1944
+
+BERTA MEHLING
+* 21.5.1893  ✝ 10.4.1970
+
+MARTINA RAUCH
+* 28.9.1927  ✝ 28.3.1996
+
+BERTA RAUCH
+* 17.6.1922  ✝ 10.12.2004
+
+JULIANE RAUCH
+MICHAEL KATHARINA U. ANTON MEHLING
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Johann Rauch
+(b) 18.1.1888  (d) 23.8.1932
+Karolina Rauch
+geb. Mehling
+(b) 21.8.1891  (d) 20.4.1964
+Oskar Rauch
+(b) 10.3.1926  Gef.  17.12.1944
+Berta Mehling
+(b) 21.5.1893  (d) 10.4.1970
+
+Juliane Rauch
+Michael, Katharina u. Anton Mehling
+-----------------------------------
+
+===Notes:
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+Is G72X-CYT Juliane  Rauch the same as 
+LD88-T9V Juliana Mehling
+20 September 1917 – 19 November 1999  ?  
+Sent message to tmgolfer, possible potential collaborator for Waldzell.
+
+===Interpretation:
+Karolina  | Rauch       | Mehling
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210416841 | G72X-B1V |  7561 | Johann    | Rauch       | 18 Jan 1888 | 23 Aug 1932 |   ||
+| 210416915 | G72X-81G |  4312 | Karolina  | Rauch       | 21 Aug 1891 | 20 Apr 1964 |   ||
+| 210416915 | G72X-81G |  4312 | Karolina  | Mehling     | 21 Aug 1891 | 20 Apr 1964 | b ||
+| 210417004 | G727-DLB |     0 | Oskar     | Rauch       | 10 Mar 1926 | 17 Dec 1944 |   ||
+| 210417075 | G72X-7FT |     0 | Berta     | Mehling     | 21 May 1893 | 10 Apr 1970 |   ||
+| 210417156 | G35Y-5XW |     0 | Martina   | Rauch       | 28 Sep 1927 | 28 Mar 1996 |   ||
+| 210417201 | G3P1-789 |     0 | Berta     | Rauch       | 17 Jun 1922 | 10 Dec 2004 |   ||
+| 210417231 | G72X-CYT |     0 | Juliane   | Rauch       |             |             |   ||
+| 210417295 | G72X-WS9 |     0 | Michael   | Mehling     |             |             |   ||
+| 210417339 | G72F-VDR |     0 | Katharina | Mehling     |             |             |   ||
+| 210417339 | G72F-VDR |     0 | Katharina | Mehling     |             |             |   ||
+| 210417406 | G72F-5XP |     0 | Anton     | Mehling     |             |             |   ||
+
+======================================
+2018-2-2-01
+1995-29
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9014.JPG
+-----------------------------------
+ANNA GEHRLING
+ 1887  -  1967
+* 17.12 ✝ 12.6
+
+LUDWIG GEHRLING
+ 1914  -  1996
+* 17.3   ✝ 19.8
+
+JOHANN GEHRLING
+ 1874  -  1958
+* 15.9   ✝ 18.11
+
+JOSEF GEHRLING
+ 1917  -  2003
+* 16.2   ✝ 11.3
+
+BERNARD  1912  ✠  1944
+        * 26.5   ✝ 15.4
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Anna Gehrling
+1887 - 1967
+Johann Gehrling
+1874 - 1958
+Bernard  1912 (ic) 1944
+-----------------------------------
+
+===Notes:
+none known
+not clear if this is a new marker, or just additional info added.
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210421378 | G3PL-F1F |     0 | Anna     | Gehrling    | 17 Dec 1887 | 12 Jun 1967 |   ||
+| 210421378 | G3PL-F1F |     0 | Anna     | Schickel    | 17 Dec 1887 | 12 Jun 1967 | b ||
+| 210421414 | G35S-2G3 |     0 | Ludwig   | Gehrling    | 17 Mar 1914 | 19 Aug 1996 |   ||
+| 210421493 | G3P5-VZK |     0 | Josef    | Gehrling    | 16 Feb 1917 | 11 Mar 2003 |   ||
+| 210421538 | G35F-1QR |     0 | Johann   | Gehrling    | 15 Sep 1874 | 18 Nov 1958 |   ||
+| 210421596 | G727-59H |     0 | Bernard  | Gehrling    | 16 May 1912 | 14 Apr 1944 |   ||
+
+======================================
+2018-2-2-02
+1995-30
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9012.JPG
+Images 2018\IMG_9013.JPG
+-----------------------------------
+Hilda Öhring
+ * 7.6.1913   ✝ 11.7.1966
+Magdalena Öhring
+ * 6.2.1883   ✝ 10.2.1970
+Heinrich Öhring
+ * 14.7.1882  ✝ 18.2.1975
+Richard Öhring
+ * 4.2.1912   ✝ 22.1.1997
+
+Stefan Öhring
+* 5.2.1879  ✠ 19.9.1916
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_039.JPG
+-----------------------------------
+Hilda Öhring
+ (b) 7.6.1913  (d) 11.7.1966
+Magdalena Öhring
+ (b) 6.2.1883  (d) 10.2.1970
+Heinrich Öhring
+ (b) 14.7.1882  (d) 18.2.1975
+Richard Öhring
+ (b)  4.2.1912  (d)  22.1.1997
+
+Stefan Öhring
+ (b) 5.2.1879  (ic) 19.9.1916
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 30 (exp 4).jpg
+-----------------------------------
+Hilda Öhring
+ (b) 7.6.1913  (d) 11.7.1966
+Magdalena Öhring
+ (b) 6.2.1883  (d) 10.2.1970
+Heinrich Öhring
+ (b) 14.7.1882  (d) 18.2.1975
+
+Stefan Öhring
+ (b) 5.2.1879  (d) 19.9.1916
+-----------------------------------
+
+===Notes:
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+2011- Stefan's name was obscured:
+STEFAN ÖH----  (b) 5.2.1879  (ic) -------- 
+
+===Interpretation:
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 186593959 | LTVM-XTH |  1658 | Hilda     | Öhring      | 07 Jun 1913 | 11 Jul 1966 |   ||s_a
+| 186593961 | LTVM-XRY |   268 | Magdalena | Öhring      | 06 Feb 1883 | 10 Feb 1970 |   ||s_a
+| 186593961 | LTVM-XRY |   268 | Magdalena | Otter       | 06 Feb 1883 | 10 Feb 1970 | b ||s_a
+| 186593960 | LTV7-SV2 |  1655 | Heinrich  | Öhring      | 14 Jul 1882 | 18 Feb 1975 |   ||s_a
+| 186598013 | LTVM-XZS |  1656 | Richard   | Öhring      | 04 Feb 1912 | 22 Jan 1997 |   ||
+| 186593962 | LTVM-XCT |  1654 | Stefan    | Öhring      | 05 Feb 1879 | 19 Sep 1916 |   ||s_a
+
+======================================
+2018-2-2-03
+1995-31
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9011.JPG
+-----------------------------------
+LUDWIG RIEDMANN
+1906 - 1972
+
+BERTA RIEDMANN
+1910 - 1994
+
+ERICH RIEDMANN
+1935 - 2016
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Ludwig Riedmann
+1906 - 1972
+Berta Riedmann
+1910 - 1994
+-----------------------------------
+
+===Notes:
+none known
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210422320 | G3R8-W66 |     0 | Ludwig   | Riedmann    |        1906 |        1972 |   ||
+| 210422484 | G72J-R8R |     0 | Berta    | Riedmann    |        1910 |        1994 |   ||
+| 210422540 | G35K-NQ6 |     0 | Erich    | Riedmann    |        1935 |        2016 |   ||
+
+======================================
+2018-2-2-04
+1995-new in 2018
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9010.JPG
+-----------------------------------
+Siegl
+Werner    1925 - 2009
+-----------------------------------
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210422695 | LTJG-8W6 |   292 | Werner   | Siegl       |        1925 |        2009 |   ||
+
+======================================
+2018-2-2-05
+1995-new in 2018
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9009.JPG
+-----------------------------------
+STENGER
+
+BJORN
+* 20.6.1982  ✝ 14.12.2003
+-----------------------------------
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210439715 | G3RF-RZY |     0 | Bjorn    | Stenger     | 20 Jun 1982 | 14 Dec 2003 |   ||
+
+======================================
+2018-2-2-06
+1995-32
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9004.JPG
+Images 2018\IMG_9005.JPG
+Images 2018\IMG_9006.JPG
+Images 2018\IMG_9007.JPG
+Images 2018\IMG_9008.JPG
+-----------------------------------
+STENGER
+JOSEF     * 22.12.1906  ✝ 17.3.1996
+IDA       * 21.11.1921  ✝ 28.2.2011
+
+STENGER ANGELUS   1905 - 1931
+        VALENTIN  1861 - 1932
+        LEO       1867 - 1943
+        ANGELA    1877 - 1953
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Stenger
+Angelus   1905 - 1931
+Valentin  1861 - 1932
+Leo       1867 - 1943
+Angela    1877 - 1953
+-----------------------------------
+
+===Notes:
+2018: new names added or new stone? probably new grave stone as the 1995 one was old.
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Ida Stenger is geb. Schürger
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210440793 | LTVH-8LZ |  4492 | Angelus  | Stenger     |        1905 |        1931 |   ||
+| 210440827 | LTVC-R8Y |  4491 | Valentin | Stenger     |        1861 |        1932 |   ||
+| 210440925 | LTJF-F8L |   232 | Leo      | Stenger     |        1867 |        1943 |   ||
+| 210440978 | LTJF-2S8 |   233 | Angela   | Stenger     |        1877 |        1953 |   ||
+| 210440978 | LTJF-2S8 |   233 | Angela   | Eirich      |        1877 |        1953 | b ||
+| 210441034 | LTJF-CYR |   227 | Josef    | Stenger     | 22 Dec 1906 | 17 Mar 1996 |   ||
+| 210441094 | L195-XGS |   220 | Ida      | Stenger     | 21 Nov 1921 | 28 Feb 2011 |   ||
+| 210441094 | L195-XGS |   220 | Ida      | Schürger    | 21 Nov 1921 | 28 Feb 2011 | b ||
+
+======================================
+2018-2-2-07
+1995-33
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9003.JPG
+-----------------------------------
+JOSEF MEHLING
+14.7.1877 - 6.10.1924
+KATH MEHLING
+1.10.1883 - 19.11.1949
+VALENTIN MEHLING
+20.11.1915 - 16.6.1978
+AGATHE MEHLING
+9.7.1913 - 22.4.1985
+FRANZISKA MEHLING
+23.8.1914 - 3.7.1988
+
+FRANZISKA RAUCH
+3.10.1885 - 12.5.1941
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 33 (exp 5).jpg
+-----------------------------------
+Josef Mehling
+14.7.1877 - 6.10.1924
+Kath. Mehling
+1.10.1883 - 19.11.1949
+Valentin Mehling
+20.11.1915 - 16.6.1978
+Agathe Mehling
+9.7.1913 - 22.4.1985
+Franziska Mehling
+23.8.1914 - 3.7.1988
+
+Franziska Rauch
+3.10.1885 - 12.5.1941
+-----------------------------------
+
+===Notes:
+no change fr 1995
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210443389 | G72R-53M |     0 | Josef     | Mehling     | 14 Jul 1877 | 06 Oct 1924 |   ||
+| 210443566 | G72T-929 |     0 | Katharina | Mehling     | 01 Oct 1883 | 19 Nov 1949 |   ||
+| 210443674 | G72R-XD2 |     0 | Valentin  | Mehling     | 20 Nov 1915 | 16 Jun 1978 |   ||
+| 210443857 | G3P2-G2G |     0 | Agathe    | Mehling     | 09 Jul 1913 | 22 Apr 1985 |   ||
+| 210443994 | G3PR-C49 |     0 | Franziska | Mehling     | 23 Aug 1914 | 03 Jul 1988 |   ||
+| 210444076 | G72T-4P2 |     0 | Franziska | Rauch       | 03 Oct 1885 | 12 May 1941 |   ||
+
+======================================
+2018-2-2-08
+1995-34
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9002.JPG
+-----------------------------------
+HERRMANN
+LUDWIG   1879 - 1969
+MARIA    1899 - 1969
+RUDOLF   1969 - 2008
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 34 (exp 6).jpg
+-----------------------------------
+Herrmann
+Ludwig   1879 - 1969
+Maria    1899 - 1969
+-----------------------------------
+
+===Notes:
+new name added
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 186594070 | LTJF-XHR |   365 | Ludwig   | Herrmann    |        1879 |        1969 |   ||s_a
+| 186594071 | LTL7-689 |  4507 | Maria    | Herrmann    |        1899 |        1969 |   ||s_a
+| 186594071 | LTL7-689 |  4507 | Maria    |             |        1899 |        1969 | b ||s_a
+| 210444320 | G72T-F3W |     0 | Rudolf   | Herrmann    |        1969 |        2008 |   ||
+
+======================================
+2018-2-2-09
+1995-35
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9001.JPG
+-----------------------------------
+HERRMANN
+MICH. JOS. 1878 - 1956
+JOSEF      1908 - 1924
+EUGEN      1922 - 2003
+
+GERTRAUD   1880 - 1950
+BERTA      1907 - 1927
+ZITA       1925 - 2016
+
+LUDWIG     1909 - 1991
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 35 (exp 7).jpg
+-----------------------------------
+Herrmann
+Mich. Jos. 1878 - 1956
+Josef      1908 - 1924
+Ludwig     1909 - 1991
+Gertraud   1880 - 1950
+Berta      1907 - 1927
+-----------------------------------
+
+===Notes:
+2 new names added
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Jos. => Josef
+Gertraud      | Herrmann  geb  Otter
+Zita          | Herrmann  geb Schubert
+ 
+
+===Table
+| FaG       | FS       | TMG   | FN            | LN          | b           | d           | T |
+|-----------|----------|-------|---------------|-------------|-------------|-------------|---|
+| 186598229 | LTJF-CB6 |   357 | Michael Josef | Herrmann    |        1878 |        1956 |   ||s_a
+| 186598232 | LTJF-2JF |   358 | Gertraud      | Herrmann    |        1880 |        1950 |   ||s_a
+| 186598232 | LTJF-2JF |   358 | Gertraud      | Otter       |        1880 |        1950 | b ||s_a
+| 186598230 | LTKN-KBZ |  4494 | Josef         | Herrmann    |        1908 |        1924 |   ||s_a
+| 186598231 | LTJF-D7J |   363 | Ludwig        | Herrmann    |        1909 |        1991 |   ||s_a
+| 186598233 | LTKN-RBY |  4493 | Berta         | Herrmann    |        1907 |        1927 |   ||s_a
+| 210444901 | L19B-WX9 |   364 | Eugen         | Herrmann    |        1922 |        2003 |   ||
+| 210445018 | L19B-KSW |   342 | Zita          | Herrmann    |        1925 |        2016 |   ||
+| 210445018 | L19B-KSW |   342 | Zita          | Schubert    |        1925 |        2016 | b ||
+
+======================================
+2018-2-3-01
+Waldzell
+
+===Vacant
+
+======================================
+2018-2-3-02
+1995-36
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Josef Weber
+1902 - 1988
+Margarete Weber
+Geb. Jäger
+1904 - 1978
+Johann Jäger
+1875 - 1949
+-----------------------------------
+
+===Notes:
+Probably one of the currently vacant locations  2-3-01 or 2-3-02
+
+1995 marker not found in 2018
+plot 36 & 37 is empty, verified by photo IMG_9012.JPG.
+Space behind the Hilda Öhring stone is empty.
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+ Margarete | Weber       geb Jäger
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210445999 | G72Y-M94 |     0 | Josef     | Weber       |        1902 |        1988 |   ||s_n fc_n
+| 210446292 | G72T-LT1 |     0 | Margarete | Weber       |        1904 |        1978 |   ||s_n fc_n
+| 210446292 | G72T-LT1 |     0 | Margarete | Jäger       |        1904 |        1978 | b ||s_n fc_n
+| 210446334 | G72T-LCX |     0 | Johann    | Jäger       |        1875 |        1949 |   ||s_n fc_n
+
+======================================
+2018-2-3-03
+1995-37
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9015.JPG
+-----------------------------------
+GERTRUD KRAFT
+10.5.1937 - 18.11.1946
+JOSEFINE KRAFT
+18.12.1904 - 24.6.1964
+ALOIS KRAFT
+10.4.1902 - 28.3.1972
+REINHOLD KRAFT
+19.6.1940 - 15.2.1977
+EUGEN KRAFT
+9.1.1917 ✠ 1944
+ERIKA MÖHLER
+13.4.1934 - 2.9.2008
+ERNST MÖHLER
+22.2.1929 - 29.11.2010
+
+   JOHANN      UND     BARBARA KRAFT
+8.9.1875 - 15.2.1944   27.2.1877 - 12.10.1944
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_024.JPG
+-----------------------------------
+Gertrud Kraft
+10.5.1937 - 18.11.1946
+Josefine Kraft
+18.12.1904 - 24.6.1964
+Alois Kraft
+10.4.1902 - 28.3.1972
+Reinhold Kraft
+19.6.1940 - 15.2.1977
+Eugen Kraft
+9.1.1917 (ic) 1944
+Erika Möhler
+13.4.1934 - 2.9.2008
+
+        Johann         u.         Barbara Kraft
+8.9.1875 - 15.2.1944          27.2.1877 - 12.10.1944
+
+<wooden cross>
+Ernst Möhler
+<?????>  -  <?????>   <not legible>
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 37 (exp 8).jpg
+-----------------------------------
+Gertrud Kraft
+10.5.1937 - 18.11.1946
+Josefine Kraft
+18.12.1904 - 24.6.1964
+Alois Kraft
+10.4.1902 - 28.3.1972
+Reinhold Kraft
+19.6.1940 - 15.2.1977
+Eugen Kraft
+9.1.1917 (ic) 1944
+
+        Johann         u.         Barbara Kraft
+8.9.1875 - 15.2.1944          27.2.1877 - 12.10.1944
+-----------------------------------
+
+===Notes:
+one name added to marker
+2019: 9 persons  0 geb names
+2011- new wooden cross and 1 name added to marker
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Erika    | Möhler       geb Kraft
+
+
+===Table
+| FaG       | FS       | TMG  | FN       | LN           | b           | d           | T |
+|-----------|----------|------|----------|--------------|-------------|-------------|---|
+| 210447013 | LT29-84B | 4750 | Johann   | Kraft        | 08 Sep 1875 | 15 Feb 1944 |   ||
+| 210447063 | LTVH-N25 | 4751 | Barbara  | Kraft        | 27 Feb 1877 | 12 Oct 1944 |   ||
+| 210447063 | LTVH-N25 | 4751 | Barbara  |              | 27 Feb 1877 | 12 Oct 1944 | b ||
+| 186594148 | LT29-6YQ | 4748 | Josefine | Kraft        | 18 Dec 1904 | 24 Jun 1964 |   ||s_a
+| 186594148 | LT29-6YQ | 4748 | Josefine | Anderlohr    | 18 Dec 1904 | 24 Jun 1964 | b ||s_a
+| 186594149 | LTVH-CNP | 4749 | Alois    | Kraft        | 10 Apr 1902 | 28 Mar 1972 |   ||s_a
+| 186594150 | LTVH-FJ2 | 4754 | Reinhold | Kraft        | 19 Jun 1940 | 15 Feb 1977 |   ||s_a
+| 186594151 | LTVH-8LN | 4752 | Eugen    | Kraft        | 09 Jan 1917 | 00 000 1944 |   ||s_a
+| 186594147 | LTVZ-M81 | 4753 | Gertrud  | Kraft        | 10 May 1937 | 18 Nov 1946 |   ||s_a
+| 210447199 | LTVM-NCF | 1080 | Erika    | Möhler       | 13 Apr 1934 | 02 Sep 2008 |   ||
+| 210447199 | LTVM-NCF | 1080 | Erika    | Kraft        | 13 Apr 1934 | 02 Sep 2008 | b ||
+| 210447263 | LTVM-JCM | 1079 | Ernst    | Möhler       | 22 Feb 1929 | 29 Nov 2010 |   ||
+
+======================================
+2018-2-3-04
+1995-38
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9016.JPG
+-----------------------------------
+UNVERGESSEN RUHEN IN GOTT
+
+JOSEF RÜB
+* 6.9.1881  ✝ 29.3.1939
+
+ALOISIA RÜB
+* 14.8.1895  ✝ 30.4.1965
+
+UNSERE LB. KINDER
+MARIA, JOSEF u. THERESIA
+
+AGNES RÜB
+* 28.12.1923  ✝ 8.11.1997
+
+RUHESTÄTTE FAMILIE RÜB
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_025.JPG
+-----------------------------------
+Unvergessen ruhen in Gott
+
+Josef Rüb
+(b) 6.9.1881 - (d) 29.3.1939
+Aloisia Rüb
+(b) 14.8.1895  (d) 30.4.1965
+
+unsere lb. Kinder
+Maria, Josef u. Theresia
+
+Agnes Rüb
+(b) 28.12.1923  (d) 8.11.1997
+
+Ruhestätte Familie Rüb
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 38 (exp 9).jpg
+-----------------------------------
+Unvergessen ruhen in Gott
+Josef Rüb
+(b) 6.9.1881 - (d) 29.3.1939
+Aloisia Rüb
+(b) 14.8.1895  (d) 30.4.1965
+
+unsere lb. Kinder
+Maria, Josef u. Theresia
+
+Ruhestätte Familie Rüb
+-----------------------------------
+
+===Notes:
+2018: 6 persons
+no change from 2011
+new name in in 2011
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Aloisia  | Rüb         geb Mehling  
+Maria    | Herrmann    geb Rüb   probably not.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 186598235 | LTJG-JT9 |   399 | Josef    | Rüb         | 06 Sep 1881 | 29 Mar 1939 |   ||s_a
+| 186598236 | LTJG-ZQL |   385 | Aloisia  | Rüb         | 14 Aug 1895 | 30 Apr 1965 |   ||s_a
+| 186598236 | LTJG-ZQL |   385 | Aloisia  | Mehling     | 14 Aug 1895 | 30 Apr 1965 | b ||s_a
+| 210449953 | G72Y-RRH |   402 | Maria    | Rüb         |             |             |   ||
+| 210450000 | LTVC-KGS |  2220 | Josef    | Rüb         |             |             |   ||
+| 210450041 | LTVM-J15 |  2221 | Theresia | Rüb         |             |             |   ||
+| 210450082 | LTVQ-FKS |   401 | Agnes    | Rüb         | 28 Dec 1923 | 08 Nov 1997 |   ||
+
+======================================
+2018-2-3-04
+Waldzell
+
+===Vacant
+
+======================================
+2018-2-3-05
+Waldzell
+
+===Vacant
+
+======================================
+2018-2-3-06
+Waldzell
+
+===Vacant
+
+======================================
+2018-2-3-07
+1995-39
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9017.JPG
+-----------------------------------
+SCHÜRGER
+
+WILLI
+* 29.10.1925  ✝ 1.7.1995
+
+ELSE
+* 13.9.1925  ✝ 14.2.2016
+
+VITUS
+1885 - 1965
+ANNA
+1890 - 1979
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_032.JPG
+-----------------------------------
+Schürger
+
+Willi
+(b) 29.10.1925  (d) 1.7.1995
+Vitus
+(b) 1.7.1885  (d) 19.8.1965
+Anna
+(b) 21.7.1890  (d) 1.10.1979
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 39 (exp 10).jpg
+-----------------------------------
+Vitus Schürger
+(b) 1.7.1885  (d) 19.8.1965
+Anna Schürger
+(b) 21.7.1890  (d) 1.10.1979
+
+Richard Schürger
+24.3.1923  (ic) 3.5.1945
+
+      Johann        u.    Anna Maria Schürger
+(b) 1850 (d) 1912          (b) 1853  (d) 1942
+
+<wooden cross>
+Willi Schürger
+-----------------------------------
+
+===Notes:
+new stone and a new name in 2011
+new name, same stone in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+Data readable from 1995 photo is limited by vegetation near bottom of stone.
+Direct reading of the stone done at the time provided full data.
+That is the only photo of my great grandparents.
+
+===Interpretation:
+Anna Maria | Schürger    | Möhler
+Anna       | Schürger    | Hain
+Else       | Schürger    | Mehling
+
+
+===Table
+| FaG       | FS       | TMG   | FN         | LN          | b           | d           | T |
+|-----------|----------|-------|------------|-------------|-------------|-------------|---|
+| 210451314 | LTJW-B6D |   221 | Willi      | Schürger    | 29 Oct 1925 | 01 Jul 1995 |   ||
+| 210451354 | L1S9-8FL |   224 | Else       | Schürger    | 13 Sep 1925 | 14 Feb 2016 |   ||
+| 210451354 | L1S9-8FL |   224 | Else       | Mehling     | 13 Sep 1925 | 14 Feb 2016 | b ||
+| 210450816 | LTJF-F8F |   218 | Vitus      | Schürger    | 01 Jul 1885 | 19 Aug 1965 |   ||
+| 210450880 | LTJ4-9CD |   219 | Anna       | Schürger    | 21 Jul 1890 | 01 Oct 1979 |   ||
+| 210450880 | LTJ4-9CD |   219 | Anna       | Hain        | 21 Jul 1890 | 01 Oct 1979 | b ||
+| 210450432 | LTVW-16G |  1088 | Richard    | Schürger    | 24 Mar 1923 | 03 May 1945 |   ||
+| 210451115 | L29T-YCQ |    29 | Johann     | Schürger    |        1850 |        1912 |   ||
+| 210451239 | L29T-YFZ |    30 | Anna Maria | Schürger    |        1853 |        1942 |   ||
+| 210451239 | L29T-YFZ |    30 | Anna Maria | Möhler      |        1853 |        1942 | b ||
+
+======================================
+2018-2-3-08
+1995-40
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9018.JPG
+-----------------------------------
+Karl Bauer
+30.9.1914 - 8.8.1990
+Maria Bauer
+19.6.1919 - 21.7.1992
+
+In Gedenken an
+Gertaud und Bernhard Gehrling
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Hier ruhen in frieden
+
+Karl Bauer
+1914 - 1990
+Maria Bauer
+1919 - 1992
+Robert Gehrling
+(b) 4.10.1912 Verm. Juli 1944
+Bernhard Gehrling
+(b) 21.2.1891  (d) 29.7.1971
+Gertraud Gehrling
+(b) 30.1.1893  (d) 1.2.1981
+
+Familie Gehrling u. Schickel
+-----------------------------------
+
+===Notes:
+new marker in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Guess that Maria was a geb Gehrling and that Robert is brother and Bernhard and Gertraud were parents. Dates fit. 
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210453376 | G72B-54R |     0 | Karl     | Bauer       | 30 Sep 1914 | 08 Aug 1990 |   ||fc
+| 210453520 | G721-3J8 |     0 | Maria    | Bauer       | 19 Jun 1919 | 21 Jul 1992 |   ||fc
+| 210453520 | G721-3J8 |     0 | Maria    | Gehrling    | 19 Jun 1919 | 21 Jul 1992 | b ||fc
+| 210453551 | G727-34N |     0 | Robert   | Gehrling    | 04 Oct 1912 |    Jul 1944 |   ||s_n fc_n
+| 210453602 | G721-8LQ |     0 | Bernhard | Gehrling    | 21 Feb 1891 | 29 Jul 1971 |   ||s_n fc_n
+| 210453707 | G721-DCX |     0 | Gertraud | Gehrling    | 30 Jan 1893 | 01 Feb 1981 |   ||s_n fc_n
+| 210453707 | G721-DCX |     0 | Gertraud | Schickel    | 30 Jan 1893 | 01 Feb 1981 | b ||s_n fc_n
+
+======================================
+2018-2-3-09
+1995-41
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9019.JPG
+-----------------------------------
+RÜB
+
+EDMUND u. GERTRAUD
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 41 (exp 11).jpg
+-----------------------------------
+Familie Rüb - Mehling
+Unvergessen ruhen in Gott
+
+Edmund Rüb
+(b) 7.10.1877 - 17.4.1949 (d)
+Gertraud Rüb
+geb. Schubert
+(b) 17.1.1887  - 10.5.1954 (d)
+
+Josef Mehling
+(b) 11.10.1867 - 24.2.1940 (d)
+Anna Maria Mehling
+(b) 25.1.1867 - 19.6.1922 (d)
+
+Stifter des Schwesternhausses
+-----------------------------------
+
+===Notes:
+new marker in 2018
+minimal inscriptions and data
+no other info on marker as of 2018-05
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       |TMG   | FN         | LN          | b           | d           | T |
+|-----------|--------- |------|------------|-------------|-------------|-------------|---|
+| 210462150 | LTJG-Z92 |  318 | Edmund     | Rüb         | 07 Oct 1877 | 17 Apr 1949 |   ||
+| 210462168 | GSHB-N57 |  287 | Gertraud   | Rüb         | 17 Jan 1887 | 10 May 1954 |   ||
+| 210462168 | GSHB-N57 |  287 | Gertraud   | Schubert    | 17 Jan 1887 | 10 May 1954 | b ||
+| 210462195 | G7LS-QCM |    0 | Josef      | Mehling     | 11 Oct 1867 | 24 Feb 1940 |   ||
+| 210462206 | G7LS-SQK |    0 | Anna Maria | Mehling     | 25 Jan 1867 | 19 Jun 1922 |   ||
+| 210462206 | G7LS-SQK |    0 | Anna Maria |             | 25 Jan 1867 | 19 Jun 1922 | b ||
+
+======================================
+2018-2-4-01
+1995-42
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9030.JPG
+Images 2018\IMG_9031.JPG
+-----------------------------------
+BRIGITTE
+1947  -  2006
+
+STAUDINGER
+
+WILHELM
+1890 - 1969
+
+OLGA
+1913  - 2000
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Staudinger
+
+Wilhelm
+1890 - 1969
+-----------------------------------
+
+===Notes:
+2 new names in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210493838 | G7LW-GZF |     0 | Wilhelm  | Staudinger  |        1890 |        1969 |   ||
+| 210493862 | G35K-W4S |     0 | Brigitte | Staudinger  |        1947 |        2006 |   ||
+| 210493862 | G35K-W4S |     0 | Brigitte | Reindl      |        1947 |        2006 | b ||
+| 210493874 | G35K-7WW |     0 | Olga     | Staudinger  |        1913 |        2000 |   ||
+
+======================================
+2018-2-4-02
+1995-43
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9029.JPG
+-----------------------------------
+IM FRIEDEN DES HERRN
+
+LEO LUDWIG
+*16.10.1907 ✝14.11.1987
+
+MARIA LUDWIG
+GEB. OTTER
+*20.8.1920  ✝6.3.1999
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Im Frieden des Herrn
+
+Leo Ludwig
+(b) 16.10.1907  (d) 14.11.1987
+
+Julian Ludwig
+(b) 25.3.1867  (d) 26.6.1940
+
+Theresia Ludwig
+geb. Gerling - Verw. Rüb
+(b) 15.10.1868  (d) 22.1.1943
+-----------------------------------
+
+===Notes:
+new marker in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+not known how Maria Otter is related to the Ludwig's.
+note that Theresia is entered twice since a previous married name was listed on the marker
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210493926 | LTJG-61X |  1943 | Leo      | Ludwig      | 16 Oct 1907 | 14 Nov 1987 |   ||s_n fc_y
+| 210493951 | LYLH-8V4 |  2229 | Maria    | Ludwig      | 20 Aug 1920 | 06 Mar 1999 |   ||s_n fc_y
+| 210493951 | LYLH-8V4 |  2229 | Maria    | Otter       | 20 Aug 1920 | 06 Mar 1999 | b ||s_n fc_y
+| 210494014 | LTJG-KXH |   892 | Julian   | Ludwig      | 25 Mar 1867 | 26 Jun 1940 |   ||s_n fc_y
+| 210494031 | LTJG-ZQZ |   288 | Theresia | Ludwig      | 15 Oct 1868 | 22 Jan 1943 |   ||s_n fc_y
+| 210494031 | LTJG-ZQZ |   288 | Theresia | Rüb         | 15 Oct 1868 | 22 Jan 1943 | p ||s_n fc_y
+| 210494031 | LTJG-ZQZ |   288 | Theresia | Gerling     | 15 Oct 1868 | 22 Jan 1943 | b ||s_n fc_y
+
+======================================
+2018-2-4-03
+Waldzell
+
+===Vacant
+
+======================================
+2018-2-4-04
+1995-44
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8973.JPG
+-----------------------------------
+Hier ruhen in Gott
+
+Johann Oehring
+früh. Bürgermeister
+* 21. Okt. 1827, ✝ 30. Juli 1903
+Martha Oehring
+* 29. Juli 1841, ✝ 18. Nov. 1914
+Genovefa Oehring
+* 24. Aug. 1837, ✝ 27. Dez. 1911
+Auguste Oehring
+* 24. Aug. 1881, ✝ 8. Febr. 1935
+in Würzburg
+Engelbert Öhring
+ehemaliger Bürgermeister
+* 2.4.1876 - 27.12.1954 ✝
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_022.JPG
+-----------------------------------
+Hier ruhen in Gott
+
+Johann Oehring
+früh. Bürgermeister
+(b) 21 Okt. 1827, (d) 30 Juli 1903
+Martha Oehring
+(b) 29 Juli 1841, (d) 18 Nov. 1914
+Genovefa Oehring
+(b) 24 Aug. 1837, (d) 27 Dez. 1911
+Auguste Oehring
+(b) 24 Aug. 1881, (d) 8 Febr. 1935
+in Würzburg
+Engelbert Öhring
+ehemaliger Bürgermeister
+(b) 2.4.1876 - 27.12.1954 (d)
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 44 (exp 12).jpg
+-----------------------------------
+Hier ruhen in Gott
+
+Johann Oehring
+früh. Bürgermeister
+(b) 21 Okt. 1827, (d) 30 Juli 1903
+Martha Oehring
+(b) 29 Juli 1841, (d) 18 Nov. 1914
+Genovefa Oehring
+(b) 24 Aug. 1837, (d) 27 Dez. 1911
+Auguste Oehring
+(b) 24 Aug. 1881, (d) 8 Febr. 1935
+in Würzburg
+Engelbert Öhring
+ehemaliger Bürgermeister
+(b) 2.4.1876 - 27.12.1954 (d)
+-----------------------------------
+
+===Notes:
+no change since 1995
+
+===Interpretation:
+Auguste Oehring  is geb Herrmann.
+
+
+===Table
+| FaG       | FS        | TMG   | FN        | LN          | b           | d           | T |
+|-----------|-----------|-------|-----------|-------------|-------------|-------------|---|
+| 186594138 | LTJF-LQB  |   932 | Johann    | Oehring     | 21 Oct 1827 | 30 Jul 1903 |   ||s_a
+| 186594139 | LTKN-1GL  |  4495 | Martha    | Oehring     | 29 Jul 1841 | 18 Nov 1914 |   ||s_a
+| 186594140 | LTVW-YFF  |  4496 | Genovefa  | Oehring     | 24 Aug 1837 | 27 Dec 1911 |   ||s_a
+| 186594141 | LTJF-83S  |  1653 | Auguste   | Oehring     | 24 Aug 1881 | 08 Feb 1935 |   ||s_a
+| 186594141 | LTJF-83S  |  1653 | Auguste   | Herrmann    | 24 Aug 1881 | 08 Feb 1935 | b ||s_a
+| 210494099 | LTJF-VXR  |  1652 | Engelbert | Öhring      | 02 Apr 1876 | 27 Dec 1954 |   ||
+
+======================================
+2018-2-4-05
+1995-45
+Waldzell
+
+Location: 49.942542 9.632017
+
+===Transcription: 2019
+Photo:
+Images 2019\IMG_20190928_103307994.jpg
+-----------------------------------
+MEINE ZEIT STEHT IN DEINER HAND
+
+OTTER
+
+1904 AGNES 1971
+
+FERDINAND
+1894 - 1978
+
+JOSEF SCHÜRGER
+1891 - 1967
+-----------------------------------
+
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9028.JPG
+Images 2018\IMG_9032.JPG
+-----------------------------------
+MEINE ZEIT STEHT IN DEINER HAND
+
+OTTER
+
+1904 AGNES 1971
+
+FERDINAND
+1894 - 1978
+
+JOSEF SCHÜRGER
+1891 - 1967
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 45 (exp 13).jpg
+-----------------------------------
+Meine Zeit Steht in deiner Hand
+
+Otter
+
+1904 Agnes 1971
+Ferdinand
+1894 - 1978
+Josef Schürger
+1891 - 1967
+-----------------------------------
+
+===Transcription: pre 1995
+Photo:
+Mehling, Otter & family -Grave marker.jpg
+Images 2018\Grabstein Otter.jpg
+-----------------------------------
+Hier ruht in Gott
+
+Johann Ch. Mehling
+Ökonom
+geb. 25. Nov. 1825, gest. 9. Okt. 1900.
+dessen Gattin
+Maria Barb. Mehling
+geb. 1. Jan. 1841, gest. 11. Dez. 1911.
+Martin Otter
+* 9.12.1853, ✝ 28.1.1929
+Maria Otter
+geb. Stamm
+* 5.1.1863, ✝ 6.3.1939
+
+Herr, gib ihnen die ewige Ruhe!
+-----------------------------------
+
+===Notes:
+2018-07-23: Monika Otter said this was on the "Förster's Grab", where the current stone for Ferdinand and Agnes is erected. 
+It was called Förster's Grab even though Martin was not a Förster.
+
+pre-1995:
+Located outside of Otter family tractor barn,  Gertraudenweg, Waldzell. (1995-07-16)
+Transcription by RJOtter, 1995-07
+RJO never saw this marker in the Waldzell cemetery, but
+it was said that it was in the cemetery at one time and then removed. Presumably in this plot before 1995
+Grabstein Otter.jpg taken by Monika Otter & Bernd Oehring on 2018-10-06,
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+|FaG        |  FS      | TMG   | FN              | LN          | b           | d           | T |
+|-----------|----------|-------|-----------------|-------------|-------------|-------------|---|
+| 186597467 | LDLD-T9P |     8 | Agnes           | Otter       |        1904 |        1971 |   ||s_a
+| 186597467 | LDLD-T9P |     8 | Agnes           | Schürger    |        1904 |        1971 | b ||s_a
+| 190824586 | LDLD-RBK |     7 | Ferdinand       | Otter       |        1894 |        1978 |   ||s_a
+| 186597468 | LTJL-1TS |   247 | Josef           | Schürger    |        1891 |        1967 |   ||s_a
+| 210510638 | LTVM-VYX |  1669 | Johann Christof | Mehling     | 25 Nov 1825 | 09 Oct 1900 |   ||
+| 210510772 | LTVM-J1M |  1670 | Maria Barbara   | Mehling     | 01 Jan 1841 | 11 Dec 1911 |   ||
+| 210510772 | LTVM-J1M |  1670 | Maria Barbara   | Stamm       | 01 Jan 1841 | 11 Dec 1911 | b ||
+| 210510907 | LDTC-VBR |    27 | Martin          | Otter       | 09 Dec 1853 | 28 Jan 1929 |   ||
+| 210510969 | LDTC-KQ3 |    28 | Maria           | Otter       | 05 Jan 1863 | 06 Mar 1939 |   ||
+| 210510969 | LDTC-KQ3 |    28 | Maria           | Stamm       | 05 Jan 1863 | 06 Mar 1939 | b ||
+
+======================================
+2018-2-4-06
+1995-46
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9027.JPG
+-----------------------------------
+JOHANN HERRMANN
+* 24.7.1887 - 7.9.1950 ✝
+
+MONIKA HERRMANN
+GEB. RÜB
+* 2.9.1898 - 11.11.1982 ✝
+
+UNSERE LIEBER KINDER
+ANTON u. FRANZ
+
+EDMUND HERRMANN
+* 24.11.1921  - 29.11.2004 ✝
+
+MARIA HERRMANN
+* 9.3.1926  -  18.6.2017 ✝
+
+MICHAEL RÜB
+* 15.2.1852 - 4.1.1919 ✝
+
+MARGARETHA RÜB
+GEB. MEHLING
+* 14.3.1852 - 17.5.1924 ✝
+
+✠ DEREN SOHNE ✠
+EDMUND U. RUDOLF
+
+LEONHARD RÜB
+* 30.10.1889 - 20.12.1969 ✝
+
+OTTO HERRMANN
+* 1.1.1925  ✝ 1945
+
+RUHET IN FRIEDEN
+-----------------------------------
+
+===Transcription: 2011
+one new name in 2011
+Photo:
+K800_Gräber Waldzell_022.JPG
+-----------------------------------
+Johann Herrmann
+(b) 24.7.1887 - 7.9.1950 (d)
+Monika Herrmann
+Geb. Rüb
+(b) 2.9.1898 - 11.11.1982 (d)
+unsere Lieber Kinder
+Anton u. Franz
+
+Edmund Herrmann
+(b) 24.11.1921  - 29.11.2004 (d)
+
+Michael Rüb
+(b) 15.2.1852 - 4.1.1919 (d)
+Margaretha Rüb
+geb. Mehling
+(b) 14.3.1852 - 17.5.1924 (d)
+
+(ic) Deren Sohne (d)
+Edmund u. Rudolf
+Leonhard Rüb
+(b) 30.10.1889 - 20.12.1969 (d)
+Otto Herrmann
+(b) 1.1.1925  (d) 1945
+
+Ruhet in Frieden
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 46 (exp 14).jpg
+-----------------------------------
+Johann Herrmann
+(b) 24.7.1887 - 7.9.1950 (d)
+Monika Herrmann
+Geb. Rüb
+(b) 2.9.1898 - 11.11.1982 (d)
+unsere Lieber Kinder
+Anton u. Franz
+
+Michael Rüb
+(b) 15.2.1852 - 4.1.1919 (d)
+Margaretha Rüb
+geb. Mehling
+(b) 14.3.1852 - 17.5.1924 (d)
+(ic) Deren Sohne (d)
+Edmund u. Rudolf
+Leonhard Rüb
+(b) 30.10.1889 - 20.12.1969 (d)
+Otto Herrmann
+(b) 1.1.1925  (d) 1945
+
+Ruhet in Frieden
+-----------------------------------
+
+===Notes:
+one new name in 2018
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Michael	Rüb		-		15 Feb 1852	04 Jan 1919
+Margaretha	Rüb	Mehling	14 Mar 1852	17 May  1924
+
+	Edmund	Rüb	-	son of Michael Rub and Margaretha Mehling
+	Rudolf	Rüb	-	son of Michael Rub and Margaretha Mehling
+	Leonhard	Rüb	-		son of Michael Rub and Margaretha Mehling
+
+Johann	Herrmann	
+Monika	Herrmann		daughter of Michael Rub and Margaretha Mehling
+
+	Otto	Herrmann	-	sons of Monika Rüb
+	Anton	Herrmann	-  
+	Franz	Herrmann
+	Edmund	Herrmann	
+
+
+===Table
+| FaG       | FS       | TMG   | FN         | LN           | b           | d           | T |
+|-----------|----------|-------|------------|--------------|-------------|-------------|---|
+| 186596356 | LTJF-FTK |   366 | Johann     | Herrmann     | 24 Jul 1887 | 07 Sep 1950 |   ||s_a
+| 186596357 | LTVM-65S |   370 | Monika     | Herrmann     | 02 Sep 1898 | 11 Nov 1982 |   ||s_a
+| 186596357 | LTVM-65S |   370 | Monika     | Rüb          | 02 Sep 1898 | 11 Nov 1982 | b ||s_a
+| 210514577 | LTVM-XTX |  2169 | Anton      | Herrmann     |             |             |   ||
+| 210514658 | LTVM-NQQ |  2170 | Franz      | Herrmann     |             |             |   ||
+| 210514713 | LTJG-CJD |   389 | Edmund     | Herrmann     | 24 Nov 1921 | 29 Nov 2004 |   ||
+| 210514767 | LTJG-66H |   402 | Maria      | Herrmann     | 9 Mar 1926  | 18 Jun 2017 |   ||
+| 210514767 | LTJG-66H |   402 | Maria      | Rüb          | 9 Mar 1926  | 18 Jun 2017 | b ||
+| 186596358 | LTJF-XHY |   369 | Michael    | Rüb          | 15 Feb 1852 | 04 Jan 1919 |   ||s_a
+| 186596359 | LTJF-89T |   368 | Margaretha | Rüb          | 14 Mar 1852 | 17 May 1924 |   ||s_a
+| 186596359 | LTJF-89T |   368 | Margaretha | Mehling      | 14 Mar 1852 | 17 May 1924 | p ||s_a
+| 186596359 | LTJF-89T |   368 | Margaretha | Heidenfelder | 14 Mar 1852 | 17 May 1924 | b ||
+| 210514817 | LTVW-T8D |  2348 | Edmund     | Rüb          |             |             |   ||
+| 210514852 | LTKN-CK3 |  2349 | Rudolf     | Rüb          |             |             |   ||
+| 186596360 | LTVQ-M4X |   375 | Leonhard   | Rüb          | 30 Oct 1889 | 20 Dec 1969 |   ||s_a
+| 186596361 | LTVM-6HL |   386 | Otto       | Herrmann     | 01 Jan 1925 |        1945 |   ||s_a
+
+======================================
+2018-2-4-07
+1995-47
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9025.JPG
+Images 2018\IMG_9026.JPG
+-----------------------------------
+LUDWIG SCHUBERT
+1885 - 1965
+
+BRIGITTE SCHUBERT
+1901 - 1970
+
+EDGAR SCHUBERT
+1928 - 2010
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_027.JPG
+-----------------------------------
+Ludwig Schubert
+1885 - 1965
+Brigitte Schubert
+1901 - 1970
+Edgar Schubert
+1928 - 2010
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 47 (exp 15).jpg
+-----------------------------------
+Ludwig Schubert
+1885 - 1965
+Brigitte Schubert
+1901 - 1970
+-----------------------------------
+
+===Notes:
+new name in 2011
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Edgar is the son of Ludwig Schubert & Brigitte Otter
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 186597996 | LTJG-QBH |   283 | Ludwig   | Schubert    |        1885 |        1965 |   ||s_a
+| 186597997 | LTJF-L2S |   196 | Brigitte | Schubert    |        1901 |        1970 |   ||
+| 186597997 | LTJF-L2S |   196 | Brigitte | Otter       |        1901 |        1970 | b ||
+| 210518520 | LTJG-Z9B |   290 | Edgar    | Schubert    |        1928 |        2010 |   ||
+
+======================================
+2018-2-4-08
+1995-48
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9024.JPG
+-----------------------------------
+OTTER
+EDUARD    1867 - 1943
+AUGUSTE   1878 - 1958
+ENGELBERT 1892 - 1960
+ANNA      1903 - 1978
+ERNST     1927 - 1979
+ALFRED    1931 - 1986
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_028.JPG
+-----------------------------------
+Otter
+
+Eduard    1867 - 1943
+Auguste   1878 - 1958
+Engelbert 1892 - 1960
+Anna      1903 - 1978
+Ernst     1927 - 1979
+Alfred    1931 - 1986
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 48 (exp 16).jpg
+-----------------------------------
+Otter
+
+Eduard    1867 - 1943
+Auguste   1878 - 1958
+Engelbert 1892 - 1960
+Anna      1903 - 1978
+Ernst     1927 - 1979
+Alfred    1931 - 1986
+-----------------------------------
+
+===Notes:
+2011- no change from 1995
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Anna Otter is the daughter of Eduard Otter & Auguste Riedmann
+
+Ernst and Alfred Otter are the sons of Anna Otter and Engelbert Otter
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------| ---------|-------|-----------|-------------|-------------|-------------|---|
+| 186594210 | LTJF-J66 |   863 | Eduard    | Otter       |        1867 |        1943 |   ||s_a
+| 186594211 | LTJF-XTN |   964 | Auguste   | Otter       |        1878 |        1958 |   ||s_a
+| 186594211 | LTJF-XTN |   964 | Auguste   | Riedmann    |        1878 |        1958 | b ||s_a
+| 186594212 | LTJF-CBQ |   197 | Engelbert | Otter       |        1892 |        1960 |   ||s_a
+| 186594213 | LTJF-2S2 |   269 | Anna      | Otter       |        1903 |        1978 |   ||s_a
+| 186594214 | LTJG-4L4 |   272 | Ernst     | Otter       |        1927 |        1979 |   ||s_a
+| 186594215 | LTJF-6W5 |   271 | Alfred    | Otter       |        1931 |        1986 |   ||s_a
+
+======================================
+2018-2-4-09
+1995-49
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9023.JPG
+-----------------------------------
+SCHUBERT
+OTTO     1885 - 1952
+KLARA    1895 - 1971
+OTTMAR   1927 - 1995
+
+NEDER
+AMANDA   1920 - 1990
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_029.JPG
+-----------------------------------
+Schubert
+Otto     1885 - 1952
+Klara    1895 - 1971
+Ottmar   1927 - 1995
+
+Neder
+Amanda   1920 - 1990
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Schubert
+Otto     1885 - 1952
+Klara    1895 - 1971
+Ottmar   1927 - 1995
+
+Neder
+Amanda   1920 - 1990
+-----------------------------------
+
+===Notes:
+no change from 1995 or 2011
+Ottmar has 2 T's. 
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+According to Alban Otter, this Schubert family not directly related.
+Same family as stone #07, 49, 80.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210519473 | G7L2-7X4 |     0 |Otto      | Schubert    |        1885 |        1952 |   ||
+| 210519495 | G7L2-QT4 |     0 |Klara     | Schubert    |        1895 |        1971 |   ||
+| 210519495 | G7L2-QT4 |     0 |Klara     |             |        1895 |        1971 | b ||
+| 210519526 | G3R8-MP4 |     0 |Ottmar    | Schubert    |        1927 |        1995 |   ||
+| 210519600 | G35T-SFB |     0 |Amanda    | Neder       |        1920 |        1990 |   ||
+| 210519600 | G35T-SFB |     0 |Amanda    | Schubert    |        1920 |        1990 | b ||
+
+======================================
+2018-2-4-10
+1995-50
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9020.JPG
+Images 2018\IMG_9021.JPG
+Images 2018\IMG_9022.JPG
+-----------------------------------
+VERONIKA OTTER
+2.2.1884 - 1.10.1935
+GOTTFRIED OTTER
+6.3.1873 - 15.5.1941
+MECHTHILDIS OTTER
+8.10.1908 - 10.2.1969
+JOSEF OTTER
+15.3.1909 - 28.1.1983
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_030.JPG
+K800_Gräber Waldzell_031.JPG
+-----------------------------------
+Veronika Otter
+2.2.1884 - 1.10.1935
+Gottfried Otter
+6.3.1873 - 15.5.1941
+Mechthildis Otter
+8.10.1908 - 10.2.1969
+Josef Otter
+15.3.1909 - 28.1.1983
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 50 (exp 17).jpg
+-----------------------------------
+Veronika Otter
+9.9.1884 - 1.10.1935
+Gottfried Otter
+.3.1873 - 15.5.1941
+Mechthildis Otter
+8.10.1908 - 10.2.1969
+Josef Otter
+15.3.1909 - 28.1.1983
+-----------------------------------
+===Notes:
+2011- Corrections: name: Mechthildis, not Mechtilde
+Added date for Gottfried
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+2011-06-06: Confirmed from a clear photograph taken 2011-06-02 by Herbert Krug, image 030 & 031. Only the "15" in 15.3.1909" was not confirmed because of obscuring vegetation. 
+
+1996-10-25: Partially confirmed from a photo taken in 1995-07 by Richard Otter #1. Obscured by vegetation. Exposure #17.
+2018-07-02 Noticed that Veronika's b date wrong. Corrected in 2011.
+
+
+===Table
+| FaG       | FS       | TMG   | FN          | LN          | b           | d           | T |
+|-----------|----------|-------|-------------|-------------|-------------|-------------|---|
+| 186598012 | LTV3-R8H |  2152 | Veronika    | Otter       | 09 Sep 1884 | 01 Oct 1935 |   ||s_a
+| 186598012 | LTV3-R8H |  2152 | Veronika    | Rüb         | 09 Sep 1884 | 01 Oct 1935 | b ||s_a
+| 190827886 | LTVM-KX4 |  2153 | Gottfried   | Otter       | 06 Mar 1873 | 15 May 1941 |   ||s_a
+| 190827981 | LTV3-R8Z |  2161 | Mechthildis | Otter       | 08 Oct 1908 | 10 Feb 1969 |   ||s_a
+| 190828021 | LTV3-1PF |  2162 | Josef       | Otter       | 15 Mar 1909 | 28 Jan 1983 |   ||s_a
+
+======================================
+2018-2-L-01
+1995-51
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8979.JPG
+Images 2018\IMG_8980.JPG
+Images 2018\IMG_8981.JPG
+-----------------------------------
+BRUNO OTTER
+6·1·1880 - 14·3·1962
+JOSEFA OTTER GEB. WATZ
+26·7·1884 - 9·11·1972
+AUGUST WERTHMANN
+14·5·1906 ✠ 20·10·1944
+MARTHA WERTHMANN
+14·7·1914 - 30·6·2009
+BRUNO WERTHMANN
+11·10·1941 - 3·5·2013
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_023.JPG
+-----------------------------------
+Bruno Otter
+6.1.1880 - 14.3.1962
+Josefa Otter Geb. Watz
+26.7.1884 - 9.11.1972
+August Werthmann
+14.5.1906 (ic) 20.10.1944
+Martha Werthmann
+14.7.1914 - 30.6.2009
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Bruno Otter
+6.1.1880 - 14.3.1962
+Josefa Otter Geb. Watz
+26.7.1884 - 9.11.1972
+-----------------------------------
+
+===Notes:
+new names in 2011
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Martha is daughter of Bruno and Josefa
+August is husband of Martha
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210520965 | LTVM-JMC |  2154 | Bruno    | Otter       | 06 Jan 1880 | 14 Mar 1962 |   ||
+| 210521033 | LTV3-PLT |  2155 | Josefa   | Otter       | 26 Jul 1884 | 09 Nov 1972 |   ||
+| 210521033 | LTV3-PLT |  2155 | Josefa   | Watz        | 26 Jul 1884 | 09 Nov 1972 | b ||
+| 210521101 | LTVM-NST |  2232 | August   | Werthmann   | 14 May 1906 | 20 Oct 1944 |   ||
+| 210521151 | LTVM-J6X |  2231 | Martha   | Werthmann   | 14 Jul 1914 | 30 Jun 2009 |   ||
+| 210521151 | LTVM-J6X |  2231 | Martha   | Otter       | 14 Jul 1914 | 30 Jun 2009 |   ||
+| 210521282 | GMFD-PZ4 |  2233 | Bruno    | Werthamnn   | 11 Oct 1941 | 03 May 2013 |   ||
+
+======================================
+2018-2-L-02
+1995-52
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8982.JPG
+-----------------------------------
+Wendenkampf
+Dieter
+1942 - 2015
+
+Anton u. Emille
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Wendenkampf
+Anton
+1904 - 1979
+-----------------------------------
+
+===Notes:
+new marker In 2018
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+According to Alban Otter, WWII refugee family not originally from Waldzell.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210521959 | G7LL-Q76 |     0 | Anton    | Wendenkampf |        1904 |        1979 |   ||
+| 210521993 | G7LL-46F |     0 | Emille   | Wendenkampf |             |             |   ||
+| 210522039 | G3RF-1C2 |     0 | Dieter   | Wendenkampf |        1942 |        2015 |   ||
+
+======================================
+2018-2-L-03
+Waldzell
+
+===Vacant
+
+======================================
+2018-2-L-04
+Waldzell
+
+===Vacant
+
+======================================
+2018-2-R-01
+1995-55
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8962.JPG
+-----------------------------------
+VON GOTT ZU GOTT
+
+<left side>
+LINUS KOHLHEPP
+* 20.2.1901  ✝ 12.8.1965
+
+WALBURGA KOHLHEPP
+* 21.2.1906  ✝ 13.8.1980
+
+<right side>
+JULIA KOHLHEPP
+* 2.11.1931  ✝ 25.12.2008
+
+HELMUT KOHLHEPP
+* 6.2.1932  ✝ 19.11.2011
+
+<bottom>
+ALOIS, FRANZISKA u. BRUNO MEHLING
+-----------------------------------
+
+===Transcription: 2011
+new name
+Photo:
+K800_Gräber Waldzell_035.JPG
+-----------------------------------
+von Gott zu Gott
+
+Linus Kohlhepp
+20.2.1901 - 12.8.1965
+Walburga Kohlhepp
+21.2.1906 - 13.8.1980
+Julia Kohlhepp
+2.11.1931 - 5.12.2008
+
+Alois, Franziska u. Bruno Mehling
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+von Gott zu Gott
+Linus Kohlhepp
+20.2.1901 - 12.8.1965
+Walburga Kohlhepp
+21.2.1906 - 13.8.1980
+Alois, Franziska u. Bruno Mehling
+-----------------------------------
+
+===Notes:
+all unknown
+TODO  Should be able to figure out how the Mehling family is connected
+new name in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Alois, Bruno, and Franziska are the oldest members of the family.
+Walburga was a geb Mehling, maybe daughter of Alois, and Franziska (Florian has 
+Johann and Franziska as parents.)
+and she married Linus Kohlhepp
+Helmut Kohlhepp prob son of Linus & Walburg.
+Maybe Julia was a daughter of Linus & Walburg or she married Helmut.
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210523041 | G7LL-4KL |     0 | Alois     | Mehling     |             |             |   ||
+| 210523094 | G7LL-NBQ |     0 | Franziska | Mehling     |             |             |   ||
+| 210523094 | G7LL-NBQ |     0 | Franziska |             |             |             | b ||
+| 210523153 | G7LL-7XR |     0 | Bruno     | Mehling     |             |             |   ||
+| 210523201 | GSJV-C6L |  7501 | Linus     | Kohlhepp    | 20 Feb 1901 | 12 Aug 1965 |   ||
+| 210523262 | GSJV-76X |  7502 | Walburga  | Kohlhepp    | 21 Feb 1906 | 13 Aug 1980 |   ||
+| 210523262 | GSJV-76X |  7502 | Walburga  | Mehling     | 21 Feb 1906 | 13 Aug 1980 |   ||
+| 210523287 | G7LL-9KD |     0 | Julia     | Kohlhepp    | 02 Nov 1931 | 25 Dec 2008 |   ||
+| 210523325 | G3PJ-53N |     0 | Helmut    | Kohlhepp    | 06 Feb 1932 | 19 Nov 2011 |   ||
+
+======================================
+2018-2-R-02
+1995-54
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo: none
+-----------------------------------
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Rauch
+Adolf
+15.2.1924 - 8.5.1973
+-----------------------------------
+
+===Notes:
+TODO Stone not present in 2018
+no 2018 photo matched up with this plot
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210523739 | G7LL-28H |     0 | Adolf    | Rauch       | 15 Feb 1924 | 08 May 1973 |   ||s_n fc_n
+
+======================================
+2018-2-R-03
+1995-53
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_8963.JPG
+-----------------------------------
+Hier ruhen in frieden
+
+RICHARD MÖHLER
+* 20.7.1920  ✝ 10.3.1965
+GERTRAUD MÖHLER
+* 27.4.1921  ✝ 11.6.2005
+
+✠ BENNO MÖHLER
+* 20.4.1924  GEF. 16.8.1943
+
+LUISE MÖHLER
+* 12.7.1898  ✝ 17.11.1976
+EDMUND MÖHLER
+* 2.2.1897  ✝ 29.8.1982
+
+WILLHELM u. SOPHIA  MÖHLER
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_034.JPG
+-----------------------------------
+Hier ruhen in frieden
+
+Richard Möhler
+(b) 20.7.1920  (d) 10.3.1965
+Gertraud Möhler
+(b) 27.4.1921  (d) 11.6.2005
+
+(ic) Benno Möhler
+(b) 20.4.1924   Gef. 16.8.1943
+Luise Möhler
+(b) 12.7.1898  (d) 17.11.1976
+Edmund Möhler
+(b) 2.2.1897  (d) 29.8.1982
+
+Wilhelm u. Sophia Möhler
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 53 (exp 18).jpg
+-----------------------------------
+Hier ruhen in frieden
+
+Richard Möhler
+(b) 20.7.1920  (d) 10.3.1965
+
+(ic) Benno Möhler
+(b) 20.4.1924   Gef. 16.8.1943
+Luise Möhler
+(b) 12.7.1898  (d) 17.11.1976
+Edmund Möhler
+(b) 2.2.1897  (d) 29.8.1982
+
+Wilhelm u. Sophia Möhler
+-----------------------------------
+
+===Notes:
+new name in 2011
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+25/Oct/1996-Confirmed from a clear photo taken in July/1995 by Richard Otter #1. Exposure #18.
+WILHELM u. ----------- <obscured by vegetation>
+
+===Interpretation:
+Wilhelm and Sophia are parents of Edmund
+Luise is wife of Edmund
+Luise birth name is also Möhler. -from funeral card.
+Richard	Möhler and Beno are sons of Edmund and Luise
+Gertraud is Richard's wife
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210523863 | LTVC-N6W |   825 | Wilhelm  | Möhler      |             |             |   ||
+| 210523910 | LTV7-QP9 |   826 | Sophia   | Möhler      |             |             |   ||
+| 186594275 | LTVM-X82 |   329 | Edmund   | Möhler      | 02 Feb 1897 | 29 Aug 1982 |   ||s_a
+| 186594274 | LTVM-F5V |   328 | Luise    | Möhler      | 12 Jul 1898 | 17 Nov 1976 |   ||s_a
+| 186594274 | LTVM-F5V |   328 | Luise    | Möhler      | 12 Jul 1898 | 17 Nov 1976 | b ||s_a
+| 186594276 | LTV4-2V9 |  2011 | Benno    | Möhler      | 20 Apr 1924 | 16 Aug 1943 |   ||s_a
+| 186594273 | LTVM-N2S |   327 | Richard  | Möhler      | 20 Jul 1920 | 10 Mar 1965 |   ||s_a
+| 210524012 | LTJF-FTP |  1083 | Gertraud | Möhler      | 27 Apr 1921 | 11 Jun 2005 |   ||
+| 210524012 | LTJF-FTP |  1083 | Gertraud | Rüb         | 27 Apr 1921 | 11 Jun 2005 | b ||
+
+======================================
+2018-2-R-04
+Waldzell
+
+===Vacant
+
+======================================
+2018-3-1-01
+1995-81
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9135.JPG
+-----------------------------------
+Hier ruhen in Frieden
+
+Emilie Weis
+* 19.7.1884
+✝ 22.10.1960
+
+Josef Weis
+* 9.8.1913
+✝ 28.3.1966
+
+Juliana Weis
+* 20.9.1919
+✝ 19.11.1999
+
+Zum Gedenken an
+Karl Weis    u. Sohn Franz
+1875 - 1915      1915 - 1944
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Hier ruhen in Frieden
+Emilie Weis
+(b) 19.7.1884
+(d) 22.10.1960
+
+Josef Weis
+(b) 9.8.1913
+(d) 28.3.1966
+
+Zum Gedenken an
+Karl Weis     u.  Sohn Franz
+1875 - 1915      1915 - 1944
+-----------------------------------
+
+===Notes:
+new name in 2018
+2020-05-30: fixed all names. Weis has one s.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210618501 | G7GL-SVL |     0 | Emilie   | Weis        | 19 Jul 1884 | 22 Oct 1960 |   ||
+| 210618521 | G7G2-YWX |     0 | Josef    | Weis        | 09 Aug 1913 | 28 Mar 1966 |   ||
+| 210618545 | G7GL-HSB |     0 | Juliana  | Weis        | 20 Sep 1919 | 19 Nov 1999 |   ||
+| 210618900 | G7GL-2M3 |     0 | Karl     | Weis        |        1875 |        1915 |   ||
+| 210618940 | G7GL-KX3 |     0 | Franz    | Weis        |        1915 |        1944 |   ||
+
+======================================
+2018-3-1-02
+1995-82
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9136.JPG
+-----------------------------------
+Ühlein
+
+Albert
+* 9.4.1927   ✝ 28.6.2009
+Luzia
+* 24.2.1930  ✝ 28.1.2013
+
+Gregor, Elisabeth u. Emil Möhler
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 82 (exp 28).jpg
+-----------------------------------
+Elisabeth Möhler geb Albert
+(b) 15.3.1892  (d) 10.10.1960
+Gregor Möhler
+(b) 24.2.1884  (d) 26.12.1968
+Emil Möhler
+(b) 5.4.1931  (d) 30.6.1946
+
+Her dein Wille geschehe !
+-----------------------------------
+
+===Notes:
+none known
+new marker with additional names
+names overlap from 1995, so same family
+
+Alban Otter calls them “Schmeid Möhler”, like stone #22, 82.
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+|FaG        | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210619544 | G351-WZ5 |     0 | Albert    | Ühlein      | 09 Apr 1927 | 28 Jun 2009 |   ||
+| 210619567 | G3R8-48S |     0 | Luzia     | Ühlein      | 24 Feb 1930 | 28 Jan 2013 |   ||
+| 210619599 | G7GL-Z1M |     0 | Elisabeth | Möhler      | 15 Mar 1892 | 10 Oct 1960 |   ||
+| 210619599 | G7GL-Z1M |     0 | Elisabeth | Albert      | 15 Mar 1892 | 10 Oct 1960 | b ||
+| 210619640 | G7GL-8JJ |     0 | Gregor    | Möhler      | 24 Feb 1884 | 26 Dec 1968 |   ||
+| 210619675 | G7GL-DJZ |     0 | Emil      | Möhler      | 05 Apr 1931 | 30 Jun 1946 |   ||
+
+======================================
+2018-3-1-03
+1995-83
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9137.JPG
+-----------------------------------
+HIER RUHEN IN GOTTES FRIEDEN
+
+ALFONS MÖHLER
+* 5.7.1935   ✝ 7.7.1959
+FRIDOLIN MÖHLER
+* 6.3.1892   ✝ 19.9.1983
+KOLETTA MÖHLER
+GEB. RÜB
+* 31.12.1911  ✝ 10.4.1989
+
+RUHE SANFT IN KÜHLER GRUFT
+BIS DICH DEIN ERLÖSER RUFT.
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_010.JPG
+-----------------------------------
+Hier ruhen in Gottes Frieden
+
+Alfons Möhler
+(b) 5.7.1935  (d) 7.7.1959
+Fridolin Möhler
+(b) 6.3.1892  (d) 19.9.1983
+Koletta Möhler
+geb. Rüb
+(b) 31.12.1911  (d) 10.4.1989
+
+Ruhe sanft in kühler gruft
+bis dich dein erlöser ruft.
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 83 (exp 29).jpg
+-----------------------------------
+Hier ruhen in Gottes Frieden
+
+Alfons Möhler
+(b) 5.7.1935  (d) 7.7.1959
+Fridolin Möhler
+(b) 6.3.1892  (d) 19.9.1983
+Koletta Möhler
+geb. Rüb
+(b) 31.12.1911  (d) 10.4.1989
+
+Ruhe sanft in kühler gruft
+bis dich dein erlöser ruft.
+-----------------------------------
+
+===Notes:
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 186597978 | LTJF-233 |   274 | Fridolin | Möhler      | 06 Mar 1892 | 19 Sep 1983 |   ||s_a
+| 186597979 | LTJF-XT5 |   273 | Koletta  | Möhler      | 31 Dec 1911 | 10 Apr 1989 |   ||s_a
+| 186597979 | LTJF-XT5 |   273 | Koletta  | Rüb         | 31 Dec 1911 | 10 Apr 1989 | b ||s_a
+| 186597977 | LTV3-PQJ |  2142 | Alfons   | Möhler      | 05 Jul 1935 | 07 Jul 1959 |   ||s_a
+
+======================================
+2018-3-1-04
+1995-84
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9114.JPG
+Images 2018\IMG_9115.JPG
+-----------------------------------
+AUGUST SCHUBERT
+1883 - 1961
+
+GERTRAUD SCHUBERT
+1889 - 1972
+
+JOHANN RIEDMANN
+1906 - 1993
+
+MARGARETA RIEDMANN
+1914 - 2006
+
+OTTO SCHUBERT 1920 ✠ 1942
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_003.JPG
+-----------------------------------
+August Schubert
+1883 - 1961
+Gertraud Schubert
+1889 - 1972
+Johann Riedmann
+1906 - 1993
+Margareta Riedmann
+1914 - 2006
+
+Otto Schubert 1920 (ic) 1942
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 84 (exp 30).jpg
+-----------------------------------
+August Schubert
+1883 - 1961
+Gertraud Schubert
+1889 - 1972
+Johann Riedmann
+1906 - 1993
+
+Otto Schubert 1920 (ic) 1942
+-----------------------------------
+
+===Notes:
+2018: 5 persons
+2011: 5 persons
+1995: 4 persons
+
+new name in 2011
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+August and Gertraud were married
+Otto was their son, dies in WWII
+Maragreta was their daughter, she married Johann 
+
+Gertraud  Schubert    Rüb
+Margareta Riedmann    Schubert
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 186597886 | LTJG-H85 |   286 | August    | Schubert    |        1883 |        1961 |   ||s_a
+| 186597887 | LTJG-QBX |   304 | Gertraud  | Schubert    |        1889 |        1972 |   ||s_a
+| 186597887 | LTJG-QBX |   304 | Gertraud  | Rüb         |        1889 |        1972 | b ||s_a
+| 186597887 | LTVM-XYX |   307 | Johann    | Riedmann    |        1906 |        1993 |   ||s_a
+| 210632037 | LTVM-X8Q |   306 | Margareta | Riedmann    |        1914 |        2006 |   ||
+| 210632037 | LTVM-X8Q |   306 | Margareta | Schubert    |        1914 |        2006 | b ||
+| 210632097 | LTVM-6R5 |   305 | Otto      | Schubert    |        1920 |        1942 |   ||
+
+======================================
+2018-3-1-05
+1995-85
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9116.JPG
+Images 2018\IMG_9117.JPG
+-----------------------------------
+HIER RUHE IN GOTT
+
+MARIA KÜHNEL
+GEB. DITTRICH
+1874 - 1961
+
+EMIL FRIEDRICH
+1898 - 1964
+
+ANNA FRIEDRICH
+GEB. KÜHNEL
+1900 - 1990
+
+GERTRAUD RÜB
+GEB. FRIEDRICH
+1923 - 2003
+
+OTMAR RÜB
+1922 - 2004
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Hier ruhe in Gott
+Maria Kühnel
+Geb. Dütrich (?)
+1874 - 1961
+Emil Friedrich
+1898 - 1964
+Anna Friedrich
+geb. Kühnel
+1900 - 1990
+-----------------------------------
+
+===Notes:
+2018:	5 persons, 3 geb names
+2 new names in 2018; correct name "Dittrich"
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Gertraud and Otmar were married. (Hannelore Otter info)
+based on dates
+Maria was mother of Anna
+Anna married Emil
+Gertraud was daughter of Emil & Anna.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210704539 | L1SF-N21 |  7076 | Maria    | Kühnel      |        1874 |        1961 |   ||
+| 210704539 | L1SF-N21 |  7076 | Maria    | Dittrich    |        1874 |        1961 | b ||
+| 210704636 | L1SF-FVM |   803 | Emil     | Friedrich   |        1898 |        1964 |   ||
+| 210704686 | L1SF-CQX |   804 | Anna     | Friedrich   |        1900 |        1990 |   ||
+| 210704686 | L1SF-CQX |   804 | Anna     | Kühnel      |        1900 |        1990 | b ||
+| 210704736 | L1SF-HJY |   805 | Gertraud | Rüb         |        1923 |        2003 |   ||
+| 210704736 | L1SF-HJY |   805 | Gertraud | Friedrich   |        1923 |        2003 | b ||
+| 210704806 | LTV3-GFT |   373 | Otmar    | Rüb         |        1922 |        2004 |   ||
+
+======================================
+2018-3-1-06
+Waldzell
+
+===Vacant
+
+======================================
+2018-3-2-01
+1995-73
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9143.JPG
+-----------------------------------
+OEHRING
+ROSALIE    1893 - 1963
+ENGELBERT  1895 - 1964
+LONGIN     1925 - 1986
+PAULA      1927 - 2007
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_009.JPG
+-----------------------------------
+OEHRING
+ROSALIE    1893 - 1963
+ENGELBERT  1895 - 1964
+LONGIN     1925 - 1986
+PAULA      1927 - 2007
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 73 (exp 24).jpg
+-----------------------------------
+Oehring
+Rosalie    1895 - 1963
+Engelbert  1895 - 1964
+Longin     1925 - 1986
+-----------------------------------
+
+===Notes:
+2018 no new info from 2011
+2011 new name
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Longin is the son of Engelbert & Rosalie.
+Paula is the daughter of Engelbert & Rosalie.
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 186598196 | LTV3-YJZ |  1646 | Rosalie   | Oehring     |        1893 |        1963 |   ||s_a
+| 186598196 | LTV3-YJZ |  1646 | Rosalie   | Sendelbach  |        1893 |        1963 | b ||s_a
+| 186598197 | LTV3-PLZ |  1413 | Engelbert | Oehring     |        1895 |        1964 |   ||s_a
+| 186598198 | LTV3-YJW |  1957 | Longin    | Oehring     |        1925 |        1986 |   ||s_a
+| 210326301 | LTVQ-1TF |  1958 | Paula     | Oehring     |        1927 |        2007 |   ||
+
+======================================
+2018-3-2-03
+1995-75
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2019
+Photo:
+Images 2018\IMG_9144.JPG
+-----------------------------------
+MARIA FRIEDL
+1887 - 1965
+FRANZISKA RITTER
+1889 - 1967
+ANNA FRIEDL
+1909 - 1982
+WALTER FRIEDL
+1928 - 20?3
+JOHANN FRIEDL
+1913 ✠ 1944
+
+<Wooden Cross>
+Margareta <Rit>ter
+geb. Watz
+18.09.1921 - 14.09.2019
+-----------------------------------
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9144.JPG
+-----------------------------------
+MARIA FRIEDL
+1887 - 1965
+FRANZISKA RITTER
+1889 - 1967
+ANNA FRIEDL
+1909 - 1982
+WALTER FRIEDL
+1928 - 20?3
+JOHANN FRIEDL
+1913 ✠ 1944
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Maria Friedl
+1887 - 1965
+Franziska Ritter
+1889 - 1967
+Anna Friedl
+1909 - 1982
+Johann Friedl
+1913 (ic) 1944
+-----------------------------------
+
+===Notes:
+none known
+new name in 2018
+new wooden cross in 2019
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210699513 | G7P6-S9J |     0 | Maria     | Friedl      |        1887 |        1965 |   ||
+| 210699546 | G7P6-C7W |     0 | Franziska | Ritter      |        1889 |        1967 |   ||
+| 210699617 | G7P6-HSF |     0 | Anna      | Friedl      |        1909 |        1982 |   ||
+| 210699663 | G7P6-WBF |     0 | Johann    | Friedl      |        1913 |        1944 |   ||
+| 210699725 | G7P6-ZH3 |     0 | Walter    | Friedl      |        1928 |        20?3 |   ||
+
+======================================
+2018-3-2-04
+Waldzell
+
+===Vacant
+
+======================================
+2018-3-2-05
+Waldzell
+
+===Vacant
+
+======================================
+2018-3-2-06
+Waldzell
+
+===Vacant
+
+======================================
+2018-3-3-01
+1995-new in 2018
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9142.JPG
+-----------------------------------
+RIEDMANN
+INGE    1939 - 1995
+EWALD   1938 - 2015
+
+EBERLE
+HILDEGARD    1919 - 1988
+RUDOLF       1918 ✠ 1942
+-----------------------------------
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210704208 | G35V-YRN |     0 | Inge      | Riedmann    |        1939 |        1995 |   ||
+| 210704208 | G35V-YRN |     0 | Inge      | Eberle      |        1939 |        1995 | b ||
+| 210704358 | G35J-PK6 |     0 | Ewald     | Riedmann    |        1938 |        2015 |   ||
+| 210704418 | G7PN-JNP |     0 | Hildegard | Eberle      |        1919 |        1988 |   ||
+| 210704454 | G7PJ-N2V |     0 | Rudolf    | Eberle      |        1918 |        1942 |   ||
+
+======================================
+2018-3-3-02
+Waldzell
+
+===Vacant
+
+======================================
+2018-3-3-03
+1995-new in 2018
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9141.JPG
+-----------------------------------
+<wooden cross>
+Anton Möhler
+28.10.1947 - 30.01.2018
+-----------------------------------
+
+===Notes:
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210704932 | L1GN-R5Z |  1064 | Anton    | Möhler      | 28 Oct 1947 | 30 Jan 2018 |   ||
+
+======================================
+2018-3-3-04
+1995-63
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9140.JPG
+-----------------------------------
+hier ruhenn in frieden
+
+Maria Schubert
+geb. Hartung
+* 24.11.1887 - 9.11.1962 ✝
+Konrad Schubert
+* 16.3.1883 - 18.1.1974 ✝
+     ✠
+Zum denken an
+?f?. Emil Schubert
+* 26.6.1919 - 23.7.1943 ✠
+
+Georg Hartung
+* 16.5.1857 - 21.9.1932 ✝
+Katharina Hartung
+geb. Lang
+* 24.1.1858 - 16.7.1916 ✝
+
+Theo Schubert
+* 13.8.1921 - 8.3.1997 ✝
+
+Martha Schubert
+geb. Müller
+* 4.1.1916 - 14.3.2015 ✝
+
+Ich bin die Auferstehung und das Leben!
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Maria Schubert
+geb. Hartung
+(b) 24.11.1887 - 9.11.1962 (d)
+Konrad Schubert
+(b) 16.3.1883 - 18.1.1974 (d)
+(ic)
+Zum denken an
+?? Emil Schubert
+(b) 26.6.1919 - 23.7.1943 (d)
+
+Georg Hartung
+(b) 16.5.1857 - 21.9.1932
+Katharina Hartung
+geb. Lang
+(b) 24.1.1858 - 16.7.1916 (d)
+-----------------------------------
+
+===Notes:
+none known
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Emil died in WWI
+Guess Maria and Konrad were married.
+Guess Georg and Katharina were married and they were parenst of Maria.
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210707815 | G7PJ-VWZ |     0 | Maria     | Schubert    | 24 Nov 1887 | 09 Nov 1962 |   ||
+| 210707815 | G7PJ-VWZ |     0 | Maria     | Hartung     | 24 Nov 1887 | 09 Nov 1962 | b ||
+| 210707866 | G351-22S |     0 | Konrad    | Schubert    | 06 Mar 1883 | 18 Jan 1974 |   ||
+| 210708064 | G727-ZN3 |     0 | Emil      | Schubert    | 26 Jun 1919 | 23 Jul 1943 |   ||
+| 210708130 | G7PJ-P7B |     0 | Georg     | Hartung     | 16 May 1857 | 21 Sep 1932 |   ||
+| 210708179 | G7PJ-3C1 |     0 | Katharina | Hartung     | 24 Jan 1858 | 16 Jul 1916 |   ||
+| 210708179 | G7PJ-3C1 |     0 | Katharina | Lang        | 24 Jan 1858 | 16 Jul 1916 | b ||
+| 210708209 | G3R8-3XC |     0 | Theo      | Schubert    | 13 Mar 1921 | 08 Mar 1997 |   ||
+| 210710772 | G3R8-7M7 |     0 | Martha    | Schubert    | 04 Jan 1916 | 14 Mar 2015 |   ||
+| 210710772 | G3R8-7M7 |     0 | Martha    | Müller      | 04 Jan 1916 | 14 Mar 2015 | b ||
+
+======================================
+2018-3-3-05
+Waldzell
+
+===Vacant
+
+======================================
+2018-3-3-06
+Waldzell
+
+===Vacant
+
+======================================
+2018-3-4-01
+1995-56
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9128.JPG
+-----------------------------------
+Ernst Loschert
+* 18.6.1924  ✝ 2.11.1954
+
+Rudolf Loschert
+* 20.9.1921  ✠ 1.9.1941
+
+Elisabeth Hartung
+geb. Loschert
+* 10.10.1920  ✝ 10.9.1980
+
+Heinrich Loschert
+* 6.3.1879    ✝ 9.4.1944
+
+Maria Loschert 
+geb. Grün
+* 23.11.1891  ✝ 29.10.1975
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Ernst Loschert
+(b) 18.6.1924 (d) 2.11.1954
+Rudolf Loschert
+(b) 20.9.1921  (d) 1.9.1941
+Elisabeth Hartung
+geb. Loschert
+(b) 10.10.1920  (d) 10.9.1980
+Heinrich Loschert
+(b) 6.3.1879  (d) 9.4.1944
+Maria Loschert geb. Grün
+(b) 23.11.1891  (d) 29.10.1975
+-----------------------------------
+
+===Notes:
+no new info in 2018
+
+===Interpretation:
+Heinrich and Maria are probably the parents of
+Ernst, Rudolf and Elisabeth.
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210711906 | G3PP-62Y |     0 | Ernst     | Loschert    | 18 Jun 1924 | 02 Nov 1954 |   ||
+| 210712027 | G35C-LLR |     0 | Rudolf    | Loschert    | 20 Sep 1921 | 01 Sep 1941 |   ||
+| 210712067 | G3PF-9RT |     0 | Elisabeth | Hartung     | 10 Oct 1920 | 10 Sep 1980 |   ||
+| 210712067 | G3PF-9RT |     0 | Elisabeth | Loschert    | 10 Oct 1920 | 10 Sep 1980 | b ||
+| 210712107 | G7PV-KQZ |     0 | Heinrich  | Loschert    | 06 Mar 1879 | 09 Apr 1944 |   ||
+| 210712142 | G7PV-RWM |     0 | Maria     | Loschert    | 23 Nov 1891 | 29 Oct 1975 |   ||
+| 210712142 | G7PV-RWM |     0 | Maria     | Grün        | 23 Nov 1891 | 29 Oct 1975 | b ||
+
+======================================
+2018-3-4-02
+1995-57
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9126.JPG
+Images 2018\IMG_9127.JPG
+-----------------------------------
+Von Guten Mächten Wunderbar Geborgen
+
+Josef Herrmann
+22.7.1929 - 14.10.1957
+
+Olga Herrmann
+14.3.1926 - 13.5.2009
+
+Willhelmine u. Konrad Rüb
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 57 (exp 19).jpg
+-----------------------------------
+hier ruhet in Frieden
+Mein lb. --- u. gutter Vater
+Konrad Rüb
+(b) 22.12.1875 - 5.2.1954 (d)
+Wilhelmine Rüb
+(b) 5.8.1895 - 7.8.1984 (d)
+
+Mein lb. ---
+Josef Herrmann
+(b) 22.7.1929 - 14.11.1957 (d)
+-----------------------------------
+
+===Notes:
+new marker in 2018
+new names, same family.
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Maybe Olga is daughter of Konrad and Wilhelmine 
+and she married Josef Herrmann
+
+
+===Table
+| FaG       | FS       | TMG   | FN         | LN          | b           | d           | T |
+|-----------|----------|-------|------------|-------------|-------------|-------------|---|
+| 210727665 | LTJF-DW6 |   309 | Konrad     | Rüb         | 22 Dec 1875 | 05 Feb 1954 |   ||
+| 210727821 | G7PK-3LV |     0 | Wilhelmine | Rüb         | 05 Aug 1895 | 07 Aug 1984 |   ||
+| 210727821 | G7PK-3LV |     0 | Wilhelmine |             | 05 Aug 1895 | 07 Aug 1984 | b ||
+| 210727937 | G72W-PN8 |  7170 | Josef      | Herrmann    | 22 Jul 1929 | 14 Nov 1957 |   ||
+| 210728018 | LB5V-BH1 |   316 | Olga       | Herrmann    | 14 Mar 1926 | 13 May 2009 |   ||
+| 210728018 | LB5V-BH1 |   316 | Olga       | Rüb         | 14 Mar 1926 | 13 May 2009 | b ||
+===Table
+
+======================================
+2018-3-4-03
+1995-Memorial plaque A
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9125.JPG
+-----------------------------------
+1914 - 1918
+
+EDMUND RÜB
+* 24.5.1892  ✠ 30.8.1914
+RUDOLF RÜB
+* 30.7.1879  ✠ 6.9.1916
+JOSEF WATZ
+* 26.2.1882  ✠ 30.9.1914
+JOSEF RÜB
+* 29.12.1891  ✠ 9.11.1915
+OTTO HEIDENFELDER
+* 10.11.1895  ✠ 30.7.1916
+FERDINAND SCHÜRGER
+* 10.4.1896  ✠ 2.9.1916
+STEFAN ÖHRING
+* 5.2.1879  ✠ 10.11.1916
+RICHARD MEHLING
+* 18.1.1894  ✠ 23.9.1916
+LUDWIG MEHLING
+* 10.1.1897  ✠ 7.6.1917
+ANTON MEHLING
+* 24.11.1896  ✠ 2.9.1917
+VINZENZ RÖDER
+* 21.12.1881  ✠ 27.10.1917
+ALBAN WEHNER
+* 20.1.1899  ✠ 21.8.1918
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+1914 - 1918
+
+Edmund Rüb
+(b) 24.5.1892  (d) 30.8.1914
+Rudolf Rüb
+30.7.1879  (d) 6.9.1916
+Josef Watz
+26.2.1882  (d) 30.9.1914
+Josef Rüb
+29.12.1891  9.11.1915
+Otto Heidenfelder
+10.11.1895  30.7.1916
+Ferdinand Schürger
+10.4.1896  2.9.1916
+Stefan Öhring
+5.2.1879  10.11.1916
+Richard Mehling
+18.1.1894  23.9.1916
+Ludwig Mehling
+10.1.1897  7.6.1917
+Anton Mehling
+24.11.1896  2.9.1917
+Vinzenz Rder
+21.12.1881  27.10.1917
+Alban Wehner
+20.1.1899  21.8.1918
+-----------------------------------
+
+===Notes:
+2020: Vinzenz Roder seems to not have umlaut on o on plaque, but not sure.
+2019: Plaque A partial photo exixts
+2018- Stone was wet and very difficult to read.
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN           | b           | d           | T |
+|-----------|----------|-------|-----------|--------------|-------------|-------------|---|
+|    0      | LTVW-T8D |  2348 | Edmund    | Rüb          | 24 May 1892 | 30 Aug 1914 |   ||d
+|    0      | LTKN-CK3 |  2349 | Rudolf    | Rüb          | 30 Jul 1879 | 06 Sep 1916 |   ||d
+|    0      | G72W-9QF |     0 | Josef     | Watz         | 26 Feb 1882 | 30 Sep 1914 |   ||
+|    0      | LTVM-X1Q |   330 | Josef     | Rüb          | 29 Dec 1891 | 09 Nov 1915 |   ||
+|    0      | G72W-3XF |     0 | Otto      | Heidenfelder | 10 Nov 1895 | 30 Jul 1916 |   ||
+|    0      | LTJG-8MM |   651 | Ferdinand | Schürger     | 10 Apr 1896 | 02 Sep 1916 |   ||
+|    0      | LTVM-XCT |  1654 | Stefan    | Öhring       | 05 Feb 1879 | 10 Nov 1916 |   ||d
+|    0      | LTVQ-MY3 |  2214 | Richard   | Mehling      | 18 Jan 1894 | 23 Sep 1916 |   ||
+|    0      | G72W-HTG |     0 | Ludwig    | Mehling      | 10 Jan 1897 | 07 Jun 1917 |   ||
+|    0      | G727-GSL |     0 | Anton     | Mehling      | 24 Nov 1896 | 02 Sep 1917 |   ||
+|    0      | G35Y-SPJ |     0 | Vinzenz   | Röder        | 21 Dec 1881 | 27 Oct 1917 |   ||
+|    0      | G72W-S66 |     0 | Alban     | Wehner       | 20 Jan 1899 | 21 Aug 1918 |   ||
+
+======================================
+2018-3-4-04
+1995-Memorial plaque B
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2019
+Photo:
+Images 2019\IMG_20190928_103006149.jpg
+-----------------------------------
+1939 - 1945
+
+RUDOLF LOSCHERT
+* 20.9.1921  ✠ 1.9.1941
+RICHARD HARTMANN
+* 25.1.1919  ✠ 20.10.1941
+LUDWIG JOHA
+* 20.3.1921  ✠ 21.12.1941
+ALBIN OTTER
+* 13.3.1909  ✠ 12.1.1942
+ALBAN RÜB
+* 6.2.1921   ✠ 22.6.1942
+OTTO SCHUBERT
+* 14.3.1920  ✠ 6.7.1942
+EMIL SCHUBERT
+* 26.6.1919  ✠ 23.7.1943
+BENNO MÖHLER
+* 20.4.1923  ✠ 16.8 1943
+FERDINAND OTTER
+* 13.4.1915  ✠ 1.11.1943
+FRANZ OTTER
+* 2.6.1923   ✠ 26.3.1944
+BERNHARD GEHRLING
+* 26.5.1912  ✠ 14.4.1944
+OSKAR RAUCH
+* 10.3.1926  ✠ 17.12.1944
+-----------------------------------
+
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9121.JPG
+-----------------------------------
+1939 - 1945
+
+RUDOLF LOSCHERT
+* 20.9.1921  ✠ 1.9.1941
+RICHARD HARTMANN
+* 25.1.1919  ✠ 20.10.1941
+LUDWIG JOHA
+* 20.5.1921  ✠ 21.12.1941
+ALBIN OTTER
+* 13.3.1909  ✠ 12.1.1942
+ALBAN RÜB
+* 6.2.1921   ✠ 22.6.1942
+OTTO SCHUBERT
+* 14.3.1920  ✠ 6.7.1942
+EMIL SCHUBERT
+* 26.6.1919  ✠ 23.7.1943
+BENNO MÖHLER
+* 20.4.1923  ✠ 16.8 1943
+FERDINAND OTTER
+* 13.4.1915  ✠ 1.11.1943
+FRANZ OTTER
+* 2.6.1923   ✠ 26.3.1944
+BERNHARD GEHRLING
+* 26.5.1912  ✠ 14.4.1944
+OSKAR RAUCH
+* 10.3.1926  ✠ 17.12.1944
+-----------------------------------
+
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+1939 - 1945
+
+Rudolf Loschert
+20.9.1921 - 1.9.1941
+Richard Hartmann
+25.1.1919 - 20.10.1941
+Ludwig Joha
+20.3.1921 - 21.12.1941
+Albin Otter
+6.2.1921 - 22.6.1942
+Alban Rüb
+6.2.1921 - 22.6.1942
+Otto Schubert
+14.3.1920 - 6.7.1942
+Emil Schubert
+26.6.1919 - 23.7.1943
+Benno Möhler
+20.4.1923 - 16.8.1943
+Ferdinand Otter
+13.4.1915 - 1.11.1943
+Franz Otter
+2.6.1923 - 26.3.1944
+Bernhard Gehrling
+26.5.1912 - 14.4.1944
+Oskar Rauch
+10.3.1926 - 17.12.1944
+-----------------------------------
+
+===Notes:
+2020-06: fixed b date for Joha
+2019 photo was very clear
+2018- Stone was wet when photographed in 2018 making parts very difficult to read. 
+The font used on the stone makes it worse.
+Albin Otter: 0 in 1909 uncertain in photo but confirmed from another stone at 2018-1-L-5.
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+|     0     | G35C-LLR |     0 | Rudolf    | Loschert    | 20 Sep 1921 | 01 Sep 1941 |   ||d
+|     0     | LTVH-HB6 |  2167 | Richard   | Hartmann    | 25 Jan 1919 | 20 Oct 1941 |   ||d
+|     0     | LTV7-QPF |  2173 | Ludwig    | Joha        | 20 Mar 1921 | 21 Dec 1941 |   ||
+|     0     | LTVM-NXG |  2147 | Albin     | Otter       | 13 Mar 1909 | 12 Jan 1942 |   ||d
+|     0     | LTV3-L1Q |   374 | Alban     | Rüb         | 06 Feb 1921 | 22 Jun 1942 |   ||d
+|     0     | LTVM-6R5 |   305 | Otto      | Schubert    | 14 Mar 1920 | 06 Jul 1942 |   ||d
+|     0     | G727-ZN3 |     0 | Emil      | Schubert    | 26 Jun 1919 | 23 Jul 1943 |   ||d
+|     0     | LTV4-2V9 |  2011 | Benno     | Möhler      | 20 Apr 1923 | 16 Aug 1943 |   ||d
+|     0     | LTVM-VMT |  2148 | Ferdinand | Otter       | 13 Apr 1915 | 01 Nov 1943 |   ||d
+|     0     | LTV3-2BJ |  2163 | Franz     | Otter       | 02 Jun 1923 | 26 Mar 1944 |   ||d
+|     0     | G727-59H |     0 | Bernhard  | Gehrling    | 26 May 1912 | 14 Apr 1944 |   ||d
+|     0     | G727-DLB |     0 | Oskar     | Rauch       | 10 Mar 1926 | 17 Dec 1944 |   ||d
+
+======================================
+2018-3-4-05
+1995-Memorial plaque C
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2019
+Photo:
+Images 2019\IMG_20190928_103000530.jpg
+-----------------------------------
+1939 - 1945
+
+AUGUST RÖDER
+* 4.1.1915  ✠ 17.3.1945
+ALFONS RÜB
+* 10.4.1902  ✠ 25.3.1945
+LUDWIG JOHA
+* 13.1.1907  ✠ 25.4.1945
+RICHARD SCHÜRGER
+* 24.3.1923   ✠ 3.5.1945
+GEORG HÖFFLING
+* 13.2.1910  ✠ APRIL 1945
+-----------------------------------
+
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9122.JPG
+-----------------------------------
+1939 - 1945
+
+AUGUST RÖDER
+* 4.1.1915  ✠ 17.3.1945
+ALFONS RÜB
+* 10.4.1902  ✠ 25.3.1945
+LUDWIG JOHA
+* 13.1.1907  ✠ 25.4.1945
+RICHARD SCHÜRGER
+* 24.3.1923   ✠ 3.5.1945
+GEORG HOFFLING
+* 13.2.1910  ✠ APRIL 1945
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+1939 - 1945
+
+August Roder
+4.1.1915  17.3.1945
+Alfons Rüb
+10.4.1902  25.3.1945
+Ludwig Joha
+13.1.1907  25.4.1945
+Richard Schürger
+24.3.1923   3.5.1945
+Georg Höfling
+13.2.1910  April 1945
+-----------------------------------
+
+===Notes:
+2020: Very clear photo. Changed Roder to Röder in 2018 transcription to match other Röders in the Friedhof and the BillionGraves records of his actual grave in Belgium (?).
+2020: Added umlut to HÖFFLING.
+2018- Corrected Georg b date (was 13.2.1940)
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+|    0      | G727-D38 |     0 | August   | Röder       | 04 Jan 1915 | 17 Mar 1945 |   ||
+|    0      | LTVM-FC9 |  1066 | Alfons   | Rüb         | 10 Apr 1902 | 25 Mar 1945 |   ||d
+|    0      | LTJG-HZ1 |   241 | Ludwig   | Joha        | 13 Jan 1907 | 25 Apr 1945 |   ||d
+|    0      | LTVW-16G |  1088 | Richard  | Schürger    | 24 Mar 1923 | 03 May 1945 |   ||d
+|    0      | LTVC-JM3 |  2237 | Georg    | Höfling     | 13 Feb 1910 | 00 Apr 1945 |   ||d
+
+======================================
+2018-3-4-06
+1995-Memorial plaque D
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2019
+Photo:
+Images 2019\IMG_20190928_102948238.jpg
+-----------------------------------
+1939 - 1945
+
+ALOIS LANGHANS
+* 2.11.1909  ✠ 19.7.1941
+STEFAN HINK
+9.9.1909  ✠ 29.3.1942
+RUDOLF EBERLE
+* 14.2.1918  ✠ 19.12.1942
+JOSEF MÜLLER
+* 12.2.1909  ✠ 18.3.1943
+EMIL URBAN
+* 15.11.1919   ✠ 6.4.1943
+JOSEF FABINGER
+* 27.1.1922  ✠ 17.3.1944
+KARL GLASER
+* 9.11.1920  ✠ 30.7.1941
+RUDI LACHNER
+* 17.3.1927  ✠ 1.4.1945
+HEINRICH PREXLER
+* 2.7.1909  ✠ 31.1.1945
+
+DIE GEMEINDE WALDZELL
+DEN GEFALLENEN KAMERADEN
+DER HEIMATVERTRIEBENEN
+-----------------------------------
+
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9123.JPG
+-----------------------------------
+1939 - 1945
+
+ALOIS LANGHANS
+* 2.11.1909  ✠ 19.7.1941
+STEFAN HINK
+9.9.1909  ✠ 29.3.1942
+RUDOLF EBERLE
+* 14.2.1918  ✠ 10.12.1942
+JOSEF MÜLLER
+* 12.2.1909  ✠ 18.3.1943
+EMIL URBAN
+* 15.11.1919   ✠ 6.4.1943
+JOSEF FABINGER
+* 27.1.1922  ✠ 17.3.1944
+KARL GLASER
+* 9.11.1920  ✠ 30.7.1941
+RUDI LACHNER
+* 17.3.1927  ✠ 1.4.1945
+HEINRICH PREXLER
+* 2.7.1909  ✠ 31.1.1945
+
+DIE GEMEINDE WALDZELL
+DEN GEFALLENEN KAMERADEN
+DER HEIMATVERTRIEBENEN
+-----------------------------------
+
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+1939 - 1945
+
+Alois Langhans
+2.11.1909  19.7.1941
+Stefan Hink
+9.9.1909  29.3.1942
+Josef Müller
+12.2.1909  18.3.1943
+Josef Fabinger
+27.1.1922  17.3.1944
+Karl Glaser
+9.11.1920  30.7.1941
+Rudi Lachner
+17.3.1927  1.4.1945
+Heinrich Prexler
+2.7.1909  31.1.1945
+
+Die Gemeinde Waldzell
+den gefallenen kameraden
+der Heimatvertriebenen
+-----------------------------------
+
+===Notes:
+2030-06: fixed death date for Eberle.
+1995 & 2011 transcription used U&L case.
+Used case as used on marker in 2018 & after.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+|    0      | G727-CZM |     0 | Alois    | Langhans    | 02 Nov 1909 | 19 Jul 1941 |   ||s_n
+|    0      | G727-JX4 |     0 | Stefan   | Hink        | 09 Sep 1909 | 29 Mar 1942 |   ||s_n
+|    0      | G7PJ-N2V |     0 | Rudolf   | Eberle      | 14 Feb 1918 | 19 Dec 1942 |   ||s_n d
+|    0      | G727-G5C |     0 | Josef    | Müller      | 12 Feb 1909 | 18 Mar 1943 |   ||s_n
+|    0      | G75N-ZVM |     0 | Emil     | Urban       | 15 Nov 1919 | 06 Apr 1943 |   ||s_n
+|    0      | G727-LLF |     0 | Josef    | Fabinger    | 27 Jan 1922 | 17 Mar 1944 |   ||s_n
+|    0      | G727-ZDN |     0 | Karl     | Glaser      | 09 Nov 1920 | 30 Jul 1941 |   ||s_n
+|    0      | G727-Q16 |     0 | Rudi     | Lachner     | 17 Mar 1927 | 01 Apr 1945 |   ||s_n
+|    0      | G727-GHJ |     0 | Heinrich | Prexler     | 02 Jul 1909 | 31 Jan 1945 |   ||s_n d
+
+======================================
+2018-3-4-07
+1995-Memorial plaque E
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2019
+Photo:
+Images 2019\IMG_20190928_102941220.jpg
+-----------------------------------
+1939-1945
+VERMISSTE
+
+JOSEF RÜB
+* 9.12.1917  ✝ 1943
+JOHANN FRIEDEL
+* 29.1.1913  ✝ 1944
+ROBERT GEHRLING
+* 4.10.1912  ✝ 1944
+JOSEF HARTMANN
+* 1.2.1916  ✝ 1944
+EUGEN KRAFT
+* 9.1.1917  ✝ 1944
+VALENTIN RIEDMANN
+* 25.3.1908  ✝ 1944
+AUGUST WERTHMANN
+* 14.5.1906  ✝ 1944
+OTTO HERMANN
+* 1.1.1925  ✝ 1945
+ERNST SIEGEL
+* 16.7.1922  ✝ 1945
+JOSEF SCHUBERT
+* 30.1.1922  ✝ 1945
+-----------------------------------
+
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9124.JPG
+-----------------------------------
+1939-1945
+VERMISSTE
+
+JOSEF RÜB
+* 9.12.1917  ✠ 1943
+JOHAN FRIEDEL
+* 29.1.1913  ✠ 1944
+ROBERT GEHRLING
+* 4.10.1912  ✠ 1944
+JOSEF HARTMANN
+* 1.2.1916  ✠ 1944
+EUGEN KRAFT
+* 9.1.1917  ✠ 1944
+VALENTIN RIEDMANN
+* 25.3.1908  ✠ 1944
+AUGUST WERTHMANN
+* 14.5.1906  ✠ 1944
+OTTO HERMANN
+* 1.1.1925  ✠ 1945
+ERNST SIEGEL
+* 16.7.1922  ✠ 1945
+JOSEF SCHUBERT
+* 30.1.1922  ✠ 1945
+-----------------------------------
+
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+1939-1945
+Vermisste
+
+Josef Rüb
+9.12.1917 - 1943
+Johann Friedel
+29.1.1913 - 1944
+Robert Gehrling
+4.10.1912 - 1944
+Josef Hartmann
+1.2.1916 - 1944
+Eugen Kraft
+9.1.1917 - 1944
+Valentin Riedmann
+25.3.1908 - 1944
+August Werthmann
+14.5.1906 - 1944
+Otto Hermann
+1.1.1925 - 1945
+Ernst Siegel
+16.7.1922 - 1945
+Josef Schubert
+30.1.1922 - 1945
+-----------------------------------
+
+===Notes:
+2020: Fix spelling of Johann.
+2020: Josef Schubert birth date, month is obscured in 2019 photo.
+2018: Vegetation obscures most text below August Werthmann in photo, and also some of above.
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+|     0     | G727-2J5 |     0 | Josef    | Rüb         | 09 Dec 1917 |        1943 |   ||s_n
+|     0     | G727-817 |     0 | Johann   | Friedel     | 29 Jan 1913 |        1944 |   ||s_n
+|     0     | G727-34N |     0 | Robert   | Gehrling    | 04 Oct 1912 |        1944 |   ||s_n d
+|     0     | LTV7-W1X |  2168 | Josef    | Hartmann    | 01 Feb 1916 |        1944 |   ||s_n d
+|     0     | LTVH-8LN |  4752 | Eugen    | Kraft       | 09 Jan 1917 |        1944 |   ||s_n d
+|     0     | LTVM-FZK |   325 | Valentin | Riedmann    | 25 Mar 1908 |        1944 |   ||s_n d
+|     0     | LTVM-NST |  2232 | August   | Werthmann   | 14 May 1906 |        1944 |   ||s_n d
+|     0     | LTVM-6HL |   386 | Otto     | Hermann     | 01 Jan 1925 |        1945 |   ||s_n d
+|     0     | G727-LQK |     0 | Ernst    | Siegel      | 16 Jul 1922 |        1945 |   ||s_n
+|     0     | L1MP-HBJ |   341 | Josef    | Schubert    | 30 Jan 1922 |        1945 |   ||s_n d
+
+======================================
+2019-3-5-01
+2018-3-2-05
+1995-new in 2018
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9139.JPG
+-----------------------------------
+Hildegard
+Hellwig
+* 21.4.1924
+✝ 6.4.2008
+-----------------------------------
+
+===Notes:
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210700052 | G35S-1S4 |     0 | Hildegard | Hellwig     | 21 Apr 1924 | 06 Apr 2008 |   ||
+| 210700052 | G35S-1S4 |     0 | Hildegard | Joa         | 21 Apr 1924 | 06 Apr 2008 | b ||
+
+======================================
+2019-3-5-02
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2021
+Photo: none yet
+-----------------------------------
+<currently vacant>
+<future site Otter- Alban & Rosa>
+-----------------------------------
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+
+======================================
+2019-3-5-03
+2018-3-2-04
+1995-new in 2018
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2019
+Photo:
+Images 2019\IMG_20191001_141720936_HDR
+-----------------------------------
+Helmut Staab
+* 18.6.1944
+✝ 15.9.2017
+-----------------------------------
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9138.JPG
+-----------------------------------
+<wooden cross>
+Helmut Staab
+18.06.1944 - 15.09.2017
+-----------------------------------
+
+===Notes:
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210699462 | G7PN-6DF |     0 | Helmut   | Staab       | 18 Jun 1944 | 15 Sep 2017 |   ||
+
+======================================
+2018-3-L-01
+1995-77
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9134.JPG
+-----------------------------------
+Mehling
+Engelbert  * 1·12·1891
+           ✝ 1· 9·1972
+Rosa       * 23·4·1910
+           ✝ 11·12·1993
+Richard    * 23·1·1934
+           ✝  7·3·1990
+Maria      * 24·4·1937
+           ✝ 16·1·2014
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_011.JPG
+-----------------------------------
+Mehling
+Engelbert  (b) 1-12-1891
+           (d) 1-9-1972
+Rosa       (b) 23-4-1910
+           (d) 11-12-1993
+Richard    (b) 23.1.1934
+           (d) 7.3.1990
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 77 (exp 25).jpg
+-----------------------------------
+Mehling
+Engelbert  (b) 1-12-1891
+           (d) 1-9-1972
+Rosa       (b) 23-4-1910
+           (d) 11-12-1993
+Richard    (b) 23-1-1934
+           (d) 7-3-1990
+-----------------------------------
+
+===Notes:
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Engelbert and Rosa were married
+Richard was their son
+Guess that Maria was Richard's wife? age is right.
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 186593838 | LTJG-L2B |   382 | Engelbert | Mehling     | 01 Dec 1891 | 01 Sep 1972 |   ||s_a
+| 186593839 | LTVM-N11 |  2150 | Rosa      | Mehling     | 23 Apr 1910 | 11 Dec 1993 |   ||s_a
+| 186593839 | LTVM-N11 |  2150 | Rosa      | Otter       | 23 Apr 1910 | 11 Dec 1993 | b ||s_a
+| 186593840 | LTVM-V93 |  2215 | Richard   | Mehling     | 23 Jan 1934 | 07 Mar 1990 |   ||s_a
+| 210361890 | L1S8-BWX |  7075 | Maria     | Mehling     | 24 Apr 1937 | 16 Jan 2014 |   ||
+| 210361890 | L1S8-BWX |  7075 | Maria     | Weber       | 24 Apr 1937 | 16 Jan 2014 | b ||
+
+======================================
+2018-3-L-02
+1995-72
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9133.JPG
+-----------------------------------
+KLARA MÖHLER
+GEB. LOSCHERT
+* 26.10.1907   ✝ 31.5.1968
+
+FRANZ JOS. MÖHLER
+* 8.10.1891   ✝ 14.11.1952
+-----------------------------------
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_012.JPG
+-----------------------------------
+Klara Möhler
+geb. Loschert
+(b) 26.10.1907  (d) 31.5.1968
+
+Franz Jos. Möhler
+(b) 8.10.1891  (d) 14.11.1952
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 72 (exp 23).jpg
+-----------------------------------
+Klara Möhler
+geb. Loschert
+(b) 26.10.1907  (d) 31.5.1968
+
+Franz Jos. Möhler
+(b) 8.10.1891  (d) 14.11.1952
+-----------------------------------
+
+===Notes:
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Table
+| FaG       | FS       | TMG   | FN          | LN          | b           | d           | T |
+|-----------|----------|-------|-------------|-------------|-------------|-------------|---|
+| 186597214 | LTVM-NCX |  1078 | Klara       | Möhler      | 26 Oct 1907 | 31 May 1968 |   ||s_a
+| 186597214 | LTVM-NCX |  1078 | Klara       | Loschert    | 26 Oct 1907 | 31 May 1968 | b ||s_a
+| 186597215 | LTVW-Y5N |  1053 | Franz Josef | Möhler      | 08 Oct 1891 | 14 Nov 1952 |   ||s_a
+
+======================================
+2018-3-L-03
+Waldzell
+
+===Vacant
+
+======================================
+2018-3-L-04
+1995-58
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9131.JPG
+-----------------------------------
+JOHA
+EUGENE   *31.7.1916   ✝23.5.2002
+JOSEF    *18.6.1922   ✝5.7.2009
+
+ALOIS, KATHARINA u. LUDWIG
+-----------------------------------
+
+===Transcription: 1995
+no dates on stone
+Photo: none
+-----------------------------------
+Joha
+Alois, Katarina u. Ludwig
+-----------------------------------
+
+===Notes:
+2018- Probably a new stone. Not sure.
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Ludwig and Josef are sons of Alois & Katharina
+Eugene is the wife of Josef
+Ludwig died in WWII
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210733656 | LTJL-YW6 |   238 | Alois     | Joha        |             |             |   ||
+| 210733734 | LTJG-MNM |   239 | Katharina | Joha        |             |             |   ||
+| 210733734 | LTJG-MNM |   239 | Katharina | Wolf        |             |             | b ||
+| 210733788 | LTJG-HZ1 |   241 | Luwig     | Joha        |             |             |   ||
+| 210734732 | L1SC-9Y5 |   237 | Eugene    | Joha        | 31 Jul 1916 | 23 May 2002 |   ||
+| 210734732 | L1SC-9Y5 |   237 | Eugene    | Stenger     | 31 Jul 1916 | 23 May 2002 | b ||
+| 210734804 | L1SH-G3D |   244 | Josef     | Joha        | 18 Jun 1922 | 05 Jul 2009 |   ||
+
+======================================
+2018-3-L-05
+1995-59
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9130.JPG
+-----------------------------------
+Michael Otter
+* 19.11.1923   ✝ 14.10.1989
+
+Anna Otter
+* 5.6.1924    ✝ 23.3.2012
+
+Horst Otter  1955 - 1975
+-----------------------------------
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 59 (exp 20).jpg
+-----------------------------------
+Georg Höpfl
+1891 - 1949
+Anna Höpfl
+1884 - 1965
+Michael Otter
+1923 - 1989
+unser lb. sohn
+Horst Otter  1955 - 1975
+-----------------------------------
+
+===Notes:
+2018- new marker
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Anna is the daughter of Georg & Anna
+Michael is the husband of Anna
+Horst is the son of Michael and Anna
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 186598285 | LTKN-G2M |  4499 | Georg    | Höpfl       |        1891 |        1949 |   ||s_a
+| 210736086 | LTKN-G2V |  4500 | Anna     | Höpfl       |        1884 |        1965 |   ||
+| 210736086 | LTKN-G2V |  4500 | Anna     |             |        1884 |        1965 | b ||
+| 186598286 | LTVM-JM4 |  2157 | Michael  | Otter       | 19 Nov 1923 | 14 Oct 1989 |   ||s_a
+| 210736118 | L1SC-F88 |  2158 | Anna     | Otter       | 05 Jun 1924 | 23 Mar 2012 |   ||
+| 210736118 | L1SC-F88 |  2158 | Anna     | Höpfl       | 05 Jun 1924 | 23 Mar 2012 | b ||
+| 186598287 | LTV4-LL4 |  2164 | Horst    | Otter       |        1955 |        1975 |   ||s_a
+
+======================================
+2018-3-L-06
+1995-60
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018-#2
+Photo:
+Images 2018\Kogler-Otter.jpg
+-----------------------------------
+KOGLER
+JOHANN  * 30.6.1904
+        ✝ 23.8.1988
+
+SOPHIE  * 22.6.1915
+        ✝ 15.10.2004
+
+OTTER
+WALTER   * 17.9.1931
+         ✝ 29.01.2018
+-----------------------------------
+
+===Transcription: 2018-#1
+Photo:
+Images 2018\IMG_9129.JPG
+-----------------------------------
+<wooden cross>
+WALTER OTTER
+* 17.9.1931   ✝ 29.01.2018
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Kogler
+Johann  (b) 30.6.1904
+        (d) 23.8.1988
+-----------------------------------
+
+===Notes:
+Second 2018 photo "Images 2018\Kogler-Otter.jpg" was sent to RO by Doris Weyer on 2018-10-27. The transcription was done same day. Also has new name- Sophie.
+First 2018 photo "IMG_9129.JPG" had the stone removed and only showed wooden cross.
+Dates partially obscured in photo.
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210736251 | LTVM-X43 |   215 | Johann   | Kogler      | 30 Jun 1904 | 23 Aug 1988 |   ||
+| 210736269 | LTJF-ND9 |   216 | Sophie   | Kogler      | 22 Jun 1915 | 15 Oct 2004 |   ||
+| 210736269 | LTJF-ND9 |   216 | Sophie   | Schubert    | 22 Jun 1915 | 15 Oct 2004 | b ||
+| 210736235 | LTVD-N5H |    19 | Walter   | Otter       | 17 Sep 1931 | 29 Jan 2018 |   ||
+
+======================================
+2018-3-L-07
+Waldzell
+
+===Vacant
+
+======================================
+2018-3-L-08
+Waldzell
+
+===Vacant
+
+======================================
+2019-3-R-01
+2018-3-R-03		wrong
+1995-80
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9118.JPG
+-----------------------------------
+DÖRR
+
+JOSEF      1912 - 2003
+RITA       1914 - 2006
+EDGAR      1947 - 2005
+WERNER     1956 - 2016
+-----------------------------------
+
+===Motes:
+
+===Interpretation:
+Josef and Rita were married, They had Brigitte & Renate.
+TODO: Edgar and Werner are unknown.
+Seem to be too old to be offspring of Josef & Rita. Rita was 42 when Werner born?
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210774869 | GM3K-BF9 |   246 | Josef    | Dörr        |        1912 |        2003 |   ||
+| 210775390 | GM3K-PG5 |   235 | Rita     | Dörr        |        1914 |        2006 |   ||
+| 210775390 | GM3K-PG5 |   235 | Rita     | Stenger     |        1914 |        2006 | b ||
+| 210775518 | G3PR-7D3 |     0 | Edgar    | Dörr        |        1947 |        2005 |   ||
+| 210774869 | G3PF-HB8 |     0 | Werner   | Dörr        |        1956 |        2016 |   ||
+
+======================================
+2018-3-R-02
+1995-79
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9119.JPG
+-----------------------------------
+Heidenfelder
+
+Josef    1911 - 1980
+Eufreda  1912 - 1997
+
+Alfons   1903 - 1955
+-----------------------------------
+
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_002.JPG
+-----------------------------------
+GOTT ALEIN WEISS WARUM
+
+Josef Heidenfelder
+(b) 15.12.1911
+(d) 28.11.1980
+Alfons Heidenfelder
+(b) 2.6.1903
+(d) 4.5.1955
+Eufreda Heidenfelder
+(b)  2.6.1912
+(d)  17.9.1997
+-----------------------------------
+
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 79 (exp 26).jpg
+-----------------------------------
+GOTT ALEIN WEISS WARUM
+
+Josef Heidenfelder
+(b) 15.12.1911
+(d) 28.11.1980
+Alfons Heidenfelder
+(b) 2.6.1903
+(d) 4.5.1955
+-----------------------------------
+
+===Notes:
+2018 new marker, detailed dates removed, secular
+no other info on new marker
+(this plot is next to Otto Heidenfelder)
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Josef and Eufreda were married.
+Alfons was Josef's brother
+Josef's son was Otto Heidenfelder- GMWH-GML, above
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN           | b           | d           | T |
+|-----------|----------|-------|----------|--------------|-------------|-------------|---|
+| 186597905 | LTJF-N1B |   279 | Josef    | Heidenfelder | 15 Dec 1911 | 28 Nov 1980 |   ||
+| 210771662 | LTJF-D7K |   319 | Eufreda  | Heidenfelder | 02 Jun 1912 | 17 Sep 1997 |   ||
+| 210771662 | LTJF-D7K |   319 | Eufreda  | Rüb          | 02 Jun 1912 | 17 Sep 1997 | b ||
+| 186597906 | LTVM-NHW |   951 | Alfons   | Heidenfelder | 02 Jun 1903 | 04 May 1955 |   ||
+
+======================================
+2019-R-R-03
+2018-3-R-01  wrong	TODO
+1995-78
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2018
+Photo:
+Images 2018\IMG_9120.JPG
+-----------------------------------
+Heidenfelder
+
+Otto    * 15.8.1952   ✝ 25.10.2006
+
+1908  Albin  1990
+1920  Hedwig  2001
+-----------------------------------
+
+===Notes:
+
+===Interpretation:
+unknown relationships
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN           | b           | d           | T |
+|-----------|----------|-------|----------|--------------|-------------|-------------|---|
+| 210771058 | G7P5-SS1 |     0 | Albin    | Heidenfelder |        1908 |        1990 |   ||
+| 210771091 | G7P5-7H8 |     0 | Hedwig   | Heidenfelder |        1920 |        2001 |   ||
+| 210771120 | GMWH-GML |  7098 | Otto     | Heidenfelder | 15 Aug 1952 | 25 Oct 2006 |   ||
+
+======================================
+1995-61
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Theresia Siegl
+1891 - 1972
+Hildegard Eberle
+1919 - 1988
+
+Zum gedenken
+
+Josef Siegl u. sohn Ernst
+Rudolf Eberle
+-----------------------------------
+
+===Notes:
+TODO
+No 2018 photo matched to this plot
+This stone not preset in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Hildegard is listed on another grave as well, same FSFT:G7PN-JNP
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210776923 | G7PR-WWW | 2172 ?| Theresia  | Siegl       |        1891 |        1972 |   ||s_n fc_n
+| 210704418 | G7PN-JNP |     0 | Hildegard | Eberle      |        1919 |        1988 |   ||s_n fc_n
+| 210776985 | G7P5-G39 |     0 | Josef     | Siegl       |             |             |   ||s_n fc_n
+| 210777004 | G7PR-M5F |     0 | Ernst     | Siegl       |             |             |   ||s_n fc_n
+|     0     | G7RN-JT5 |     0 | Rudolf    | Eberle      |             |             |   ||s_n fc_n
+
+======================================
+1995-62
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 62 (exp 21).jpg
+-----------------------------------
+Bernhard Schubert
+24.2.1876- 15.2.1968
+Monika Schubert
+geb. Mergler
+4.10.1882 - 6.6.1965
+Erwin Münch
+22.6.1917 - 3.5.1993
+
+Unvergessen !
+-----------------------------------
+
+===Notes:
+TODO
+No 2018 photo matched to this plot
+This stone not preset in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Assume Bernhard and Monika were married.
+Erwin is unknown. Could be a daughter's husband.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210778661 | G7PR-37Y |     0 | Bernhard | Schubert    | 24 Feb 1876 | 15 Feb 1968 |   ||
+| 210778764 | G7PR-HVT |     0 | Monika   | Schubert    | 04 Oct 1882 | 06 Jun 1965 |   ||
+| 210778764 | G7PR-HVT |     0 | Monika   | Mergler     | 04 Oct 1882 | 06 Jun 1965 | b ||
+| 210778906 | G355-143 |     0 | Erwin    | Münch       | 22 Jun 1917 | 03 May 1993 |   ||
+
+======================================
+1995-64
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Anna Gläser
+1895 - 1971
+Karl Gläser
+1920 (ic) 1941
+-----------------------------------
+
+===Notes:
+TODO
+No 2018 photo matched to this plot
+This stone not preset in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+TODO:  Too big age difference to be married? Enter in FSFT as son.
+Karl is on Memorial Plaque D as well, under same FSFT G727-ZDN
+
+
+===Table
+|FaG        | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210781333 | G7PR-NPR |     0 | Anna     | Gläser      |        1895 |        1971 |   ||s_n nfs
+| 210781526 | G727-ZDN |     0 | Karl     | Gläser      |        1920 |        1941 |   ||s_n nfs
+
+======================================
+1995-65
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Lachner
+Elisabeth
+1877 - 1961
+Ida
+1907 - 1962
+Anna
+1909 - 1991
+-----------------------------------
+
+===Notes:
+TODO
+No 2018 photo matched to this plot
+This stone not preset in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+TODO:   Assume that Ida and Anna are daughters of Elisabeth. Have funeral cards for both.
+
+all three born at:
+"St. Joachimsthal/Sud." from funeral card.
+Former Sudetenland.
+Sankt Joachimsthal, Sankt Joachimsthal, Böhmen, Österreich
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210791997 | G7PR-DVC |     0 | Elisabeth | Lachner     |        1877 |        1961 |   |s_n fc_n
+| 210792094 | G3PF-98N |     0 | Ida       | Lachner     |        1907 |        1962 |   |s_n fc_y
+| 210792298 | G353-4T1 |     0 | Anna      | Lachner     |        1909 |        1991 |   |s_n fc_y
+
+======================================
+1995-66
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Ida Eberle
+1901 - 1984
+-----------------------------------
+
+===Notes:
+TODO
+No 2018 photo matched to this plot
+This stone not preset in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210792750 | G7PT-N9B |     0 | Ida      | Eberle      |        1901 |        1984 |   ||s_n fc_n
+
+======================================
+1995-67
+Waldzell
+
+===Location: [decimal LatLon]
+
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 67 (exp 22).jpg
+-----------------------------------
+Agnes Möhler
+1901 - 1976
+-----------------------------------
+
+===Notes:
+TODO
+No 2018 photo matched to this plot
+This stone not preset in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210793216 | G7PT-R4D | 7105 ?| Agnes    | Möhler      |        1901 |        1976 |   ||
+
+======================================
+1995-68
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Erich
+Schwierz
+1914 - 1979
+-----------------------------------
+
+===Notes:
+TODO
+No 2018 photo matched to this plot
+This stone not preset in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210793739 | G354-6B2 |     0 | Erich    | Schwierz    |        1914 |        1979 |   ||s_n fc_y
+
+======================================
+1995-69
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Maria
+Anderlohr
+1901 - 1986
+-----------------------------------
+
+===Notes:
+TODO
+No 2018 photo matched to this plot
+This stone not preset in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210819909 | G3PX-54Y |     0 | Maria    | Anderlohr   |        1901 |        1986 |   ||s_n fc_y
+
+======================================
+1995-70
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Prexler
+Maria
+1913 - 1989
+Heinrich
+1909 (ic) 1945
+-----------------------------------
+
+===Notes:
+TODO
+No 2018 photo matched to this plot
+This stone not preset in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Assume they were married.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210821469 | G7P1-B68 |     0 | Maria    | Prexler     |        1913 |        1989 |   ||s_n fc_n
+| 210821485 | G727-GHJ |     0 | Heinrich | Prexler     |        1909 |        1945 |   ||s_n fc_n
+
+======================================
+1995-71
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Hier ruhet in Frieden
+
+meine lb. Gottin
+unsere gute Mutte
+
+Kath. Fetzer
+geb Rüba
+(b) 9.2.1892 - 4.11.1953 (d)
+
+unser lieber Vater
+Georg Fetzer
+(b) 20.11.1890 - 17.8.1967 (d)
+-----------------------------------
+
+===Notes:
+TODO
+No 2018 photo matched to this plot
+This stone not preset in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN        | LN          | b           | d           | T |
+|-----------|----------|-------|-----------|-------------|-------------|-------------|---|
+| 210821898 | G75M-94F |     0 | Katharina | Fetzer      | 09 Feb 1892 | 04 Nov 1953 |   ||s_n nfs
+| 210821898 | G75M-94F |     0 | Katharina | Rüba        | 09 Feb 1892 | 04 Nov 1953 | b ||s_n nfs
+| 210822002 | G75M-MHD |     0 | Georg     | Fetzer      | 20 Nov 1890 | 17 Aug 1967 |   ||s_n nfs
+
+======================================
+1995-74
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 2011
+Photo:
+K800_Gräber Waldzell_008.JPG
+-----------------------------------
+Maria Watz
+1891 - 1971
+Johann Watz
+1890 - 1973
+
+1911 Balbina Gehrling  1967
+-----------------------------------
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Maria Watz
+1891 - 1971
+Johann Watz
+1890 - 1973
+
+1911 Balbina Gehrling  1967
+-----------------------------------
+
+===Notes:
+TODO
+No 2018 photo matched to this plot
+This stone not preset in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+===Interpretation:
+Johann & Maria were married.
+Could Babina be their daughter?
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210844963 | LTVM-XDJ |   338 | Johann   | Watz        |        1890 |        1973 |   ||
+| 210845168 | LTVM-NWH |   343 | Maria    | Watz        |        1891 |        1971 |   ||
+| 210845168 | LTVM-NWH |   343 | Maria    | Oehring     |        1891 |        1971 |   ||
+| 210851936 | LTVW-TNN |  4502 | Balbina  | Gehrling    |        1911 |        1967 |   ||
+
+======================================
+1995-76
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Albert
+Hoffmann
+(b) 24.7.1934  (d) 18.3.1966
+Rosa
+Kilian
+(b) 19.6.1901  (d) 28.1.1981
+-----------------------------------
+
+===Notes:
+TODO
+No 2018 photo matched to this plot
+This stone not preset in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210857140 | G72W-Q71 |     0 | Albert   | Hoffmann    | 24 Jul 1934 | 18 Mar 1966 |   ||s_n fc_n
+| 210857204 | G72W-83V |     0 | Rosa     | Kilian      | 19 Jun 1901 | 28 Jan 1981 |   ||s_n fc_n
+
+======================================
+1995-78
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 1995
+Photo: none
+-----------------------------------
+Herrmann
+Albin (b) 21.8.1908
+      (d) 5.6.1990
+-----------------------------------
+
+===Notes:
+TODO
+No 2018 photo matched to this plot
+This stone not preset in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210858003 | G72W-ZV2 |     0 | Albin    | Herrmann    | 21 Aug 1908 | 05 Jun 1990 |   ||s_n fc_n
+
+======================================
+1995-80
+Waldzell
+
+===Location: [decimal LatLon]
+
+===Transcription: 1995
+Photo:
+Waldzell 1995-07 Marker 80 (exp 27).jpg
+-----------------------------------
+Helmut Schubert
+(b) 28.11.1931  (d) 8.1.1955
+Theodor Schubert
+(b) 28.2.1889  (d) 27.11.1959
+Mathilde Schubert
+(b) 10.3.1895  (d) 26.5.1972
+Sebald Schubert
+(b) 27.4.1933  (d) 20.7.1977
+-----------------------------------
+
+===Notes:
+TODO
+No 2018 photo matched to this plot
+This stone not preset in 2018
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+According to Alban Otter, this Schubert family is not directly related.
+Same family as stone #07, 49, 80.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+| 210874577 | G727-YVD |     0 | Theodor  | Schubert    | 28 Feb 1889 | 27 Nov 1959 |   ||s_n fc_n
+| 210874613 | G35N-ZK9 |     0 | Mathilde | Schubert    | 10 Mar 1895 | 26 May 1972 |   ||s_n fc_n
+| 210874613 | G35N-ZK9 |     0 | Mathilde | Lutz        | 10 Mar 1895 | 26 May 1972 | b ||s_n fc_n
+| 210874714 | G727-14C |     0 | Helmut   | Schubert    | 28 Nov 1931 | 08 Jan 1955 |   ||s_n fc_n
+| 210874804 | G3PR-W9V |     0 | Sebald   | Schubert    | 27 Apr 1933 | 20 Jul 1977 |   ||s_n fc_y
+
+======================================
+Möhler, Johann & Ottilie -Grave marker -Transcription
+2018-NotInFriedhof-A
+Waldzell
+
+Transcription: 1995
+Photo:
+Möhler, Johann & Ottilie -Grave marker.jpg
+-----------------------------------
+Hier ruhen in Frieden
+
+Johann Möhler
+langjhr. Kirchenpfleger
+(b) 22.11.1851   (d) 27.5.1917
+Ottilie Möhler
+geb. Öhring
+(b) 13.12.1858   (d) 20.11.1938
+-----------------------------------
+
+Notes:
+Located in Möhler family garden, Waldzell Germany. Removed from cemetary.
+Not clear which plot hosted this marker. Could have been 3-L-2 Longin Mohler marker
+
+1995 & 2011 transcription used U&L case regardless of text on marker.
+Transcription by RJOtter, July 1995
+25/Feb/1996-Confirmed from clear photgraph taken Jul/1995 by Richard Otter #1.
+on gravestone: (b) is a star symbol, (d) is cross symbol.
+
+Interpretation:
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+|     0     | LTVM-J5C |  1050 | Johann   | Möhler      | 22 Nov 1851 | 27 May 1917 |   ||s_n
+|     0     | LTVM-VZB |  1051 | Ottilie  | Möhler      | 13 Dec 1858 | 20 Nov 1938 |   ||s_n
+|     0     | LTVM-VZB |  1051 | Ottilie  | Öhring      | 13 Dec 1858 | 20 Nov 1938 | b ||s_n
+
+======================================
+Möhler, Longin (b1884) -Grave marker -Transcription
+2018-NotInFriedhof-B
+Waldzell
+
+Transcription: 1995
+Photo:
+Möhler, Longin (b1884) -Grave marker.jpg
+-----------------------------------
+Hier ruht in Gott
+der wohledle Jüngling
+
+Longin Möhler
+geb. 15. März. 1884
+ges. 30. Dez. 1913
+-----------------------------------
+
+Notes:
+Located in Möhler family garden in Waldzell, Germany.
+Formerly located in the Waldzell cemetery.
+Not clear which plot hosted this marker. Could have been 2018-3-L-2 Longin Mohler.
+
+Transcription by RJOtter, July 1995
+25/Feb/1996-Confirmed from clear photograph taken Jul/1995 by Richard Otter #1.
+
+1995 & 2011 transcription used U&L case.
+2018: Transcription uses letter case as used on grave stone.
+
+
+===Table
+| FaG       | FS       | TMG   | FN       | LN          | b           | d           |
+|-----------|----------|-------|----------|-------------|-------------|-------------|
+|    0      | LTVM-J5N |  1969 | Longin   | Möhler      | 15 Mar 1884 | 30 Dec 1913 ||s_n
+
+======================================
+======================================
+
+
+
+NOTES for entire file
+
+(b) = *
+(d) = ✝
+(ic) = ✠
+geb. = geboren
+gest. = gestorben
+
+text in <> in Transcription section are comments not on grave marker
+
+Table columns-
+T is type of name.
+Women who married and used man's name are listed in table under birth nmae and separately with married name.
+T is 
+b = birth name. (only sometimes is it listed on stone)
+p = previous married name.
+
+Should be an indicator as to whether the gravestone actually shows the geb name.
+Update born/geb name so it only appears in table if it is on grave stone.		TODO
+
+search for names
+\h*\|\h*
+
+
+Progress notes for adding Grave Marker to FaG and FS
+s_a = FaG source found in FS FaG database and attached to person
+s_am = FS source created pointing to FaG record and and attached to FS person
+s_n = created a new source for gravestone from memory image and attached it.
+s_nm = as s_n but there are multip photos to attach to source.
+m_an = no grave picture to attach- these tags deleted when s_n is done and added.
+d = appears on both gravstone and memorial plaque
+
+OLD and Removed=bc = burial checked for format, and "gravestone" reason.
+OLD and Removed=m_a = grave image attached to FS person and tagged
+
+
+FS Number, view at-
+https://www.familysearch.org/tree/person/details/<FS#>
+https://ancestors.familysearch.org/en/<FS#>
+
+FaG number- view at-
+https://www.findagrave.com/memorial/<FaG#>
+
+TMG number, not available publicly.		(The Master Genealogist SW)
+RM number, not available publicly.		(RootsMagic SW)
+
+Policy for FS and FaG
+if no photo avail, 
+attach the "no photo.jpg" image to the source, but remove it from tagged memories.
+Funeral cards and gravestone pics remain tagged to people, but also attached to sources.
+
+Transcription:  <year>
+1995: Grave stones were directly read and transcribed. Some photos on film were taken and transcription confirmed.
+recent years: date refers to date of digital photo. Transcriptions from photos made soon thereafter. 
+  Corrections should be noted.
+The plot status in the given year. That was mostly established by photo taken in that year. 
+The photo may have been re-read since that time and the actual transcription updated.
+
