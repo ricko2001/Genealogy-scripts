@@ -1,0 +1,424 @@
+﻿report generated at = 2021-08-26 23:33:45
+Database processed  = C:\Users\rotter\Development\Genealogy\Python\RootsMagic\TestExternalFiles\Otter-Saito.rmgc
+
+
+
+
+
+
+
+
+Unreferenced Files Report
+Files in media root folder C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits not referenced in RootsMagic database.
+Found 4979 files in the folder, and 4638 files in the database.
+404 files in media root folder that are not referenced by the database.
+
+
+.\Images\Chun,Agnes Eun Soon.jpg
+.\Images\Faces\Anna (daughter of Joanna Smith and Donald  )b1996 ±2 yrs.jpg
+.\Images\Faces\Broenner, Anna (b 1906).png
+.\Images\Faces\Katakura, Kurtis.JPG
+.\Images\Faces\Krieger, Mel b1928.jpg
+.\Images\Home- Roman Otter.png
+.\Images\Otter family in California 2013.jpg
+.\Images\Places\USA-California\Residence 2857 Morgan Ave-Oakland-CA-USA.jpg
+.\Misc\Places on Hawaii east coast.txt
+.\Misc\unicode text\moved to DB\Sakado, Robert and Mildred #5797.txt
+.\Sources\Baptism\Taufmatrikel Maria Stamm 1863.docx
+.\Sources\Birth\Catalon, Mary Helen (b1929) -1of2 -Birth Certificate.jpg
+.\Sources\Birth\Imai, Ethel -Birth Certificate -transcription.txt
+.\Sources\By Location\United States\Hawaii\Hakalau, Hawaii\University of Hawaii- Hakalau Sugar.txt
+.\Sources\By Location\United States\Hawaii\Hakalau, Hawaii\Wikipedia.txt
+.\Sources\Census\1910 US Federal Census\Asano, Heiji -1910 HI Federal Census -Transcription.docx
+.\Sources\Census\1910 US Federal Census\Auzout, Joseph -1910 US Federal Census -Transcription.docx
+.\Sources\Census\1910 US Federal Census\Cho, Han Sick -1910 HI Federal Census -Transcription.docx
+.\Sources\Census\1910 US Federal Census\Conroy, James F -1910 US Federal Census -Transcription.docx
+.\Sources\Census\1910 US Federal Census\Feger, Hermine -1910 US Federal Census -Transcription.docx
+.\Sources\Census\1910 US Federal Census\Herko, Alexander -1910 US Federal Census -Transcription.docx
+.\Sources\Census\1910 US Federal Census\Herko, Joseph -1910 US Federal Census -Transcription.docx
+.\Sources\Census\1910 US Federal Census\Imai, Hisae -1910 HI Federal Census -Transcription.docx
+.\Sources\Census\1910 US Federal Census\Imai, Tamejiro -1910 HI Federal Census -Transcription.docx
+.\Sources\Census\1910 US Federal Census\Kawachi, Tatsjui -1910 HI Federal Census -Transcription.docx
+.\Sources\Census\1910 US Federal Census\Kurisu, Shigeichi -1910 US Federal Census -Transcription.docx
+.\Sources\Census\1910 US Federal Census\Menig, Joseph -1910 US Federal Census -Transcription.docx
+.\Sources\Census\1940 US Federal Census\Brown, C Clifford b1900 -1940 US Federal Census.jpg
+.\Sources\Census\1940 US Federal Census\Bungay, Edith b1896 -1940 US Federal Census.jpg
+.\Sources\Church Books\Unterleinach\Info_Unterleinach.txt
+.\Sources\Church Books\Waldzell\Ehen\Waldzell Ehen p001.txt
+.\Sources\Church Books\Waldzell\Ehen\Waldzell Ehen p008.txt
+.\Sources\Church Books\Waldzell\Ehen\Waldzell Ehen p009.txt
+.\Sources\Church Books\Waldzell\Ehen\Waldzell Ehen p018.txt
+.\Sources\Church Books\Waldzell\Ehen\Waldzell Ehen p020.txt
+.\Sources\Church Books\Waldzell\Ehen\Waldzell Ehen p023.txt
+.\Sources\Church Books\Waldzell\Ehen\Waldzell Ehen p027.txt
+.\Sources\Church Books\Waldzell\Ehen\Waldzell Ehen p028.txt
+.\Sources\Church Books\Waldzell\Info_Waldzell.txt
+.\Sources\Church Books\Waldzell\Sterbefälle\Waldzell Sterbefälle p001.txt
+.\Sources\Church Books\Waldzell\Sterbefälle\Waldzell Sterbefälle p004.txt
+.\Sources\Church Books\Waldzell\Sterbefälle\Waldzell Sterbefälle p005.txt
+.\Sources\Church Books\Waldzell\Sterbefälle\Waldzell Sterbefälle p007.txt
+.\Sources\Church Books\Waldzell\Sterbefälle\Waldzell Sterbefälle p012.txt
+.\Sources\Church Books\Waldzell\Sterbefälle\Waldzell Sterbefälle p013.txt
+.\Sources\Church Books\Waldzell\Sterbefälle\Waldzell Sterbefälle p021.txt
+.\Sources\Church Books\Waldzell\Sterbefälle\Waldzell Sterbefälle p022.txt
+.\Sources\Church Books\Waldzell\Sterbefälle\Waldzell Sterbefälle p023.txt
+.\Sources\Church Books\Waldzell\Sterbefälle\Waldzell Sterbefälle p024.txt
+.\Sources\Church Books\Waldzell\Sterbefälle\Waldzell Sterbefälle p026.txt
+.\Sources\Church Books\Waldzell\Sterbefälle\Waldzell Sterbefälle p027.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p020-021.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p022-023.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p024-025.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p028-029.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p038-039.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p040-041.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p042-043.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p044-045.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p046-047.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p048-049.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p060-061.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p062-063.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p064-065.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p066-067.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p068-069.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p072-073.txt
+.\Sources\Church Books\Waldzell\Taufen\Waldzell Taufen -p076-077.txt
+.\Sources\Citizenship\Stamm, Max b1880 -Naturalization -Declaration of Intent 1905 -img18.jpg
+.\Sources\Citizenship\Stamm, Max b1880 -Naturalization -Declaration of Intent 1905 -img19.jpg
+.\Sources\Death\Imai,Francis b1938 -Funeral program.pdf
+.\Sources\Death\Roehm, Mary Anna b1869 -Death Certificate.jpg
+.\Sources\Funeral Cards\_Funeral card processing.txt
+.\Sources\Grave\Find-a-Grave\Glaser, Katherina.jpg
+.\Sources\Grave\Marktbreit\Friedhof Marktbreit.txt
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_160708609_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161020054_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161033269.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161120789.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161143279_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161242843.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161310721.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161325967.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161343793.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161355950.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161455716.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161514896.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161552482.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161635842.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161648609_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161651963_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161715589_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161729976_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161746316_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161803502_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161839500_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_161922638_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162006403_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162023516.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162036348_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162154121.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162212454.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162227183.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162251380.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162423063.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162434968_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162537072.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162555192.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162642293.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162651432.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162706432.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162725508.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162808681.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_162831055_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_165241306_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_165244959_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_165543036_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_165636307_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_165648203.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_165725309.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_165741165.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_165752384.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_165804974.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_165842392.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_165900871.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_165910413.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_165934547.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170009142.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170048716.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170117445.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170136866_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170206811.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170218933.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170300887.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170322400.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170402532.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170415121.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170443493.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170458607.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170512490.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170530718.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170558330.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170609515.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170633892.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170722798.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170800182.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170839790.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170915462.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170929588.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170943935.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_170957633.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171006442.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171128066.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171159145.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171216179.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171244609.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171304992.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171326747.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171407046.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171433397_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171448985.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171532008.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171547781.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171612993.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171633497.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171645000_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171657366.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171719596.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171729452.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171739093.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171807496.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171831840.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171913294.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_171957286.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172030930_HDR.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172052850.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172109325.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172136734.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172206706.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172216368.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172227987.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172334804.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172350930.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172542922.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172608787.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172619715.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172709756.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172743548.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172756690.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172904800.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_172943399.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173001893.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173011151.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173035693.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173045050.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173106470.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173145410.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173157548.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173245952.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173306336.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173433937.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173509459.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173536225.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173607687.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173624806.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173647737.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173734538.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173750110.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173827720.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173912774.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_173954194.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_174021898.jpg
+.\Sources\Grave\Roden\Images 2019\IMG_20190926_174040100.jpg
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-1-1-01.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-1-1-07.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-1-1-09.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-1-3-01.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-1-3-02.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-1-3-03.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-1-3-05.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-1-L-03.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-1-L-04.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-1-R-04.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-2-1-02.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-2-1-03.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-2-1-04.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-2-1-05.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-2-2-05.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-2-3-01.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-2-3-05.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-2-3-06.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-2-4-03.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-2-L-03.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-2-L-04.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-2-R-04.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-3-1-06.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-3-2-04.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-3-2-05.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-3-2-06.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-3-3-01.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-3-3-02.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-3-3-05.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-3-3-06.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-3-L-03.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-3-L-07.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2018-3-L-08.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2019-3-5-01.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2019-3-5-02.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2019-3-5-03.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2019-3-R-01.txt
+.\Sources\Grave\Waldzell\Generated Files\plot 2019-R-R-03.txt
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_002.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_003.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_008.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_009.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_010.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_011.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_012.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_022.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_023.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_024.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_025.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_026.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_027.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_028.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_030.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_031.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_032.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_034.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_037.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_039.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_041.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_042.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_046.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_056.JPG
+.\Sources\Grave\Waldzell\Images 2011\K800_Gräber Waldzell_059.JPG
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_102851279_HDR.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_102854732_HDR.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_102857209_HDR.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_102859523_HDR.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_102901837_HDR.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_102903901.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_102906232_HDR.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_102908487_HDR.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_102911094_HDR.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_102914130_HDR.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_102941220.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_102948238.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_103000530.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_103006149.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_103018998.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_103020635.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_103022625.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_103024538_HDR.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_103027410_HDR.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_103139005.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_103236408.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_103307994.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20190928_104846031_HDR.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20191001_141720936_HDR.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20191001_141726292_HDR.jpg
+.\Sources\Grave\Waldzell\Images 2019\IMG_20191001_142034197.jpg
+.\Sources\Grave\Waldzell\SplitMainGraveFileToIndividuals.py
+.\Sources\Marriage\1950-07-24   Marriage John Menig & Maria Martha de las Fuentes y Calleros -Newspaper.PNG
+.\Sources\Marriage\Bungay & Blevins m1991 -Mariage Announcement.jpg
+.\Sources\Marriage\Germany -Gerolzhofen\__template.txt
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 3807\3807-01 DGS-008285899 img-1432 .jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 3807\3807-02 DGS-008285899 img-1433 .jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 3807\3807-03 DGS-008285899 img-1434 .jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 3807\3807-04 DGS-008285899 img-1435 .jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 3807\3807-05 DGS-008285899 img-1436 .jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 3807\3807-06 DGS-008285899 img-1437 .jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 3807\3807-07 DGS-008285899 img-1438 .jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 3807\3807-08 DGS-008285899 img-1439 .jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 3807\3807-09 DGS-008285899 img-1440 .jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 3807\3807-10 DGS-008285899 img-1441 .jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 3807\3807-11 DGS-008285899 img-1442 .jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 3807\Lohr MR SAW-3807.txt
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 7702\644.jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 7702\645.jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 7702\646.jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 7702\647.jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 7702\648.jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 7702\649.jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 7702\650.jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 7702\651.jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 7702\652.jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 7702\653.jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 7702\654.jpg
+.\Sources\Marriage\Germany -Lohr am Main\Lohr MR 7702\Lohr MR SAW-7702.txt
+.\Sources\Marriage\Germany -Lohr am Main\Lohr Marriage Records - Shortcut.lnk
+.\Sources\Marriage\Germany -Lohr am Main\MR Source attachments.txt
+.\Sources\Marriage\Germany -Lohr am Main\Who to look for in civil MR.txt
+.\Sources\Marriage\Germany -Lohr am Main\_Info.txt
+.\Sources\Marriage\Germany -Lohr am Main\__template.txt
+.\Sources\Marriage\Imai, Tamejiro & Seki Yoshimoto.jpg
+.\Sources\Military\Germany\Bavarian Army\31010_177902-00223.jpg
+.\Sources\Military\Germany\Bavarian Army\31010_178123-00050.jpg
+.\Sources\Military\Germany\Bavarian Army\31421_BH12883-00048.jpg
+.\Sources\Military\Germany\Bavarian Army\31421_BH12887-00047.jpg
+.\Sources\Military\Germany\Bavarian Army\31421_BH12960-00205.jpg
+.\Sources\Military\Germany\Bavarian Army\31421_BH13695-00183.jpg
+.\Sources\Military\Germany\Bavarian Army\31421_BH16494-00155.jpg
+.\Sources\Military\Germany\Bavarian Army\31421_BH16538-00186.jpg
+.\Sources\Military\Germany\Bavarian Army\31421_BH20522-00146.jpg
+.\Sources\Military\Germany\Bavarian Army\31433_bh04987-00459 (1).jpg
+.\Sources\Military\Germany\Bavarian Army\31433_bh04987-00459 (2).jpg
+.\Sources\Military\Germany\Bavarian Army\31433_bh04987-00459.jpg
+.\Sources\Military\Germany\Bavarian Army\31433_bh05461-00082.jpg
+.\Sources\Military\Germany\Bavarian Army\31433_bh05557-00028.jpg
+.\Sources\Military\Germany\Bavarian Army\31433_bh08030-00109.jpg
+.\Sources\Military\Germany\Bavarian Army\31433_bh08055-00088.jpg
+.\Sources\Military\Germany\Bavarian Army\31433_bh08879-00528.jpg
+.\Sources\Military\Germany\Bavarian Army\31433_bh09593-00071.jpg
+.\Sources\Military\Germany\Bavarian Army\31433_bh09919-00467.jpg
+.\Sources\Military\Germany\Bavarian Army\31433_bh10163-00093.jpg
+.\Sources\Military\Germany\Bavarian Army\31433_bh10182-00049.jpg
+.\Sources\Military\Germany\Bavarian Army\31433_bh12161-00132.jpg
+.\Sources\Military\Germany\Bavarian Army\31433_bh12253-00006.jpg
+.\Sources\Military\Germany\Bavarian Army\31433_bh22151-00354.jpg
+.\Sources\Military\Germany\Bavarian Army\32301_BH13709-00184.jpg
+.\Sources\Military\Germany\Bavarian Army\32301_BH13956-00438.jpg
+.\Sources\Military\Germany\Bavarian Army\Alfons Brand.txt
+.\Sources\Military\Germany\Bavarian Army\Anton Brand.txt
+.\Sources\Military\Germany\Bavarian Army\Balthasar Schmitt.txt
+.\Sources\Military\Germany\Bavarian Army\Edmund Hartlaub.txt
+.\Sources\Military\Germany\Bavarian Army\Emil Brand.txt
+.\Sources\Military\Germany\Bavarian Army\Franz Josef Straub.txt
+.\Sources\Military\Germany\Bavarian Army\Georg Gottfried Heeg.txt
+.\Sources\Military\Germany\Bavarian Army\Georg Hock.txt
+.\Sources\Military\Germany\Bavarian Army\Georg Wieland.txt
+.\Sources\Military\Germany\Bavarian Army\Gustav Maier.txt
+.\Sources\Military\Germany\Bavarian Army\Johann Weidner.txt
+.\Sources\Military\Germany\Bavarian Army\Josef Hartlaub.txt
+.\Sources\Military\Germany\Bavarian Army\Josef Rüb.txt
+.\Sources\Military\Germany\Bavarian Army\Ludwig Hartlaub.txt
+.\Sources\Military\Germany\Bavarian Army\Ludwig Sebastian Straub.txt
+.\Sources\Military\Germany\Bavarian Army\Mathias Kundinger.txt
+.\Sources\Military\Germany\Bavarian Army\New Text Document.txt
+.\Sources\Military\Germany\Bavarian Army\Otto Wilhelm Otter.txt
+.\Sources\Military\Germany\Bavarian Army\Valentin Welzbacher.txt
+.\Sources\Military\Germany\Bavarian Army\hint format url.txt
+.\Sources\Military\Lieblein, Joseph -US Military Registration 1942 -Transcription.txt
+.\Sources\Miscellaneous\Saito, Herbert Atsushi\Radio Intelligence in CBI By Ted Tsukiyama.pdf
+.\Sources\Obituaries\Burkhard, Peter C -Obituary -Transcription.txt
+.\Sources\Obituaries\Burkhard, Robert C -Obituary -Transcription.txt
+.\Sources\Obituaries\Evans, George L. b1904 -2of2.jpg
+.\Sources\Obituaries\Fujikawa, Masako b1907.jpg
+.\Sources\Obituaries\Krieger, Mel b1928  -Obit in newsletter.pdf
+.\Sources\Obituaries\McNally, Eleanor B -Obituary -Ancestry Info.txt
+.\Sources\Obituaries\McNally, Eleanor B -Obituary -Transcription.txt
+.\Sources\Obituaries\McNally, Eleanor B. b1924.jpg
+.\Sources\Obituaries\Miyada, Shigeharu -Obituary -B.jpg
+.\Sources\Obituaries\Ogasawara, Janet R -Obituary -Transcription.txt
+.\Sources\Obituaries\Ohland, Hermine b1926.jpg
+.\Sources\Obituaries\St.Martin, Louis  -2of2.jpg
+.\Sources\Obituaries\Urcia, James Fumio b1934.jpg
+.\Sources\Passenger List\Broenner, Pankraz -Passenger List 1923 -1of2 (Elis Island).png
+.\Sources\Passenger List\Broenner, Pankraz -Passenger List 1923 -2of2 (Elis Island).png
+.\Sources\Passport Application\Haberkern, Robert -US Passport Application 1920 -Ancestry Info.txt
+.\Sources\Passport Application\Katzenberger,Andrew b1866 -US Passport Application 1913.jpg
+.\Sources\Research Reports\RJOtter\Kurisu family research - ver 1.vc2
+.\Sources\Research Reports\RJOtter\Kurisu family research - ver 2.vc2
+.\Sources\Research Reports\RJOtter\Kurisu timeline.txt
+
+
+
+End of report 
