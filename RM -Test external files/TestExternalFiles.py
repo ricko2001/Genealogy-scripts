@@ -6,26 +6,52 @@ import configparser
 
 
 ## Tested with RootsMagic v7.6.5  (not tested with RM 8)
-##             Python for Windows v3.9.0
+##             Python for Windows v3.9.0 64bit  
 ##             unifuzz64.dll (ver not set, MD5=06a1f485b0fae62caa80850a8c7fd7c2)
-##                   from:   https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlite-expert-command-line-shell-et-al/
+##      
+##  Python download-
+##  https://www.python.org/downloads/windows/    
+##  find the link near bottom of page for "Windows installer (64-bit)"
+##
+##  unifuzz64.dll download-
+##  https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2018/05/unifuzz64.dll
+##  above link found in this context-
+##  https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlite-expert-command-line-shell-et-al/
+
 
 ## Configuration ini file:    RM-Python-config.ini
 ## exmaple ini file:
-#        
-#        [File Paths]
-#        DB_PATH      = C:\MyDatabae.rmgc
-#        REPORT_PATH  = C:\Exhibit File report.txt  
-#        RMNOCASE_PATH = C:\RMNOCASE\unifuzz64.dll
-#        
-##
+
+#[File Paths]
+#DB_PATH        = C:\Users\me\Documents\Genealogy\GeneDB\MyRM-File.rmgc
+#REPORT_PATH    = C:\Users\me\Documents\Genealogy\GeneDB\ExternalFilesReport.txt
+#RMNOCASE_PATH   = C:\Users\me\Documents\Genealogy\GeneDB\SW\unifuzz64.dll
+#SEARCH_ROOT_FLDR_PATH = C:\Users\me\Documents\Genealogy\GeneDB\Exhibits
+#
+#[Options]
+#CHECK_FILES     = on
+#FOLDER_LIST     = off
+#UNREF_FILES     = on
+#
+#[Ignored Objects]
+#
+#folders = 
+#  Audio
+#  Waldzeller Häuserbuch -Oehring
+#
+#
+#filenames = 
+#  Archive- Bamberg.txt
+#  Archive- Würzburg.txt
+#
+#[END]
+#
+
 
 # TODO
-# implement "NotReferencedFile function
 # better error handling opening database
 # check database schema version
 # list references to any file not found
-# add options for output file or live output
 
 
 # ================================================================
