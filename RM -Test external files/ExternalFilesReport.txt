@@ -1,6 +1,140 @@
-﻿report generated at = 2021-08-26 23:33:45
-Database processed  = C:\Users\rotter\Development\Genealogy\Python\RootsMagic\TestExternalFiles\Otter-Saito.rmgc
+﻿report generated at = 2021-08-27 10:48:03
+Database processed  = C:\Users\rotter\Development\Genealogy-scripts\RM -Test external files\Otter-Saito.rmgc
 
+
+File not found warnings:
+
+
+
+
+Folder List:
+
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Audio\Rose Otter\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Faces\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Misc\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Newspaper-  Waldzell firefighters\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Places\Chicago\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Places\Germany\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Places\Japan\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Places\Kona Hawaii 2003_08\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Places\USA-California\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Places\USA-HI\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Places\USA-New York\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Places\USA-New York\Jamaica 1891\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Wedding\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Misc\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Misc\Edward Chao biographical data\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Misc\Edward Chao from web\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Misc\Evidence narrative\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Misc\unicode text\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Misc\unicode text\moved to DB\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Baptism\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Birth\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Books\Waldzeller Häuserbuch -Oehring\Bernd Oehring\Obits\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\By Location\2015 Geiselwind\Death - Scheuerer,Georg\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\By Location\2015 Geiselwind\Death - Sieghartner,Georg\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\By Location\2015 Geiselwind\Marriage - Schwab,Jakob & Schuster,Kunigunda\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\By Location\2015 Geiselwind\Marriage - Sieghartner,Johann & Schmitt,Kunigunda\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\By Location\United States\Hawaii\Honpa Hongwanji Hilo Betsuin\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Census\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Census\1900 US Federal Census\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Census\1910 US Federal Census\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Census\1915 New York State Census\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Census\1920 US Federal Census\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Census\1925 New York State Census\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Census\1930 US Federal Census\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Census\1940 US Federal Census\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Church Books\Obserschwarzach\Taufen\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Church Books\Steinfeld\Ehen\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Church Books\Volkach\Taufen\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Church Books\Waldzell\Ehen\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Church Books\Waldzell\Sterbefälle\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Church Books\Waldzell\Taufen\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Citizenship\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Death\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Death\Masaru Koike b1924-03-24\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Directories\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Divorce\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Funeral Cards\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\BillionGraves\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Find-a-Grave\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\France\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Hausen\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Hausen\Images 1995\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Hausen\Images 2015\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Hausen\Images 2018\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Kealakekua\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Lohr am Main\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Marktbreit\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\National Mem Cemetery of the Pacific\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Oberschwarzach\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Oberschwarzach\Images 1995\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Oberschwarzach\Images 1995\not identified\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Oberschwarzach\Images 2018\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Urspringen\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Urspringen\Images 2018\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\WALDZELL\Images 2011\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Waldzell\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Waldzell\Generated Files\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Waldzell\Images 1995\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Waldzell\Images 2011\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Waldzell\Images 2018\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Holiday photo card\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Gerolzhofen\Gerolzhofen MR 8211\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 3421\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 4004\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 5766\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6085\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6086\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6087\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6428\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6429\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6430\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6431\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6432\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6433\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6497\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6498\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6499\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6500\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6501\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6502\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6503\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6504\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6964\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 6994\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 7002\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 7004\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 7703\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Marriage\Germany -Lohr am Main\Lohr MR 8283\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Military\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Military\Germany\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Miscellaneous\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Miscellaneous\Felton, Charles Peter\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Miscellaneous\Imai,Tamejiro -Work Contract\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Miscellaneous\Saito, Herbert Atsushi\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Obituaries\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Passenger List\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Passenger List\Ship George Hurlbut\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Passport Application\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Probate\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Religious Record\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Religious Record\Herbert Saito Budhist Honor\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Research Reports\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Research Reports\2016-01-03 Armin Otter\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Research Reports\Endres,Herbert 1993-09-27\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Research Reports\Otter,Ingrid 1998-02\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Research Reports\RR 2010-09-17 Caroline Asano Schraf\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Research Reports\Weyer\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\School Yearbook\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\US Social Security\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\email\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\email\Schwab, Leonard Martin\
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\email\email 2016-01-03\
+125  rows returned 
 
 
 
