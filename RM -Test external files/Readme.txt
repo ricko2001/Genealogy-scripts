@@ -1,26 +1,37 @@
 
 TestExternalFiles.py
 
-RootsMagic v7 (RM7) uses SQLite as its main storage. The database schema includes a table that links to external files using an absolute path starting with a drive letter. (UNC names have not been tested by me.)
+RootsMagic v7 (RM7) uses SQLite as its main storage. The database 
+schema includes a table that links to external files using an 
+absolute path starting with a drive letter. (UNC names have not 
+been tested by me.)
 
-As the number of linked files increases, it becomes more likely that user mistakes will happens.
-A file on disk may get renamed, or moved, breaking the link from the database. RM has tools to help fix these, but it does not give a log of what was done.
-A file may be added to the media folder but then not linked in the database. Common when working quickly.
+As the number of linked files increases, it becomes more likely 
+that user mistakes will happens.
+A file on disk may get renamed, or moved, breaking the link from 
+the database. RM has tools to help fix these, but it does not 
+give a log of what was done.
+A file may be added to the media folder but then not linked in 
+the database. Common when working quickly.
 
 This utility will help identify both issues.
 
-The utility can perform 3 functions, as indicated in the ini file Options section:
+The utility can perform 3 functions, as indicated in the 
+ini file Options section:
 
 CHECK_FILES
-   Checks that each file referenced in the RM7 database actually exists on disk in the specified location.
+   Checks that each file referenced in the RM7 database actually 
+   exists on disk in the specified location.
    If all OK, the report section will be empty.
 
 FOLDER_LIST
    Lists all folders referenced in the RM7 database.
 
 UNREF_FILES
-   Lists all files found in the folder SEARCH_ROOT_FLDR_PATH that are NOT referenced in the RM7 database.
-   Perhaps the file was add to the folder, but was not linked to a fact or source in the database. 
+   Lists all files found in the folder SEARCH_ROOT_FLDR_PATH 
+   that are NOT referenced in the RM7 database.
+   Perhaps the file was add to the folder, but was not linked 
+   to a fact or source in the database. 
 
 
 To install and use:
@@ -30,15 +41,16 @@ To install and use:
       RM-Python-config.ini
       TestExternalFiles.py
       unifuzz64.dll
-3-  Edit the RM-Python-config.ini to set options and location of the RM7 file and the output report file.
+3-  Edit the RM-Python-config.ini to set options and 
+    location of the RM7 file and the output report file.
     The required edits should be obvious.
 4-  Double click the TestExternalFiles.py file
 5-  Examine the report output file
 
 
 Tested with RootsMagic v7.6.5  (will not work with RM 8)
-            Python for Windows v3.9.0   64bit  
-            unifuzz64.dll (ver not set, MD5=06a1f485b0fae62caa80850a8c7fd7c2)
+       Python for Windows v3.9.0   64bit  
+       unifuzz64.dll (ver not set, MD5=06a1f485b0fae62caa80850a8c7fd7c2)
        running on Window 10, 64bit
 
 
@@ -48,7 +60,8 @@ This link is in the context of-
 https://www.python.org/downloads/windows/
 Use the current version of Python, version > 3.9.0. 
 Click on the link near the top of page. Then ...
-Find the link near bottom of page, in "Files" section, labeled "Windows installer (64-bit)"
+Find the link near bottom of page, in "Files" section, 
+   labeled "Windows installer (64-bit)"
 Click it and save the installer.
 
 unifuzz64.dll download-
@@ -57,7 +70,17 @@ above link found in this context-
 https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlite-expert-command-line-shell-et-al/
 
 
+Notes:
+*  If there are any non-ASCII characters in the RM-Python-
+   config.ini file, perhaps in a database path, or in 
+   ignored objects, then the file must be saved in UTF-8 format, with no BOM.
+
+*  If there is a difference in capitalization of file names in the
+   database vs the file system, the file will be marked as un-referenced.
 
 TODO
-for files mentioned in the RM7 database, but not found at their specified location, 
-include the database items that the file is tagged with.
+*  for files mentioned in the RM7 database, but not found 
+at their specified location, include the database items 
+that the file is tagged with.
+
+*  When no files are missing, add a line stating "None found"
