@@ -15,7 +15,7 @@ import configparser
 # TODO
 # better error handling opening database
 # check database schema version, or at least confirm that the database is not RM8
-# list references to any file not found
+
 
 
 # ================================================================
@@ -88,78 +88,6 @@ def checkFilePaths( conn, reportF ):
      reportF.write ("    No files were found missing.\n\n")
   reportF.write ("\nEnd of Files Not Found listing\n\n")
   return
-
-# ================================================================
-def checkFilePaths( MultimediaID, reportF ):
-
-    # Person
-    SELECT
-        PT.RowID, NT.Given, NT.Surname
-    FROM
-        MediaLinkTable       MLT
-    INNER JOIN NameTable    NT  ON   PT.PersonID = NT.OwnerID
-    INNER JOIN PersonTable  PT  ON   MLT.OwnerID =  PT.PersonID
-    WHERE MLT.OwnerType=0 and NT.IsPrimary and MLT.MediaID = 166
-
-    # Family
-    SELECT
-        NTF.Surname, NTM.Surname
-    FROM
-         MediaLinkTable MLT
-    INNER JOIN NameTable NTF    ON  FT.FatherID = NTF.OwnerID
-    INNER JOIN NameTable NTM    ON  FT.MotherID = NTM.OwnerID
-    INNER JOIN FamilyTable FT   ON  MLT.OwnerID = FT.FamilyID
-    WHERE MLT.OwnerType=1 and NTF.IsPrimary and NTM.IsPrimary and MLT.MediaID = 272
-
-    # Event
-    SELECT
-        ET.EventID, FTT.Abbrev, ET.Date, PT.PersonID, NT.RowID, NT.Given, NT.Surname
-    FROM
-         MediaLinkTable      MLT
-    INNER JOIN NameTable     NT     ON PT.PersonID = NT.OwnerID
-    INNER JOIN PersonTable   PT     ON ET.OwnerID =  PT.PersonID
-    INNER JOIN FactTypeTable FTT    ON  ET.EventType = FTT.FactTypeID
-    INNER JOIN EventTable    ET     ON  MLT.OwnerID = ET.EventID
-    WHERE MLT.OwnerType=2 and NT.IsPrimary and MLT.MediaID = 272
-
-    # Source
-    SELECT
-        ST.Name
-    FROM
-         MediaLinkTable MLT
-    INNER JOIN SourceTable ST     ON  MLT.OwnerID = ST.SourceID
-    WHERE MLT.OwnerType=3 and MLT.MediaID = 272
-
-    # Citation
-    SELECT
-        ST.Name, CT.ActualText, CT.Comments,  CT.Fields, CT.Quality, CT.Flags
-    FROM
-         MediaLinkTable MLT
-    INNER JOIN SourceTable   ST     ON  CT.SourceID = ST.SourceID
-    INNER JOIN CitationTable CT     ON  MLT.OwnerID = CT.CitationID
-    WHERE MLT.OwnerType=4 and MLT.MediaID = 272
-
-    # PLace
-    SELECT
-        PT.Name, PT.PlaceType
-    FROM
-         MediaLinkTable MLT
-    Left JOIN PlaceTable    PT     ON  MLT.OwnerID = PT.PlaceID
-    WHERE MLT.OwnerType=5 and MLT.MediaID = 272
-
-    # Place Detail
-    SELECT
-        PT.Name, PT.PlaceType, PT2.Name
-    FROM
-         MediaLinkTable MLT
-    INNER JOIN PlaceTable    PT2    ON  PT2.PlaceID = PT.MasterID
-    INNER JOIN PlaceTable    PT     ON  MLT.OwnerID = PT.PlaceID
-    WHERE MLT.OwnerType=14 and MLT.MediaID = 272
-
-
-
-
-
 
 
 # ================================================================
