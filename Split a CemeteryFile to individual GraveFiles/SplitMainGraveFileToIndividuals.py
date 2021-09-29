@@ -1,12 +1,13 @@
 import os
 
 
-FileInPath = r"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave Marker\Waldzell"
+# PRODUCTION FileInPath = r"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave Marker\Waldzell"
+FileInPath = r"C:\Users\rotter\Development\Genealogy\Genealogy-scripts\Split a CemeteryFile to individual GraveFiles"
 FileInName = r"Friedhof Waldzell Grave List.txt"
 FileOutFldrName = "Generated files"
 
 
-EntrySeperator = "======================================\n"   # 38 equals
+EntrySeperator = "==================================================\n"   # 50 equals
 tempFileName = "trashFile"
 pathSep = '\\'
 FileOutExt = ".txt"
