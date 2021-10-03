@@ -4,7 +4,14 @@
 
 # ignore RootsMagic database file
 *.rmgc
+*.rmtree
+
+HIDE_*
 
 ExternalFilesReport.txt
+test-RootsMagicUser.xml
 
-DEV RM-Python-config.ini
+DEV_RM-Python-config.ini
+DISTO_RM-Python-config.ini
+
+
