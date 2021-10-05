@@ -21,9 +21,13 @@ import xml.etree.ElementTree as ET
 
 # ================================================================
 #  Global Variable
-#  paths may be relative to RootsMagic's "Media folder"
-G_MediaDirectory = ""
+#  paths may be relative to RootsMagic's "Media folder", or database file folder, or home dir
+G_MediaDirectoryPath = ""
+G_DbFileFolderPath = ""
+
 G_Divider = "==========================================================="
+G_QT = "\""
+
 
 # ================================================================
 def create_DBconnection(db_file):
@@ -71,22 +75,31 @@ def GetDBFileList(conn):
 
 
 # ================================================================
-def ExpandDirPath(path):
+def ExpandDirPath(in_path):
   # deal with relative paths in RootsMagic 8 databases
   # RM7 path are always absolute and will never be changed here
 
-  # Only want to call GetMediaDirectory once, so save its value as global
-  global G_MediaDirectory
+  global G_MediaDirectoryPath
+  path = str(in_path)
+  # input parameter path should always be of type str, output will be Path
+  # note when using Path / operator, second operand should not be absolute
 
   if path[0] == "~" :
-     absolutePath = os.path.expanduser(path)
+     absolutePath = Path(os.path.expanduser(path))
+
   elif path[0] == "?":
-    if G_MediaDirectory == "":
-      G_MediaDirectory = GetMediaDirectory()
-    absolutePath = G_MediaDirectory + os.fspath(path)[1:]
-    # TODO this code is not working...   absolutePath = os.path.join(G_MediaDirectory, path[1:])
+    if G_MediaDirectoryPath == "":
+       G_MediaDirectoryPath = GetMediaDirectory()
+    if len(path) == 1 : absolutePath = Path(G_MediaDirectoryPath)
+    else: absolutePath = Path(G_MediaDirectoryPath) / path[2:]
+
+  elif path[0] == "*":
+    if len(path) == 1 : absolutePath = Path(G_DbFileFolderPath)
+    else: absolutePath = Path(G_DbFileFolderPath) / path[2:]
+
   else:
-    absolutePath = path
+    absolutePath = Path(path)
+
   return absolutePath
 
 
@@ -113,19 +126,19 @@ def ListMissingFilesFeature( conn, reportF ):
   reportF.write (G_Divider + "\nStart of \"Files Not Found\" listing\n\n")
   foundSomeMissingFiles=False
   for row in cur:
-    dirPath=Path(ExpandDirPath(row[0]))
-    filePath=Path(os.path.join(dirPath, row[1]))
+    dirPath = ExpandDirPath(row[0])
+    filePath = dirPath / row[1]
     if not dirPath.exists(): 
        foundSomeMissingFiles=True
-       reportF.write ("Directory path not found:" + "\"" + str(dirPath) + "\"" + "\n")
+       reportF.write ("Directory path not found:" + G_QT + str(dirPath) + G_QT + " for file: " + G_QT + row[1] + G_QT + "\n")
     else:
         if filePath.exists():
             if not filePath.is_file():
                 foundSomeMissingFiles=True
-                reportF.write ("File path is not a file: " + "\"" + str(filePath) + "\"" + "\n")
+                reportF.write ("File path is not a file: " + G_QT + str(filePath) + G_QT + "\n")
         else:
             foundSomeMissingFiles=True
-            reportF.write ("File path not found: " + "\"" + str(filePath) + "\"" + "\n")
+            reportF.write ("File path not found: " + G_QT + str(filePath) + G_QT + "\n")
 
   if foundSomeMissingFiles == False:
      reportF.write ("    No files were found missing.\n")
@@ -210,6 +223,8 @@ def TimeStamp():
 
 # ================================================================
 def main():
+  global G_DbFileFolderPath
+
   # Configuration file
   IniFile="RM-Python-config.ini"
   
@@ -229,7 +244,10 @@ def main():
   if not os.path.exists(database_Path):
       print('Database path not found')
       return
+
   FileModificationTime = time.ctime( os.path.getmtime(database_Path))
+
+  G_DbFileFolderPath = Path(database_Path).parent
 
   # Read processing options from ini file
   ListFilesNotFound        = config['Options']['CHECK_FILES']
