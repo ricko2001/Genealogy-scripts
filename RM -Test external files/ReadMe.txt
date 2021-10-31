@@ -2,9 +2,10 @@
 TestExternalFiles.py
 
 RootsMagic (RM) uses SQLite as its main storage. The database 
-schema includes a table that links to external files using an 
-absolute path starting with a drive letter. (UNC names have not 
-been tested by me.)
+schema includes a table that links to external files using, in RM7 an 
+absolute path starting with a drive letter, or in RM8, a path possibly relative
+to either the user's home directory or the Media folder, as specified in RM's settings.
+(UNC names have not been tested by me.)
 
 As the number of linked files increases, it becomes more likely 
 that user mistakes will happen. 
@@ -22,16 +23,24 @@ ini file Options section:
 CHECK_FILES
    Checks that each file referenced in the RM database actually 
    exists on disk in the specified location.
-   If all OK, the report section will be empty.
-
-FOLDER_LIST
-   Lists all folders referenced in the RM database.
 
 UNREF_FILES
    Lists all files found in the folder SEARCH_ROOT_FLDR_PATH 
    that are NOT referenced in the RM database.
-   Perhaps the file was add to the folder, but was not linked 
-   to a fact or source in the database. 
+   Perhaps the file was added to the folder, but was mistakenly never 
+   linked to an item in the database.
+   This is designed for use when media files referenced by RM are all 
+   in a single folder hierarchy.
+   NOTE: the RM specified Media folder is not considered, only the 
+   SEARCH_ROOT_FLDR_PATH specified in the RM-Python-config.ini file.
+   You can set SEARCH_ROOT_FLDR_PATH in the ini file to the RM media folder, 
+   if that is where the media files are.
+
+FOLDER_LIST
+   Lists all folders referenced in the RM database. A file in an unexpected location
+   may have been accidentally added to the database. This list will make it obvious.
+   For RM8 files, folder paths may be prefixed 
+   with either ~ (home directory) or ? (RM specified media folder)
 
 
 To install and use:
@@ -48,7 +57,7 @@ To install and use:
 *  Examine the report output file.
 
 
-Tested with RootsMagic v7.6.5  (will not work with RM 8 created database)
+Tested with RootsMagic v7.6.5 and v8.0.0.0
        Python for Windows v3.9.0   64bit  
        unifuzz64.dll (version number not set, MD5=06a1f485b0fae62caa80850a8c7fd7c2)
        Operating system= Window 10, 64bit
@@ -79,7 +88,5 @@ Notes:
    (Unix-like file system case sensitivity)
 
 TODO
-*  for files mentioned in the RM database, but not found 
-at their specified location, include the database items 
-that the file is tagged with.
+*  nothing yet
 
