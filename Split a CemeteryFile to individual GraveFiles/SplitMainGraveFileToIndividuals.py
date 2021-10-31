@@ -1,7 +1,7 @@
 import os
 
 
-# PRODUCTION FileInPath = r"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave Marker\Waldzell"
+# PRODUCTION FileInPath = r"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Grave\Waldzell"
 FileInPath = r"C:\Users\rotter\Development\Genealogy\Genealogy-scripts\Split a CemeteryFile to individual GraveFiles"
 FileInName = r"Friedhof Waldzell Grave List.txt"
 FileOutFldrName = "Generated files"
@@ -23,7 +23,7 @@ while (Line != ""):
     if (Line == EntrySeperator):
         FileOut.write( EntrySeperator )
         Line = fileIn.readline() 
-        FileOutName=Line.rstrip('\n')
+        FileOutName="plot " + Line.rstrip('\n')
         if (Line == EntrySeperator):
             FileOutName = tempFileName
         prevFileOut.close()
@@ -38,5 +38,5 @@ FileOut.close()
 prevFileOut.close()
 os.remove (FileOutPath + pathSep + tempFileName + FileOutExt)
 
-input("Press Enter to continue.")
+# input("Press Enter to continue.")
 
