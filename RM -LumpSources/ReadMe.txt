@@ -44,16 +44,16 @@ Make it specific for SSDI and SSACI
 So use it to create 2 sources- SSDI and SSACI
 assume that the data will come from ancestry
 
-Source Name		SSDIdb ANC US
-DataType		SSDI or SSACI
+Source Name	=	SSDIdb ANC US
 Owner
-WebsiteTitle
-URL
+WebsiteTitle	
+URL				
 DatabaseName	Ancestyr database name for SSDI
-Access Date		when source was updated
+DataType		SSDI or SSACI
+DbInfoDate		when source was updated
 
-Source Text		full info about database
-Source Comment
+Source Text		full info about database		CitationTable.ActualText	=	SourceTable.ActualText
+SourceComment									SourceTable.Comments			SourceTable.Comments
 
 Media			NULL
 Repositories	Ancestry repo
@@ -61,13 +61,17 @@ Web Tags		URL of ancestry database
 Used			<output>
 
 In citation
-Name
-BirthDate
-Number
-SSDate		
-CitationDate
-AccessType
+CitationName	=	SourceTable.Name		done
+Name			parse data
+BirthDate		parse data
+Number			parse data
+SSDate			parse data
+AccessDate	=	AccessDate
+AccessType		NULL
 
+ResearchNote	=	SourceText
+DetailComment	=	SourceComment
+UTCmodDate		=	UTCModDate			done
 
 Research Note	full listing of record
 Detail Comment	any notes relating to src

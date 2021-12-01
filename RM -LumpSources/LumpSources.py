@@ -84,8 +84,42 @@ def MoveCitation ( conn, oldSourceID, newSourceID):
     citationIDToMove = citationsIDs[0][0]
 
 
+# Copy the SourceTable.Name => CitationTable.CitationName
+# Copy the SourceTable.UTCModDate => CitationTable.UTCModDate
+    SqlStmtXX = """
+    UPDATE CitationTable
+      SET CitationName = (SELECT Name       FROM SourceTable WHERE SourceID = ?),
+      SET UTCModDate   = (SELECT UTCModDate FROM SourceTable WHERE SourceID = ?),
+      SET ActualText   = (SELECT ActualText FROM SourceTable WHERE SourceID = ?),
+      SET Comments     = (SELECT Comments   FROM SourceTable WHERE SourceID = ?)
+      WHERE CitationID = ?
+      """
+
+    SqlStmt = """
+    UPDATE CitationTable
+      SET (CitationName, ActualText, Comments, UTCModDate) = (SELECT Name, ActualText, Comments, UTCModDate FROM SourceTable WHERE SourceID = ?)
+      WHERE CitationID = ?
+      """
+    cur = conn.cursor()
+    cur.execute(SqlStmt, (oldSourceID, citationIDToMove))
+
+    # Get the SourceTable.Fields BLOB
+    SqlStmt = """
+    SELECT Fields
+      FROM SourceTable
+      WHERE SourceID = ?
+      """
+    cur = conn.cursor()
+    cur.execute(SqlStmt, (oldSourceID,))
+    srcFieldsStr = cur.fetchone()[0]
+
+    root = ET.fromstring(srcFieldsStr)
+
+    MediaFolderPathEle = root.find( "./Folders/Media")
 
 
+
+#  move the existing citation to the new source
     SqlStmt = """
     UPDATE CitationTable
       SET SourceID = ?
@@ -106,6 +140,7 @@ def MoveCitation ( conn, oldSourceID, newSourceID):
     conn.commit()
 
     return
+
 
 # ================================================================
 def Convert (conn, oldSrc, NewSourceID):
