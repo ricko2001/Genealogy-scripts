@@ -14,15 +14,6 @@ import xml.etree.ElementTree as ET
 ##   unifuzz64.dll
 ##   Python v3.10 or greater
 
-# TODO
-# better error handling when opening database
-
-
-
-
-G_Divider = "==========================================================="
-G_QT = "\""
-
 
 # ================================================================
 def create_DBconnection(db_file):
@@ -49,20 +40,7 @@ def GetListOfRows ( conn, SqlStmt):
 
 
 # ================================================================
-def runSQL ( conn, SqlStmt):
-    # SqlStmt should return nothing
-    cur = conn.cursor()
-    cur.execute(SqlStmt)
-    return
-
-
-
-# ================================================================
-def GetOldSrc ( conn, SourceID):
-    return
-
-# ================================================================
-def MoveCitation ( conn, oldSourceID, newSourceID):
+def Convert ( conn, oldSourceID, newSourceID):
     # get citations for oldSourceID
     SqlStmt = """
     SELECT CitationID
@@ -86,15 +64,6 @@ def MoveCitation ( conn, oldSourceID, newSourceID):
 
 # Copy the SourceTable.Name => CitationTable.CitationName
 # Copy the SourceTable.UTCModDate => CitationTable.UTCModDate
-    SqlStmtXX = """
-    UPDATE CitationTable
-      SET CitationName = (SELECT Name       FROM SourceTable WHERE SourceID = ?),
-      SET UTCModDate   = (SELECT UTCModDate FROM SourceTable WHERE SourceID = ?),
-      SET ActualText   = (SELECT ActualText FROM SourceTable WHERE SourceID = ?),
-      SET Comments     = (SELECT Comments   FROM SourceTable WHERE SourceID = ?)
-      WHERE CitationID = ?
-      """
-
     SqlStmt = """
     UPDATE CitationTable
       SET (CitationName, ActualText, Comments, UTCModDate) = (SELECT Name, ActualText, Comments, UTCModDate FROM SourceTable WHERE SourceID = ?)
@@ -103,21 +72,25 @@ def MoveCitation ( conn, oldSourceID, newSourceID):
     cur = conn.cursor()
     cur.execute(SqlStmt, (oldSourceID, citationIDToMove))
 
-    # Get the SourceTable.Fields BLOB
+# Change owner & type for relevant web tags
     SqlStmt = """
-    SELECT Fields
-      FROM SourceTable
-      WHERE SourceID = ?
+    UPDATE URLTable
+      SET OwnerType = 4,
+          OwnerID = ? 
+      WHERE OwnerType = 3 AND OwnerID = ?
       """
     cur = conn.cursor()
-    cur.execute(SqlStmt, (oldSourceID,))
-    srcFieldsStr = cur.fetchone()[0]
+    cur.execute(SqlStmt, ( citationIDToMove, oldSourceID))
 
-    root = ET.fromstring(srcFieldsStr)
-
-    MediaFolderPathEle = root.find( "./Folders/Media")
-
-
+# Change owner & type for relevant media
+    SqlStmt = """
+    UPDATE MediaLinkTable
+      SET OwnerType = 4,
+          OwnerID = ? 
+      WHERE OwnerType = 3 AND OwnerID = ?
+      """
+    cur = conn.cursor()
+    cur.execute(SqlStmt, ( citationIDToMove, oldSourceID))
 
 #  move the existing citation to the new source
     SqlStmt = """
@@ -125,37 +98,128 @@ def MoveCitation ( conn, oldSourceID, newSourceID):
       SET SourceID = ?
       WHERE CitationID = ?
       """
-
     cur = conn.cursor()
     cur.execute(SqlStmt, (newSourceID, citationIDToMove))
 
-# don't delete untill data copied to new citation
+# Get the SourceTable.Fields BLOB
+    SqlStmt = """
+    SELECT Fields
+      FROM SourceTable
+      WHERE SourceID = ?
+      """
+    cur = conn.cursor()
+    cur.execute(SqlStmt, (oldSourceID,))
+    origSrcField = cur.fetchone()[0].decode()
+    srcField = origSrcField
 
+    # test for and fix old style "XML" no longer used in RM8
+    xmlStart = "<Root>"
+    rootLoc=srcField.find(xmlStart)
+    if rootLoc != 0:
+      srcField = srcField[rootLoc::]
+
+#   Test for trailing junk (thought I saw a trailing period in some records ???
+#    xmlEnd = "</Root>"
+#    rootEndLoc=srcField.find(xmlEnd)
+#    srcLength = len(srcField)
+#    if rootEndLoc != srcLength -len(xmlEnd):
+#      srcField = srcField[0:rootEndLoc + len(xmlEnd):]
+
+#    if len(srcField) != len(origSrcField):
+#        print ("orig srcField")
+#        print (origSrcField)
+#        print ("fixed srcField")
+#        print (srcField)
+
+    # read into DOM and parse for needed values
+    srcRoot = ET.fromstring(srcField)
+    srcFields = srcRoot.find("Fields")
+    srcFields.iterfind("Field")
+
+    AccessDate  = None
+    Name        = None
+    BirthDate   = None
+    Number      = None
+    SSDate      = None
+
+    for item in srcFields:
+        if item[0].text == "AccessDate":
+            AccessDate= item[1].text
+
+
+    # Parse the ActualText field for needed info
+    SqlStmt = """
+    SELECT ActualText
+      FROM CitationTable
+      WHERE CitationID = ?
+      """
+    cur = conn.cursor()
+    cur.execute(SqlStmt, (citationIDToMove,))
+    actualText = cur.fetchone()[0]
+
+    LastFoundLoc = 0
+    searchStrings = ['Name: ', 'Social Security Number: ', 'Birth Date: ', 'Issue Year: ' ]
+    results=[]
+    for searchText in searchStrings:
+        NL = "\n"
+        searchTextLoc = actualText.find(searchText, LastFoundLoc)
+        endofLineLoc = actualText.find(NL, searchTextLoc)
+        results.append( actualText[searchTextLoc + len(searchText) : endofLineLoc] )
+        LastFoundLoc = endofLineLoc +1
+
+
+# create an XML chunk that represents the citation fields of the source template used by the newSource
+# Get the CitationTable.Fields BLOB for the new source (must be pre-existing)
+    SqlStmt = """
+    SELECT CT.Fields
+      FROM CitationTable CT
+      JOIN SourceTable ST ON CT.SourceId = ST.SourceID
+      WHERE CT.SourceID = ? AND CT.CitationName = "sample citation"
+      """
+    cur = conn.cursor()
+    cur.execute(SqlStmt, (newSourceID,))
+    citField = cur.fetchone()[0].decode()
+
+    citRoot = ET.fromstring(citField)
+    citFields = citRoot.find("Fields")
+
+    citFields.iterfind("Field")
+    for item in citField:
+        if item[0] == "Name":
+            item[1] = results[0]
+        if item[0] == "Number":
+            item[1] = results[1]
+        if item[0] == "BirthDate":
+            item[1] = results[2]
+        if item[0] == "SSDate":
+            item[1] = results[3]
+        if item[0] == "AccessDate":
+            item[1] = AccessDate
+
+
+    newFields = ET.dump(citRoot)
+    print ("newFields= \n" , newFields)
+
+    SqlStmt = """
+    UPDATE CitationTable
+      SET Fields = ?
+      WHERE CitationID = ?
+      """
+    cur = conn.cursor()
+    cur.execute(SqlStmt, (newFields, citationIDToMove,) )
+
+
+# delete the old src
     SqlStmt = """
     DELETE from SourceTable
       WHERE SourceID = ?
       """
+    cur = conn.cursor()
     cur.execute(SqlStmt, (oldSourceID,))
 
     conn.commit()
 
     return
-
-
-# ================================================================
-def Convert (conn, oldSrc, NewSourceID):
-    MoveCitation ( conn, oldSrc, NewSourceID)
-
-    return
-
-
-
-# ================================================================
-def TimeStamp():
-     # return a TimeStamp string
-     now = datetime.now()
-     dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
-     return dt_string
 
 
 # ================================================================
@@ -205,7 +269,9 @@ SELECT SourceID
 
     for oldSrc in SourcesToLump:
     # let's just do one
-   # oldSrc = 66
+    # oldSrc = 66
+        print ("=====================================================")
+
         print (oldSrc)
         Convert (conn, oldSrc, NewSourceID)
 

@@ -128,5 +128,63 @@ each website would need a diff source, but with same template.
 
 WOULD BE NICE TO HAVE A FIELD FOR SSACI THAT INDICATE LSTING OF PARENTS.
 
+All citation records are trimmed.
+All source records that have been modofed in RM8 and have a UTCModDate, are trimmed.
+
+
 Citation table 
 <Root><Fields><Field><Name>CD</Name><Value></Value></Field></Fields></Root>
+
+
+Src table Fields
+..<?xml version="1.0" encoding="UTF-8"?>.
+<Root>
+<Fields>
+<Field><Name>Title</Name><Value>Dharma Treasures- Spiritual Insights from Hawaii&apos;s Shin Buddhist Pioneers.</Value></Field>
+<Field><Name>ShortTitle</Name><Value>Dharma Treasures</Value></Field>
+<Field><Name>Author</Name><Value>Tatsuo Muneto</Value></Field>
+<Field><Name>PublishDate</Name><Value>1997</Value></Field>
+<Field><Name>Publisher</Name><Value>Bhuddist Study Center Press</Value></Field>
+<Field><Name>PublisherAddress</Name><Value>Honpa Hongwanji Mission, 1727 Pali Highway, Honolulu, HI 96813</Value></Field>
+<Field><Name>CD</Name><Value/></Field>
+</Fields>
+</Root>.
+
+
+
+Citation Table Fields
+<Root>
+<Fields>
+    <Field><Name>Name</Name><Value>Martin Schwarz</Value></Field>
+    <Field><Name>BirthDate</Name><Value>1878</Value></Field>
+    <Field><Name>EventDate</Name><Value>25 January 1957</Value></Field>
+    <Field><Name>CD</Name><Value></Value></Field>
+    <Field><Name>DateCitation</Name><Value>27 November 2021</Value></Field>
+    <Field><Name>SrcCitation </Name><Value>The Miami Herald; Publication Date: 25 Jan 1957; Publication Place: Miami, Florida, USA; URL: https://www.newspapers.com/image/618738175/?article=b76ae0bb-94df-496e-b292-46dfa83381e9&amp;focus=0.14746958,0.2750365,0.26154417,0.4597442&amp;xid=3355</Value></Field>
+</Fields>
+</Root>
+
+
+    root = ET.fromstring(srcFieldsStr)
+    root.find("Field")
+
+
+    new citation
+
+<Root>
+<Fields>
+ <Field><Name>BirthDate</Name><Value></Value></Field>
+ <Field><Name>Number</Name><Value></Value></Field>
+ <Field><Name>SSDate</Name><Value></Value></Field>
+ <Field><Name>CitationDate</Name><Value></Value></Field>
+ <Field><Name>AccessType</Name><Value></Value></Field>
+</Fields>
+</Root>
+
+
+Name		Name
+BirthDate	get it from SSDI
+Number		get it from SSDI
+SSDate		get it from SSDI
+CitationDate	copy from old Src
+AccessType		"downloaded"
