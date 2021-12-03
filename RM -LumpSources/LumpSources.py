@@ -196,7 +196,7 @@ def Convert ( conn, oldSourceID, newSourceID):
     for item in newFields:
         if item[0].text == "Name":
             item[1].text = results[0]
-        if item[0].text == "Number":
+        if item[0].text == "SSN":
             item[1].text = results[1]
         if item[0].text == "BirthDate":
             item[1].text = results[2]
