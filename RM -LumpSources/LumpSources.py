@@ -62,8 +62,7 @@ def Convert ( conn, oldSourceID, newSourceID):
     citationIDToMove = citationsIDs[0][0]
 
 
-# Copy the SourceTable.Name => CitationTable.CitationName
-# Copy the SourceTable.UTCModDate => CitationTable.UTCModDate
+# Copy the SourceTable.Name => CitationTable.CitationName and UTCModDate
     SqlStmt = """
     UPDATE CitationTable
       SET (CitationName, ActualText, Comments, UTCModDate) = (SELECT Name, ActualText, Comments, UTCModDate FROM SourceTable WHERE SourceID = ?)
@@ -137,17 +136,19 @@ def Convert ( conn, oldSourceID, newSourceID):
     srcFields.iterfind("Field")
 
     AccessDate  = None
-    Name        = None
-    BirthDate   = None
-    Number      = None
-    SSDate      = None
+#    Name        = None
+#    BirthDate   = None
+#    Number      = None
+#    SSDate      = None
 
     for item in srcFields:
         if item[0].text == "AccessDate":
             AccessDate= item[1].text
 
+#    print ("date=", AccessDate)
 
     # Parse the ActualText field for needed info
+    # using only AccessDate
     SqlStmt = """
     SELECT ActualText
       FROM CitationTable
@@ -157,16 +158,25 @@ def Convert ( conn, oldSourceID, newSourceID):
     cur.execute(SqlStmt, (citationIDToMove,))
     actualText = cur.fetchone()[0]
 
+    print(actualText)
     LastFoundLoc = 0
-    searchStrings = ['Name: ', 'Social Security Number: ', 'Birth Date: ', 'Issue Year: ' ]
+    searchStrings = ['Name:\t', 'Social Security Number:\t', 'Birth Date:\t', 'Issue Year:\t' ]
     results=[]
+    NL = "\n"
     for searchText in searchStrings:
-        NL = "\n"
         searchTextLoc = actualText.find(searchText, LastFoundLoc)
         endofLineLoc = actualText.find(NL, searchTextLoc)
-        results.append( actualText[searchTextLoc + len(searchText) : endofLineLoc] )
+        found = actualText[searchTextLoc + len(searchText) : endofLineLoc]
+        found = found.replace("\r", "")
+#        print (searchTextLoc, endofLineLoc, len(searchText))
+#        print ( searchTextLoc + len(searchText), endofLineLoc -searchTextLoc)
+#        print (len(found))
+#        print (found)
+        results.append(found)
         LastFoundLoc = endofLineLoc +1
 
+#    for each in results:
+#         print (each, "\n")
 
 # create an XML chunk that represents the citation fields of the source template used by the newSource
 # Get the CitationTable.Fields BLOB for the new source (must be pre-existing)
@@ -178,27 +188,25 @@ def Convert ( conn, oldSourceID, newSourceID):
       """
     cur = conn.cursor()
     cur.execute(SqlStmt, (newSourceID,))
-    citField = cur.fetchone()[0].decode()
+    newFieldTxt = cur.fetchone()[0].decode()
 
-    citRoot = ET.fromstring(citField)
-    citFields = citRoot.find("Fields")
+    newRoot = ET.fromstring(newFieldTxt)
+    newFields = newRoot.find("Fields")
+    newFields.findall("Field")
+    for item in newFields:
+        if item[0].text == "Name":
+            item[1].text = results[0]
+        if item[0].text == "Number":
+            item[1].text = results[1]
+        if item[0].text == "BirthDate":
+            item[1].text = results[2]
+        if item[0].text == "SSDate":
+            item[1].text = results[3]
+        if item[0].text == "AccessDate":
+            item[1].text = AccessDate
 
-    citFields.iterfind("Field")
-    for item in citField:
-        if item[0] == "Name":
-            item[1] = results[0]
-        if item[0] == "Number":
-            item[1] = results[1]
-        if item[0] == "BirthDate":
-            item[1] = results[2]
-        if item[0] == "SSDate":
-            item[1] = results[3]
-        if item[0] == "AccessDate":
-            item[1] = AccessDate
-
-
-    newFields = ET.dump(citRoot)
-    print ("newFields= \n" , newFields)
+#    print ("ET.tostring(newRoot)")
+#    print (ET.tostring(newRoot))
 
     SqlStmt = """
     UPDATE CitationTable
@@ -206,7 +214,7 @@ def Convert ( conn, oldSourceID, newSourceID):
       WHERE CitationID = ?
       """
     cur = conn.cursor()
-    cur.execute(SqlStmt, (newFields, citationIDToMove,) )
+    cur.execute(SqlStmt, (ET.tostring(newRoot), citationIDToMove,) )
 
 
 # delete the old src
