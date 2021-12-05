@@ -8,9 +8,13 @@ Have lots of them.
 Go thru them looking for srcs that have more than one citation.
 Usually they can be merged into a blank citation. There was never much value in repeating info
 from the source in the source detail field and have it print.
+This was not necessary. Now move them all and then merge.
+It was useful to cofirm that citations to old source has no info to be saved.
+
 
 OLD DATA =========================
-Source template is _SSDI: Ancestry.com
+old source template     _SSDI:Ancestry.com      TemplateID=10008
+old source              mnay
 
 has 4 custom fields=
 FileNumber
@@ -20,12 +24,10 @@ AccessDate
 =citation=
 CD
 
-ALL FIELDS=
+
+STANDARD FIELDS=
 
 Source Name
-File Number
-Subject
-AccessDate
 
 Source Text
 Source Comment
@@ -36,7 +38,7 @@ Web Tags
 Used
 UTCmodDate		
 
-In citation
+=citation=
 Research Note
 Detail Comment
 
@@ -45,24 +47,15 @@ WebTags
 cit Used
 
 Quality
-Source
-Information
-Evidence
+  Source
+  Information
+  Evidence
 
-
-=========================
-
-
-start with a SSDIdb source
-
-New source Template
-Make it specific for SSDI or SSACI
-
-So use it to create 2 sources- SSDI Ancestry and SSACI Ancestry
 
 
 NEW DATA =========================
-Source template is _SSDI: Ancestry.com
+new source template     _Docial Security Data
+new source              ID 5503             has "sample citation"
 
 has 13 custom fields=
 Owner           
@@ -81,10 +74,14 @@ AccessDate
 Acesstype
 ParentsInfo
 
+ =========================
+ CONVERSION PLAN
 
-ALL FIELDS=
+ The fields in the new source are filled in manually
+ It's the fields in the citations that will be filled in by script.
 
-Source Name	    
+=ALL SRC FIELDS=
+Source Name	    SSDIdb ANC US
 Owner
 WebsiteTitle	
 URL				
@@ -93,29 +90,29 @@ DataType		SSDI or SSACI
 DbInfoDate		when source was updated
 
 Source Text		full info about database		CitationTable.ActualText	=	SourceTable.ActualText
-SourceComment									SourceTable.Comments			SourceTable.Comments
+SourceComment	
 
 Media			NULL
 Repositories	Ancestry repo
 Web Tags		URL of ancestry database
 Used			<output>
 
-In citation
-CitationName	SourceTable.Name
-Name			parse data
-BirthDate		parse data
-SSN			parse data
-SSDate			parse data
-AccessDate	=	AccessDate
-AccessType		NULL
-ParentsInfo     NULL
+=ALL CITATION FIELDS=
+new citation field          old source field
+CitationName                SourceTable.Name
+Name                        parse data
+BirthDate                   parse data
+SSN                         parse data
+SSDate                      parse data
+AccessDate                  AccessDate
+AccessType                  NULL
+ParentsInfo                 NULL
 
-ResearchNote	=	SourceText
-DetailComment	=	SourceComment
-UTCmodDate		=	UTCModDate	
+ResearchNote                SourceText
+DetailComment               SourceComment
+UTCmodDate                  UTCModDate
 
-Research Note	full listing of record
-Detail Comment	any notes relating to src
+
 
 =======================================
 
@@ -174,10 +171,6 @@ New is predominant.
 Change all to new format and make sure all have a web tag
 
 ancestry pasting-
-sometimes there is a DC4 (char 20) char before value in table instead of tab.
-(when pasting to notepad, it is converted to a space.
-In older formats, there is a 20 char before and after value.
-
 each line has a 0d 0a, as expected.
 
 
@@ -187,4 +180,120 @@ check number of citations for improvements
 
 SSACI lumping-
 deal with most have 2 citation- blank and Lists parents, lists father etc
+remove limitations and handle each citation
 
+=====================================================
+typical recod-
+
+Name:	Hilda Sauer
+[Hilda Stamm]
+Gender:	Female
+Race:	White
+Birth Date:	6 Oct 1900
+Birth Place:	Hausen, Federal Republic of Germany
+Death Date:	13 Apr 1998
+Father:	John Stamm
+Mother:	Josepha Stamm
+SSN:	061525080
+Notes:	28 Aug 1972: Name listed as HILDA SAUER
+=====================================================
+=====================================================
+old source template     _SSACI-Ancestry     TemplateID=10033
+old source              mnany
+
+has 4 custom fields
+FileNumber
+Subject
+AccessDate
+
+=citation=
+CD
+
+=====================================================
+new source template     _Social Security Data
+new source              ID 5503     has "sample citation"
+
+
+has 13 custom fields=
+Owner           
+WebsiteTitle	
+URL				
+DatabaseName	
+DataType		
+DbInfoDate		
+
+=citation=
+Name
+BirthDate
+SSN
+SSDate
+AccessDate
+Acesstype
+ParentsInfo
+=====================================================
+=====================================================
+
+decission- do not include a CD firld in new source template
+for ssaci, the CD was used to indicate "lists parets" etc so that when a child's SSACI source
+was attached to a parent "person", one could see in the source list why.
+Instead, use the Evience "tag" in the Note for a fact to summarize evidence.
+Leave the existing data as is, when lumped, it won't have a CD to distinguis the citations. They can then be merged by RM.
+
+=====================================================
+
+
+  SSDI      searchStrings = ['Name:\t', 'Social Security Number:\t', 'Birth Date:\t', 'Issue Year:\t' ]
+  SSACI     searchStrings = ['Name:\t', 'Birth Date:\t', 'Father:\t', 'SSN:\t' ]
+=====================================================
+
+Fill in new citation fields
+=custom fields=
+Name			parse data
+BirthDate		parse data
+SSN			    parse data
+SSDate			NULL
+AccessDate	=	AccessDate
+AccessType		NULL
+ParentsInfo     yes if Father is found
+
+=standard fields=
+CitationName	    SourceTable.Name
+ResearchNote		SourceText
+DetailComment		SourceComment
+UTCmodDate			UTCModDate	
+
+media           check- what is done with medialinktable
+citation use    seems to be done
+web links       done
+
+=====================================================
+
+DONE  works as expected.  add a test media item to old source to be sure it follows citation
+note web links and media cattached to old source  citations are lost.
+
+
+
+
+=====================================================
+number of source to process:  440
+=====================================================
+3776
+=====================================================
+3778
+=====================================================
+3779
+=====================================================
+3780
+=====================================================
+3781
+=====================================================
+3782
+Traceback (most recent call last):
+  File "C:\Users\rotter\Development\Genealogy\Genealogy-scripts\RM -LumpSources\LumpSources.py", line 307, in <module>
+    main()
+  File "C:\Users\rotter\Development\Genealogy\Genealogy-scripts\RM -LumpSources\LumpSources.py", line 299, in main
+    Convert (conn, oldSrc, NewSourceID)
+  File "C:\Users\rotter\Development\Genealogy\Genealogy-scripts\RM -LumpSources\LumpSources.py", line 122, in Convert
+    origSrcField = cur.fetchone()[0].decode()
+TypeError: 'NoneType' object is not subscriptable
+Press any key to continue . . .
