@@ -178,10 +178,14 @@ def Convert ( conn, oldSourceID, newSourceID):
             #print (found)
 
 
-        if runChoice == "SSACI" and results.get("ParentsInfo",None) != None:
-           results["ParentsInfo"] = "yes"
-        else:
-           results["ParentsInfo"] = "no"
+        if runChoice == "SSACI":
+            if results.get("ParentsInfo",None) != None:
+                results["ParentsInfo"] = "yes"
+            else:
+                results["ParentsInfo"] = "no"
+            # fix up SSN
+            SSN = results["SSN"]
+            results["SSN"] = SSN[0:3] + '-' + SSN[3:5] + "-" + SSN[5:9]
 
         #print ("found data in results")
         #for each in searchStrings:
@@ -231,7 +235,7 @@ def Convert ( conn, oldSourceID, newSourceID):
         cur.execute(SqlStmt, (ET.tostring(newRoot), citationIDToMove,) )
 
         conn.commit()
-        #print ("after comit")
+        #print ("after commit")
         #end loop for citations
 
     # delete the old src
@@ -246,8 +250,9 @@ def Convert ( conn, oldSourceID, newSourceID):
 
     return
 
-runChoice = "SSDI"
-#runChoice = "SSACI"
+# need to merge dup citations after SSACI run
+#runChoice = "SSDI"
+runChoice = "SSACI"
 # ================================================================
 def main():
 
