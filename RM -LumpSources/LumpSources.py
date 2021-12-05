@@ -13,7 +13,7 @@ import sys
 ##   RootsMagic v8 database file
 ##   RM-Python-config.ini  ( Configuration ini file to set options and parameters)
 ##   unifuzz64.dll
-##   Python v3.10 or greater
+##   tested with Python v3.10
 
 
 # ================================================================
@@ -54,14 +54,9 @@ def getCitationsToMove ( conn, oldSourceID):
 
     citationIDsToMove= []
 
-    # test number of citatons found
-    if len(citationsIDs) > 0 :
-        # if 0, i.e. not used, leave it alone to make it stand out for needing further genealogical work
-
-        # change the data structure from list of tuples to list of ints
-        for each in citationsIDs:
-            citationIDsToMove.append(each[0])
-        # debug     print (citationIDsToMove)
+    # change the data structure from list of tuples to list of ints
+    for each in citationsIDs:
+        citationIDsToMove.append(each[0])
 
     return citationIDsToMove
 
@@ -70,8 +65,12 @@ def getCitationsToMove ( conn, oldSourceID):
 def Convert ( conn, oldSourceID, newSourceID):
 
     citationIDsToMove= getCitationsToMove(conn,oldSourceID)
+    if len(citationIDsToMove) == 0:  return
 
+    citNum=0
     for citationIDToMove in citationIDsToMove:
+        citNum = citNum + 1
+        #if citNum > 1: input("cit enter to continue")
 
     # Copy the Standard and hidden fields from old src to citationToMove
         SqlStmt = """
@@ -128,19 +127,6 @@ def Convert ( conn, oldSourceID, newSourceID):
         if rootLoc != 0:
           srcField = srcField[rootLoc::]
 
-    #   Test for trailing junk (thought I saw a trailing period in some records ???
-    #    xmlEnd = "</Root>"
-    #    rootEndLoc=srcField.find(xmlEnd)
-    #    srcLength = len(srcField)
-    #    if rootEndLoc != srcLength -len(xmlEnd):
-    #      srcField = srcField[0:rootEndLoc + len(xmlEnd):]
-
-    # debug    if len(srcField) != len(origSrcField):
-    # debug        print ("orig srcField")
-    # debug        print (origSrcField)
-    # debug        print ("fixed srcField")
-    # debug        print (srcField)
-
         # read into DOM and parse for needed values (currently, only AccessDate)
         srcRoot = ET.fromstring(srcField)
         srcFields = srcRoot.find("Fields")
@@ -151,7 +137,7 @@ def Convert ( conn, oldSourceID, newSourceID):
             if item[0].text == "AccessDate":
                 AccessDate= item[1].text
 
-    # debug         print ("date=", AccessDate)
+        #print ("date=", AccessDate)
 
         # Parse the ActualText field for needed info (unlikely to be used for most runs)
 
@@ -165,32 +151,44 @@ def Convert ( conn, oldSourceID, newSourceID):
         cur.execute(SqlStmt, (citationIDToMove,))
         actualText = cur.fetchone()[0]
 
-      # debug       print(actualText)
-        print(actualText)
-        LastFoundLoc = 0
-        # SSDI   searchStrings = ['Name:\t', 'Social Security Number:\t', 'Birth Date:\t', 'Issue Year:\t' ]
-        searchStrings = ['Name:\t', 'Birth Date:\t', 'SSN:\t' ]
-        # , 'Father:\t'
+        #print(actualText)
+        if runChoice == "SSDI":
+           searchStrings = [['Name:','Name'], ['Social Security Number:','SSN'], ['Birth Date:','BirthDate'], ['Issue Year:','SSDate'] ]
+        else:
+           searchStrings = [['Name:','Name'], ['Birth Date:','BirthDate'], ['SSN:','SSN'], ['Father:','ParentsInfo'] ]
 
-        results=[]
+        # Some entries have tab, others have space before value.
+        if actualText.find('\t') == -1: 
+            sepChar = ' '
+        else: sepChar = '\t'
+
+        results={}
         NL = "\n"
         for searchText in searchStrings:
-            searchTextLoc = actualText.find(searchText, LastFoundLoc)
+            searchTextLoc = actualText.find(searchText[0] + sepChar)
+            if searchTextLoc == -1: continue
             endofLineLoc = actualText.find(NL, searchTextLoc)
-            found = actualText[searchTextLoc + len(searchText) : endofLineLoc]
+            found = actualText[searchTextLoc + len(searchText[0]) +1 : endofLineLoc]
             found = found.replace("\r", "")
-    # debug             print (searchTextLoc, endofLineLoc, len(searchText))
-    # debug             print ( searchTextLoc + len(searchText), endofLineLoc -searchTextLoc)
-    # debug             print (len(found))
-    # debug             print (found)
-            results.append(found)
-            LastFoundLoc = endofLineLoc +1
+            results[searchText[1]] = found
+            #print (searchText[0] + sepChar+ "=search text")
+            #print (searchTextLoc, endofLineLoc, len(searchText[0]))
+            #print (searchTextLoc + len(searchText[0]), endofLineLoc -searchTextLoc)
+            #print (len(found))
+            #print (found)
 
-    # debug         for each in results:
-    # debug              print (each, "\n")
 
-    # create an XML chunk that represents the citation fields of the source template used by the newSource
-    # Get the CitationTable.Fields BLOB for the new source (must be pre-existing and named "sample citation")
+        if runChoice == "SSACI" and results.get("ParentsInfo",None) != None:
+           results["ParentsInfo"] = "yes"
+        else:
+           results["ParentsInfo"] = "no"
+
+        #print ("found data in results")
+        #for each in searchStrings:
+        #    print (results.get(each[1],None), "\n")
+
+        # create an XML chunk that represents the citation fields of the source template used by the newSource
+        # Get the CitationTable.Fields BLOB for the new source (must be pre-existing and named "sample citation")
         SqlStmt = """
         SELECT CT.Fields
           FROM CitationTable CT
@@ -201,22 +199,28 @@ def Convert ( conn, oldSourceID, newSourceID):
         cur.execute(SqlStmt, (newSourceID,))
         newFieldTxt = cur.fetchone()[0].decode()
 
-        # this shoud be improved. Order of data in list depends on order of search strings.
         newRoot = ET.fromstring(newFieldTxt)
         newFields = newRoot.find("Fields")
         newFields.findall("Field")
         for item in newFields:
-            if item[0].text == "Name":
-                item[1].text = results[0]
-            if item[0].text == "BirthDate":
-                item[1].text = results[1]
-            if item[0].text == "SSN":
-                item[1].text = results[2]
             if item[0].text == "AccessDate":
                 item[1].text = AccessDate
+            for each in searchStrings:
+                if item[0].text == each[1]:
+                    item[1].text = results.get(each[1], None)
 
-    # debug         print ("ET.tostring(newRoot)")
-    # debug         print (ET.tostring(newRoot))
+            #if item[0].text == "Name":
+            #    item[1].text = results.get(searchStrings[0], None)
+            #if item[0].text == "BirthDate":
+            #    item[1].text = results.get(searchStrings[1], None)
+            #if item[0].text == "SSN":
+            #    item[1].text = results.get(searchStrings[2], None)
+            #if item[0].text == "ParentsInfo":
+            #    item[1].text = "yes" if (results.get(searchStrings[3], None) !=  None) else "no"
+
+
+        #print ("ET.tostring(newRoot)")
+        #print (ET.tostring(newRoot))
 
         SqlStmt = """
         UPDATE CitationTable
@@ -226,6 +230,8 @@ def Convert ( conn, oldSourceID, newSourceID):
         cur = conn.cursor()
         cur.execute(SqlStmt, (ET.tostring(newRoot), citationIDToMove,) )
 
+        conn.commit()
+        #print ("after comit")
         #end loop for citations
 
     # delete the old src
@@ -240,7 +246,8 @@ def Convert ( conn, oldSourceID, newSourceID):
 
     return
 
-
+runChoice = "SSDI"
+#runChoice = "SSACI"
 # ================================================================
 def main():
 
@@ -261,7 +268,7 @@ def main():
     RMNOCASE_Path = config['File Paths']['RMNOCASE_PATH']
 
     if not os.path.exists(database_Path):
-        print('Database path not found')
+        print('Database path not found. Fix configuration file and try again.')
         return
 
 
@@ -271,25 +278,31 @@ def main():
       conn.load_extension(RMNOCASE_Path)
 
     # specify which source is to get the converted citations
-    # for SSDI NewSourceID = 5502
-    NewSourceID = 5503
+    if runChoice == "SSDI":
+        NewSourceID = 5502
+    else:
+        NewSourceID = 5503
 
 # List the sources to be lumped
-#                 SqlStmt="""\
-#             SELECT SourceID
-#               FROM SourceTable
-#               WHERE  Name LIKE 'SSDI%'
-#                      AND TemplateID=10008
-#             """
+    SqlStmt_SSDI="""\
+SELECT SourceID
+  FROM SourceTable
+  WHERE  Name LIKE 'SSDI%'
+         AND TemplateID=10008
+"""
 
-    SqlStmt="""\
+    SqlStmt_SSACI="""\
 SELECT SourceID
   FROM SourceTable
   WHERE  Name LIKE 'SSACI%'
          AND TemplateID=10033
 """
-    SourcesToLump = GetListOfRows( conn, SqlStmt)
+    if runChoice=="SSDI":
+        SourcesToLump = GetListOfRows( conn, SqlStmt_SSDI)
+    else:
+        SourcesToLump = GetListOfRows( conn, SqlStmt_SSACI)
     print ("number of source to process: ", len(SourcesToLump))
+    print ("Type of run is ", runChoice)
 
     for oldSrc in SourcesToLump:
         print ("=====================================================")

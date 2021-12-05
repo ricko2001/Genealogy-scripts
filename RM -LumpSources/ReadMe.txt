@@ -254,7 +254,7 @@ SSN			    parse data
 SSDate			NULL
 AccessDate	=	AccessDate
 AccessType		NULL
-ParentsInfo     yes if Father is found
+ParentsInfo     set to yes if Father is found
 
 =standard fields=
 CitationName	    SourceTable.Name
@@ -262,38 +262,32 @@ ResearchNote		SourceText
 DetailComment		SourceComment
 UTCmodDate			UTCModDate	
 
-media           check- what is done with medialinktable
-citation use    seems to be done
-web links       done
+media           done & tested
+citation use    done & tested
+web links       done & tested
 
 =====================================================
 
-DONE  works as expected.  add a test media item to old source to be sure it follows citation
+
 note web links and media cattached to old source  citations are lost.
 
 
+Figure out text parsing of actualText field.
+DOn't want it to depend on order of search.
+So LastPos may not be needed.
+
+becasue in SSACI, the SSN is at end. always there
+but father may not be there.
+
+Nice to have- add dashes to SSN in SSN field
+
+=====================================================
+=====================================================
 
 
-=====================================================
-number of source to process:  440
-=====================================================
-3776
-=====================================================
-3778
-=====================================================
-3779
-=====================================================
-3780
-=====================================================
-3781
-=====================================================
-3782
-Traceback (most recent call last):
-  File "C:\Users\rotter\Development\Genealogy\Genealogy-scripts\RM -LumpSources\LumpSources.py", line 307, in <module>
-    main()
-  File "C:\Users\rotter\Development\Genealogy\Genealogy-scripts\RM -LumpSources\LumpSources.py", line 299, in main
-    Convert (conn, oldSrc, NewSourceID)
-  File "C:\Users\rotter\Development\Genealogy\Genealogy-scripts\RM -LumpSources\LumpSources.py", line 122, in Convert
-    origSrcField = cur.fetchone()[0].decode()
-TypeError: 'NoneType' object is not subscriptable
-Press any key to continue . . .
+
+move web tags from src to moved citation- but what about second and following citations. They don'e get copies.
+But they will after merge of dup citations at end.
+
+actual dat copied from old src to cittomove then copied and printed. should it always be gotten from orig src?
+
