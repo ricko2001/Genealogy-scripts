@@ -273,11 +273,6 @@ note web links and media cattached to old source  citations are lost.
 
 
 Figure out text parsing of actualText field.
-DOn't want it to depend on order of search.
-So LastPos may not be needed.
-
-becasue in SSACI, the SSN is at end. always there
-but father may not be there.
 
 Nice to have- add dashes to SSN in SSN field
 
@@ -288,6 +283,4 @@ Nice to have- add dashes to SSN in SSN field
 
 move web tags from src to moved citation- but what about second and following citations. They don'e get copies.
 But they will after merge of dup citations at end.
-
-actual dat copied from old src to cittomove then copied and printed. should it always be gotten from orig src?
 

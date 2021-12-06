@@ -7,6 +7,11 @@ import configparser
 import xml.etree.ElementTree as ET
 import sys
 
+# need to merge dup citations after SSACI run
+runChoice = "SSDI"
+#runChoice = "SSACI"
+
+
 ## WARNING make a known-good backup of the rmtree file before use.
 
 ##  Requirements: (see ReadMe.txt for details)
@@ -250,9 +255,7 @@ def Convert ( conn, oldSourceID, newSourceID):
 
     return
 
-# need to merge dup citations after SSACI run
-#runChoice = "SSDI"
-runChoice = "SSACI"
+
 # ================================================================
 def main():
 
