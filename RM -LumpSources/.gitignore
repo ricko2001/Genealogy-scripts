@@ -8,6 +8,8 @@
 
 .vs/
 
+*.cmd
+
 ExternalFilesReport.txt
 
 DEV_RM-Python-config.ini
