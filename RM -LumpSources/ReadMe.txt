@@ -1,22 +1,20 @@
-Un-split source scripts
+Un-split source script
 
-Start with a specific group of sources. Can generalize it later, if desired.
+Start with a specific group of sources. Might generalize it later, if desired.
 
-Start with SSDI sources.
-Have lots of them.
+Currently handles 2 sets of sources in my database-
+SSDI and SSACI sources.  Have lots of them.
 
-Go thru them looking for srcs that have more than one citation.
-Usually they can be merged into a blank citation. There was never much value in repeating info
-from the source in the source detail field and have it print.
-This was not necessary. Now move them all and then merge.
-It was useful to cofirm that citations to old source has no info to be saved.
-
+The existing multitude of SSDI and SSACI sources were created with the templates 
+described immediately below as OLD DATA.
 
 OLD DATA =========================
-old source template     _SSDI:Ancestry.com      TemplateID=10008
-old source              mnay
+old source template		_SSDI:Ancestry.com				TemplateID=10008
+old source				many, each source name in the form:  SSDI Lname,Fname bYYYY
+Each source had multiple citations. 
+has 4 custom fields
 
-has 4 custom fields=
+=master source=
 FileNumber
 Subject
 AccessDate
@@ -25,45 +23,31 @@ AccessDate
 CD
 
 
-STANDARD FIELDS=
+OLD DATA =========================
+old source template		_SSACI-Ancestry					TemplateID=10033
+old source				many, each source name in the form:  SSACI Lname,Fname bYYYY
+has 4 custom fields
 
-Source Name
-
-Source Text
-Source Comment
-
-Media
-Repositories
-Web Tags
-Used
-UTCmodDate		
+=master source=
+FileNumber
+Subject
+AccessDate
 
 =citation=
-Research Note
-Detail Comment
-
-Media
-WebTags
-cit Used
-
-Quality
-  Source
-  Information
-  Evidence
-
+CD
 
 
 NEW DATA =========================
-new source template     _Docial Security Data
-new source              ID 5503             has "sample citation"
+new source template     _Social Security Data
+has 13 custom fields
 
-has 13 custom fields=
-Owner           
-WebsiteTitle	
-URL				
-DatabaseName	
-DataType		
-DbInfoDate		
+=master source=
+Owner
+WebsiteTitle
+URL
+DatabaseName
+DataType
+DbInfoDate
 
 =citation=
 Name
@@ -74,31 +58,48 @@ AccessDate
 Acesstype
 ParentsInfo
 
- =========================
- CONVERSION PLAN
+==============================================
+It was decided to create one source template that would be the basis of SSDI and SSACI data
+from possibly multiple on-line sources.
+A new template was created- " _Social Security Data"
 
- The fields in the new source are filled in manually
- It's the fields in the citations that will be filled in by script.
+Note that the new template does not have a CitationDetail field in the citation section.
+My old style used the CitationDetail field to explain what data in the source is being cited 
+and why the source was attached.
 
-=ALL SRC FIELDS=
-Source Name	    SSDIdb ANC US
-Owner
-WebsiteTitle	
-URL				
-DatabaseName	Ancestry database name for SSDI
-DataType		SSDI or SSACI
-DbInfoDate		when source was updated
+Instead, explain why its attached in a narrative research summary for each fact, not in 
+the source or citation. No need to cite the data since the the transcription of the data is so small.
 
-Source Text		full info about database		CitationTable.ActualText	=	SourceTable.ActualText
-SourceComment	
 
-Media			NULL
-Repositories	Ancestry repo
-Web Tags		URL of ancestry database
-Used			<output>
+New Data will consist of citations to a new Master Source.
+One Master Source will be for SSDI records in Ancestry, the other SSACI records in Ancestry.
+These are both created with the new Source Template "_Social Security Data" described above.
+Only the fields need to be finalized now. Source sentence can follow later.
 
-=ALL CITATION FIELDS=
+new sources
+SSACIdb ANC US		ID 5502			has "sample citation"
+SSDIdb ANC US		ID 5503			has "sample citation"
+
+note-
+web links and media attached to old source citations are lost. (there are none)
+Actually- is this true? Not checked. If there were any, they should be carried over after the citation is moved.
+Text in Citation Note fields- Research note and Research comment (?) are not preserved.
+
+
+==============================================
+CONVERSION PLAN
+
+This plan assumes that no information in existing citations need to be preserved- except the link to the uses of the citation.
+
+Media items and Web Links attached to an old source will be moved to 
+the citation (that points to the new master source)
+
+The fields in the 2 new master sources are filled in manually.
+It's the fields in the citations that will be filled in by script.
+
+=citation=
 new citation field          old source field
+
 CitationName                SourceTable.Name
 Name                        parse data
 BirthDate                   parse data
@@ -106,84 +107,41 @@ SSN                         parse data
 SSDate                      parse data
 AccessDate                  AccessDate
 AccessType                  NULL
-ParentsInfo                 NULL
+ParentsInfo                 yes for SSACI when Father is found. NULL for SSDI
 
 ResearchNote                SourceText
 DetailComment               SourceComment
+
 UTCmodDate                  UTCModDate
 
-
-
+=======================================
 =======================================
 
-Create a source form the template
-SSDIdb ANC US
-Create a citation (empty, no uses) name it ""sample citation""
 
-=======================================
-
-Conversion process
-
-Figure out which group of sources will be lumped.
-do a select based on name and templateID 
-
-Get the SourceID of the source to get citations
-Let's assume all CD fields are blank and there is no citation in old source. This is true for this first implementation.
-
-Fill in its 
-Citation Name = SourceName
-Name		Name
-BirthDate	get it from SSDI
-SSN 		get it from SSDI
-SSDate		get it from SSDI
-CitationDate	copy from old Src
-AccessType		"downloaded"
-
-need to deal with XML fields
+==============================================
+CONVERSION Process
+Assume that future uses may deal more with moving data from custom fields to new custom fields.
+The SS data is so easy to parse, use it instead.
 
 have an old srcID and new srcID what next
 
-check how many citations linked to oldSrcID. stop if >1, skip if 0
+check how many citations linked to oldSrcID.
+skip if 0 
+(its not used. figure out what to do with it later)
 
-get info from oldSrc	XML
+get info from oldSrc	XML and Std fields
 
-Move the citation to newSrcID
-fill it in with old info	XML
+Move each citation to under the old source to the  newSrcID
+fill it in with old info	XML and Std fields
+Also move the UTCModDate field from old source to citation.
 
-
-
-if old source has more than one citation stop
-or has 0 citations, skip it
 This will change when other sources are lumped but makes sense for the SSDI specific conversion
 
 After an old src is processed, delete it.(it should have 0 citations 
-and web links, becasue they should have been changed already.)
-
-All citation records are trimmed.
-All source records that have been modofed in RM8 and have a UTCModDate, are trimmed.
-
-
-
-
-Parsing of SS data is a bit complicated
-2 forms of data, old has SSN, new has Social Scurity Number.
-New is predominant.
-Change all to new format and make sure all have a web tag
-
-ancestry pasting-
-each line has a 0d 0a, as expected.
-
-
-check number of citations for improvements
-
-
-
-SSACI lumping-
-deal with most have 2 citation- blank and Lists parents, lists father etc
-remove limitations and handle each citation
+and web links, because they should have been moved already.)
 
 =====================================================
-typical recod-
+typical record-  SSACI
 
 Name:	Hilda Sauer
 [Hilda Stamm]
@@ -196,91 +154,36 @@ Father:	John Stamm
 Mother:	Josepha Stamm
 SSN:	061525080
 Notes:	28 Aug 1972: Name listed as HILDA SAUER
-=====================================================
-=====================================================
-old source template     _SSACI-Ancestry     TemplateID=10033
-old source              mnany
-
-has 4 custom fields
-FileNumber
-Subject
-AccessDate
-
-=citation=
-CD
 
 =====================================================
-new source template     _Social Security Data
-new source              ID 5503     has "sample citation"
+typical record-  SSDI
 
-
-has 13 custom fields=
-Owner           
-WebsiteTitle	
-URL				
-DatabaseName	
-DataType		
-DbInfoDate		
-
-=citation=
-Name
-BirthDate
-SSN
-SSDate
-AccessDate
-Acesstype
-ParentsInfo
-=====================================================
-=====================================================
-
-decission- do not include a CD firld in new source template
-for ssaci, the CD was used to indicate "lists parets" etc so that when a child's SSACI source
-was attached to a parent "person", one could see in the source list why.
-Instead, use the Evience "tag" in the Note for a fact to summarize evidence.
-Leave the existing data as is, when lumped, it won't have a CD to distinguis the citations. They can then be merged by RM.
+Name: Charles Auzout
+Social Security Number: 433-05-9371
+Birth Date: 21 Nov 1896
+Issue Year: Before 1951
+Issue State: Louisiana
+Last Residence: 70117, New Orleans, Orleans, Louisiana, USA
+Death Date: Jul 1971
 
 =====================================================
 
+In this case,
+multiple citations to old source will create multiple identical citations to new source.
+Run Merge Identical Citations command in RM.
 
-  SSDI      searchStrings = ['Name:\t', 'Social Security Number:\t', 'Birth Date:\t', 'Issue Year:\t' ]
-  SSACI     searchStrings = ['Name:\t', 'Birth Date:\t', 'Father:\t', 'SSN:\t' ]
-=====================================================
+When web tags from src to moved citation to first citation but not second and following citations. They don't "get copies" until the merge is done in RM.
 
-Fill in new citation fields
-=custom fields=
-Name			parse data
-BirthDate		parse data
-SSN			    parse data
-SSDate			NULL
-AccessDate	=	AccessDate
-AccessType		NULL
-ParentsInfo     set to yes if Father is found
-
-=standard fields=
-CitationName	    SourceTable.Name
-ResearchNote		SourceText
-DetailComment		SourceComment
-UTCmodDate			UTCModDate	
-
-media           done & tested
-citation use    done & tested
-web links       done & tested
+check number of citation uses to check for proper use missing and duplicates for improvements
 
 =====================================================
-
-
-note web links and media cattached to old source  citations are lost.
-
-
-Figure out text parsing of actualText field.
-
-Nice to have- add dashes to SSN in SSN field
-
+=====================================================
+=====================================================
 =====================================================
 =====================================================
 
 
 
-move web tags from src to moved citation- but what about second and following citations. They don'e get copies.
-But they will after merge of dup citations at end.
+
+
 
