@@ -1,0 +1,16 @@
+
+# ignore shortcut files
+*.lnk
+
+# ignore RootsMagic database file
+*.rmgc
+*.rmtree
+
+.vs/
+
+ExternalFilesReport.txt
+
+DEV_RM-Python-config.ini
+DISTO_RM-Python-config.ini
+
+HIDE_*
