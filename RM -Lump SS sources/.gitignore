@@ -3,8 +3,7 @@
 *.lnk
 
 # ignore RootsMagic database file
-*.rmgc
-*.rmtree
+DB/
 
 .vs/
 
