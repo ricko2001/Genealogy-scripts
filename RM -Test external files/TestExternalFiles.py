@@ -234,7 +234,7 @@ def main():
       return
 
   config = configparser.ConfigParser()
-  config.read('RM-Python-config.ini', 'UTF-8')
+  config.read(IniFile, 'UTF-8')
 
   # Read file paths from ini file
   report_Path   = config['File Paths']['REPORT_PATH']
