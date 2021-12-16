@@ -1,0 +1,14 @@
+
+# ignore shortcut files
+*.lnk
+
+# ignore visual studio stuff
+.vs/
+
+# ignore test database stuff
+DB/
+
+
+DEV_RM-Python-config.ini
+DISTRO_RM-Python-config.ini
+HIDE_*
