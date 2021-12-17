@@ -144,57 +144,6 @@ def Convert ( conn, oldSourceID, newSourceID):
 
         #print ("date=", AccessDate)
 
-        # Parse the ActualText field for needed info (unlikely to be used for most runs)
-
-        # get the text data
-        SqlStmt = """
-        SELECT ActualText
-          FROM CitationTable
-          WHERE CitationID = ?
-          """
-        cur = conn.cursor()
-        cur.execute(SqlStmt, (citationIDToMove,))
-        actualText = cur.fetchone()[0]
-
-        #print(actualText)
-        if runChoice == "SSDI":
-           searchStrings = [['Name:','Name'], ['Social Security Number:','SSN'], ['Birth Date:','BirthDate'], ['Issue Year:','SSDate'] ]
-        else:
-           searchStrings = [['Name:','Name'], ['Birth Date:','BirthDate'], ['SSN:','SSN'], ['Father:','ParentsInfo'] ]
-
-        # Some entries have tab, others have space before value.
-        if actualText.find('\t') == -1: 
-            sepChar = ' '
-        else: sepChar = '\t'
-
-        results={}
-        NL = "\n"
-        for searchText in searchStrings:
-            searchTextLoc = actualText.find(searchText[0] + sepChar)
-            if searchTextLoc == -1: continue
-            endofLineLoc = actualText.find(NL, searchTextLoc)
-            found = actualText[searchTextLoc + len(searchText[0]) +1 : endofLineLoc]
-            found = found.replace("\r", "")
-            results[searchText[1]] = found
-            #print (searchText[0] + sepChar+ "=search text")
-            #print (searchTextLoc, endofLineLoc, len(searchText[0]))
-            #print (searchTextLoc + len(searchText[0]), endofLineLoc -searchTextLoc)
-            #print (len(found))
-            #print (found)
-
-
-        if runChoice == "SSACI":
-            if results.get("ParentsInfo",None) != None:
-                results["ParentsInfo"] = "yes"
-            else:
-                results["ParentsInfo"] = "no"
-            # fix up SSN
-            SSN = results["SSN"]
-            results["SSN"] = SSN[0:3] + '-' + SSN[3:5] + "-" + SSN[5:9]
-
-        #print ("found data in results")
-        #for each in searchStrings:
-        #    print (results.get(each[1],None), "\n")
 
         # create an XML chunk that represents the citation fields of the source template used by the newSource
         # Get the CitationTable.Fields BLOB for the new source (must be pre-existing and named "sample citation")
@@ -218,15 +167,6 @@ def Convert ( conn, oldSourceID, newSourceID):
                 if item[0].text == each[1]:
                     item[1].text = results.get(each[1], None)
 
-            #if item[0].text == "Name":
-            #    item[1].text = results.get(searchStrings[0], None)
-            #if item[0].text == "BirthDate":
-            #    item[1].text = results.get(searchStrings[1], None)
-            #if item[0].text == "SSN":
-            #    item[1].text = results.get(searchStrings[2], None)
-            #if item[0].text == "ParentsInfo":
-            #    item[1].text = "yes" if (results.get(searchStrings[3], None) !=  None) else "no"
-
 
         #print ("ET.tostring(newRoot)")
         #print (ET.tostring(newRoot))
@@ -243,14 +183,6 @@ def Convert ( conn, oldSourceID, newSourceID):
         #print ("after commit")
         #end loop for citations
 
-    # delete the old src
-    SqlStmt = """
-    DELETE from SourceTable
-        WHERE SourceID = ?
-        """
-    cur = conn.cursor()
-    cur.execute(SqlStmt, (oldSourceID,))
-    print ("delete-", oldSourceID)
     conn.commit()
 
     return
@@ -285,11 +217,6 @@ def main():
       conn.enable_load_extension(True)
       conn.load_extension(RMNOCASE_Path)
 
-    # specify which source is to get the converted citations
-    if runChoice == "SSDI":
-        NewSourceID = 5502
-    else:
-        NewSourceID = 5503
 
 # List the sources to be lumped
     SqlStmt_SSDI="""\
@@ -299,18 +226,8 @@ SELECT SourceID
          AND TemplateID=10008
 """
 
-    SqlStmt_SSACI="""\
-SELECT SourceID
-  FROM SourceTable
-  WHERE  Name LIKE 'SSACI%'
-         AND TemplateID=10033
-"""
-    if runChoice=="SSDI":
-        SourcesToLump = GetListOfRows( conn, SqlStmt_SSDI)
-    else:
-        SourcesToLump = GetListOfRows( conn, SqlStmt_SSACI)
-    print ("number of source to process: ", len(SourcesToLump))
-    print ("Type of run is ", runChoice)
+
+    SourcesToLump = GetListOfRows( conn, SqlStmt_SSDI)
 
     for oldSrc in SourcesToLump:
         print ("=====================================================")

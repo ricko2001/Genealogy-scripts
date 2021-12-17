@@ -5,89 +5,69 @@ Presume that not all sources with the oldST should be chagned, so first need
 to select the group of sources based on source name. Confirm that all selected sources have the same oldST.
 
 
-
-The existing multitude of SSDI and SSACI sources were created with the templates 
-described immediately below as OLD DATA.
-
-OLD DATA =========================
-old source template		_SSDI:Ancestry.com				TemplateID=10008
-old source				many, each source name in the form:  SSDI Lname,Fname bYYYY
-Each source had multiple citations. 
-has 4 custom fields
-
-=master source=
-FileNumber
-Subject
-AccessDate
-
-=citation=
-CD
+all three have XML data-
+SourceTemplateTable		FieldDefs
+SourceTable				Fields
+CitationTable			Fields
 
 
 OLD DATA =========================
-old source template		_SSACI-Ancestry					TemplateID=10033
-old source				many, each source name in the form:  SSACI Lname,Fname bYYYY
-has 4 custom fields
+old source template		oldST
+old source				oldSRC
+old citations			oldCITn
 
-=master source=
-FileNumber
-Subject
-AccessDate
-
-=citation=
-CD
+OLD DATA =========================
 
 
 NEW DATA =========================
-new source template     _Social Security Data
-has 13 custom fields
+new source template		newST
+new source				newSRC
+new citations.			newCITn
 
-=master source=
-Owner
-WebsiteTitle
-URL
-DatabaseName
-DataType
-DbInfoDate
+NEW DATA =========================
 
-=citation=
-Name
-BirthDate
-SSN
-SSDate
-AccessDate
-Acesstype
-ParentsInfo
+Have list of fields in oldST and list of fields in newST
+need to compare the 2.
+create an option to list the fields in old and new and print out so 
+they can be copied and placed in a config file to do the mapping.
 
-==============================================
-It was decided to create one source template that would be the basis of SSDI and SSACI data
-from possibly multiple on-line sources.
-A new template was created- " _Social Security Data"
-
-Note that the new template does not have a CitationDetail field in the citation section.
-My old style used the CitationDetail field to explain what data in the source is being cited 
-and why the source was attached.
-
-Instead, explain why its attached in a narrative research summary for each fact, not in 
-the source or citation. No need to cite the data since the the transcription of the data is so small.
+once mapping is determined-
+for each source
+  change the field names in the source to match the field names in the newST.
+  for each citation to the source
+     change the field name in the citation to match the newST and newSRC
 
 
-New Data will consist of citations to a new Master Source.
-One Master Source will be for SSDI records in Ancestry, the other SSACI records in Ancestry.
-These are both created with the new Source Template "_Social Security Data" described above.
-Only the fields need to be finalized now. Source sentence can follow later.
+SourceTemplateTable fields
+<Field>
+<FieldName>name</FieldName>
+<DisplayName>Compiler</DisplayName>
+<Type>Name</Type>
+<Hint>name of the original compiler/author (put slashen/.)</Hint>
+<LongHint/>
+<CitationField>True</CitationField>
+</Field>
 
-new sources
-SSACIdb ANC US		ID 5502			has "sample citation"
-SSDIdb ANC US		ID 5503			has "sample citation"
 
-note-
-web links and media attached to old source citations are lost. (there are none)
-Actually- is this true? Not checked. If there were any, they should be carried over after the citation is moved.
-Text in Citation Note fields- Research note and Research comment (?) are not preserved.
+How to do mapping of fields
+
 
 
 ==============================================
+sample SourceTemplateTable XML
+...<?xml version="1.0" encoding="UTF-8"?>.<Root><Fields><Field><FieldName>Compiler</FieldName><DisplayName>Compiler</DisplayName><Type>Name</Type><Hint>name of the original compiler/author (put slashes around multi-part surnames, like /van Durren/.)</Hint><LongHint/><CitationField>True</CitationField></Field><Field><FieldName>FamilyGroup</FieldName><DisplayName>Family Group</DisplayName><Type>Text</Type><Hint>e.g. John Doe-May Smith family group sheet</Hint><LongHint/><CitationField>True</CitationField></Field><Field><FieldName>Type</FieldName><DisplayName>Type</DisplayName><Type>Text</Type><Hint>e.g. undocumented, partially documented, or fully documented</Hint><LongHint/><CitationField>True</CitationField></Field><Field><FieldName>AFNumbers</FieldName><DisplayName>AF numbers</DisplayName><Type>Text</Type><Hint>Ancestral File number(s)</Hint><LongHint>e.g. A5DX-3R and A5DX-S6</LongHint><CitationField>True</CitationField></Field><Field><FieldName>AFVersion</FieldName><DisplayName>AF version</DisplayName><Type>Text</Type><Hint>Ancestral File version, e.g. 4.13</Hint><LongHint/><CitationField>False</CitationField></Field><Field><FieldName>Year</FieldName><DisplayName>Year</DisplayName><Type>Date</Type><Hint>the year of the AF Version, e.g. 1994</Hint><LongHint/><CitationField>False</CitationField></Field></Fields></Root>.
+
+==============================================
+sample SourceTable XML
+...<?xml version="1.0" encoding="UTF-8"?>.<Root><Fields><Field><Name>Informant</Name><Value>Alban Josef Otter</Value></Field><Field><Name>InterviewDate</Name><Value>1996-10-20</Value></Field><Field><Name>Interviewer</Name><Value>Richard Otter</Value></Field></Fields></Root>.
+
+==============================================
+sample CitationTable XML
+<Root><Fields><Field><Name>CD</Name><Value>Listed on p2 as &apos;Longin heiratet die Agnes Ludwig aus Waldzell (Maria ihr Eltern!)&apos;</Value></Field></Fields></Root>
+
+==============================================
+
+
 CONVERSION PLAN
 
 This plan assumes that no information in existing citations need to be preserved- except the link to the uses of the citation.
