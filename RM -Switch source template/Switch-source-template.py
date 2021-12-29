@@ -7,11 +7,6 @@ import configparser
 import xml.etree.ElementTree as ET
 import sys
 
-# need to merge dup citations after SSACI run
-runChoice = "SSDI"
-#runChoice = "SSACI"
-
-
 ## WARNING make a known-good backup of the rmtree file before use.
 
 ##  Requirements: (see ReadMe.txt for details)
@@ -19,23 +14,24 @@ runChoice = "SSDI"
 ##   RM-Python-config.ini  ( Configuration ini file to set options and parameters)
 ##   unifuzz64.dll
 ##   tested with Python v3.10
+##  SQLite tool to determine record numbers for SourceTemplates
 
 
 # ================================================================
-def create_DBconnection(db_file):
-    conn = None
+def create_DBdbConnectionection(db_file):
+    dbConnection = None
     try:
-        conn = sqlite3.connect(db_file)
+        dbConnection = sqlite3.connect(db_file)
     except Error as e:
         print(e)
 
-    return conn
+    return dbConnection
 
 
 # ================================================================
-def GetListOfRows ( conn, SqlStmt):
+def GetListOfRows ( dbConnection, SqlStmt):
     # SqlStmt should return a set of single values
-    cur = conn.cursor()
+    cur = dbConnection.cursor()
     cur.execute(SqlStmt)
 
     result = []
@@ -46,195 +42,296 @@ def GetListOfRows ( conn, SqlStmt):
 
 
 # ================================================================
-def getCitationsToMove ( conn, oldSourceID):
+def getCitationsForSrc ( dbConnection, oldSourceID):
     # get citations for oldSourceID
     SqlStmt = """
-    SELECT CitationID
+    SELECT CitationID, CitationName
       FROM CitationTable
       WHERE SourceID = ?
       """
-    cur = conn.cursor()
+    cur = dbConnection.cursor()
     cur.execute(SqlStmt, (oldSourceID,))
-    citationsIDs = cur.fetchall()
+    return cur.fetchall()
 
-    citationIDsToMove= []
-
-    # change the data structure from list of tuples to list of ints
-    for each in citationsIDs:
-        citationIDsToMove.append(each[0])
-
-    return citationIDsToMove
+    #citationIDsForSrc= []
+    #
+    ## change the data structure from list of tuples to list of ints
+    #for each in citationsIDs:
+    #    citationIDsForSrc.append(each[0])
+    #
+    #return sjucitationIDsForSrc
 
 
 # ================================================================
-def Convert ( conn, oldSourceID, newSourceID):
+def Convert ( dbConnection, srcID, newTemplateID, fieldMapping):
+  # edit the src XML
 
-    citationIDsToMove= getCitationsToMove(conn,oldSourceID)
-    if len(citationIDsToMove) == 0:  return
+  #get the  existing surce XML
 
-    citNum=0
-    for citationIDToMove in citationIDsToMove:
-        citNum = citNum + 1
-        #if citNum > 1: input("cit enter to continue")
+  # Get the SourceTable.Fields BLOB from the srcID to extract its data
+  SqlStmt_src_r = """
+  SELECT Fields
+    FROM SourceTable
+    WHERE SourceID = ?
+    """
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt_src_r, (srcID,))
+  srcField = cur.fetchone()[0].decode()
 
-    # Copy the Standard and hidden fields from old src to citationToMove
-        SqlStmt = """
-        UPDATE CitationTable
-          SET (CitationName, ActualText, Comments, UTCModDate) = (SELECT Name, ActualText, Comments, UTCModDate FROM SourceTable WHERE SourceID = ?)
-          WHERE CitationID = ?
-          """
-        cur = conn.cursor()
-        cur.execute(SqlStmt, (oldSourceID, citationIDToMove))
+  # test for and fix old style "XML" no longer used in RM8
+  xmlStart = "<Root"
+  rootLoc=srcField.find(xmlStart)
+  if rootLoc != 0:
+      srcField = srcField[rootLoc::]
 
-    # Change owner & type for relevant web tags so they follow the citationToMove
-        SqlStmt = """
-        UPDATE URLTable
-          SET OwnerType = 4,
-              OwnerID = ? 
-          WHERE OwnerType = 3 AND OwnerID = ?
-          """
-        cur = conn.cursor()
-        cur.execute(SqlStmt, ( citationIDToMove, oldSourceID))
+  # read into DOM and parse for needed values
+  srcRoot = ET.fromstring(srcField)
+  newField = srcRoot.find(".//Fields")
+  if newField == None: ET.SubElement( srcRoot, "Fields")
 
-    # Change owner & type for relevant media so they follow the citationToMove
-        SqlStmt = """
-        UPDATE MediaLinkTable
-          SET OwnerType = 4,
-              OwnerID = ? 
-          WHERE OwnerType = 3 AND OwnerID = ?
-          """
-        cur = conn.cursor()
-        cur.execute(SqlStmt, ( citationIDToMove, oldSourceID))
+#  print("source XML OLD START ============================")
+#  ET.indent(srcRoot)
+#  ET.dump(srcRoot)
+#  print("source XML OLD END ==============================")
 
-    #  move the existing citation to the new source
-        SqlStmt = """
-        UPDATE CitationTable
-          SET SourceID = ?
-          WHERE CitationID = ?
-          """
-        cur = conn.cursor()
-        cur.execute(SqlStmt, (newSourceID, citationIDToMove))
+  # change fields in source as per mapping:
+  for eachMap in fieldMapping: 
+    if eachMap[0] == "y": continue
 
-    # Get the SourceTable.Fields BLOB from the oldSource to extract its data
-        SqlStmt = """
-        SELECT Fields
-          FROM SourceTable
-          WHERE SourceID = ?
-          """
-        cur = conn.cursor()
-        cur.execute(SqlStmt, (oldSourceID,))
-        origSrcField = cur.fetchone()[0].decode()
-        srcField = origSrcField
+    if eachMap[1] == "NULL":
+      # create a name and value pair.
+      newPair = ET.SubElement( newField, "Field")
+      ET.SubElement( newPair, "Name").text = eachMap[2]
+      ET.SubElement( newPair, "Value")
+      continue
 
-        # test for and fix old style "XML" no longer used in RM8
-        xmlStart = "<Root>"
-        rootLoc=srcField.find(xmlStart)
-        if rootLoc != 0:
-          srcField = srcField[rootLoc::]
+    for eachField in srcRoot.findall('.//Field'):
+      if eachField.find('Name').text == eachMap[1]:
+        if eachMap[2] == "NULL":
+          # delete the unused field
+          srcRoot.find(".//Fields").remove(eachField)
+          break
+        eachField.find('Name').text = eachMap[2]
+        break
+      # end of for eachField loop
+    #end of for eachMap loop
 
-        # read into DOM and parse for needed values (currently, only AccessDate)
-        srcRoot = ET.fromstring(srcField)
-        srcFields = srcRoot.find("Fields")
-        srcFields.iterfind("Field")
+#  print("source XML NEW START ============================")
+#  ET.indent(srcRoot)
+#  ET.dump(srcRoot)
+#  print("source XML NEW END ==============================")
+#  sys.exit()
 
-        AccessDate  = None
-        for item in srcFields:
-            if item[0].text == "AccessDate":
-                AccessDate= item[1].text
+  # Update the source with new XML and new templateID
+  newSrcFields = ET.tostring(srcRoot, encoding="unicode")
+  SqlStmt_src_w = """
+  UPDATE SourceTable
+    SET Fields = ?, TemplateID = ?
+    WHERE SourceID = ?
+    """
+  dbConnection.execute(SqlStmt_src_w, (newSrcFields, newTemplateID, srcID) )
 
-        #print ("date=", AccessDate)
+  #deal with this source's citations
+  for citationTuple in getCitationsForSrc(dbConnection, srcID):
+    print("   ", citationTuple[0],"    ", citationTuple[1][:70])
+    # Get the CitationTable.Fields BLOB from the citation to extract its data
+    SqlStmt_cit_r = """
+    SELECT Fields
+      FROM CitationTable
+      WHERE citationID = ?
+      """
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt_cit_r, (citationTuple[0],))
+    citFields = cur.fetchone()[0].decode()
+
+    # test for and fix old style "XML" no longer used in RM8
+    xmlStart = "<Root"
+    rootLoc=citFields.find(xmlStart)
+    if rootLoc != 0:
+      citFields = citFields[rootLoc::]
+
+    # read into DOM and parse for needed values
+    citRoot = ET.fromstring(citFields)
+    newField = citRoot.find(".//Fields")
+    if newField == None: ET.SubElement( citRoot, "Fields")
+
+#    print("citation XML OLD START ============================")
+#    ET.indent(srcRoot)
+#    ET.dump(srcRoot)
+#    print("citation XML OLD END ==============================")
+#    sys.exit()
+
+    # change fields in citation as per mapping:
+    for eachMap in fieldMapping:
+      if eachMap[0] == "y": continue
+
+      if eachMap[1] == "NULL":
+        # create a name and value pair.
+        newField = citRoot.find(".//Fields")
+        newPair = ET.SubElement( newField, "Field")
+        ET.SubElement( newPair, "Name").text = eachMap[2]
+        ET.SubElement( newPair, "Value")
+        continue
+
+      for eachField in citRoot.findall('.//Field'):
+        if eachField.find('Name').text == eachMap[1]:
+          if eachMap[2] == "NULL":
+            # delete the unused field
+            srcRoot.find(".//Fields").remove(eachField)
+            break
+          eachField.find('Name').text = eachMap[2]
+          break
+      # end of for eachField loop
+    #end of for eachMap loop
+
+#    print("citation XML NEW START ============================")
+#    ET.indent(srcRoot)
+#    ET.dump(srcRoot)
+#    print("citation XML NEW END ==============================")
+#    sys.exit()
+
+    newCitFileds = ET.tostring(citRoot, encoding="unicode")
+    # Update the citation with new XML and new templateID
+    SqlStmt_cit_w = """
+    UPDATE CitationTable
+      SET Fields = ?
+      WHERE CitationID = ? 
+      """
+    dbConnection.execute(SqlStmt_cit_w, (newCitFileds, citationTuple[0]) )
+
+    #end loop for citations
+
+  dbConnection.commit()
+
+  return
 
 
-        # create an XML chunk that represents the citation fields of the source template used by the newSource
-        # Get the CitationTable.Fields BLOB for the new source (must be pre-existing and named "sample citation")
-        SqlStmt = """
-        SELECT CT.Fields
-          FROM CitationTable CT
-          JOIN SourceTable ST ON CT.SourceId = ST.SourceID
-          WHERE CT.SourceID = ? AND CT.CitationName = "sample citation"
-          """
-        cur = conn.cursor()
-        cur.execute(SqlStmt, (newSourceID,))
-        newFieldTxt = cur.fetchone()[0].decode()
-
-        newRoot = ET.fromstring(newFieldTxt)
-        newFields = newRoot.find("Fields")
-        newFields.findall("Field")
-        for item in newFields:
-            if item[0].text == "AccessDate":
-                item[1].text = AccessDate
-            for each in searchStrings:
-                if item[0].text == each[1]:
-                    item[1].text = results.get(each[1], None)
+# ================================================================
+def CheckForTrue( inputString):
+  return inputString.lower()  in ['on', 'true', '1', 't', 'y', 'yes']
 
 
-        #print ("ET.tostring(newRoot)")
-        #print (ET.tostring(newRoot))
+# ================================================================
+def DumpSrcTemplateFields ( dbConnection, oldTemplateID, newTemplateID):
+  for ID in (oldTemplateID, newTemplateID):
+    # dump fields in Template to stdout
+    SqlStmt = """
+    SELECT FieldDefs, Name
+      FROM SourceTemplateTable
+      WHERE TemplateID = ?
+      """
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, (ID,))
+    #text = cur.fetchone()[0].decode()
+    textTuple = cur.fetchone()
+    templateName= textTuple[1]
+    newRoot = ET.fromstring(textTuple[0].decode())
 
-        SqlStmt = """
-        UPDATE CitationTable
-          SET Fields = ?
-          WHERE CitationID = ?
-          """
-        cur = conn.cursor()
-        cur.execute(SqlStmt, (ET.tostring(newRoot), citationIDToMove,) )
+    fieldItr = newRoot.findall(".Fields/Field")
+    print(templateName, "\n")
+    for item in fieldItr:
+        if CheckForTrue(item.find("CitationField").text):
+          fieldLoc ="citation"
+        else:
+          fieldLoc ="source  "
+        print(fieldLoc, "      ", item.find("FieldName").text)
+    print("\n\n")
 
-        conn.commit()
-        #print ("after commit")
-        #end loop for citations
+  #end for both templates
+  return
 
-    conn.commit()
 
-    return
+# ================================================================
+def ListSourcesSelected( dbConnection, oldTemplateID, SourceNamesLike):
+  SqlStmt = """
+  SELECT  ST.SourceID, ST.Name
+    FROM SourceTable ST
+    JOIN SourceTemplateTable STT ON ST.TemplateID = STT.TemplateID
+    WHERE ST.TemplateID = ? AND ST.Name LIKE ?
+    """
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt, (oldTemplateID,SourceNamesLike))
+  srcTuples = cur.fetchall()
+  for src in srcTuples:
+    print (src[0], "    ", src[1])
+  return
+
+
+# ================================================================
+def parseFieldMapping( text ):
+# convert string to list of 2-tuple strings
+ text = text.strip()
+ list = text.split('\n')
+ newList = []
+ for each in list:
+     newList.append( tuple(each.split()))
+ return newList
 
 
 # ================================================================
 def main():
+  # Configuration
+  IniFile="RM-Python-config.ini"
+  # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM)
+  # Can specify an ini file location instead...
+  #IniFile=r"C:/Users/rotter/Development/Genealogy/Genealogy-scripts/RM -Switch source template" + r"/" + IniFile
+  #print (IniFile)
+  if not os.path.exists(IniFile):
+      print("ERROR: The ini configuration file, " + IniFile + " must be in the current directory." )
+      return
 
-    # Configuration file
-    #  IniFile="C:/Users/rotter/Development/Genealogy/Genealogy-scripts/RM -LumpSources/" + "RM-Python-config.ini"
-    IniFile="RM-Python-config.ini"
+  config = configparser.ConfigParser(interpolation=None)
+  config.read(IniFile, 'UTF-8')
 
-    # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM)
-    if not os.path.exists(IniFile):
-        print("ERROR: The ini configuration file, " + IniFile + " must be in the current directory." )
-        return
+  # Read file paths from ini file
+  database_Path = config['File Paths']['DB_PATH']
+  RMNOCASE_Path = config['File Paths']['RMNOCASE_PATH']
+  
+  if not os.path.exists(database_Path):
+      print('Database path not found. Fix configuration file and try again.')
+      return
 
-    config = configparser.ConfigParser()
-    config.read(IniFile, 'UTF-8')
+  # Process the database
+  with create_DBdbConnectionection(database_Path) as dbConnection:
+    dbConnection.enable_load_extension(True)
+    dbConnection.load_extension(RMNOCASE_Path)
+  
+    oldTemplateID =  config['Source_Templates']['old']
+    newTemplateID =  config['Source_Templates']['new']
+    srcNamesLike  =  config['Source_Templates']['SourceNamesLike']
+    fieldMapping  =  config['Source_Templates']['mapping']
 
-    # Read file paths from ini file
-    database_Path = config['File Paths']['DB_PATH']
-    RMNOCASE_Path = config['File Paths']['RMNOCASE_PATH']
+    mapping = parseFieldMapping(fieldMapping)
 
-    if not os.path.exists(database_Path):
-        print('Database path not found. Fix configuration file and try again.')
-        return
+    #check if special options are active
+    if CheckForTrue( config['Source_Templates']['List_Fields']):
+      DumpSrcTemplateFields( dbConnection, oldTemplateID, newTemplateID)
+      print("\n")
+      for each in mapping:
+        print (each)
+      print("\n\n")
+      return
 
+    if CheckForTrue( config['Source_Templates']['List_Sources']):
+      ListSourcesSelected( dbConnection, oldTemplateID, srcNamesLike)
+      return
+  
+  SqlStmt = """
+  SELECT  ST.SourceID, ST.Name
+    FROM SourceTable ST
+    JOIN SourceTemplateTable STT ON ST.TemplateID = STT.TemplateID
+    WHERE ST.TemplateID = ? AND ST.Name LIKE ?
+    """
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt, (oldTemplateID,srcNamesLike))
+  listSourceIDtuples = cur.fetchall()
+  
+  for srcTuple in listSourceIDtuples:
+    print ("=====================================================")
+    print (srcTuple[0], "    ", srcTuple[1])
+    Convert (dbConnection, srcTuple[0], newTemplateID, mapping)
 
-    # Process the database
-    with create_DBconnection(database_Path) as conn:
-      conn.enable_load_extension(True)
-      conn.load_extension(RMNOCASE_Path)
-
-
-# List the sources to be lumped
-    SqlStmt_SSDI="""\
-SELECT SourceID
-  FROM SourceTable
-  WHERE  Name LIKE 'SSDI%'
-         AND TemplateID=10008
-"""
-
-
-    SourcesToLump = GetListOfRows( conn, SqlStmt_SSDI)
-
-    for oldSrc in SourcesToLump:
-        print ("=====================================================")
-        print (oldSrc)
-        Convert (conn, oldSrc, NewSourceID)
-
-    return 0
+  return 0
 
 
 # ================================================================
