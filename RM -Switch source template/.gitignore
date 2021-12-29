@@ -1,9 +1,13 @@
 
 # ignore shortcut files
 *.lnk
+# ignore browser url files
+*.url
 
 # ignore visual studio stuff
 .vs/
+*.pyproj
+*.sln
 
 # ignore test database stuff
 DB/
