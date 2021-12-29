@@ -1,17 +1,18 @@
 
 # ignore shortcut files
 *.lnk
+# ignore browser url files
+*.url
 
-# ignore RootsMagic database file
+# ignore visual studio stuff
+.vs/
+*.pyproj
+*.sln
+
+# ignore test database stuff
 DB/
 
-.vs/
-
-*.cmd
-
-ExternalFilesReport.txt
 
 DEV_RM-Python-config.ini
-DISTO_RM-Python-config.ini
-
+DISTRO_RM-Python-config.ini
 HIDE_*
