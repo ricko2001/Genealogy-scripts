@@ -18,7 +18,7 @@ import sys
 
 
 # ================================================================
-def create_DBdbConnectionection(db_file):
+def create_DBdbConnectionection( db_file):
     dbConnection = None
     try:
         dbConnection = sqlite3.connect(db_file)
@@ -53,21 +53,9 @@ def getCitationsForSrc ( dbConnection, oldSourceID):
     cur.execute(SqlStmt, (oldSourceID,))
     return cur.fetchall()
 
-    #citationIDsForSrc= []
-    #
-    ## change the data structure from list of tuples to list of ints
-    #for each in citationsIDs:
-    #    citationIDsForSrc.append(each[0])
-    #
-    #return sjucitationIDsForSrc
-
 
 # ================================================================
-def Convert ( dbConnection, srcID, newTemplateID, fieldMapping):
-  # edit the src XML
-
-  #get the  existing surce XML
-
+def ConvertSource ( dbConnection, srcID, newTemplateID, fieldMapping):
   # Get the SourceTable.Fields BLOB from the srcID to extract its data
   SqlStmt_src_r = """
   SELECT Fields
@@ -89,10 +77,10 @@ def Convert ( dbConnection, srcID, newTemplateID, fieldMapping):
   newField = srcRoot.find(".//Fields")
   if newField == None: ET.SubElement( srcRoot, "Fields")
 
-#  print("source XML OLD START ============================")
-#  ET.indent(srcRoot)
-#  ET.dump(srcRoot)
-#  print("source XML OLD END ==============================")
+  #print("source XML OLD START ============================")
+  #ET.indent(srcRoot)
+  #ET.dump(srcRoot)
+  #print("source XML OLD END ==============================")
 
   # change fields in source as per mapping:
   for eachMap in fieldMapping: 
@@ -116,11 +104,11 @@ def Convert ( dbConnection, srcID, newTemplateID, fieldMapping):
       # end of for eachField loop
     #end of for eachMap loop
 
-#  print("source XML NEW START ============================")
-#  ET.indent(srcRoot)
-#  ET.dump(srcRoot)
-#  print("source XML NEW END ==============================")
-#  sys.exit()
+  #print("source XML NEW START ============================")
+  #ET.indent(srcRoot)
+  #ET.dump(srcRoot)
+  #print("source XML NEW END ==============================")
+  #sys.exit()
 
   # Update the source with new XML and new templateID
   newSrcFields = ET.tostring(srcRoot, encoding="unicode")
@@ -134,75 +122,79 @@ def Convert ( dbConnection, srcID, newTemplateID, fieldMapping):
   #deal with this source's citations
   for citationTuple in getCitationsForSrc(dbConnection, srcID):
     print("   ", citationTuple[0],"    ", citationTuple[1][:70])
-    # Get the CitationTable.Fields BLOB from the citation to extract its data
-    SqlStmt_cit_r = """
-    SELECT Fields
-      FROM CitationTable
-      WHERE citationID = ?
-      """
-    cur = dbConnection.cursor()
-    cur.execute(SqlStmt_cit_r, (citationTuple[0],))
-    citFields = cur.fetchone()[0].decode()
-
-    # test for and fix old style "XML" no longer used in RM8
-    xmlStart = "<Root"
-    rootLoc=citFields.find(xmlStart)
-    if rootLoc != 0:
-      citFields = citFields[rootLoc::]
-
-    # read into DOM and parse for needed values
-    citRoot = ET.fromstring(citFields)
-    newField = citRoot.find(".//Fields")
-    if newField == None: ET.SubElement( citRoot, "Fields")
-
-#    print("citation XML OLD START ============================")
-#    ET.indent(srcRoot)
-#    ET.dump(srcRoot)
-#    print("citation XML OLD END ==============================")
-#    sys.exit()
-
-    # change fields in citation as per mapping:
-    for eachMap in fieldMapping:
-      if eachMap[0] == "y": continue
-
-      if eachMap[1] == "NULL":
-        # create a name and value pair.
-        newField = citRoot.find(".//Fields")
-        newPair = ET.SubElement( newField, "Field")
-        ET.SubElement( newPair, "Name").text = eachMap[2]
-        ET.SubElement( newPair, "Value")
-        continue
-
-      for eachField in citRoot.findall('.//Field'):
-        if eachField.find('Name').text == eachMap[1]:
-          if eachMap[2] == "NULL":
-            # delete the unused field
-            srcRoot.find(".//Fields").remove(eachField)
-            break
-          eachField.find('Name').text = eachMap[2]
-          break
-      # end of for eachField loop
-    #end of for eachMap loop
-
-#    print("citation XML NEW START ============================")
-#    ET.indent(srcRoot)
-#    ET.dump(srcRoot)
-#    print("citation XML NEW END ==============================")
-#    sys.exit()
-
-    newCitFileds = ET.tostring(citRoot, encoding="unicode")
-    # Update the citation with new XML and new templateID
-    SqlStmt_cit_w = """
-    UPDATE CitationTable
-      SET Fields = ?
-      WHERE CitationID = ? 
-      """
-    dbConnection.execute(SqlStmt_cit_w, (newCitFileds, citationTuple[0]) )
-
+    ConvertCitation( dbConnection, citationTuple[0], fieldMapping)
     #end loop for citations
 
   dbConnection.commit()
+  return
 
+
+# ================================================================
+def ConvertCitation( dbConnection, citationID, fieldMapping):
+  # Get the CitationTable.Fields BLOB from the citation to extract its data
+  SqlStmt_cit_r = """
+  SELECT Fields
+    FROM CitationTable
+    WHERE citationID = ?
+    """
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt_cit_r, (citationID,))
+  citFields = cur.fetchone()[0].decode()
+
+  # test for and fix old style "XML" no longer used in RM8
+  xmlStart = "<Root"
+  rootLoc=citFields.find(xmlStart)
+  if rootLoc != 0:
+    citFields = citFields[rootLoc::]
+
+  # read into DOM and parse for needed values
+  citRoot = ET.fromstring(citFields)
+  newField = citRoot.find(".//Fields")
+  if newField == None: ET.SubElement( citRoot, "Fields")
+
+  #print("citation XML OLD START ============================")
+  #ET.indent(srcRoot)
+  #ET.dump(srcRoot)
+  #print("citation XML OLD END ==============================")
+  #sys.exit()
+
+  # change fields in citation as per mapping:
+  for eachMap in fieldMapping:
+    if eachMap[0] == "y": continue
+
+    if eachMap[1] == "NULL":
+      # create a name and value pair.
+      newField = citRoot.find(".//Fields")
+      newPair = ET.SubElement( newField, "Field")
+      ET.SubElement( newPair, "Name").text = eachMap[2]
+      ET.SubElement( newPair, "Value")
+      continue
+
+    for eachField in citRoot.findall('.//Field'):
+      if eachField.find('Name').text == eachMap[1]:
+        if eachMap[2] == "NULL":
+          # delete the unused field
+          srcRoot.find(".//Fields").remove(eachField)
+          break
+        eachField.find('Name').text = eachMap[2]
+        break
+    # end of for eachField loop
+  #end of for eachMap loop
+
+  #print("citation XML NEW START ============================")
+  #ET.indent(srcRoot)
+  #ET.dump(srcRoot)
+  #print("citation XML NEW END ==============================")
+  #sys.exit()
+
+  newCitFileds = ET.tostring(citRoot, encoding="unicode")
+  # Update the citation with new XML and new templateID
+  SqlStmt_cit_w = """
+  UPDATE CitationTable
+    SET Fields = ?
+    WHERE CitationID = ? 
+    """
+  dbConnection.execute(SqlStmt_cit_w, (newCitFileds, citationID) )
   return
 
 
@@ -329,7 +321,7 @@ def main():
   for srcTuple in listSourceIDtuples:
     print ("=====================================================")
     print (srcTuple[0], "    ", srcTuple[1])
-    Convert (dbConnection, srcTuple[0], newTemplateID, mapping)
+    ConvertSource (dbConnection, srcTuple[0], newTemplateID, mapping)
 
   return 0
 
