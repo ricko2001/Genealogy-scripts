@@ -1,9 +1,13 @@
 import sqlite3
 from sqlite3 import Error
 import sys
+import os
+import time
+import configparser
 
-## Tested with RootsMagic v7.6.5
-##             Python for Windows v3.9.0
+
+## Tested with RootsMagic v8.1.5    (RM7 no longer supported)
+##             Python for Windows v3.10.2
 ##             unifuzz64.dll (ver not set, MD5=06a1f485b0fae62caa80850a8c7fd7c2)
 
 def create_connection(db_file):
@@ -24,70 +28,63 @@ def create_connection(db_file):
 def select(conn, PersonID):
 
     SqlStmt="""\
-      --- person event sources
-      SELECT DISTINCT SourceTable.Name
-      FROM SourceTable
-        JOIN CitationTable ON SourceTable.SourceID = CitationTable.SourceID
-        JOIN EventTable ON CitationTable.OwnerID = EventTable.EventID
-        WHERE EventTable.OwnerID=? and CitationTable.OwnerType=2 and EventTable.OwnerType=0
+--- PERSON sources
+  SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
+    FROM SourceTable
+    JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
+    JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
+    JOIN PersonTable       ON CitationLinkTable.OwnerID = PersonTable.PersonID
+    WHERE PersonTable.PersonID=?
+      AND CitationLinkTable.OwnerType=0
 
-      UNION
+  UNION
 
-      --- family event sources for males
-      SELECT DISTINCT SourceTable.Name
-      FROM SourceTable
-        JOIN CitationTable ON SourceTable.SourceID = CitationTable.SourceID
-        JOIN EventTable ON CitationTable.OwnerID = EventTable.EventID
-        JOIN FamilyTable ON EventTable.OwnerID = FamilyTable.FamilyID
-        WHERE FamilyTable.FatherID=? and CitationTable.OwnerType=2 and EventTable.OwnerType=1
+--- NAME sources
+  SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
+    FROM SourceTable
+    JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
+    JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
+    JOIN NameTable         ON CitationLinkTable.OwnerID = NameTable.NameID
+    WHERE NameTable.OwnerID=?
+      AND CitationLinkTable.OwnerType=7
 
-      UNION
+  UNION
 
-      --- family event sources for females
-      SELECT DISTINCT SourceTable.Name
-      FROM SourceTable
-        JOIN CitationTable ON SourceTable.SourceID = CitationTable.SourceID
-        JOIN EventTable ON CitationTable.OwnerID = EventTable.EventID
-        JOIN FamilyTable ON EventTable.OwnerID = FamilyTable.FamilyID
-        WHERE FamilyTable.MotherID=? and CitationTable.OwnerType=2 and EventTable.OwnerType=1
+--- EVENT-PERSON sources
+  SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
+    FROM SourceTable
+    JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
+    JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
+    JOIN EventTable ON CitationLinkTable.OwnerID = EventTable.EventID
+    WHERE EventTable.OwnerID=?
+      AND CitationLinkTable.OwnerType=2
+      AND EventTable.OwnerType=0
 
-      UNION
+  UNION
 
-      --- person sources
-      SELECT DISTINCT SourceTable.Name
-      FROM SourceTable
-        JOIN CitationTable ON SourceTable.SourceID = CitationTable.SourceID
-        JOIN PersonTable   ON PersonTable.PersonID = CitationTable.OwnerID
-        WHERE PersonTable.PersonID=? and CitationTable.OwnerType=0
+--- EVENT-FAMILY sources
+  SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
+    FROM SourceTable
+    JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
+    JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
+    JOIN EventTable        ON CitationLinkTable.OwnerID = EventTable.EventID
+    JOIN FamilyTable       ON EventTable.OwnerID = FamilyTable.FamilyID
+    WHERE (FamilyTable.FatherID=? OR FamilyTable.MotherID=?)
+      AND CitationLinkTable.OwnerType=2
+      AND EventTable.OwnerType=1
 
-      UNION
+  UNION
 
-      --- name sources
-      SELECT DISTINCT SourceTable.Name
-      FROM SourceTable
-        JOIN CitationTable ON SourceTable.SourceID = CitationTable.SourceID
-        JOIN NameTable ON CitationTable.OwnerID = NameTable.NameID
-        WHERE NameTable.OwnerID=? and CitationTable.OwnerType=7 
+--- FAMILY sources
+  SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
+    FROM SourceTable
+    JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
+    JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
+    JOIN FamilyTable       ON CitationLinkTable.OwnerID = FamilyTable.FamilyID
+    WHERE (FamilyTable.FatherID=? OR FamilyTable.MotherID=?)
+      AND CitationLinkTable.OwnerType=1
 
-      UNION
-
-      --- family sources for males
-      SELECT DISTINCT SourceTable.Name
-      FROM SourceTable
-        JOIN CitationTable ON SourceTable.SourceID = CitationTable.SourceID
-        JOIN FamilyTable ON CitationTable.OwnerID = FamilyTable.FamilyID
-        WHERE FamilyTable.FatherID=? and CitationTable.OwnerType=1
-
-      UNION
-
-      --- family sources for females
-      SELECT DISTINCT SourceTable.Name
-      FROM SourceTable
-        JOIN CitationTable ON SourceTable.SourceID = CitationTable.SourceID
-        JOIN FamilyTable ON CitationTable.OwnerID = FamilyTable.FamilyID
-        WHERE FamilyTable.MotherID=? and CitationTable.OwnerType=1
-
-      ORDER BY SourceTable.Name;
+  ORDER BY SourceTable.Name;
 """
 
 
@@ -97,36 +94,53 @@ def select(conn, PersonID):
     rows = cur.fetchall()
 
     for row in rows:
-        print(row[0])
-    print (len(rows), "rows returned \n\n")
+        print(row[0], "\t\t", row[1])
+    print ("\n", len(rows), " source citations found \n\n")
 
     return rows
 
 
 
 def main():
-    PersonID=0
-    if len(sys.argv) != 2 :
-       print ("Call with PersonID")
-       return
-    PersonID = sys.argv[1]
-    print("PersonID=", PersonID)
+  # Configuration file
+  IniFile="RM-Python-config.ini"
+  
+  # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM)
+  if not os.path.exists(IniFile):
+      print("ERROR: The ini configuration file, " + IniFile + " must be in the current directory." )
+      return
 
-   # test datavbase
-   # database = r"C:\Users\rotter\Documents\Genealogy\Genealogy SW\RootsMagic\SQL access\test DB\test copy Otter-Saito.rmgc"
+  config = configparser.ConfigParser()
+  config.read(IniFile, 'UTF-8')
 
-   # production
-    database = r"C:\Users\rotter\Documents\Genealogy\GeneDB\Otter-Saito.rmgc"
+  # Read file paths from ini file
+# TODO  report_Path   = config['File Paths']['REPORT_PATH']
+  database_Path = config['File Paths']['DB_PATH']
+  RMNOCASE_Path = config['File Paths']['RMNOCASE_PATH']
 
-    RMNOCASE_extention=r"C:\Users\rotter\Documents\Genealogy\Genealogy SW\RootsMagic\SQL access\RMNOCASE\unifuzz64.dll"
+  if not os.path.exists(database_Path):
+      print('Database path not found')
+      return
 
-    # create a database connection
-    conn = create_connection(database)
-    conn.enable_load_extension(True)
-    conn.load_extension(RMNOCASE_extention)
+  FileModificationTime = time.ctime( os.path.getmtime(database_Path))
 
-    with conn:
-        select(conn, PersonID)
+  PersonID=0
+  try:
+   PersonID = config['RIN']['PERSON_RIN']
+  except KeyError:
+    PersonID = input("No ID specified in configuration file. Enter it now: ")
+
+  print("\n\nPersonID=", PersonID, "\n\n")
+
+  # create a database connection
+  conn = create_connection(database_Path)
+  conn.enable_load_extension(True)
+  conn.load_extension(RMNOCASE_Path)
+  
+  with conn:
+      select(conn, PersonID)
+
+  input("Hit Enter to exit")
 
 
 
