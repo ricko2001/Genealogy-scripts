@@ -6,8 +6,8 @@ import time
 import configparser
 
 
-## Tested with RootsMagic v8.1.0  (RM7 no longer supported)
-##             Python for Windows v3.9.0
+## Tested with RootsMagic v8.1.5    (RM7 no longer supported)
+##             Python for Windows v3.10.2
 ##             unifuzz64.dll (ver not set, MD5=06a1f485b0fae62caa80850a8c7fd7c2)
 
 def create_connection(db_file):
@@ -94,7 +94,7 @@ def select(conn, PersonID):
     rows = cur.fetchall()
 
     for row in rows:
-        print(row[0], "     ", row[1])
+        print(row[0], "\t\t", row[1])
     print ("\n", len(rows), " source citations found \n\n")
 
     return rows
@@ -111,10 +111,10 @@ def main():
       return
 
   config = configparser.ConfigParser()
-  config.read('RM-Python-config.ini', 'UTF-8')
+  config.read(IniFile, 'UTF-8')
 
   # Read file paths from ini file
-  report_Path   = config['File Paths']['REPORT_PATH']
+# TODO  report_Path   = config['File Paths']['REPORT_PATH']
   database_Path = config['File Paths']['DB_PATH']
   RMNOCASE_Path = config['File Paths']['RMNOCASE_PATH']
 
