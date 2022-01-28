@@ -1,0 +1,16 @@
+﻿
+Pathname case sensitive version-
+
+SELECT p.MediaPath, p.MediaFile, p.rowid FROM MultimediaTable p join 
+(SELECT MediaPath,MediaFile, count(*) as cnt FROM MultimediaTable GROUP BY MediaPath,MediaFile) t 
+on p.MediaPath = t.MediaPath and p.MediaFile=t.MediaFile where t.cnt>1 
+ORDER BY p.MediaFile;
+
+Pathname case insensitive version-
+
+SELECT p.MediaPath, p.MediaFile, p.rowid FROM MultimediaTable p join 
+(SELECT MediaPath,MediaFile, count(*) as cnt FROM MultimediaTable GROUP BY MediaPath,MediaFile) t 
+on LOWER(p.MediaPath) = LOWER(t.MediaPath) and LOWER(p.MediaFile)=LOWER(t.MediaFile) where t.cnt>1 
+ORDER BY p.MediaFile;
+
+
