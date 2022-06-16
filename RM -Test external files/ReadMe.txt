@@ -2,22 +2,21 @@
 TestExternalFiles.py
 
 RootsMagic (RM) uses SQLite as its main storage. The database 
-schema includes a table that links to external files using, in RM7 an 
-absolute path starting with a drive letter, or in RM8, a path possibly relative
-to either the user's home directory or the Media folder, as specified in RM's settings.
-(UNC names have not been tested by me.)
+schema includes a table that points to external files.
+
 
 As the number of linked files increases, it becomes more likely 
-that user mistakes will happen. 
+that user errors will happen. 
 * A file on disk may get renamed, or moved, breaking the link 
     from the database. RM has tools to help fix these, but it does not 
-    give a log of what was done.
-* A file may be added to the media folder but then not linked in the
-    database. Common when working quickly.
+    give a log of what was done. There is a report that can be run, but
+    with effort.
+* A file may be added to the media folder but then not attached to the
+    desired database element. Common when working quickly.
 
 This utility will help identify both issues.
 
-The utility can perform 3 functions, as indicated in the 
+The utility can perform 3 functions, as specified in the 
 ini file Options section:
 
 CHECK_FILES
@@ -53,21 +52,27 @@ To install and use:
 *  Edit the RM-Python-config.ini to specify the location of the RM file,  
    the unifuzz64.dll file and the output report file. Some script functions
    may be turned on or off. The required edits should be obvious.
-*  Double click the TestExternalFiles.py file.
+*  Double click the TestExternalFiles.py file to run the 
+   script and generate the report file. 
+   (5,000 media files requires about 3 seconds tun time)
 *  Examine the report output file.
 
+The Python installation requires about 100 Mbytes. 
+It is easily and cleanly removed using the standard method found in Windows=>Settings  
+All other components are very small.
 
-Tested with RootsMagic v7.6.5 and v8.0.0.0
-       Python for Windows v3.9.0   64bit  
+
+Tested with RootsMagic v7.6.5 and v8.1.8.0
+       Python for Windows v3.10.2   64bit  
        unifuzz64.dll (version number not set, MD5=06a1f485b0fae62caa80850a8c7fd7c2)
-       Operating system= Window 10, 64bit
+       Operating system Window 11, 64bit
 
 
 Python download-
 https://www.python.org/ftp/python/3.9.6/python-3.9.6-amd64.exe
 This link is in the context of-
 https://www.python.org/downloads/windows/
-Use the current version of Python, version > 3.9.0. 
+Use the current version of Python, version > 3.10.0. 
 Click on the link near the top of page. Then ...
 Find the link near bottom of page, in "Files" section, labeled "Windows installer (64-bit)"
 Click it and save the installer.
@@ -87,6 +92,22 @@ Notes:
    database vs. the file system, the file will be listed as un-referenced. 
    (Unix-like file system case sensitivity)
 
+*  File paths pointing to external files
+   in RM7: absolute file path starting with a drive letter
+   in RM8: absolute file path starting with a drive letter
+           or
+           a path relative to another location.
+   RM8 Relative path symbols 
+   (these are expanded when found in the first position of the stored path)
+	~	home directory  (%USERPROFILE%)
+	?	media folder as set in RM preferences
+	*	RM main database file location
+	.	???
+
+
 TODO
-*  nothing yet
+*  improve display of unreferenced files output when there are none to display. 
+   Make it look more like the missing files display.
+
+
 
