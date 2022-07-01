@@ -17,7 +17,8 @@ import xml.etree.ElementTree as ET
 
 # TODO
 # better error handling when opening database
-
+# update for the new NOCASE.dll
+# add search for duplicate files
 
 # ================================================================
 #  Global Variable
@@ -68,6 +69,20 @@ def GetDBFileList(conn):
       SELECT  MediaPath, MediaFile
       FROM MultimediaTable
         ORDER BY MediaPath, MediaFile
+"""
+    cur = conn.cursor()
+    cur.execute(SqlStmt)
+    return cur
+
+# ================================================================
+def GetDBNoTagFileList(conn):
+
+    SqlStmt="""\
+      SELECT MediaPath, MediaFile
+      FROM MultimediaTable mmt
+      LEFT JOIN MediaLinkTable mlt ON mlt.MediaID =  mmt.MediaID
+       WHERE OwnerType is NULL
+       ORDER by MediaPath, MediaFile
 """
     cur = conn.cursor()
     cur.execute(SqlStmt)
@@ -127,7 +142,7 @@ def ListMissingFilesFeature( config, conn, reportF ):
   cur= GetDBFileList(conn)
   # row[0] = path,   row[1] = fileName
 
-  Label_OrigPath="  Path in MultiMediaTable:"
+  Label_OrigPath="  Actual path in MultimediaTable:"
 
   reportF.write (G_Divider + "\n=== Start of \"Files Not Found\" listing\n")
   foundSomeMissingFiles=False
@@ -155,7 +170,7 @@ def ListMissingFilesFeature( config, conn, reportF ):
 
 
   if foundSomeMissingFiles == False:
-     reportF.write ("    No files were found missing.\n")
+     reportF.write ("\n    No files were found missing.\n")
   reportF.write ("\n=== End of \"Files Not Found\" listing\n\n")
   return
 
@@ -229,7 +244,43 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
        + " files (not counting ignored items)\n")
   reportF.write("Database contains " + str(len(dbFileList)) + " file links\n\n")
 
-  reportF.write("=== End \"Unreferenced Files\" listing\n")
+  reportF.write("=== End \"Unreferenced Files\" listing\n\n")
+  return
+
+
+
+# ================================================================
+def FilesWithNoTagsFeature(config, conn, reportF):
+  # get options
+  ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
+
+  cur= GetDBNoTagFileList(conn)
+  # row[0] = path,   row[1] = fileName
+  Label_OrigPath="  Actual path in MultimediaTable:"
+
+  FoundNoTagFiles = False
+  reportF.write (G_Divider + "\n=== Start of \"Files with no Tags\" listing\n")
+
+
+  for row in cur:
+    FoundNoTagFiles = True
+    dirPathOrig = row[0]
+    dirPath = ExpandDirPath(row[0])
+    filePath = dirPath / row[1]
+    reportF.write ("\n" + G_QT + str(filePath) + G_QT + "\n")
+    if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+
+  if FoundNoTagFiles: reportF.write ("\n    No files with no tags were found.\n")
+
+  reportF.write ("\n=== End of \"Files with no Tags\" listing\n\n")
+
+  return
+
+
+# ================================================================
+def FindDuplcateFilesFeature(conn, reportF):
+  foundSomeDupFiles=False
+
   return
 
 
@@ -274,7 +325,7 @@ def main():
 
   G_DbFileFolderPath = Path(database_Path).parent
 
-  # Process the database
+  # Process the database for requested output
   with create_DBconnection(database_Path) as conn:
     conn.enable_load_extension(True)
     conn.load_extension(RMNOCASE_Path)
@@ -288,15 +339,19 @@ def main():
          ListMissingFilesFeature(config, conn, reportF)
 
       if config['Options'].getboolean('UNREF_FILES'):
-  #       reportF.write ("\n\n")
          ListUnReferencedFilesFeature(config, conn, reportF)
 
       if config['Options'].getboolean('FOLDER_LIST'):
- #        reportF.write ("\n\n")
          ListFoldersFeature(conn, reportF)
 
-      reportF.write ("\n")
-      reportF.write (G_Divider + "\nEnd of report \n")
+      if config['Options'].getboolean('NO_TAG_FILES'):
+         FilesWithNoTagsFeature(config, conn, reportF)
+
+      if config['Options'].getboolean('DUP_FILES'):
+         FindDuplcateFilesFeature(conn, reportF)
+
+      #reportF.write ("\n")
+      reportF.write (G_Divider + "\n\nEnd of report \n")
   return 0
 
 
