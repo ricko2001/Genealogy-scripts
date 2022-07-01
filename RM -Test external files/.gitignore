@@ -6,6 +6,8 @@
 *.rmgc
 *.rmtree
 
+DB/
+
 HIDE_*
 
 ExternalFilesReport.txt
