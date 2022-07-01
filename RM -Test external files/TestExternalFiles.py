@@ -88,6 +88,26 @@ def GetDBNoTagFileList(conn):
     cur.execute(SqlStmt)
     return cur
 
+# ================================================================
+def GetDuplicateFileList(conn):
+
+    SqlStmt="""\
+      SELECT p.MediaPath, p.MediaFile, p.rowid
+      FROM MultimediaTable p 
+      JOIN 
+      (
+      SELECT MediaPath, MediaFile, count(*) as cnt 
+      FROM MultimediaTable 
+      GROUP BY MediaPath, MediaFile
+      ) t 
+      ON LOWER(p.MediaPath) = LOWER(t.MediaPath) AND LOWER(p.MediaFile) = LOWER(t.MediaFile) 
+      WHERE t.cnt > 1 
+      
+      ORDER BY p.MediaFile;
+"""
+    cur = conn.cursor()
+    cur.execute(SqlStmt)
+    return cur
 
 # ================================================================
 def ExpandDirPath(in_path):
@@ -239,7 +259,7 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
   else:
     reportF.write ("    No unreferenced files were found.\n\n")
 
-  reportF.write("Folder to inventory: " + str(ExtFilesFolderPath) + "\n")
+  reportF.write("Folder processed: " + str(ExtFilesFolderPath) + "\n")
   reportF.write("External files folder contains " + str(len(mediaFileList)) 
        + " files (not counting ignored items)\n")
   reportF.write("Database contains " + str(len(dbFileList)) + " file links\n\n")
@@ -258,12 +278,12 @@ def FilesWithNoTagsFeature(config, conn, reportF):
   # row[0] = path,   row[1] = fileName
   Label_OrigPath="  Actual path in MultimediaTable:"
 
-  FoundNoTagFiles = False
+  FoundNoTagFiles = True
   reportF.write (G_Divider + "\n=== Start of \"Files with no Tags\" listing\n")
 
 
   for row in cur:
-    FoundNoTagFiles = True
+    FoundNoTagFiles = False
     dirPathOrig = row[0]
     dirPath = ExpandDirPath(row[0])
     filePath = dirPath / row[1]
@@ -282,11 +302,6 @@ def FindDuplcateFilesFeature(conn, reportF):
   foundSomeDupFiles=False
 
   return
-
-
-# ================================================================
-def CheckForTrue( inputString):
-     return inputString.lower()  in ['on', 'true', '1', 't', 'y', 'yes']
 
 
 # ================================================================
