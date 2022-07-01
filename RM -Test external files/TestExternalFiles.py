@@ -120,25 +120,41 @@ def GetMediaDirectory():
 
 
 # ================================================================
-def ListMissingFilesFeature( conn, reportF ):
+def ListMissingFilesFeature( config, conn, reportF ):
+
+  ShowOrigPathValue = config['Options']['SHOW_ORIG_PATH']
+  # make it boolean
+  ShowOrigPath = CheckForTrue(ShowOrigPathValue)
+
   cur= GetDBFileList(conn)
+  # row[0] = path,   row[1] = fileName
+
+  Label_OrigPath="  Path in MultiMediaTable:"
 
   reportF.write (G_Divider + "\nStart of \"Files Not Found\" listing\n\n")
   foundSomeMissingFiles=False
   for row in cur:
+    dirPathOrig = row[0]
     dirPath = ExpandDirPath(row[0])
     filePath = dirPath / row[1]
     if not dirPath.exists(): 
        foundSomeMissingFiles=True
-       reportF.write ("Directory path not found:" + G_QT + str(dirPath) + G_QT + " for file: " + G_QT + row[1] + G_QT + "\n")
+       reportF.write ("\nDirectory path not found:\n" 
+             + G_QT + str(dirPath) + G_QT + " for file: " + G_QT + row[1] + G_QT + "\n")
+       if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+
     else:
         if filePath.exists():
             if not filePath.is_file():
                 foundSomeMissingFiles=True
-                reportF.write ("File path is not a file: " + G_QT + str(filePath) + G_QT + "\n")
+                reportF.write ("\nFile path is not a file: \n" + G_QT + str(filePath) + G_QT + "\n")
+                if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+
         else:
             foundSomeMissingFiles=True
-            reportF.write ("File path not found: " + G_QT + str(filePath) + G_QT + "\n")
+            reportF.write ("\nFile path not found: \n" + G_QT + str(filePath) + G_QT + "\n")
+            if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+
 
   if foundSomeMissingFiles == False:
      reportF.write ("    No files were found missing.\n")
@@ -170,6 +186,7 @@ def FolderContentsMinusIgnored(dirPath, config):
 
 # ================================================================
 def ListUnReferencedFilesFeature(config, conn, reportF):
+  foundSomeExtraFiles=False
   ExtFilesFolderPath = Path(config['File Paths']['SEARCH_ROOT_FLDR_PATH'])
   if not ExtFilesFolderPath.exists(): 
     reportF.write ("ERROR: Directory path not found:" + "\"" + str(ExtFilesFolderPath) + "\"" + "\n")
@@ -188,23 +205,32 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
   mediaFileList = FolderContentsMinusIgnored(ExtFilesFolderPath, config)
 
   unRefFiles = list(set(mediaFileList).difference(dbFileList))
+  if len(unRefFiles) >0: foundSomeExtraFiles=True
   unRefFiles.sort()
 
   reportF.write(G_Divider + "\nStart \"Unreferenced Files\" listing\n\n")
+
+  if foundSomeExtraFiles:
+
+    # don't print full path from root folder
+    cutoff = len(str(ExtFilesFolderPath))
+
+    for i in range(len(unRefFiles)):
+      reportF.write("." + str(unRefFiles[i])[cutoff:] + "\n")
+
+
+    reportF.write( "\n\nNumber of files in External files folder not referenced by the database: "
+         + str(len(unRefFiles))  + "\n\n\n")
+
+  else:
+    reportF.write ("    No unreferenced files were found.\n\n")
+
   reportF.write("Folder to inventory: " + str(ExtFilesFolderPath) + "\n")
   reportF.write("External files folder contains " + str(len(mediaFileList)) 
        + " files (not counting ignored items)\n")
-  reportF.write("Database contains " + str(len(dbFileList)) + " file links\n")
-  reportF.write( "Number of files in External files folder not referenced by the database: "
-       + str(len(unRefFiles))  + "\n\n\n")
+  reportF.write("Database contains " + str(len(dbFileList)) + " file links\n\n")
 
-  # don't print full path from root folder
-  cutoff = len(str(ExtFilesFolderPath))
-
-  for i in range(len(unRefFiles)):
-    reportF.write("." + str(unRefFiles[i])[cutoff:] + "\n")
-
-  reportF.write("\nEnd \"Unreferenced Files\" listing\n\n")
+  reportF.write("End \"Unreferenced Files\" listing\n")
   return
 
 
@@ -253,6 +279,8 @@ def main():
   ListFilesNotFound        = config['Options']['CHECK_FILES']
   ListAllReferencedFolders = config['Options']['FOLDER_LIST']
   ListUnReferencedFiles    = config['Options']['UNREF_FILES']
+  ListUnReferencedFiles    = config['Options']['UNREF_FILES']
+
 
   # Process the database
   with create_DBconnection(database_Path) as conn:
@@ -265,7 +293,7 @@ def main():
       reportF.write ("Database last changed on = " + FileModificationTime + "\n\n")
 
       if CheckForTrue(ListFilesNotFound):
-         ListMissingFilesFeature(conn, reportF)
+         ListMissingFilesFeature(config, conn, reportF)
 
       if CheckForTrue(ListUnReferencedFiles):
   #       reportF.write ("\n\n")
