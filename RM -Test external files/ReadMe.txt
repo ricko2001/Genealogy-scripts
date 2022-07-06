@@ -13,8 +13,10 @@ that user errors will happen.
     with effort.
 * A file may be added to the media folder but then not attached to the
     desired database element. Common when working quickly.
+* A file may be added to RM, but then removed from all previous uses, leaving it "un-tagged".
+    No harm in leaving it, but cleanup may be desirable.
 
-This utility will help identify both issues.
+This utility will help identify these issues.
 
 The utility can perform 3 functions, as specified in the 
 ini file Options section:
@@ -41,6 +43,10 @@ FOLDER_LIST
    For RM8 files, folder paths may be prefixed 
    with either ~ (home directory) or ? (RM specified media folder)
 
+NO_TAG_FILES
+   Lists all files found in the folder SEARCH_ROOT_FLDR_PATH 
+   that are in RM's media gallery but have zero tags.
+
 
 To install and use:
 *  Download and install Python for Windows x64 (use default options)  -see below
@@ -57,9 +63,11 @@ To install and use:
    (5,000 media files requires about 3 seconds tun time)
 *  Examine the report output file.
 
-The Python installation requires about 100 Mbytes. 
-It is easily and cleanly removed using the standard method found in Windows=>Settings  
+The Python installation requires about 100 Mbytes.
+It is easily and cleanly removed using the standard method found in Windows=>Settings
+(Let me know if you want a standalone exe file that does not require a Python installation)
 All other components are very small.
+
 
 
 Tested with RootsMagic v7.6.5 and v8.1.8.0
@@ -81,6 +89,8 @@ unifuzz64.dll download-
 https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2018/05/unifuzz64.dll
 above link found in this context-
 https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlite-expert-command-line-shell-et-al/
+
+MD5(unifuzz64.dll) = 06a1f485b0fae62caa80850a8c7fd7c2
 
 
 Notes:
@@ -104,10 +114,68 @@ Notes:
 	*	RM main database file location
 	.	???
 
+*   A display option has been added for files found by either the CHECK_FILES or NO_TAG_FILES
+    The option is turned on by adding a line to the ini file in the OPTIONS section
+    SHOW_ORIG_PATH  = on
+    (the line should be flush to the left, like the other options.)
+    With this option set using RM8, the path for each file is shown twice,
+    - after any token in the path has been expanded.
+    - showing the path as saved in the database.
+
+
+
+OPTIONAL ===========
+An alternate for unifuzz64.dll named "RMNOCASE_fake-SQLiteSpy64.dll" has recently been created and
+has been successfully tested. The 2 dlls work equally well for this script.
+
+https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2017/12/RMNOCASE_fake-SQLiteSpy64.dll.bak
+in the context of this page:
+https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlitespy/rmnocase_fake-sqlitespy64-dll/
+
+After download, rename the file by removing the final ".bak"
+MD5(RMNOCASE_fake-SQLiteSpy64.dll) = 43fe353e3e3456dc33f8f60933dbc6ab 
+
+OPTIONAL ===========
+
+
 
 TODO
-*  improve display of unreferenced files output when there are none to display. 
-   Make it look more like the missing files display.
+*  Add the Duplicate files feature
 
 
+Sample report output-
 
+++++++++++
+Report generated at = 2022-07-06 14:24:16
+Database processed  = C:\Users\rotter\Documents\Genealogy\GeneDB\Otter-Saito.rmtree
+Database last changed on = Wed Jul  6 13:09:40 2022
+
+===========================================================
+=== Start of "Files Not Found" listing
+
+    No files were found missing.
+
+=== End of "Files Not Found" listing
+
+===========================================================
+=== Start "Unreferenced Files" listing
+
+    No unreferenced files were found.
+
+Folder processed: C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits
+External files folder contains 4859 files (not counting ignored items)
+Database contains 4976 file links
+
+=== End "Unreferenced Files" listing
+
+===========================================================
+=== Start of "Files with no Tags" listing
+
+    No files with no tags were found.
+
+=== End of "Files with no Tags" listing
+
+===========================================================
+
+End of report 
+++++++++++
