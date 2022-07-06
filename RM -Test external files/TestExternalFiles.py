@@ -17,7 +17,8 @@ import xml.etree.ElementTree as ET
 
 # TODO
 # better error handling when opening database
-
+# update for the new NOCASE.dll
+# add search for duplicate files
 
 # ================================================================
 #  Global Variable
@@ -73,6 +74,40 @@ def GetDBFileList(conn):
     cur.execute(SqlStmt)
     return cur
 
+# ================================================================
+def GetDBNoTagFileList(conn):
+
+    SqlStmt="""\
+      SELECT MediaPath, MediaFile
+      FROM MultimediaTable mmt
+      LEFT JOIN MediaLinkTable mlt ON mlt.MediaID =  mmt.MediaID
+       WHERE OwnerType is NULL
+       ORDER by MediaPath, MediaFile
+"""
+    cur = conn.cursor()
+    cur.execute(SqlStmt)
+    return cur
+
+# ================================================================
+def GetDuplicateFileList(conn):
+
+    SqlStmt="""\
+      SELECT p.MediaPath, p.MediaFile, p.rowid
+      FROM MultimediaTable p 
+      JOIN 
+      (
+      SELECT MediaPath, MediaFile, count(*) as cnt 
+      FROM MultimediaTable 
+      GROUP BY MediaPath, MediaFile
+      ) t 
+      ON LOWER(p.MediaPath) = LOWER(t.MediaPath) AND LOWER(p.MediaFile) = LOWER(t.MediaFile) 
+      WHERE t.cnt > 1 
+      
+      ORDER BY p.MediaFile;
+"""
+    cur = conn.cursor()
+    cur.execute(SqlStmt)
+    return cur
 
 # ================================================================
 def ExpandDirPath(in_path):
@@ -120,29 +155,43 @@ def GetMediaDirectory():
 
 
 # ================================================================
-def ListMissingFilesFeature( conn, reportF ):
-  cur= GetDBFileList(conn)
+def ListMissingFilesFeature( config, conn, reportF ):
+  # get options
+  ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
 
-  reportF.write (G_Divider + "\nStart of \"Files Not Found\" listing\n\n")
+  cur= GetDBFileList(conn)
+  # row[0] = path,   row[1] = fileName
+
+  Label_OrigPath="  Actual path in MultimediaTable:"
+
+  reportF.write (G_Divider + "\n=== Start of \"Files Not Found\" listing\n")
   foundSomeMissingFiles=False
   for row in cur:
+    dirPathOrig = row[0]
     dirPath = ExpandDirPath(row[0])
     filePath = dirPath / row[1]
     if not dirPath.exists(): 
        foundSomeMissingFiles=True
-       reportF.write ("Directory path not found:" + G_QT + str(dirPath) + G_QT + " for file: " + G_QT + row[1] + G_QT + "\n")
+       reportF.write ("\nDirectory path not found:\n" 
+             + G_QT + str(dirPath) + G_QT + " for file: " + G_QT + row[1] + G_QT + "\n")
+       if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+
     else:
         if filePath.exists():
             if not filePath.is_file():
                 foundSomeMissingFiles=True
-                reportF.write ("File path is not a file: " + G_QT + str(filePath) + G_QT + "\n")
+                reportF.write ("\nFile path is not a file: \n" + G_QT + str(filePath) + G_QT + "\n")
+                if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+
         else:
             foundSomeMissingFiles=True
-            reportF.write ("File path not found: " + G_QT + str(filePath) + G_QT + "\n")
+            reportF.write ("\nFile path not found: \n" + G_QT + str(filePath) + G_QT + "\n")
+            if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+
 
   if foundSomeMissingFiles == False:
-     reportF.write ("    No files were found missing.\n")
-  reportF.write ("\nEnd of \"Files Not Found\" listing\n\n")
+     reportF.write ("\n    No files were found missing.\n")
+  reportF.write ("\n=== End of \"Files Not Found\" listing\n\n")
   return
 
 
@@ -170,6 +219,9 @@ def FolderContentsMinusIgnored(dirPath, config):
 
 # ================================================================
 def ListUnReferencedFilesFeature(config, conn, reportF):
+  foundSomeExtraFiles=False
+  reportF.write(G_Divider + "\n=== Start \"Unreferenced Files\" listing\n\n")
+
   ExtFilesFolderPath = Path(config['File Paths']['SEARCH_ROOT_FLDR_PATH'])
   if not ExtFilesFolderPath.exists(): 
     reportF.write ("ERROR: Directory path not found:" + "\"" + str(ExtFilesFolderPath) + "\"" + "\n")
@@ -188,29 +240,68 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
   mediaFileList = FolderContentsMinusIgnored(ExtFilesFolderPath, config)
 
   unRefFiles = list(set(mediaFileList).difference(dbFileList))
+  if len(unRefFiles) >0: foundSomeExtraFiles=True
   unRefFiles.sort()
 
-  reportF.write(G_Divider + "\nStart \"Unreferenced Files\" listing\n\n")
-  reportF.write("Folder to inventory: " + str(ExtFilesFolderPath) + "\n")
+
+  if foundSomeExtraFiles:
+
+    # don't print full path from root folder
+    cutoff = len(str(ExtFilesFolderPath))
+
+    for i in range(len(unRefFiles)):
+      reportF.write("." + str(unRefFiles[i])[cutoff:] + "\n")
+
+
+    reportF.write( "\n\nNumber of files in External files folder not referenced by the database: "
+         + str(len(unRefFiles))  + "\n\n\n")
+
+  else:
+    reportF.write ("    No unreferenced files were found.\n\n")
+
+  reportF.write("Folder processed: " + str(ExtFilesFolderPath) + "\n")
   reportF.write("External files folder contains " + str(len(mediaFileList)) 
        + " files (not counting ignored items)\n")
-  reportF.write("Database contains " + str(len(dbFileList)) + " file links\n")
-  reportF.write( "Number of files in External files folder not referenced by the database: "
-       + str(len(unRefFiles))  + "\n\n\n")
+  reportF.write("Database contains " + str(len(dbFileList)) + " file links\n\n")
 
-  # don't print full path from root folder
-  cutoff = len(str(ExtFilesFolderPath))
+  reportF.write("=== End \"Unreferenced Files\" listing\n\n")
+  return
 
-  for i in range(len(unRefFiles)):
-    reportF.write("." + str(unRefFiles[i])[cutoff:] + "\n")
 
-  reportF.write("\nEnd \"Unreferenced Files\" listing\n\n")
+
+# ================================================================
+def FilesWithNoTagsFeature(config, conn, reportF):
+  # get options
+  ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
+
+  cur= GetDBNoTagFileList(conn)
+  # row[0] = path,   row[1] = fileName
+  Label_OrigPath="  Actual path in MultimediaTable:"
+
+  FoundNoTagFiles = True
+  reportF.write (G_Divider + "\n=== Start of \"Files with no Tags\" listing\n")
+
+
+  for row in cur:
+    FoundNoTagFiles = False
+    dirPathOrig = row[0]
+    dirPath = ExpandDirPath(row[0])
+    filePath = dirPath / row[1]
+    reportF.write ("\n" + G_QT + str(filePath) + G_QT + "\n")
+    if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+
+  if FoundNoTagFiles: reportF.write ("\n    No files with no tags were found.\n")
+
+  reportF.write ("\n=== End of \"Files with no Tags\" listing\n\n")
+
   return
 
 
 # ================================================================
-def CheckForTrue( inputString):
-     return inputString.lower()  in ['on', 'true', '1', 't', 'y', 'yes']
+def FindDuplcateFilesFeature(conn, reportF):
+  foundSomeDupFiles=False
+
+  return
 
 
 # ================================================================
@@ -249,12 +340,7 @@ def main():
 
   G_DbFileFolderPath = Path(database_Path).parent
 
-  # Read processing options from ini file
-  ListFilesNotFound        = config['Options']['CHECK_FILES']
-  ListAllReferencedFolders = config['Options']['FOLDER_LIST']
-  ListUnReferencedFiles    = config['Options']['UNREF_FILES']
-
-  # Process the database
+  # Process the database for requested output
   with create_DBconnection(database_Path) as conn:
     conn.enable_load_extension(True)
     conn.load_extension(RMNOCASE_Path)
@@ -264,19 +350,23 @@ def main():
       reportF.write ("Database processed  = " + database_Path + "\n")
       reportF.write ("Database last changed on = " + FileModificationTime + "\n\n")
 
-      if CheckForTrue(ListFilesNotFound):
-         ListMissingFilesFeature(conn, reportF)
+      if config['Options'].getboolean('CHECK_FILES'):
+         ListMissingFilesFeature(config, conn, reportF)
 
-      if CheckForTrue(ListUnReferencedFiles):
-  #       reportF.write ("\n\n")
+      if config['Options'].getboolean('UNREF_FILES'):
          ListUnReferencedFilesFeature(config, conn, reportF)
 
-      if CheckForTrue(ListAllReferencedFolders):
- #        reportF.write ("\n\n")
+      if config['Options'].getboolean('FOLDER_LIST'):
          ListFoldersFeature(conn, reportF)
 
-      reportF.write ("\n")
-      reportF.write (G_Divider + "\nEnd of report \n")
+      if config['Options'].getboolean('NO_TAG_FILES'):
+         FilesWithNoTagsFeature(config, conn, reportF)
+
+      if config['Options'].getboolean('DUP_FILES'):
+         FindDuplcateFilesFeature(conn, reportF)
+
+      #reportF.write ("\n")
+      reportF.write (G_Divider + "\n\nEnd of report \n")
   return 0
 
 
