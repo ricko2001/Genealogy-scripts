@@ -23,7 +23,8 @@ import xml.etree.ElementTree as ET
 #  Global Variables
 G_MediaDirectoryPath = ""
 G_DbFileFolderPath = ""
-G_Divider = "=====================================================DIV60=="
+G_Divider = "\
+===============================================================DIV70=="
 G_QT = "\""
 
 
@@ -39,25 +40,29 @@ def create_DBconnection(db_file):
 
 
 # ===================================================DIV60==
-def ListFoldersFeature(conn, reportF):
-    SqlStmt="""\
+def ListFoldersFeature(config, conn, reportF):
+  SqlStmt="""\
       SELECT  DISTINCT MediaPath
       FROM MultimediaTable
         ORDER BY MediaPath
 """
-    cur = conn.cursor()
-    cur.execute(SqlStmt)
+  cur = conn.cursor()
+  cur.execute(SqlStmt)
 
-    rows = cur.fetchall()
-    reportF.write (G_Divider + "\nStart of \"Referenced Folders\" listing\n\n")
+  # get options
+  ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
 
-    for row in rows:
-      reportF.write(row[0] + "\n")
-    reportF.write ("\n" + str(len(rows)) + "  folders referenced in RootsMagic file \n")
+  rows = cur.fetchall()
+  reportF.write (G_Divider + "\n=== Start of \"Referenced Folders\" listing\n\n")
 
-    reportF.write ("End of \"Referenced Folders\" listing\n\n")
+  for row in rows:
+    reportF.write(str(ExpandDirPath(row[0])) + "\n")
+    if ShowOrigPath: reportF.write(row[0] + "\n")
 
-    return rows
+  reportF.write ("\n" + str(len(rows)) + "  folders referenced in RootsMagic file \n")
+  reportF.write ("\n=== End of \"Referenced Folders\" listing\n\n")
+
+  return rows
 
 
 # ===================================================DIV60==
@@ -89,17 +94,16 @@ def GetDBNoTagFileList(conn):
 def GetDuplicateFileList(conn):
 
     SqlStmt="""\
-      SELECT p.MediaPath, p.MediaFile, p.rowid
+      SELECT p.MediaPath, p.MediaFile
       FROM MultimediaTable p 
       JOIN 
       (
-      SELECT MediaPath, MediaFile, count(*) as cnt 
-      FROM MultimediaTable 
-      GROUP BY MediaPath, MediaFile
+       SELECT MediaPath, MediaFile, count(*) as cnt 
+       FROM MultimediaTable 
+       GROUP BY MediaPath, MediaFile
       ) t 
       ON LOWER(p.MediaPath) = LOWER(t.MediaPath) AND LOWER(p.MediaFile) = LOWER(t.MediaFile) 
       WHERE t.cnt > 1 
-      
       ORDER BY p.MediaFile;
 """
     cur = conn.cursor()
@@ -153,6 +157,8 @@ def GetMediaDirectory():
 
 # ===================================================DIV60==
 def ListMissingFilesFeature( config, conn, reportF ):
+  foundSomeMissingFiles=False
+
   # get options
   ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
 
@@ -162,7 +168,6 @@ def ListMissingFilesFeature( config, conn, reportF ):
   Label_OrigPath="  Actual path in MultimediaTable:"
 
   reportF.write (G_Divider + "\n=== Start of \"Files Not Found\" listing\n")
-  foundSomeMissingFiles=False
   for row in cur:
     dirPathOrig = row[0]
     dirPath = ExpandDirPath(row[0])
@@ -186,8 +191,7 @@ def ListMissingFilesFeature( config, conn, reportF ):
             if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
 
 
-  if foundSomeMissingFiles == False:
-     reportF.write ("\n    No files were found missing.\n")
+  if not foundSomeMissingFiles: reportF.write ("\n    No files were found missing.\n")
   reportF.write ("\n=== End of \"Files Not Found\" listing\n\n")
   return
 
@@ -216,16 +220,17 @@ def FolderContentsMinusIgnored(dirPath, config):
 
 # ===================================================DIV60==
 def ListUnReferencedFilesFeature(config, conn, reportF):
-  foundSomeExtraFiles=False
   reportF.write(G_Divider + "\n=== Start \"Unreferenced Files\" listing\n\n")
 
   ExtFilesFolderPath = Path(config['File Paths']['SEARCH_ROOT_FLDR_PATH'])
+  # Validate the folder path
   if not ExtFilesFolderPath.exists(): 
     reportF.write ("ERROR: Directory path not found:" + "\"" + str(ExtFilesFolderPath) + "\"" + "\n")
     sys.exit()
   if not ExtFilesFolderPath.is_dir():
     reportF.write ("ERROR: Path is not a directory:" + "\"" + str(ExtFilesFolderPath) + "\"" + "\n")
     sys.exit()
+
   cur= GetDBFileList(conn)
 
   dbFileList=[]
@@ -237,11 +242,9 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
   mediaFileList = FolderContentsMinusIgnored(ExtFilesFolderPath, config)
 
   unRefFiles = list(set(mediaFileList).difference(dbFileList))
-  if len(unRefFiles) >0: foundSomeExtraFiles=True
-  unRefFiles.sort()
 
-
-  if foundSomeExtraFiles:
+  if len(unRefFiles) >0: 
+    unRefFiles.sort()
 
     # don't print full path from root folder
     cutoff = len(str(ExtFilesFolderPath))
@@ -249,12 +252,10 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
     for i in range(len(unRefFiles)):
       reportF.write("." + str(unRefFiles[i])[cutoff:] + "\n")
 
-
     reportF.write( "\n\nNumber of files in External files folder not referenced by the database: "
          + str(len(unRefFiles))  + "\n\n\n")
 
-  else:
-    reportF.write ("    No unreferenced files were found.\n\n")
+  else: reportF.write ("    No unreferenced files were found.\n\n")
 
   reportF.write("Folder processed: " + str(ExtFilesFolderPath) + "\n")
   reportF.write("External files folder contains " + str(len(mediaFileList)) 
@@ -263,7 +264,6 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
 
   reportF.write("=== End \"Unreferenced Files\" listing\n\n")
   return
-
 
 
 # ===================================================DIV60==
@@ -275,19 +275,19 @@ def FilesWithNoTagsFeature(config, conn, reportF):
   # row[0] = path,   row[1] = fileName
   Label_OrigPath="  Actual path in MultimediaTable:"
 
-  FoundNoTagFiles = True
+  FoundNoTagFiles = False
   reportF.write (G_Divider + "\n=== Start of \"Files with no Tags\" listing\n")
 
 
   for row in cur:
-    FoundNoTagFiles = False
+    FoundNoTagFiles = True
     dirPathOrig = row[0]
     dirPath = ExpandDirPath(row[0])
     filePath = dirPath / row[1]
     reportF.write ("\n" + G_QT + str(filePath) + G_QT + "\n")
     if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
 
-  if FoundNoTagFiles: reportF.write ("\n    No files with no tags were found.\n")
+  if not FoundNoTagFiles: reportF.write ("\n    No files with no tags were found.\n")
 
   reportF.write ("\n=== End of \"Files with no Tags\" listing\n\n")
 
@@ -296,13 +296,27 @@ def FilesWithNoTagsFeature(config, conn, reportF):
 
 # ===================================================DIV60==
 def FindDuplcateFilesFeature(conn, reportF):
-  foundSomeDupFiles=False
+  foundSomeDupFiles = False
 
+  cur= GetDuplicateFileList(conn)
+
+  reportF.write (G_Divider + "\n=== Start of \"Duplicate Files\" listing\n")
+
+  for row in cur:
+    foundSomeDupFiles = True
+    dirPathOrig = row[0]
+    dirPath = ExpandDirPath(row[0])
+    filePath = dirPath / row[1]
+    reportF.write ("\n" + G_QT + str(filePath) + G_QT + "\n")
+
+  if not foundSomeDupFiles: reportF.write ("\n    No Duplicate Files in Media Gallery were found.\n")
+
+  reportF.write ("\n=== End of \"Duplicate Files\" listing\n\n")
   return
 
 
 # ===================================================DIV60==
-def TimeStamp():
+def TimeStampNow():
      # return a TimeStamp string
      now = datetime.now()
      dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
@@ -343,7 +357,7 @@ def main():
     conn.load_extension(RMNOCASE_Path)
 
     with open( report_Path,  mode='w', encoding='utf-8-sig') as reportF:
-      reportF.write ("Report generated at      = " + TimeStamp() + "\n")  
+      reportF.write ("Report generated at      = " + TimeStampNow() + "\n")  
       reportF.write ("Database processed       = " + database_Path + "\n")
       reportF.write ("Database last changed on = " + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n\n")
 
@@ -354,7 +368,7 @@ def main():
          ListUnReferencedFilesFeature(config, conn, reportF)
 
       if config['Options'].getboolean('FOLDER_LIST'):
-         ListFoldersFeature(conn, reportF)
+         ListFoldersFeature(config, conn, reportF)
 
       if config['Options'].getboolean('NO_TAG_FILES'):
          FilesWithNoTagsFeature(config, conn, reportF)
@@ -362,8 +376,7 @@ def main():
       if config['Options'].getboolean('DUP_FILES'):
          FindDuplcateFilesFeature(conn, reportF)
 
-      #reportF.write ("\n")
-      reportF.write (G_Divider + "\n\nEnd of report \n")
+      reportF.write (G_Divider + "\nEnd of report \n")
   return 0
 
 
