@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import time
+import sys
 from pathlib  import Path
 from datetime import datetime
 import configparser
@@ -95,7 +96,8 @@ def Heading (pos, name, reportF):
   elif pos == "FINAL":  text = "\n" + Divider + "\n=== End of Report\n"
   else:
     text = "not defined"
-    print("pos not correctly defined")
+    print("INTERNAL ERROR: pos not correctly defined")
+    sys.exit()
 
   reportF.write (text)
   return
@@ -158,20 +160,24 @@ def GetMediaDirectory():
 
 # ===================================================DIV60==
 def ListFoldersFeature(config, conn, reportF):
+  FeatureName = "Referenced Folders"
+  Label_OrigPath="Path in database:  "
+  foundSomeFolders=False
+
+  Heading( "START", FeatureName, reportF)
   # get options
   ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
-  Label_OrigPath="Path in database:  "
-  FeatureName = "Referenced Folders"
 
   cur= GetDBFolderList(conn)
   rows = cur.fetchall()
-  Heading( "START", FeatureName, reportF)
-
   for row in rows:
+    foundSomeFolders=True
     reportF.write(str(ExpandDirPath(row[0])) + "\n")
     if ShowOrigPath: reportF.write(Label_OrigPath + row[0] + "\n")
 
-  reportF.write ("\n" + str(len(rows)) + "  folders referenced in RootsMagic file \n")
+  if foundSomeFolders: reportF.write ("\nFolders referenced in database:  " + str(len(rows)) +  "\n")
+
+  if not foundSomeFolders: reportF.write ("\n    No folders found in database.\n")
   Heading( "END", FeatureName, reportF)
 
   return rows
@@ -183,13 +189,12 @@ def ListMissingFilesFeature( config, conn, reportF ):
   Label_OrigPath="Path in database:  "
   foundSomeMissingFiles=False
 
+  Heading( "START", FeatureName, reportF)
   # get options
   ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
 
   cur= GetDBFileList(conn)
   # row[0] = path,   row[1] = fileName
-
-  Heading( "START", FeatureName, reportF)
 
   for row in cur:
     dirPathOrig = row[0]
@@ -246,8 +251,9 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
   FeatureName = "Unreferenced Files"
 
   Heading( "START", FeatureName, reportF)
-
+  # get options
   ExtFilesFolderPath = Path(config['File Paths']['SEARCH_ROOT_FLDR_PATH'])
+
   # Validate the folder path
   if not ExtFilesFolderPath.exists(): 
     reportF.write ("ERROR: Directory path not found:" + "\"" + str(ExtFilesFolderPath) + "\"" + "\n")
@@ -277,8 +283,6 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
     for i in range(len(unRefFiles)):
       reportF.write("." + str(unRefFiles[i])[cutoff:] + "\n")
 
-
-
   else: reportF.write ("    No unreferenced files were found.\n\n")
 
   reportF.write("\n\nFolder processed: " + G_QT +str(ExtFilesFolderPath) + G_QT + "\n")
@@ -298,13 +302,13 @@ def FilesWithNoTagsFeature(config, conn, reportF):
   Label_OrigPath="Path in database:  "
   FoundNoTagFiles = False
 
+  Heading( "START", FeatureName, reportF)
   # get options
   ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
 
   cur= GetDBNoTagFileList(conn)
   # row[0] = path,   row[1] = fileName
 
-  Heading( "START", FeatureName, reportF)
 
   for row in cur:
     FoundNoTagFiles = True
@@ -326,12 +330,10 @@ def FindDuplcateFilesFeature(conn, reportF):
 # this currently find exact duplicates as saved in DB path & filename (ignoring case)
 # duplicates after expansion of relative paths not yet searched for
   FeatureName = "Duplicated Files"
-
   foundSomeDupFiles = False
 
-  cur= GetDuplicateFileList(conn)
-
   Heading( "START", FeatureName, reportF)
+  cur= GetDuplicateFileList(conn)
 
   for row in cur:
     foundSomeDupFiles = True
