@@ -17,20 +17,17 @@ import xml.etree.ElementTree as ET
 
 # TODO
 # better error handling when opening database
-# update for the new NOCASE.dll
-# add search for duplicate files
 
-# ================================================================
-#  Global Variable
-#  paths may be relative to RootsMagic's "Media folder", or database file folder, or home dir
+
+# ===================================================DIV60==
+#  Global Variables
 G_MediaDirectoryPath = ""
 G_DbFileFolderPath = ""
-
-G_Divider = "==========================================================="
+G_Divider = "=====================================================DIV60=="
 G_QT = "\""
 
 
-# ================================================================
+# ===================================================DIV60==
 def create_DBconnection(db_file):
     conn = None
     try:
@@ -41,7 +38,7 @@ def create_DBconnection(db_file):
     return conn
 
 
-# ================================================================
+# ===================================================DIV60==
 def ListFoldersFeature(conn, reportF):
     SqlStmt="""\
       SELECT  DISTINCT MediaPath
@@ -63,7 +60,7 @@ def ListFoldersFeature(conn, reportF):
     return rows
 
 
-# ================================================================
+# ===================================================DIV60==
 def GetDBFileList(conn):
     SqlStmt="""\
       SELECT  MediaPath, MediaFile
@@ -74,7 +71,7 @@ def GetDBFileList(conn):
     cur.execute(SqlStmt)
     return cur
 
-# ================================================================
+# ===================================================DIV60==
 def GetDBNoTagFileList(conn):
 
     SqlStmt="""\
@@ -88,7 +85,7 @@ def GetDBNoTagFileList(conn):
     cur.execute(SqlStmt)
     return cur
 
-# ================================================================
+# ===================================================DIV60==
 def GetDuplicateFileList(conn):
 
     SqlStmt="""\
@@ -109,7 +106,7 @@ def GetDuplicateFileList(conn):
     cur.execute(SqlStmt)
     return cur
 
-# ================================================================
+# ===================================================DIV60==
 def ExpandDirPath(in_path):
   # deal with relative paths in RootsMagic 8 databases
   # RM7 path are always absolute and will never be changed here
@@ -138,7 +135,7 @@ def ExpandDirPath(in_path):
   return absolutePath
 
 
-# ================================================================
+# ===================================================DIV60==
 def GetMediaDirectory():
 #  File location set by RootsMagic installer
   RM_Config_FilePath = r"~\AppData\Roaming\RootsMagic\Version 8\RootsMagicUser.xml"
@@ -154,7 +151,7 @@ def GetMediaDirectory():
   return path
 
 
-# ================================================================
+# ===================================================DIV60==
 def ListMissingFilesFeature( config, conn, reportF ):
   # get options
   ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
@@ -195,7 +192,7 @@ def ListMissingFilesFeature( config, conn, reportF ):
   return
 
 
-# ================================================================
+# ===================================================DIV60==
 def FolderContentsMinusIgnored(dirPath, config):
   ignoredFolderNames = config.get('Ignored Objects', 'folders').split('\n')
   ignoredFileNames   = config.get('Ignored Objects', 'filenames').split('\n')
@@ -217,7 +214,7 @@ def FolderContentsMinusIgnored(dirPath, config):
   return mediaFileList
 
 
-# ================================================================
+# ===================================================DIV60==
 def ListUnReferencedFilesFeature(config, conn, reportF):
   foundSomeExtraFiles=False
   reportF.write(G_Divider + "\n=== Start \"Unreferenced Files\" listing\n\n")
@@ -269,7 +266,7 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
 
 
 
-# ================================================================
+# ===================================================DIV60==
 def FilesWithNoTagsFeature(config, conn, reportF):
   # get options
   ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
@@ -297,14 +294,14 @@ def FilesWithNoTagsFeature(config, conn, reportF):
   return
 
 
-# ================================================================
+# ===================================================DIV60==
 def FindDuplcateFilesFeature(conn, reportF):
   foundSomeDupFiles=False
 
   return
 
 
-# ================================================================
+# ===================================================DIV60==
 def TimeStamp():
      # return a TimeStamp string
      now = datetime.now()
@@ -312,7 +309,7 @@ def TimeStamp():
      return dt_string
 
 
-# ================================================================
+# ===================================================DIV60==
 def main():
   global G_DbFileFolderPath
 
@@ -336,7 +333,7 @@ def main():
       print('Database path not found')
       return
 
-  FileModificationTime = time.ctime( os.path.getmtime(database_Path))
+  FileModificationTime = datetime.fromtimestamp(os.path.getmtime(database_Path))
 
   G_DbFileFolderPath = Path(database_Path).parent
 
@@ -346,9 +343,9 @@ def main():
     conn.load_extension(RMNOCASE_Path)
 
     with open( report_Path,  mode='w', encoding='utf-8-sig') as reportF:
-      reportF.write ("Report generated at = " + TimeStamp() + "\n")  
-      reportF.write ("Database processed  = " + database_Path + "\n")
-      reportF.write ("Database last changed on = " + FileModificationTime + "\n\n")
+      reportF.write ("Report generated at      = " + TimeStamp() + "\n")  
+      reportF.write ("Database processed       = " + database_Path + "\n")
+      reportF.write ("Database last changed on = " + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n\n")
 
       if config['Options'].getboolean('CHECK_FILES'):
          ListMissingFilesFeature(config, conn, reportF)
@@ -370,7 +367,7 @@ def main():
   return 0
 
 
-# ================================================================
+# ===================================================DIV60==
 # Call the "main" function
 if __name__ == '__main__':
     main()
