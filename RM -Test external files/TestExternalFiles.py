@@ -23,10 +23,82 @@ import xml.etree.ElementTree as ET
 #  Global Variables
 G_MediaDirectoryPath = ""
 G_DbFileFolderPath = ""
-G_Divider = "\
-===============================================================DIV70=="
 G_QT = "\""
 
+
+# ===================================================DIV60==
+def GetDBFolderList(conn):
+  SqlStmt="""\
+  SELECT  DISTINCT MediaPath
+  FROM MultimediaTable
+    ORDER BY MediaPath
+"""
+  cur = conn.cursor()
+  cur.execute(SqlStmt)
+  return cur
+
+
+# ===================================================DIV60==
+def GetDBFileList(conn):
+  SqlStmt="""\
+  SELECT  MediaPath, MediaFile
+  FROM MultimediaTable
+    ORDER BY MediaPath, MediaFile
+"""
+  cur = conn.cursor()
+  cur.execute(SqlStmt)
+  return cur
+
+
+# ===================================================DIV60==
+def GetDBNoTagFileList(conn):
+
+  SqlStmt="""\
+  SELECT MediaPath, MediaFile
+  FROM MultimediaTable mmt
+  LEFT JOIN MediaLinkTable mlt ON mlt.MediaID =  mmt.MediaID
+   WHERE OwnerType is NULL
+   ORDER by MediaPath, MediaFile
+"""
+  cur = conn.cursor()
+  cur.execute(SqlStmt)
+  return cur
+
+
+# ===================================================DIV60==
+def GetDuplicateFileList(conn):
+
+  SqlStmt="""\
+  SELECT p.MediaPath, p.MediaFile
+  FROM MultimediaTable p 
+  JOIN 
+  (
+   SELECT MediaPath, MediaFile, count(*) as cnt 
+   FROM MultimediaTable 
+   GROUP BY MediaPath, MediaFile
+  ) t 
+  ON LOWER(p.MediaPath) = LOWER(t.MediaPath) AND LOWER(p.MediaFile) = LOWER(t.MediaFile) 
+  WHERE t.cnt > 1 
+  ORDER BY p.MediaFile;
+"""
+  cur = conn.cursor()
+  cur.execute(SqlStmt)
+  return cur
+
+
+# ===================================================DIV60==
+def Heading (pos, name, reportF):
+
+  Divider = "===============================================================DIV70=="
+  if   pos == "START":  text = "\n" + Divider + "\n=== Start of \"" + name + "\" listing\n\n"
+  elif pos == "END":  text = "\n=== End of \"" + name + "\" listing\n"
+  elif pos == "FINAL":  text = "\n" + Divider + "\n=== End of Report\n"
+  else:
+    text = "not defined"
+    print("pos not correctly defined")
+
+  reportF.write (text)
+  return
 
 # ===================================================DIV60==
 def create_DBconnection(db_file):
@@ -38,77 +110,6 @@ def create_DBconnection(db_file):
 
     return conn
 
-
-# ===================================================DIV60==
-def ListFoldersFeature(config, conn, reportF):
-  SqlStmt="""\
-      SELECT  DISTINCT MediaPath
-      FROM MultimediaTable
-        ORDER BY MediaPath
-"""
-  cur = conn.cursor()
-  cur.execute(SqlStmt)
-
-  # get options
-  ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
-
-  rows = cur.fetchall()
-  reportF.write (G_Divider + "\n=== Start of \"Referenced Folders\" listing\n\n")
-
-  for row in rows:
-    reportF.write(str(ExpandDirPath(row[0])) + "\n")
-    if ShowOrigPath: reportF.write(row[0] + "\n")
-
-  reportF.write ("\n" + str(len(rows)) + "  folders referenced in RootsMagic file \n")
-  reportF.write ("\n=== End of \"Referenced Folders\" listing\n\n")
-
-  return rows
-
-
-# ===================================================DIV60==
-def GetDBFileList(conn):
-    SqlStmt="""\
-      SELECT  MediaPath, MediaFile
-      FROM MultimediaTable
-        ORDER BY MediaPath, MediaFile
-"""
-    cur = conn.cursor()
-    cur.execute(SqlStmt)
-    return cur
-
-# ===================================================DIV60==
-def GetDBNoTagFileList(conn):
-
-    SqlStmt="""\
-      SELECT MediaPath, MediaFile
-      FROM MultimediaTable mmt
-      LEFT JOIN MediaLinkTable mlt ON mlt.MediaID =  mmt.MediaID
-       WHERE OwnerType is NULL
-       ORDER by MediaPath, MediaFile
-"""
-    cur = conn.cursor()
-    cur.execute(SqlStmt)
-    return cur
-
-# ===================================================DIV60==
-def GetDuplicateFileList(conn):
-
-    SqlStmt="""\
-      SELECT p.MediaPath, p.MediaFile
-      FROM MultimediaTable p 
-      JOIN 
-      (
-       SELECT MediaPath, MediaFile, count(*) as cnt 
-       FROM MultimediaTable 
-       GROUP BY MediaPath, MediaFile
-      ) t 
-      ON LOWER(p.MediaPath) = LOWER(t.MediaPath) AND LOWER(p.MediaFile) = LOWER(t.MediaFile) 
-      WHERE t.cnt > 1 
-      ORDER BY p.MediaFile;
-"""
-    cur = conn.cursor()
-    cur.execute(SqlStmt)
-    return cur
 
 # ===================================================DIV60==
 def ExpandDirPath(in_path):
@@ -156,7 +157,30 @@ def GetMediaDirectory():
 
 
 # ===================================================DIV60==
+def ListFoldersFeature(config, conn, reportF):
+  # get options
+  ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
+  Label_OrigPath="Path in database:  "
+  FeatureName = "Referenced Folders"
+
+  cur= GetDBFolderList(conn)
+  rows = cur.fetchall()
+  Heading( "START", FeatureName, reportF)
+
+  for row in rows:
+    reportF.write(str(ExpandDirPath(row[0])) + "\n")
+    if ShowOrigPath: reportF.write(Label_OrigPath + row[0] + "\n")
+
+  reportF.write ("\n" + str(len(rows)) + "  folders referenced in RootsMagic file \n")
+  Heading( "END", FeatureName, reportF)
+
+  return rows
+
+
+# ===================================================DIV60==
 def ListMissingFilesFeature( config, conn, reportF ):
+  FeatureName = "Files Not Found"
+  Label_OrigPath="Path in database:  "
   foundSomeMissingFiles=False
 
   # get options
@@ -165,16 +189,15 @@ def ListMissingFilesFeature( config, conn, reportF ):
   cur= GetDBFileList(conn)
   # row[0] = path,   row[1] = fileName
 
-  Label_OrigPath="  Actual path in MultimediaTable:"
+  Heading( "START", FeatureName, reportF)
 
-  reportF.write (G_Divider + "\n=== Start of \"Files Not Found\" listing\n")
   for row in cur:
     dirPathOrig = row[0]
     dirPath = ExpandDirPath(row[0])
     filePath = dirPath / row[1]
     if not dirPath.exists(): 
        foundSomeMissingFiles=True
-       reportF.write ("\nDirectory path not found:\n" 
+       reportF.write ("Directory path not found:\n" 
              + G_QT + str(dirPath) + G_QT + " for file: " + G_QT + row[1] + G_QT + "\n")
        if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
 
@@ -182,17 +205,17 @@ def ListMissingFilesFeature( config, conn, reportF ):
         if filePath.exists():
             if not filePath.is_file():
                 foundSomeMissingFiles=True
-                reportF.write ("\nFile path is not a file: \n" + G_QT + str(filePath) + G_QT + "\n")
+                reportF.write ("File path is not a file: \n" + G_QT + str(filePath) + G_QT + "\n")
                 if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
 
         else:
             foundSomeMissingFiles=True
-            reportF.write ("\nFile path not found: \n" + G_QT + str(filePath) + G_QT + "\n")
+            reportF.write ("File path not found: \n" + G_QT + str(filePath) + G_QT + "\n")
             if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
 
 
   if not foundSomeMissingFiles: reportF.write ("\n    No files were found missing.\n")
-  reportF.write ("\n=== End of \"Files Not Found\" listing\n\n")
+  Heading( "END", FeatureName, reportF)
   return
 
 
@@ -220,7 +243,9 @@ def FolderContentsMinusIgnored(dirPath, config):
 
 # ===================================================DIV60==
 def ListUnReferencedFilesFeature(config, conn, reportF):
-  reportF.write(G_Divider + "\n=== Start \"Unreferenced Files\" listing\n\n")
+  FeatureName = "Unreferenced Files"
+
+  Heading( "START", FeatureName, reportF)
 
   ExtFilesFolderPath = Path(config['File Paths']['SEARCH_ROOT_FLDR_PATH'])
   # Validate the folder path
@@ -252,66 +277,72 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
     for i in range(len(unRefFiles)):
       reportF.write("." + str(unRefFiles[i])[cutoff:] + "\n")
 
-    reportF.write( "\n\nNumber of files in External files folder not referenced by the database: "
-         + str(len(unRefFiles))  + "\n\n\n")
+
 
   else: reportF.write ("    No unreferenced files were found.\n\n")
 
-  reportF.write("Folder processed: " + str(ExtFilesFolderPath) + "\n")
-  reportF.write("External files folder contains " + str(len(mediaFileList)) 
+  reportF.write("\n\nFolder processed: " + G_QT +str(ExtFilesFolderPath) + G_QT + "\n")
+  reportF.write( "Files in processed folder not referenced by the database: "
+         + str(len(unRefFiles))  + "\n")
+  reportF.write("Processed folder contains " + str(len(mediaFileList)) 
        + " files (not counting ignored items)\n")
-  reportF.write("Database contains " + str(len(dbFileList)) + " file links\n\n")
+  reportF.write("Database file links: " + str(len(dbFileList)) + "\n")
 
-  reportF.write("=== End \"Unreferenced Files\" listing\n\n")
+  Heading( "END", FeatureName, reportF)
   return
 
 
 # ===================================================DIV60==
 def FilesWithNoTagsFeature(config, conn, reportF):
+  FeatureName = "Files with no Tags"
+  Label_OrigPath="Path in database:  "
+  FoundNoTagFiles = False
+
   # get options
   ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
 
   cur= GetDBNoTagFileList(conn)
   # row[0] = path,   row[1] = fileName
-  Label_OrigPath="  Actual path in MultimediaTable:"
 
-  FoundNoTagFiles = False
-  reportF.write (G_Divider + "\n=== Start of \"Files with no Tags\" listing\n")
-
+  Heading( "START", FeatureName, reportF)
 
   for row in cur:
     FoundNoTagFiles = True
     dirPathOrig = row[0]
     dirPath = ExpandDirPath(row[0])
     filePath = dirPath / row[1]
-    reportF.write ("\n" + G_QT + str(filePath) + G_QT + "\n")
+    reportF.write ( G_QT + str(filePath) + G_QT + "\n")
     if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
 
   if not FoundNoTagFiles: reportF.write ("\n    No files with no tags were found.\n")
 
-  reportF.write ("\n=== End of \"Files with no Tags\" listing\n\n")
+  Heading( "END", FeatureName, reportF)
 
   return
 
 
 # ===================================================DIV60==
 def FindDuplcateFilesFeature(conn, reportF):
+# this currently find exact duplicates as saved in DB path & filename (ignoring case)
+# duplicates after expansion of relative paths not yet searched for
+  FeatureName = "Duplicated Files"
+
   foundSomeDupFiles = False
 
   cur= GetDuplicateFileList(conn)
 
-  reportF.write (G_Divider + "\n=== Start of \"Duplicate Files\" listing\n")
+  Heading( "START", FeatureName, reportF)
 
   for row in cur:
     foundSomeDupFiles = True
     dirPathOrig = row[0]
     dirPath = ExpandDirPath(row[0])
     filePath = dirPath / row[1]
-    reportF.write ("\n" + G_QT + str(filePath) + G_QT + "\n")
+    reportF.write (G_QT + str(filePath) + G_QT + "\n")
 
   if not foundSomeDupFiles: reportF.write ("\n    No Duplicate Files in Media Gallery were found.\n")
 
-  reportF.write ("\n=== End of \"Duplicate Files\" listing\n\n")
+  Heading( "END", FeatureName, reportF)
   return
 
 
@@ -376,7 +407,7 @@ def main():
       if config['Options'].getboolean('DUP_FILES'):
          FindDuplcateFilesFeature(conn, reportF)
 
-      reportF.write (G_Divider + "\nEnd of report \n")
+      Heading( "FINAL", "", reportF)
   return 0
 
 
