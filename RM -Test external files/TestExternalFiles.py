@@ -88,7 +88,7 @@ def GetDuplicateFileList(conn):
 
 
 # ===================================================DIV60==
-def Heading (pos, name, reportF):
+def Section (pos, name, reportF):
 
   Divider = "===============================================================DIV70=="
   if   pos == "START":  text = "\n" + Divider + "\n=== Start of \"" + name + "\" listing\n\n"
@@ -164,7 +164,7 @@ def ListFoldersFeature(config, conn, reportF):
   Label_OrigPath="Path in database:  "
   foundSomeFolders=False
 
-  Heading( "START", FeatureName, reportF)
+  Section( "START", FeatureName, reportF)
   # get options
   ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
 
@@ -178,7 +178,7 @@ def ListFoldersFeature(config, conn, reportF):
   if foundSomeFolders: reportF.write ("\nFolders referenced in database:  " + str(len(rows)) +  "\n")
 
   if not foundSomeFolders: reportF.write ("\n    No folders found in database.\n")
-  Heading( "END", FeatureName, reportF)
+  Section( "END", FeatureName, reportF)
 
   return rows
 
@@ -189,7 +189,7 @@ def ListMissingFilesFeature( config, conn, reportF ):
   Label_OrigPath="Path in database:  "
   foundSomeMissingFiles=False
 
-  Heading( "START", FeatureName, reportF)
+  Section( "START", FeatureName, reportF)
   # get options
   ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
 
@@ -220,7 +220,7 @@ def ListMissingFilesFeature( config, conn, reportF ):
 
 
   if not foundSomeMissingFiles: reportF.write ("\n    No files were found missing.\n")
-  Heading( "END", FeatureName, reportF)
+  Section( "END", FeatureName, reportF)
   return
 
 
@@ -250,7 +250,7 @@ def FolderContentsMinusIgnored(dirPath, config):
 def ListUnReferencedFilesFeature(config, conn, reportF):
   FeatureName = "Unreferenced Files"
 
-  Heading( "START", FeatureName, reportF)
+  Section( "START", FeatureName, reportF)
   # get options
   ExtFilesFolderPath = Path(config['File Paths']['SEARCH_ROOT_FLDR_PATH'])
 
@@ -292,7 +292,7 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
        + " files (not counting ignored items)\n")
   reportF.write("Database file links: " + str(len(dbFileList)) + "\n")
 
-  Heading( "END", FeatureName, reportF)
+  Section( "END", FeatureName, reportF)
   return
 
 
@@ -302,7 +302,7 @@ def FilesWithNoTagsFeature(config, conn, reportF):
   Label_OrigPath="Path in database:  "
   FoundNoTagFiles = False
 
-  Heading( "START", FeatureName, reportF)
+  Section( "START", FeatureName, reportF)
   # get options
   ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
 
@@ -320,7 +320,7 @@ def FilesWithNoTagsFeature(config, conn, reportF):
 
   if not FoundNoTagFiles: reportF.write ("\n    No files with no tags were found.\n")
 
-  Heading( "END", FeatureName, reportF)
+  Section( "END", FeatureName, reportF)
 
   return
 
@@ -332,7 +332,7 @@ def FindDuplcateFilesFeature(conn, reportF):
   FeatureName = "Duplicated Files"
   foundSomeDupFiles = False
 
-  Heading( "START", FeatureName, reportF)
+  Section( "START", FeatureName, reportF)
   cur= GetDuplicateFileList(conn)
 
   for row in cur:
@@ -344,7 +344,7 @@ def FindDuplcateFilesFeature(conn, reportF):
 
   if not foundSomeDupFiles: reportF.write ("\n    No Duplicate Files in Media Gallery were found.\n")
 
-  Heading( "END", FeatureName, reportF)
+  Section( "END", FeatureName, reportF)
   return
 
 
@@ -409,7 +409,7 @@ def main():
       if config['Options'].getboolean('DUP_FILES'):
          FindDuplcateFilesFeature(conn, reportF)
 
-      Heading( "FINAL", "", reportF)
+      Section( "FINAL", "", reportF)
   return 0
 
 
