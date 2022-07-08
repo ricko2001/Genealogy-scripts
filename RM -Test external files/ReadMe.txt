@@ -1,8 +1,9 @@
 
 TestExternalFiles.py
 
-RootsMagic (RM) uses SQLite as its main storage. The database 
-schema includes a table that points to external files.
+RootsMagic (RM) uses a database as its main storage. The database 
+schema includes a table that points to external files, called Multmedia
+files by RootsMagic.
 
 
 As the number of linked files increases, it becomes more likely 
@@ -11,41 +12,59 @@ that user errors will happen.
     from the database. RM has tools to help fix these, but it does not 
     give a log of what was done. There is a report that can be run, but
     with effort.
-* A file may be added to the media folder but then not attached to the
+* A file may be added to the media folder on disk but then not attached to the
     desired database element. Common when working quickly.
-* A file may be added to RM, but then removed from all previous uses, leaving it "un-tagged".
-    No harm in leaving it, but cleanup may be desirable.
+* A file may be added to RM, but then removed from all previous uses, leaving it
+    "un-tagged". No harm in leaving it, but cleanup may be desirable.
+* A file may be added more than once to the database.
 
 This utility will help identify these issues.
 
-The utility can perform 3 functions, as specified in the 
+This application is what is called a command line utility. To use it, one first edits
+a text file named "RM-Python-config.ini". This can be done using the Windows app NotePad.
+The file contains options and required configuration settings.
+One then double clicks the TestExternalFiles.py file. This momentarily displays the
+black command console window and at the same time, generates the Report text file which 
+contains the results of the requested (as specified in the ini file) actions.
+
+
+IMPORTANT: This utility ONLY reads the RM database file. This utility cannot change your RM file.
+However, until you trust that that is true, you should run this script on a copy of your database file.
+
+
+
+The utility can perform several functions, as specified in the 
 ini file Options section:
 
 CHECK_FILES
    Checks that each file referenced in the RM database actually 
-   exists on disk in the specified location.
+   exists on disk in the specified location. Any database file link not
+   found on disk is listed. (file path case is not significant)
 
 UNREF_FILES
-   Lists all files found in the folder SEARCH_ROOT_FLDR_PATH 
-   that are NOT referenced in the RM database.
+   Lists all files found in the folder specified by SEARCH_ROOT_FLDR_PATH 
+   (see below) that are NOT referenced in the RM database.
    Perhaps the file was added to the folder, but was mistakenly never 
    linked to an item in the database.
    This is designed for use when media files referenced by RM are all 
    in a single folder hierarchy.
-   NOTE: the RM specified Media folder is not considered, only the 
-   SEARCH_ROOT_FLDR_PATH specified in the RM-Python-config.ini file.
-   You can set SEARCH_ROOT_FLDR_PATH in the ini file to the RM media folder, 
-   if that is where the media files are.
+   NOTE: the folder specified in RM's preferences as the Media folder is not necessarily
+   the same as the folder specified by the SEARCH_ROOT_FLDR_PATH variable in the 
+   RM-Python-config.ini file. 
+   You can set SEARCH_ROOT_FLDR_PATH in the ini file to be the same as the RM media folder, 
+   if that is where the media files are. (recommended)
 
 FOLDER_LIST
    Lists all folders referenced in the RM database. A file in an unexpected location
    may have been accidentally added to the database. This list will make it obvious.
-   For RM8 files, folder paths may be prefixed 
-   with either ~ (home directory) or ? (RM specified media folder)
 
 NO_TAG_FILES
    Lists all files found in the folder SEARCH_ROOT_FLDR_PATH 
    that are in RM's media gallery but have zero tags.
+
+DUP_FILES
+    Lists files that have been added more than one time to the database. These will
+    appear more than once in the RM media gallery.
 
 
 To install and use:
@@ -58,6 +77,7 @@ To install and use:
 *  Edit the RM-Python-config.ini to specify the location of the RM file,  
    the unifuzz64.dll file and the output report file. Some script functions
    may be turned on or off. The required edits should be obvious.
+   (To edit, Open NotePad and drag the ini file onto the notepad window.)
 *  Double click the TestExternalFiles.py file to run the 
    script and generate the report file. 
    (5,000 media files requires about 3 seconds tun time)
@@ -70,7 +90,7 @@ All other components are very small.
 
 
 
-Tested with RootsMagic v7.6.5 and v8.1.8.0
+Tested with RootsMagic v7.6.5 and v8.2.0.0
        Python for Windows v3.10.2   64bit  
        unifuzz64.dll (version number not set, MD5=06a1f485b0fae62caa80850a8c7fd7c2)
        Operating system Window 11, 64bit
@@ -114,13 +134,11 @@ Notes:
 	*	RM main database file location
 	.	???
 
-*   A display option has been added for files found by either the CHECK_FILES or NO_TAG_FILES
-    The option is turned on by adding a line to the ini file in the OPTIONS section
-    SHOW_ORIG_PATH  = on
-    (the line should be flush to the left, like the other options.)
-    With this option set using RM8, the path for each file is shown twice,
-    - after any token in the path has been expanded.
-    - showing the path as saved in the database.
+*   A display option is available for files found by either the CHECK_FILES or NO_TAG_FILES or DUP_FILES
+    The option is turned on with the option SHOW_ORIG_PATH in the ini file.
+    With this option on, the path for each file is shown twice,
+    - the path on disk, that is, after any token in the path has been expanded.
+    - the path as saved in the database with the token not expanded (RM8 only).
 
 
 
@@ -139,43 +157,81 @@ OPTIONAL ===========
 
 
 
-TODO
-*  Add the Duplicate files feature
 
 
 Sample report output-
 
 ++++++++++
-Report generated at = 2022-07-06 14:24:16
-Database processed  = C:\Users\rotter\Documents\Genealogy\GeneDB\Otter-Saito.rmtree
-Database last changed on = Wed Jul  6 13:09:40 2022
+Report generated at      = 2022-07-07 13:48:50
+Database processed       = .\DB\TEST.rmtree
+Database last changed on = 2022-06-30 15:36:12
 
-===========================================================
+
+===============================================================DIV70==
 === Start of "Files Not Found" listing
 
-    No files were found missing.
+File path not found: 
+"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\_____Dummy File.txt"
+File path not found: 
+"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Misc\unicode text\Morita, Tama #4516.rtf"
+
 
 === End of "Files Not Found" listing
 
-===========================================================
-=== Start "Unreferenced Files" listing
+===============================================================DIV70==
+=== Start of "Unreferenced Files" listing
 
-    No unreferenced files were found.
+.\Sources\Birth\Hauer, Theadore Joseph b1912 -Birth Certificate.jpg
+.\Sources\Birth\Scamihorn, Samuel Jay b1942 -Birth Certificate.jpg
 
-Folder processed: C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits
-External files folder contains 4859 files (not counting ignored items)
-Database contains 4976 file links
 
-=== End "Unreferenced Files" listing
+Folder processed: "C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits"
+Files in processed folder not referenced by the database: 2
+Processed folder contains 4859 files (not counting ignored items)
+Database file links: 4972
 
-===========================================================
+=== End of "Unreferenced Files" listing
+
+===============================================================DIV70==
+=== Start of "Referenced Folders" listing
+
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Audio\Otter
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Faces
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Misc
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Newspaper-  Waldzell firefighters
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Photos
+C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Photos\Imai, Ethel
+
+  Folders referenced in database  7
+
+=== End of "Referenced Folders" listing
+
+===============================================================DIV70==
 === Start of "Files with no Tags" listing
 
-    No files with no tags were found.
+"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\_____Dummy File.txt"
+Path in database:  "?"
+"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Photos\Imai Family 1945-1948.jpg"
+Path in database:  "?\Images\Photos"
 
 === End of "Files with no Tags" listing
 
-===========================================================
+===============================================================DIV70==
+=== Start of "Duplicated Files" listing
 
-End of report 
+"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Passenger List\Och, Dorothea & Margareta -Passenger List 1929 -2of2 -ANCimg50.jpg"
+"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Passenger List\Och, Dorothea & Margareta -Passenger List 1929 -2of2 -ANCimg50.jpg"
+"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Places\USA-New York\Otter Paint shop in 2021 (393 Linden St.).PNG"
+"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Places\USA-New York\Otter Paint shop in 2021 (393 Linden St.).PNG"
+
+=== End of "Duplicated Files" listing
+
+===============================================================DIV70==
+=== End of Report
+
 ++++++++++
+
+
+TODO
+*  Add code to find duplicate files with different paths saved in database.
