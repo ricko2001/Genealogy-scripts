@@ -1,10 +1,97 @@
-Change the source template used by a source script
+Change the source template used by a source
 
-Also used when one wants to change the fields of a source template. Instead of editing the template, may be best to copy it, rename it, edit it and then switch the sources using it.
+The RootsMagic (RM) application does not provide a way for the user to modify a Source by changing which SourceTemplate it uses. This utility does that.
+
+A common use is when one wants to change the fields of a SourceTemplate that's already in use. Instead of editing the template, one copies the in-use SourceTemplate in RM, renames the copy, edits the copy and then uses this utility to switch the source or set of sources to use the new SourceTemplate copy that now has the desired fields.
+
+This application is what is called a command line utility. To use it, one first edits
+the supplied text file named "RM-Python-config.ini". This can be done using the Windows app "NotePad."
+The file contains options and required configuration settings. One then double clicks 
+the SwitchSourceTemplate file. This momentarily displays the black command console window 
+and at the same time, generates the Report text file which contains the results of the requested actions.
 
 
-Start with a source or set of sources, all created with he same source template, whose template we want to change.
-We need to create a list of these. The select will use the sourceTemplateID as the search criteria. Code also allows a Like test on source name.
+Overview
+The use this this utility involves several steps-
+* download the necessary files to your computer.
+* determine witch source or set of sources should have their SourceTemplates switched.
+  (If more than one source is to be changed, they all need to be based on the same SourceTemplate.)
+* determine the exact names of the SourceTemplate already in use and the SourceTemplate to be used instead.
+* determine how data described by the existing SourceTemplate will be mapped to the new SourceTemplate.
+* edit the RM-Config.ini file to include the information determined above.
+* test the RM-Config.ini file values by running the options in order they appear.
+* run the utility with the MAKE_CHANGES option
+* confirm that the desired changes have been made and no others.
+
+
+
+
+
+Step 1
+Specify which sources should have their SourceTemplate switched.
+We need to create a list of these. A SQL select will create the list using search criteria: 
+ * SourceTemplate name (exact match)
+ * Source name allowing SQL LIKE wild card characters "%" and "_".
+
+The RM_Config.ini file has a field named "old" which is assigned the name of the existing SourceTemplate
+and the ini file has a field named "SourceNamesLike" which is assigned the search expression.
+
+An example:
+Say there are a bunch of sources in the RM file that have SourceTemplate names and SourceNames
+SourceTemplate		SourceName
+TemplBIRTH			BIRTH Ancestry John Smith
+TemplBIRTH			BIRTH MyHeritage JOE
+TemplBIRTH			BIRTH Helen Sauer
+TemplBIRTH			BIRTH Frank Sauer
+oldBIRTH			BIRTH MyHeritage Mike
+
+Say we wanted to change the SourceTemplate for the first 4 of these.
+TEMPLATE_OLD = TemplBIRTH
+SOURCE_NAME_LIKE = BIRTH %
+
+The list would include the first 4.
+
+If the search criteria were-
+TEMPLATE_OLD = oldBIRTH
+SOURCE_NAME_LIKE = BIRTH %
+
+the list would only include the 5th source.
+
+One could work with just one source at a time by giving the full source name and not including a wild card, say
+TEMPLATE_OLD = TemplBIRTH
+SOURCE_NAME_LIKE = BIRTH Helen Sauer
+
+the list would include only the 3rd source. (Note that the search is not case sensitive)
+
+If all of the desired Sources can't be found with one value of SOURCE_NAME_LIKE, you can run the utility multiple times with different values of SOURCE_NAME_LIKE.
+
+Note that we have already determined the existing SourceTemplate name and have specified it in th RM-Config.ini file as the value of "TEMPLATE_OLD". Look in the Source template list in RM to get the name of the SourceTemplate to be used.
+
+
+======================================================================
+Getting Started
+
+To install and use the script file version:
+*  Download and install Python for Windows x64  -see below
+*  Download unifuzz64.dll   -see below
+*  Download these files from GitHub
+      Switch-source-template.py
+      RM-Python-config.ini
+*  Create a folder on disk and copy these files to it-
+      TestExternalFiles.py
+      RM-Python-config.ini
+      unifuzz64.dll
+*  Edit the RM-Python-config.ini to specify the required parameters.
+   (To edit, Open NotePad and drag the ini file onto the notepad window.)
+   location of the RM file and 
+   the unifuzz64.dll file . 
+   Some script functions may be turned on or off. The required edits should be obvious.
+*  Double click the Switch-source-template.py file to run the 
+   script and generate the report file. 
+*  Examine the report output file.
+
+
+
 
 The template currently in use and the one that will be used will presumably have differiert fields, type sentences etc.
 If one only changes a source's template in the database, the source will have the fields and data corresponding to the template it was created with.

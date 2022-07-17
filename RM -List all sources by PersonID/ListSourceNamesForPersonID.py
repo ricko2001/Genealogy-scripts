@@ -115,8 +115,8 @@ def main():
 
   # Read file paths from ini file
 # TODO  report_Path   = config['File Paths']['REPORT_PATH']
-  database_Path = config['File Paths']['DB_PATH']
-  RMNOCASE_Path = config['File Paths']['RMNOCASE_PATH']
+  database_Path = config['FILE_PATHS']['DB_PATH']
+  RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
 
   if not os.path.exists(database_Path):
       print('Database path not found')

@@ -166,7 +166,7 @@ def ListFoldersFeature(config, conn, reportF):
 
   Section( "START", FeatureName, reportF)
   # get options
-  ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
+  ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
 
   cur= GetDBFolderList(conn)
   rows = cur.fetchall()
@@ -191,7 +191,7 @@ def ListMissingFilesFeature( config, conn, reportF ):
 
   Section( "START", FeatureName, reportF)
   # get options
-  ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
+  ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
 
   cur= GetDBFileList(conn)
   # row[0] = path,   row[1] = fileName
@@ -226,8 +226,8 @@ def ListMissingFilesFeature( config, conn, reportF ):
 
 # ===================================================DIV60==
 def FolderContentsMinusIgnored(dirPath, config):
-  ignoredFolderNames = config.get('Ignored Objects', 'folders').split('\n')
-  ignoredFileNames   = config.get('Ignored Objects', 'filenames').split('\n')
+  ignoredFolderNames = config['IGNORED_OBJRCTS'].get('FOLDERS').split('\n')
+  ignoredFileNames   = config['IGNORED_OBJRCTS'].get('FILENAMES').split('\n')
 
   mediaFileList = []
   for (dirname, dirnames, filenames) in os.walk(dirPath, topdown=True):
@@ -252,7 +252,7 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
 
   Section( "START", FeatureName, reportF)
   # get options
-  ExtFilesFolderPath = Path(config['File Paths']['SEARCH_ROOT_FLDR_PATH'])
+  ExtFilesFolderPath = Path(config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH'])
 
   # Validate the folder path
   if not ExtFilesFolderPath.exists(): 
@@ -304,7 +304,7 @@ def FilesWithNoTagsFeature(config, conn, reportF):
 
   Section( "START", FeatureName, reportF)
   # get options
-  ShowOrigPath = config['Options'].getboolean('SHOW_ORIG_PATH')
+  ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
 
   cur= GetDBNoTagFileList(conn)
   # row[0] = path,   row[1] = fileName
@@ -372,9 +372,9 @@ def main():
   config.read(IniFile, 'UTF-8')
 
   # Read file paths from ini file
-  report_Path   = config['File Paths']['REPORT_PATH']
-  database_Path = config['File Paths']['DB_PATH']
-  RMNOCASE_Path = config['File Paths']['RMNOCASE_PATH']
+  report_Path   = config['FILE_PATHS']['REPORT_FILE_PATH']
+  database_Path = config['FILE_PATHS']['DB_PATH']
+  RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
 
   if not os.path.exists(database_Path):
       print('Database path not found')
@@ -394,19 +394,19 @@ def main():
       reportF.write ("Database processed       = " + database_Path + "\n")
       reportF.write ("Database last changed on = " + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n\n")
 
-      if config['Options'].getboolean('CHECK_FILES'):
+      if config['OPTIONS'].getboolean('CHECK_FILES'):
          ListMissingFilesFeature(config, conn, reportF)
 
-      if config['Options'].getboolean('UNREF_FILES'):
+      if config['OPTIONS'].getboolean('UNREF_FILES'):
          ListUnReferencedFilesFeature(config, conn, reportF)
 
-      if config['Options'].getboolean('FOLDER_LIST'):
+      if config['OPTIONS'].getboolean('FOLDER_LIST'):
          ListFoldersFeature(config, conn, reportF)
 
-      if config['Options'].getboolean('NO_TAG_FILES'):
+      if config['OPTIONS'].getboolean('NO_TAG_FILES'):
          FilesWithNoTagsFeature(config, conn, reportF)
 
-      if config['Options'].getboolean('DUP_FILES'):
+      if config['OPTIONS'].getboolean('DUP_FILES'):
          FindDuplcateFilesFeature(conn, reportF)
 
       Section( "FINAL", "", reportF)
