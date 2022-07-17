@@ -1,0 +1,22 @@
+
+# ignore shortcut files
+*.lnk
+# ignore browser url files
+*.url
+
+# ignore visual studio stuff
+.vs/
+*.pyproj
+*.sln
+
+# ignore test database stuff
+DB/
+
+# don't add exe files
+*.exe
+
+DEV_RM-Python-config.ini
+DISTRO_RM-Python-config.ini
+HIDE_*
+
+Releases/
