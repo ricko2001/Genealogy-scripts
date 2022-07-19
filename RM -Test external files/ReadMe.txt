@@ -65,6 +65,16 @@ DUP_FILES
 
 
 ======================================================================
+Compatibility
+Tested with RootsMagic v7.6.5 and v8.2.0.0 (RM ver 7.6, 8.0 OK)
+       Python for Windows v3.10.5   64bit  (ver 3.9 OK)
+       unifuzz64.dll (file has no version number defined. see MD5 and file size in accompanying file Hash.txt)
+       Operating system Window 11, 64bit  (Windows 10 OK)
+The exe file is Windows only. 
+The py file could probably be modified to work on MacOS with Python ver 3+ is installed.
+
+
+======================================================================
 Which to use? Standalone .exe file or .py file
 
 Decide whether you wish to use the script file (.py) or the executable file (.exe) version. 
@@ -83,6 +93,7 @@ or
 * Script File Version
 Pro: 
 The script file is easily readable and one can confirm what it does
+You may want to learn Python and make your own changes to the script.
 Con:
 The script version requires an installation of the Python environment to run.
 This is a 100 MB investment in disk space. (Small for modern day hard disks)
@@ -114,6 +125,9 @@ To install and use the single file version:
    the report file. 
 *  Examine the report output file.
 
+----
+OR
+----
 
 To install and use the script file version:
 *  Download and install Python for Windows x64  -see below
@@ -132,18 +146,10 @@ To install and use the script file version:
 *  Examine the report output file.
 
 
-======================================================================
-Compatibility
-Tested with RootsMagic v7.6.5 and v8.2.0.0 (RM ver 7.6, 8.0 OK)
-       Python for Windows v3.10.5   64bit  (ver 3.9 OK)
-       unifuzz64.dll (version number not set, MD5(unifuzz64.dll) = 06a1f485b0fae62caa80850a8c7fd7c2)
-       Operating system Window 11, 64bit  (Windows 10 OK)
-The exe file is Windows only. 
-The py file could probably be easily modified to work on MacOS with Python ver 3+ is installed.
-
 
 ======================================================================
 Python download-
+
 Download the current version of Python 3, ( or see direct link below)
 https://www.python.org/downloads/windows/
 
@@ -156,19 +162,17 @@ https://www.python.org/ftp/python/3.10.5/python-3.10.5-amd64.exe
 
 The Python installation requires about 100 Mbytes.
 It is easily and cleanly removed using the standard method found in Windows=>Settings
-All other components are very small.
 
 Run the Python installer selecting all default options.
 
 
 ======================================================================
 unifuzz64.dll download-
+
 https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2018/05/unifuzz64.dll
 
 above link found in this context-
 https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlite-expert-command-line-shell-et-al/
-
-MD5(unifuzz64.dll) = 06a1f485b0fae62caa80850a8c7fd7c2
 
 The SQLiteToolsforRootsMagic website has been around for years and is run by a trusted RM user. 
 Many posts to public RootsMagic user forums mentio use of unifuzz64.dll from the SQLiteToolsforRootsMagic website.
@@ -221,13 +225,11 @@ NOTES
 *   RMNOCASE_fake-SQLiteSpy64.dll
     An alternate for unifuzz64.dll named "RMNOCASE_fake-SQLiteSpy64.dll" has recently been created and
     has been successfully tested. The 2 dlls work equally well for this script.
-
     https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2017/12/RMNOCASE_fake-SQLiteSpy64.dll.bak
     in the context of this page:
     https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlitespy/rmnocase_fake-sqlitespy64-dll/
 
     After download, rename the file by removing the final ".bak"
-    MD5(RMNOCASE_fake-SQLiteSpy64.dll) = 43fe353e3e3456dc33f8f60933dbc6ab 
 
 
 
@@ -236,8 +238,9 @@ NOTES
 Sample report output-
 
 ++++++++++
+++++++++++
 Report generated at      = 2022-07-07 13:48:50
-Database processed       = .\DB\TEST.rmtree
+Database processed       = C:\Users\me\Genealogy\MyFile.rmtree
 Database last changed on = 2022-06-30 15:36:12
 
 
@@ -245,9 +248,9 @@ Database last changed on = 2022-06-30 15:36:12
 === Start of "Files Not Found" listing
 
 File path not found: 
-"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Dummy Birth File.txt"
+"C:\Users\me\Documents\Genealogy\GeneDB\Exhibits\Dummy Birth File.txt"
 File path not found: 
-"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Misc\Morita, Tama #4516.rtf"
+"C:\Users\me\Documents\Genealogy\GeneDB\Exhibits\Misc\Morita, Tama #4516.rtf"
 
 
 === End of "Files Not Found" listing
@@ -259,7 +262,7 @@ File path not found:
 .\Sources\Birth\Scamihorn, Samuel Jay b1942 -Birth Certificate.jpg
 
 
-Folder processed: "C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits"
+Folder processed: "C:\Users\me\Documents\Genealogy\GeneDB\Exhibits"
 Files in processed folder not referenced by the database: 2
 Processed folder contains 4859 files (not counting ignored items)
 Database file links: 4972
@@ -269,13 +272,13 @@ Database file links: 4972
 ===============================================================DIV70==
 === Start of "Referenced Folders" listing
 
-C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits
-C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Audio\Otter
-C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Faces
-C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Misc
-C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Newspaper-  Waldzell firefighters
-C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Photos
-C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Photos\Imai, Ethel
+C:\Users\me\Genealogy\GeneDB\Exhibits
+C:\Users\me\Genealogy\GeneDB\Exhibits\Audio\Otter
+C:\Users\me\Genealogy\GeneDB\Exhibits\Images\Faces
+C:\Users\me\Genealogy\GeneDB\Exhibits\Images\Misc
+C:\Users\me\Genealogy\GeneDB\Exhibits\Images\Newspaper-  Waldzell firefighters
+C:\Users\me\Genealogy\GeneDB\Exhibits\Images\Photos
+C:\Users\me\Genealogy\GeneDB\Exhibits\Images\Photos\Imai, Ethel
 
   Folders referenced in database  7
 
@@ -284,18 +287,18 @@ C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Photos\Imai, Ethel
 ===============================================================DIV70==
 === Start of "Files with no Tags" listing
 
-"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Dummy Birth File.txt"
-"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Photos\Imai Family 1945-1948.jpg"
+"C:\Users\me\Genealogy\GeneDB\Exhibits\Dummy Birth File.txt"
+"C:\Users\me\Genealogy\GeneDB\Exhibits\Images\Photos\Imai Family 1945-1948.jpg"
 
 === End of "Files with no Tags" listing
 
 ===============================================================DIV70==
 === Start of "Duplicated Files" listing
 
-"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Passenger List\Och, Dorothea & Margareta -Passenger List 1929 -2of2 -ANCimg50.jpg"
-"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Sources\Passenger List\Och, Dorothea & Margareta -Passenger List 1929 -2of2 -ANCimg50.jpg"
-"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Places\USA-New York\Otter Paint shop in 2021 (393 Linden St.).PNG"
-"C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Places\USA-New York\Otter Paint shop in 2021 (393 Linden St.).PNG"
+"C:\Users\me\Genealogy\GeneDB\Exhibits\Sources\Passenger List\Och, Dorothea & Margareta -Passenger List 1929 -2of2 -ANCimg50.jpg"
+"C:\Users\me\Genealogy\GeneDB\Exhibits\Sources\Passenger List\Och, Dorothea & Margareta -Passenger List 1929 -2of2 -ANCimg50.jpg"
+"C:\Users\me\Genealogy\GeneDB\Exhibits\Images\Places\USA-New York\Otter Paint shop in 2021 (393 Linden St.).PNG"
+"C:\Users\me\Genealogy\GeneDB\Exhibits\Images\Places\USA-New York\Otter Paint shop in 2021 (393 Linden St.).PNG"
 
 === End of "Duplicated Files" listing
 
@@ -303,7 +306,7 @@ C:\Users\rotter\Documents\Genealogy\GeneDB\Exhibits\Images\Photos\Imai, Ethel
 === End of Report
 
 ++++++++++
-
+++++++++++
 
 ======================================================================
 TODO

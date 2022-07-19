@@ -7,6 +7,11 @@
 *.rmtree
 
 DB/
+Release/
+build/
+dist/
+*.spec
+
 
 HIDE_*
 
