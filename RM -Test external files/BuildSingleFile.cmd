@@ -1,1 +1,0 @@
-pyinstaller --onefile  --version-file Version.py  TestExternalFiles.py
