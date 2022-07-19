@@ -1,34 +1,48 @@
 @ECHO OFF
 
 REM Update all files in local git
-REM Test py, version.py, readme, hash
+REM Test script.py, version.py, readme, hash
 
 REM ECHO Enter version number n.n.n.n
-SET /P  VERSION_NUMBER=Enter version number n.n.n.n
+SET /P  VERSION_NUMBER="Enter version number n.n.n.n   "
 
 SET APPNAME=TestExternalFiles
 
-SET ZIP_FILE_NAME= %APPNAME% %VERSION_NUMBER%.zip
+SET DIST_FLDR_NAME=%APPNAME% v%VERSION_NUMBER%
 
-SET REL_FLDR=Release %APPNAME% %VERSION_NUMBER%
+SET REL_FLDR=Release %APPNAME% v%VERSION_NUMBER%
 
 ECHO Is the Version.py updated ?
 pause
 
+MKDIR ".\%REL_FLDR%"
+MKDIR ".\%REL_FLDR%\%DIST_FLDR_NAME%"
+xcopy ReadMe.txt             ".\%REL_FLDR%\%DIST_FLDR_NAME%"
+xcopy RM-Python-config.ini   ".\%REL_FLDR%\%DIST_FLDR_NAME%"
+xcopy TestExternalFiles.py   ".\%REL_FLDR%\%DIST_FLDR_NAME%"
+xcopy Hash.txt               ".\%REL_FLDR%\%DIST_FLDR_NAME%"
+xcopy Version.py             ".\%REL_FLDR%\%DIST_FLDR_NAME%"
 
 
-MKDIR .\%REL_FLDR%
-xcopy ReadMe.txt             .\%REL_FLDR%
-xcopy RM-Python-config.ini   .\%REL_FLDR%
-xcopy TestExternalFiles.py   .\%REL_FLDR%
-xcopy Hash.txt               .\%REL_FLDR%
-xcopy Version.py             .\%REL_FLDR%
-
-cd .\%REL_FLDR%
+cd ".\%REL_FLDR%\%DIST_FLDR_NAME%"
 
 REM create the exe file
 pyinstaller --onefile  --version-file Version.py  TestExternalFiles.py
 
-move *.spec  .\build
 
-7za a -tzip * "%ZIP_FILE_NAME%"
+del Version.py
+move *.spec  .\build
+copy dist\*.exe .
+move build ..
+move dist ..
+
+cd ..
+
+7za a -tzip "%DIST_FLDR_NAME%.zip" "%DIST_FLDR_NAME%"
+
+pause
+
+ECHO for release- use git tag name = %APPNAME%_v%VERSION_NUMBER%
+
+pause
+

@@ -7,7 +7,7 @@
 *.rmtree
 
 DB/
-Release/
+Release*/
 build/
 dist/
 *.spec
