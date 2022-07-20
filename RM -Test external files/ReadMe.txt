@@ -130,7 +130,7 @@ OR
 ----
 
 To install and use the script file version:
-*  Download and install Python for Windows x64  -see below
+*  Install Python for Windows x64  -see below
 *  Create a folder on your disk
 *  Copy these files from downloaded zip file to the above folder-
       TestExternalFiles.py
@@ -148,8 +148,16 @@ To install and use the script file version:
 
 
 ======================================================================
-Python download-
+Python install-
+Install Python from the Microsoft Store
+or download and install from its official web site
 
+From Microsoft Store
+Run a command in Windows by pressing the keyborad key combination "Windows + R", then in the small window, type Python
+Windows store will open in your browser and you will be be shown the current version of Python. 
+Click the Get button.
+
+Web site download and install
 Download the current version of Python 3, ( or see direct link below)
 https://www.python.org/downloads/windows/
 
@@ -159,6 +167,7 @@ Click it and save the installer.
 
 Direct link to recent version installer-
 https://www.python.org/ftp/python/3.10.5/python-3.10.5-amd64.exe
+
 
 The Python installation requires about 100 Mbytes.
 It is easily and cleanly removed using the standard method found in Windows=>Settings
@@ -175,10 +184,13 @@ above link found in this context-
 https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlite-expert-command-line-shell-et-al/
 
 The SQLiteToolsforRootsMagic website has been around for years and is run by a trusted RM user. 
-Many posts to public RootsMagic user forums mentio use of unifuzz64.dll from the SQLiteToolsforRootsMagic website.
+Many posts to public RootsMagic user forums mention use of unifuzz64.dll from the SQLiteToolsforRootsMagic website.
 
 ======================================================================
 NOTES
+*  If no report file is generated, look at the black command console window for
+    error messages that will help you fix the problem.
+
 *  RM-Python-config.ini
    If there are any non-ASCII characters in the RM-Python-config.ini file, 
    perhaps in a database path, or in ignored objects, then the file 
