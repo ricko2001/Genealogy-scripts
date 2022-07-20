@@ -75,52 +75,63 @@ def main():
     G_DbFileFolderPath = Path(database_Path).parent
   
     # Process the database for requested output
-    with create_DBconnection(database_Path) as conn:
-      conn.enable_load_extension(True)
-      conn.load_extension(RMNOCASE_Path)
-  
+    with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
       reportF.write ("Report generated at      = " + TimeStampNow() + "\n")  
       reportF.write ("Database processed       = " + database_Path + "\n")
       reportF.write ("Database last changed on = " + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n\n")
+
+      # test option values conversion to boolean
       try:
-        if config['OPTIONS'].getboolean('CHECK_FILES'):
-           ListMissingFilesFeature(config, conn, reportF)
-   
-        if config['OPTIONS'].getboolean('UNREF_FILES'):
-           ListUnReferencedFilesFeature(config, conn, reportF)
-   
-        if config['OPTIONS'].getboolean('FOLDER_LIST'):
-           ListFoldersFeature(config, conn, reportF)
-   
-        if config['OPTIONS'].getboolean('NO_TAG_FILES'):
-           FilesWithNoTagsFeature(config, conn, reportF)
-   
-        if config['OPTIONS'].getboolean('DUP_FILES'):
-           FindDuplcateFilesFeature(conn, reportF)
+        config['OPTIONS'].getboolean('CHECK_FILES')
+        config['OPTIONS'].getboolean('UNREF_FILES')
+        config['OPTIONS'].getboolean('FOLDER_LIST')
+        config['OPTIONS'].getboolean('NO_TAG_FILES')
+        config['OPTIONS'].getboolean('DUP_FILES')
+        config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
       except:
         reportF.write ("One of the OPTIONS values could not be parsed as boolean. \n")
+        sys.exit()
+
+      if config['OPTIONS'].getboolean('CHECK_FILES'):
+         ListMissingFilesFeature(config, dbConnection, reportF)
+  
+      if config['OPTIONS'].getboolean('UNREF_FILES'):
+         ListUnReferencedFilesFeature(config, dbConnection, reportF)
+  
+      if config['OPTIONS'].getboolean('FOLDER_LIST'):
+         ListFoldersFeature(config, dbConnection, reportF)
+  
+      if config['OPTIONS'].getboolean('NO_TAG_FILES'):
+         FilesWithNoTagsFeature(config, dbConnection, reportF)
+  
+      if config['OPTIONS'].getboolean('DUP_FILES'):
+         FindDuplcateFilesFeature(dbConnection, reportF)
 
     Section( "FINAL", "", reportF)
   return 0
 
 
 # ===================================================DIV60==
-def ListUnReferencedFilesFeature(config, conn, reportF):
+def ListUnReferencedFilesFeature(config, dbConnection, reportF):
   FeatureName = "Unreferenced Files"
 
   Section( "START", FeatureName, reportF)
   # get options
-  ExtFilesFolderPath = Path(config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH'])
+  try:
+    ExtFilesFolderPath = config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH']
+  except:
+    reportF.write ("ERROR: SEARCH_ROOT_FLDR_PATH must be specified for this option. \n")
+    sys.exit()
 
   # Validate the folder path
-  if not ExtFilesFolderPath.exists(): 
-    reportF.write ("ERROR: Directory path not found:" + "\"" + str(ExtFilesFolderPath) + "\"" + "\n")
+  if not Path(ExtFilesFolderPath).exists(): 
+    reportF.write ("ERROR: Directory path not found:" + "\"" + ExtFilesFolderPath + "\"" + "\n")
     sys.exit()
-  if not ExtFilesFolderPath.is_dir():
-    reportF.write ("ERROR: Path is not a directory:" + "\"" + str(ExtFilesFolderPath) + "\"" + "\n")
+  if not Path(ExtFilesFolderPath).is_dir():
+    reportF.write ("ERROR: Path is not a directory:" + "\"" + ExtFilesFolderPath + "\"" + "\n")
     sys.exit()
 
-  cur= GetDBFileList(conn)
+  cur= GetDBFileList(dbConnection)
 
   dbFileList=[]
   for row in cur:
@@ -128,7 +139,7 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
     filePath=os.path.join(dirPath, row[1])
     dbFileList.append(filePath)
 
-  mediaFileList = FolderContentsMinusIgnored(reportF, ExtFilesFolderPath, config)
+  mediaFileList = FolderContentsMinusIgnored(reportF, Path(ExtFilesFolderPath), config)
 
   unRefFiles = list(set(mediaFileList).difference(dbFileList))
 
@@ -136,14 +147,14 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
     unRefFiles.sort()
 
     # don't print full path from root folder
-    cutoff = len(str(ExtFilesFolderPath))
+    cutoff = len(ExtFilesFolderPath)
 
     for i in range(len(unRefFiles)):
       reportF.write("." + str(unRefFiles[i])[cutoff:] + "\n")
 
   else: reportF.write ("    No unreferenced files were found.\n\n")
 
-  reportF.write("\n\nFolder processed: " + G_QT +str(ExtFilesFolderPath) + G_QT + "\n")
+  reportF.write("\n\nFolder processed: " + G_QT + ExtFilesFolderPath + G_QT + "\n")
   reportF.write( "Files in processed folder not referenced by the database: "
          + str(len(unRefFiles))  + "\n")
   reportF.write("Processed folder contains " + str(len(mediaFileList)) 
@@ -155,22 +166,17 @@ def ListUnReferencedFilesFeature(config, conn, reportF):
 
 
 # ===================================================DIV60==
-def FilesWithNoTagsFeature(config, conn, reportF):
+def FilesWithNoTagsFeature(config, dbConnection, reportF):
   FeatureName = "Files with no Tags"
   Label_OrigPath="Path in database:  "
   FoundNoTagFiles = False
 
   Section( "START", FeatureName, reportF)
   # get options
-  try:
-    ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
-  except:
-    reportF.write ("One of the OPTIONS values could not be parsed as boolean. \n")
+  ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
 
-
-  cur= GetDBNoTagFileList(conn)
+  cur= GetDBNoTagFileList(dbConnection)
   # row[0] = path,   row[1] = fileName
-
 
   for row in cur:
     FoundNoTagFiles = True
@@ -183,19 +189,18 @@ def FilesWithNoTagsFeature(config, conn, reportF):
   if not FoundNoTagFiles: reportF.write ("\n    No files with no tags were found.\n")
 
   Section( "END", FeatureName, reportF)
-
   return
 
 
 # ===================================================DIV60==
-def FindDuplcateFilesFeature(conn, reportF):
+def FindDuplcateFilesFeature(dbConnection, reportF):
 # this currently find exact duplicates as saved in DB path & filename (ignoring case)
 # duplicates after expansion of relative paths not yet searched for
   FeatureName = "Duplicated Files"
   foundSomeDupFiles = False
 
   Section( "START", FeatureName, reportF)
-  cur= GetDuplicateFileList(conn)
+  cur= GetDuplicateFileList(dbConnection)
 
   for row in cur:
     foundSomeDupFiles = True
@@ -211,19 +216,16 @@ def FindDuplcateFilesFeature(conn, reportF):
 
 
 # ===================================================DIV60==
-def ListFoldersFeature(config, conn, reportF):
+def ListFoldersFeature(config, dbConnection, reportF):
   FeatureName = "Referenced Folders"
   Label_OrigPath="Path in database:  "
   foundSomeFolders=False
 
   Section( "START", FeatureName, reportF)
   # get options
-  try:
-    ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
-  except:
-    reportF.write ("One of the OPTIONS values could not be parsed as boolean. \n")
+  ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
 
-  cur= GetDBFolderList(conn)
+  cur= GetDBFolderList(dbConnection)
   rows = cur.fetchall()
   for row in rows:
     foundSomeFolders=True
@@ -235,24 +237,20 @@ def ListFoldersFeature(config, conn, reportF):
   if not foundSomeFolders: reportF.write ("\n    No folders found in database.\n")
   Section( "END", FeatureName, reportF)
 
-  return rows
+  return
 
 
 # ===================================================DIV60==
-def ListMissingFilesFeature( config, conn, reportF ):
+def ListMissingFilesFeature( config, dbConnection, reportF ):
   FeatureName = "Files Not Found"
   Label_OrigPath="Path in database:  "
   foundSomeMissingFiles=False
 
   Section( "START", FeatureName, reportF)
   # get options
-  try:
-    ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
-  except:
-    reportF.write ("One of the OPTIONS values could not be parsed as boolean. \n")
+  ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
 
-
-  cur= GetDBFileList(conn)
+  cur= GetDBFileList(dbConnection)
   # row[0] = path,   row[1] = fileName
 
   for row in cur:
@@ -260,39 +258,36 @@ def ListMissingFilesFeature( config, conn, reportF ):
     dirPath = ExpandDirPath(row[0])
     filePath = dirPath / row[1]
     if not dirPath.exists(): 
-       foundSomeMissingFiles=True
-       reportF.write ("Directory path not found:\n" 
-             + G_QT + str(dirPath) + G_QT + " for file: " + G_QT + row[1] + G_QT + "\n")
-       if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+      foundSomeMissingFiles=True
+      reportF.write ("Directory path not found:\n" 
+            + G_QT + str(dirPath) + G_QT + " for file: " + G_QT + row[1] + G_QT + "\n")
+      if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
 
     else:
-        if filePath.exists():
-            if not filePath.is_file():
-                foundSomeMissingFiles=True
-                reportF.write ("File path is not a file: \n" + G_QT + str(filePath) + G_QT + "\n")
-                if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
-
-        else:
-            foundSomeMissingFiles=True
-            reportF.write ("File path not found: \n" + G_QT + str(filePath) + G_QT + "\n")
-            if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
-
+      if filePath.exists():
+        if not filePath.is_file():
+          foundSomeMissingFiles=True
+          reportF.write ("File path is not a file: \n" + G_QT + str(filePath) + G_QT + "\n")
+          if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+   
+      else:
+        foundSomeMissingFiles=True
+        reportF.write ("File path not found: \n" + G_QT + str(filePath) + G_QT + "\n")
+        if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
 
   if not foundSomeMissingFiles: reportF.write ("\n    No files were found missing.\n")
   Section( "END", FeatureName, reportF)
   return
 
 
-
-
 # ===================================================DIV60==
-def GetDBFolderList(conn):
+def GetDBFolderList(dbConnection):
   SqlStmt="""\
   SELECT  DISTINCT MediaPath
   FROM MultimediaTable
     ORDER BY MediaPath
 """
-  cur = conn.cursor()
+  cur = dbConnection.cursor()
   cur.execute(SqlStmt)
   return cur
 
@@ -306,19 +301,19 @@ def TimeStampNow():
 
 
 # ===================================================DIV60==
-def GetDBFileList(conn):
+def GetDBFileList(dbConnection):
   SqlStmt="""\
   SELECT  MediaPath, MediaFile
   FROM MultimediaTable
     ORDER BY MediaPath, MediaFile
 """
-  cur = conn.cursor()
+  cur = dbConnection.cursor()
   cur.execute(SqlStmt)
   return cur
 
 
 # ===================================================DIV60==
-def GetDBNoTagFileList(conn):
+def GetDBNoTagFileList(dbConnection):
 
   SqlStmt="""\
   SELECT MediaPath, MediaFile
@@ -327,13 +322,13 @@ def GetDBNoTagFileList(conn):
    WHERE OwnerType is NULL
    ORDER by MediaPath, MediaFile
 """
-  cur = conn.cursor()
+  cur = dbConnection.cursor()
   cur.execute(SqlStmt)
   return cur
 
 
 # ===================================================DIV60==
-def GetDuplicateFileList(conn):
+def GetDuplicateFileList(dbConnection):
 
   SqlStmt="""\
   SELECT p.MediaPath, p.MediaFile
@@ -348,7 +343,7 @@ def GetDuplicateFileList(conn):
   WHERE t.cnt > 1 
   ORDER BY p.MediaFile;
 """
-  cur = conn.cursor()
+  cur = dbConnection.cursor()
   cur.execute(SqlStmt)
   return cur
 
@@ -369,16 +364,20 @@ def Section (pos, name, reportF):
   reportF.write (text)
   return
 
+
 # ===================================================DIV60==
-def create_DBconnection(db_file):
-    conn = None
+def create_DBconnection(db_file_path, RMNOCASE_Path):
+    dbConnection = None
     try:
-        conn = sqlite3.connect(db_file)
+      dbConnection = sqlite3.connect(db_file_path)
+      dbConnection.enable_load_extension(True)
+      dbConnection.load_extension(RMNOCASE_Path)
     except Error as e:
         print(e)
+        print( "Cannot open the RM database file. \n")
         input("Press the <Enter> key to exit...")
         sys.exit()
-    return conn
+    return dbConnection
 
 
 # ===================================================DIV60==
@@ -424,7 +423,6 @@ def GetMediaDirectory():
     MediaFolderPathEle = root.find( "./Folders/Media")
     path = MediaFolderPathEle.text
   return path
-
 
 
 # ===================================================DIV60==
