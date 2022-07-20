@@ -1,23 +1,20 @@
-import sqlite3
 import os
-import time
 import sys
+import time
+import sqlite3
 from pathlib  import Path
 from datetime import datetime
 import configparser
 import xml.etree.ElementTree as ET
 
-##  This script only reads RootsMagic database files and will not harm it.
+## This script can only read a RootsMagic database files and cannot change it.
 ## However, until trust is established, make a backup before use.
 
 ##  Requirements: (see ReadMe.txt for details)
-##   RootsMagic v7 or v8.0 database file
+##   RootsMagic v7 or v8 database file
 ##   RM-Python-config.ini  ( Configuration ini file to set options and parameters)
 ##   unifuzz64.dll
 ##   Python v3.9 or greater
-
-# TODO
-# better error handling when opening database
 
 
 # ===================================================DIV60==
@@ -25,6 +22,267 @@ import xml.etree.ElementTree as ET
 G_MediaDirectoryPath = ""
 G_DbFileFolderPath = ""
 G_QT = "\""
+
+
+# ===================================================DIV60==
+def main():
+  global G_DbFileFolderPath
+
+  # Configuration 
+  IniFile="RM-Python-config.ini"
+  
+  # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM)
+  if not os.path.exists(IniFile):
+      print("ERROR: The ini configuration file, " + IniFile + " must be in the current directory.\n\n" )
+      input("Press the <Enter> key to exit...")
+      return
+
+  config = configparser.ConfigParser()
+  try:
+    config.read(IniFile, 'UTF-8')
+  except:
+   print("ERROR: The " + IniFile + " file contains a format error and cannot be parsed.\n\n" )
+   input("Press the <Enter> key to exit...")
+   return
+
+  # Read file paths from ini file
+  #  https://docs.python.org/3/library/configparser.html
+
+  try:
+    report_Path   = config['FILE_PATHS']['REPORT_FILE_PATH']
+  except:
+    print('ERROR: REPORT_FILE_PATH must be defined in the ' + IniFile + "\n\n")
+    input("Press the <Enter> key to exit...")
+    return
+
+  with open( report_Path,  mode='w', encoding='utf-8-sig') as reportF:
+    try:
+      database_Path = config['FILE_PATHS']['DB_PATH']
+      RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
+    except:
+      reportF.write('Both DB_PATH and RMNOCASE_PATH must be specified.')
+      return
+
+    if not os.path.exists(database_Path):
+      reportF.write('Path for database path not found: ' + database_Path)
+      return
+    if not os.path.exists(RMNOCASE_Path):
+      reportF.write('Path for RMNOCASE_PATH dll not found: ' + RMNOCASE_Path)
+      return
+
+    # RM database file specific
+    FileModificationTime = datetime.fromtimestamp(os.path.getmtime(database_Path))
+    G_DbFileFolderPath = Path(database_Path).parent
+  
+    # Process the database for requested output
+    with create_DBconnection(database_Path) as conn:
+      conn.enable_load_extension(True)
+      conn.load_extension(RMNOCASE_Path)
+  
+      reportF.write ("Report generated at      = " + TimeStampNow() + "\n")  
+      reportF.write ("Database processed       = " + database_Path + "\n")
+      reportF.write ("Database last changed on = " + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n\n")
+      try:
+        if config['OPTIONS'].getboolean('CHECK_FILES'):
+           ListMissingFilesFeature(config, conn, reportF)
+   
+        if config['OPTIONS'].getboolean('UNREF_FILES'):
+           ListUnReferencedFilesFeature(config, conn, reportF)
+   
+        if config['OPTIONS'].getboolean('FOLDER_LIST'):
+           ListFoldersFeature(config, conn, reportF)
+   
+        if config['OPTIONS'].getboolean('NO_TAG_FILES'):
+           FilesWithNoTagsFeature(config, conn, reportF)
+   
+        if config['OPTIONS'].getboolean('DUP_FILES'):
+           FindDuplcateFilesFeature(conn, reportF)
+      except:
+        reportF.write ("One of the OPTIONS values could not be parsed as boolean. \n")
+
+    Section( "FINAL", "", reportF)
+  return 0
+
+
+# ===================================================DIV60==
+def ListUnReferencedFilesFeature(config, conn, reportF):
+  FeatureName = "Unreferenced Files"
+
+  Section( "START", FeatureName, reportF)
+  # get options
+  ExtFilesFolderPath = Path(config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH'])
+
+  # Validate the folder path
+  if not ExtFilesFolderPath.exists(): 
+    reportF.write ("ERROR: Directory path not found:" + "\"" + str(ExtFilesFolderPath) + "\"" + "\n")
+    sys.exit()
+  if not ExtFilesFolderPath.is_dir():
+    reportF.write ("ERROR: Path is not a directory:" + "\"" + str(ExtFilesFolderPath) + "\"" + "\n")
+    sys.exit()
+
+  cur= GetDBFileList(conn)
+
+  dbFileList=[]
+  for row in cur:
+    dirPath=ExpandDirPath(row[0])
+    filePath=os.path.join(dirPath, row[1])
+    dbFileList.append(filePath)
+
+  mediaFileList = FolderContentsMinusIgnored(reportF, ExtFilesFolderPath, config)
+
+  unRefFiles = list(set(mediaFileList).difference(dbFileList))
+
+  if len(unRefFiles) >0: 
+    unRefFiles.sort()
+
+    # don't print full path from root folder
+    cutoff = len(str(ExtFilesFolderPath))
+
+    for i in range(len(unRefFiles)):
+      reportF.write("." + str(unRefFiles[i])[cutoff:] + "\n")
+
+  else: reportF.write ("    No unreferenced files were found.\n\n")
+
+  reportF.write("\n\nFolder processed: " + G_QT +str(ExtFilesFolderPath) + G_QT + "\n")
+  reportF.write( "Files in processed folder not referenced by the database: "
+         + str(len(unRefFiles))  + "\n")
+  reportF.write("Processed folder contains " + str(len(mediaFileList)) 
+       + " files (not counting ignored items)\n")
+  reportF.write("Database file links: " + str(len(dbFileList)) + "\n")
+
+  Section( "END", FeatureName, reportF)
+  return
+
+
+# ===================================================DIV60==
+def FilesWithNoTagsFeature(config, conn, reportF):
+  FeatureName = "Files with no Tags"
+  Label_OrigPath="Path in database:  "
+  FoundNoTagFiles = False
+
+  Section( "START", FeatureName, reportF)
+  # get options
+  try:
+    ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
+  except:
+    reportF.write ("One of the OPTIONS values could not be parsed as boolean. \n")
+
+
+  cur= GetDBNoTagFileList(conn)
+  # row[0] = path,   row[1] = fileName
+
+
+  for row in cur:
+    FoundNoTagFiles = True
+    dirPathOrig = row[0]
+    dirPath = ExpandDirPath(row[0])
+    filePath = dirPath / row[1]
+    reportF.write ( G_QT + str(filePath) + G_QT + "\n")
+    if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+
+  if not FoundNoTagFiles: reportF.write ("\n    No files with no tags were found.\n")
+
+  Section( "END", FeatureName, reportF)
+
+  return
+
+
+# ===================================================DIV60==
+def FindDuplcateFilesFeature(conn, reportF):
+# this currently find exact duplicates as saved in DB path & filename (ignoring case)
+# duplicates after expansion of relative paths not yet searched for
+  FeatureName = "Duplicated Files"
+  foundSomeDupFiles = False
+
+  Section( "START", FeatureName, reportF)
+  cur= GetDuplicateFileList(conn)
+
+  for row in cur:
+    foundSomeDupFiles = True
+    dirPathOrig = row[0]
+    dirPath = ExpandDirPath(row[0])
+    filePath = dirPath / row[1]
+    reportF.write (G_QT + str(filePath) + G_QT + "\n")
+
+  if not foundSomeDupFiles: reportF.write ("\n    No Duplicate Files in Media Gallery were found.\n")
+
+  Section( "END", FeatureName, reportF)
+  return
+
+
+# ===================================================DIV60==
+def ListFoldersFeature(config, conn, reportF):
+  FeatureName = "Referenced Folders"
+  Label_OrigPath="Path in database:  "
+  foundSomeFolders=False
+
+  Section( "START", FeatureName, reportF)
+  # get options
+  try:
+    ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
+  except:
+    reportF.write ("One of the OPTIONS values could not be parsed as boolean. \n")
+
+  cur= GetDBFolderList(conn)
+  rows = cur.fetchall()
+  for row in rows:
+    foundSomeFolders=True
+    reportF.write(str(ExpandDirPath(row[0])) + "\n")
+    if ShowOrigPath: reportF.write(Label_OrigPath + row[0] + "\n")
+
+  if foundSomeFolders: reportF.write ("\nFolders referenced in database:  " + str(len(rows)) +  "\n")
+
+  if not foundSomeFolders: reportF.write ("\n    No folders found in database.\n")
+  Section( "END", FeatureName, reportF)
+
+  return rows
+
+
+# ===================================================DIV60==
+def ListMissingFilesFeature( config, conn, reportF ):
+  FeatureName = "Files Not Found"
+  Label_OrigPath="Path in database:  "
+  foundSomeMissingFiles=False
+
+  Section( "START", FeatureName, reportF)
+  # get options
+  try:
+    ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
+  except:
+    reportF.write ("One of the OPTIONS values could not be parsed as boolean. \n")
+
+
+  cur= GetDBFileList(conn)
+  # row[0] = path,   row[1] = fileName
+
+  for row in cur:
+    dirPathOrig = row[0]
+    dirPath = ExpandDirPath(row[0])
+    filePath = dirPath / row[1]
+    if not dirPath.exists(): 
+       foundSomeMissingFiles=True
+       reportF.write ("Directory path not found:\n" 
+             + G_QT + str(dirPath) + G_QT + " for file: " + G_QT + row[1] + G_QT + "\n")
+       if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+
+    else:
+        if filePath.exists():
+            if not filePath.is_file():
+                foundSomeMissingFiles=True
+                reportF.write ("File path is not a file: \n" + G_QT + str(filePath) + G_QT + "\n")
+                if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+
+        else:
+            foundSomeMissingFiles=True
+            reportF.write ("File path not found: \n" + G_QT + str(filePath) + G_QT + "\n")
+            if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+
+
+  if not foundSomeMissingFiles: reportF.write ("\n    No files were found missing.\n")
+  Section( "END", FeatureName, reportF)
+  return
+
+
 
 
 # ===================================================DIV60==
@@ -37,6 +295,14 @@ def GetDBFolderList(conn):
   cur = conn.cursor()
   cur.execute(SqlStmt)
   return cur
+
+
+# ===================================================DIV60==
+def TimeStampNow():
+     # return a TimeStamp string
+     now = datetime.now()
+     dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
+     return dt_string
 
 
 # ===================================================DIV60==
@@ -97,6 +363,7 @@ def Section (pos, name, reportF):
   else:
     text = "not defined"
     print("INTERNAL ERROR: pos not correctly defined")
+    input("Press the <Enter> key to exit...")
     sys.exit()
 
   reportF.write (text)
@@ -109,7 +376,8 @@ def create_DBconnection(db_file):
         conn = sqlite3.connect(db_file)
     except Error as e:
         print(e)
-
+        input("Press the <Enter> key to exit...")
+        sys.exit()
     return conn
 
 
@@ -158,76 +426,19 @@ def GetMediaDirectory():
   return path
 
 
-# ===================================================DIV60==
-def ListFoldersFeature(config, conn, reportF):
-  FeatureName = "Referenced Folders"
-  Label_OrigPath="Path in database:  "
-  foundSomeFolders=False
-
-  Section( "START", FeatureName, reportF)
-  # get options
-  ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
-
-  cur= GetDBFolderList(conn)
-  rows = cur.fetchall()
-  for row in rows:
-    foundSomeFolders=True
-    reportF.write(str(ExpandDirPath(row[0])) + "\n")
-    if ShowOrigPath: reportF.write(Label_OrigPath + row[0] + "\n")
-
-  if foundSomeFolders: reportF.write ("\nFolders referenced in database:  " + str(len(rows)) +  "\n")
-
-  if not foundSomeFolders: reportF.write ("\n    No folders found in database.\n")
-  Section( "END", FeatureName, reportF)
-
-  return rows
-
 
 # ===================================================DIV60==
-def ListMissingFilesFeature( config, conn, reportF ):
-  FeatureName = "Files Not Found"
-  Label_OrigPath="Path in database:  "
-  foundSomeMissingFiles=False
-
-  Section( "START", FeatureName, reportF)
-  # get options
-  ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
-
-  cur= GetDBFileList(conn)
-  # row[0] = path,   row[1] = fileName
-
-  for row in cur:
-    dirPathOrig = row[0]
-    dirPath = ExpandDirPath(row[0])
-    filePath = dirPath / row[1]
-    if not dirPath.exists(): 
-       foundSomeMissingFiles=True
-       reportF.write ("Directory path not found:\n" 
-             + G_QT + str(dirPath) + G_QT + " for file: " + G_QT + row[1] + G_QT + "\n")
-       if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
-
-    else:
-        if filePath.exists():
-            if not filePath.is_file():
-                foundSomeMissingFiles=True
-                reportF.write ("File path is not a file: \n" + G_QT + str(filePath) + G_QT + "\n")
-                if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
-
-        else:
-            foundSomeMissingFiles=True
-            reportF.write ("File path not found: \n" + G_QT + str(filePath) + G_QT + "\n")
-            if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
-
-
-  if not foundSomeMissingFiles: reportF.write ("\n    No files were found missing.\n")
-  Section( "END", FeatureName, reportF)
-  return
-
-
-# ===================================================DIV60==
-def FolderContentsMinusIgnored(dirPath, config):
-  ignoredFolderNames = config['IGNORED_OBJRCTS'].get('FOLDERS').split('\n')
-  ignoredFileNames   = config['IGNORED_OBJRCTS'].get('FILENAMES').split('\n')
+def FolderContentsMinusIgnored(reportF, dirPath, config):
+  ignoredFolderNames=[]
+  ignoredFileNames=[]
+  try:
+    ignoredFolderNames = config['IGNORED_OBJECTS'].get('FOLDERS').split('\n')
+  except:
+    reportF.write ("No ignored folders specified.\n")
+  try:
+    ignoredFileNames   = config['IGNORED_OBJECTS'].get('FILENAMES').split('\n')
+  except:
+    reportF.write ("No ignored files specified.\n")
 
   mediaFileList = []
   for (dirname, dirnames, filenames) in os.walk(dirPath, topdown=True):
@@ -244,173 +455,6 @@ def FolderContentsMinusIgnored(dirPath, config):
         mediaFileList.append(str(os.path.join(dirname, filename)))
 
   return mediaFileList
-
-
-# ===================================================DIV60==
-def ListUnReferencedFilesFeature(config, conn, reportF):
-  FeatureName = "Unreferenced Files"
-
-  Section( "START", FeatureName, reportF)
-  # get options
-  ExtFilesFolderPath = Path(config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH'])
-
-  # Validate the folder path
-  if not ExtFilesFolderPath.exists(): 
-    reportF.write ("ERROR: Directory path not found:" + "\"" + str(ExtFilesFolderPath) + "\"" + "\n")
-    sys.exit()
-  if not ExtFilesFolderPath.is_dir():
-    reportF.write ("ERROR: Path is not a directory:" + "\"" + str(ExtFilesFolderPath) + "\"" + "\n")
-    sys.exit()
-
-  cur= GetDBFileList(conn)
-
-  dbFileList=[]
-  for row in cur:
-    dirPath=ExpandDirPath(row[0])
-    filePath=os.path.join(dirPath, row[1])
-    dbFileList.append(filePath)
-
-  mediaFileList = FolderContentsMinusIgnored(ExtFilesFolderPath, config)
-
-  unRefFiles = list(set(mediaFileList).difference(dbFileList))
-
-  if len(unRefFiles) >0: 
-    unRefFiles.sort()
-
-    # don't print full path from root folder
-    cutoff = len(str(ExtFilesFolderPath))
-
-    for i in range(len(unRefFiles)):
-      reportF.write("." + str(unRefFiles[i])[cutoff:] + "\n")
-
-  else: reportF.write ("    No unreferenced files were found.\n\n")
-
-  reportF.write("\n\nFolder processed: " + G_QT +str(ExtFilesFolderPath) + G_QT + "\n")
-  reportF.write( "Files in processed folder not referenced by the database: "
-         + str(len(unRefFiles))  + "\n")
-  reportF.write("Processed folder contains " + str(len(mediaFileList)) 
-       + " files (not counting ignored items)\n")
-  reportF.write("Database file links: " + str(len(dbFileList)) + "\n")
-
-  Section( "END", FeatureName, reportF)
-  return
-
-
-# ===================================================DIV60==
-def FilesWithNoTagsFeature(config, conn, reportF):
-  FeatureName = "Files with no Tags"
-  Label_OrigPath="Path in database:  "
-  FoundNoTagFiles = False
-
-  Section( "START", FeatureName, reportF)
-  # get options
-  ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
-
-  cur= GetDBNoTagFileList(conn)
-  # row[0] = path,   row[1] = fileName
-
-
-  for row in cur:
-    FoundNoTagFiles = True
-    dirPathOrig = row[0]
-    dirPath = ExpandDirPath(row[0])
-    filePath = dirPath / row[1]
-    reportF.write ( G_QT + str(filePath) + G_QT + "\n")
-    if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
-
-  if not FoundNoTagFiles: reportF.write ("\n    No files with no tags were found.\n")
-
-  Section( "END", FeatureName, reportF)
-
-  return
-
-
-# ===================================================DIV60==
-def FindDuplcateFilesFeature(conn, reportF):
-# this currently find exact duplicates as saved in DB path & filename (ignoring case)
-# duplicates after expansion of relative paths not yet searched for
-  FeatureName = "Duplicated Files"
-  foundSomeDupFiles = False
-
-  Section( "START", FeatureName, reportF)
-  cur= GetDuplicateFileList(conn)
-
-  for row in cur:
-    foundSomeDupFiles = True
-    dirPathOrig = row[0]
-    dirPath = ExpandDirPath(row[0])
-    filePath = dirPath / row[1]
-    reportF.write (G_QT + str(filePath) + G_QT + "\n")
-
-  if not foundSomeDupFiles: reportF.write ("\n    No Duplicate Files in Media Gallery were found.\n")
-
-  Section( "END", FeatureName, reportF)
-  return
-
-
-# ===================================================DIV60==
-def TimeStampNow():
-     # return a TimeStamp string
-     now = datetime.now()
-     dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
-     return dt_string
-
-
-# ===================================================DIV60==
-def main():
-  global G_DbFileFolderPath
-
-  # Configuration file
-  IniFile="RM-Python-config.ini"
-  
-  # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM)
-  if not os.path.exists(IniFile):
-      print("ERROR: The ini configuration file, " + IniFile + " must be in the current directory." )
-      return
-
-  config = configparser.ConfigParser()
-  config.read(IniFile, 'UTF-8')
-
-  # Read file paths from ini file
-  report_Path   = config['FILE_PATHS']['REPORT_FILE_PATH']
-  database_Path = config['FILE_PATHS']['DB_PATH']
-  RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
-
-  if not os.path.exists(database_Path):
-      print('Database path not found')
-      return
-
-  FileModificationTime = datetime.fromtimestamp(os.path.getmtime(database_Path))
-
-  G_DbFileFolderPath = Path(database_Path).parent
-
-  # Process the database for requested output
-  with create_DBconnection(database_Path) as conn:
-    conn.enable_load_extension(True)
-    conn.load_extension(RMNOCASE_Path)
-
-    with open( report_Path,  mode='w', encoding='utf-8-sig') as reportF:
-      reportF.write ("Report generated at      = " + TimeStampNow() + "\n")  
-      reportF.write ("Database processed       = " + database_Path + "\n")
-      reportF.write ("Database last changed on = " + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n\n")
-
-      if config['OPTIONS'].getboolean('CHECK_FILES'):
-         ListMissingFilesFeature(config, conn, reportF)
-
-      if config['OPTIONS'].getboolean('UNREF_FILES'):
-         ListUnReferencedFilesFeature(config, conn, reportF)
-
-      if config['OPTIONS'].getboolean('FOLDER_LIST'):
-         ListFoldersFeature(config, conn, reportF)
-
-      if config['OPTIONS'].getboolean('NO_TAG_FILES'):
-         FilesWithNoTagsFeature(config, conn, reportF)
-
-      if config['OPTIONS'].getboolean('DUP_FILES'):
-         FindDuplcateFilesFeature(conn, reportF)
-
-      Section( "FINAL", "", reportF)
-  return 0
 
 
 # ===================================================DIV60==
