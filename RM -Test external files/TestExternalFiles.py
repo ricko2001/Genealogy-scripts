@@ -55,6 +55,13 @@ def main():
     input("Press the <Enter> key to exit...")
     return
 
+  try:
+    open( report_Path,  mode='w', encoding='utf-8-sig')
+  except:
+    print('ERROR: Cannot create the report file ' + report_Path + "\n\n")
+    input("Press the <Enter> key to exit...")
+    return
+
   with open( report_Path,  mode='w', encoding='utf-8-sig') as reportF:
     try:
       database_Path = config['FILE_PATHS']['DB_PATH']
@@ -64,7 +71,7 @@ def main():
       return
 
     if not os.path.exists(database_Path):
-      reportF.write('Path for database path not found: ' + database_Path)
+      reportF.write('Path for database not found: ' + database_Path)
       return
     if not os.path.exists(RMNOCASE_Path):
       reportF.write('Path for RMNOCASE_PATH dll not found: ' + RMNOCASE_Path)
@@ -116,7 +123,7 @@ def ListUnReferencedFilesFeature(config, dbConnection, reportF):
   FeatureName = "Unreferenced Files"
 
   Section( "START", FeatureName, reportF)
-  # get options
+  # get option
   try:
     ExtFilesFolderPath = config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH']
   except:
@@ -125,10 +132,10 @@ def ListUnReferencedFilesFeature(config, dbConnection, reportF):
 
   # Validate the folder path
   if not Path(ExtFilesFolderPath).exists(): 
-    reportF.write ("ERROR: Directory path not found:" + "\"" + ExtFilesFolderPath + "\"" + "\n")
+    reportF.write ("ERROR: Directory path not found:" + G_QT + ExtFilesFolderPath + G_QT + "\n")
     sys.exit()
   if not Path(ExtFilesFolderPath).is_dir():
-    reportF.write ("ERROR: Path is not a directory:" + "\"" + ExtFilesFolderPath + "\"" + "\n")
+    reportF.write ("ERROR: Path is not a directory:" + G_QT + ExtFilesFolderPath + G_QT + "\n")
     sys.exit()
 
   cur= GetDBFileList(dbConnection)
@@ -432,11 +439,11 @@ def FolderContentsMinusIgnored(reportF, dirPath, config):
   try:
     ignoredFolderNames = config['IGNORED_OBJECTS'].get('FOLDERS').split('\n')
   except:
-    reportF.write ("No ignored folders specified.\n")
+    reportF.write ("No ignored folders specified.\n\n")
   try:
     ignoredFileNames   = config['IGNORED_OBJECTS'].get('FILENAMES').split('\n')
   except:
-    reportF.write ("No ignored files specified.\n")
+    reportF.write ("No ignored files specified.\n\n")
 
   mediaFileList = []
   for (dirname, dirnames, filenames) in os.walk(dirPath, topdown=True):
