@@ -1,11 +1,11 @@
-import sqlite3
 import os
+import sys
 import time
+import sqlite3
 from pathlib  import Path
 from datetime import datetime
 import configparser
 import xml.etree.ElementTree as ET
-import sys
 
 ## WARNING make a known-good backup of the rmtree file before use.
 
@@ -13,21 +13,178 @@ import sys
 ##   RootsMagic v8 database file
 ##   RM-Python-config.ini  ( Configuration ini file to set options and parameters)
 ##   unifuzz64.dll
-##   tested with Python v3.10
+##   Python v3.9 or greater
+
 
 # ===================================================DIV60==
 #  Global Variables
 G_QT = "\""
 
+
 # ===================================================DIV60==
-def create_DBdbConnectionection( db_file):
-    dbConnection = None
+def main():
+  # Configuration 
+  IniFileName = "RM-Python-config.ini"
+
+  # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM)
+  # determine if application is a script file or frozen exe and get its directory
+  # https://pyinstaller.org/en/stable/runtime-information.html
+  if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    application_path = os.path.dirname(sys.executable)
+  else:
+    application_path = os.path.dirname(__file__)
+  IniFile = os.path.join(application_path, IniFileName)
+
+  if not os.path.exists(IniFile):
+      print("ERROR: The ini configuration file, " + IniFileName + " must be in the same directory as the .py or .exe file.\n\n" )
+      input("Press the <Enter> key to exit...")
+      return
+
+  #  Need interpolation=None because Like wildcard is %
+  config = configparser.ConfigParser(interpolation=None, empty_lines_in_values=False)
+  try:
+    config.read(IniFile, 'UTF-8')
+  except:
+    print("ERROR: The " + IniFileName + " file contains a format error and cannot be parsed.\n\n" )
+    input("Press the <Enter> key to exit...")
+    return
+
+  # Read file paths from ini file
+  #  https://docs.python.org/3/library/configparser.html
+
+  try:
+    report_Path   = config['FILE_PATHS']['REPORT_FILE_PATH']
+  except:
+    print('ERROR: REPORT_FILE_PATH must be defined in the ' + IniFileName + "\n\n")
+    input("Press the <Enter> key to exit...")
+    return
+
+  try:
+    open( report_Path,  mode='w', encoding='utf-8-sig')
+  except:
+    print('ERROR: Cannot create the report file ' + report_Path + "\n\n")
+    input("Press the <Enter> key to exit...")
+    return
+
+  with open( report_Path,  mode='w', encoding='utf-8-sig') as reportF:
     try:
-        dbConnection = sqlite3.connect(db_file)
+      database_Path = config['FILE_PATHS']['DB_PATH']
+      RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
+    except:
+      reportF.write('Both DB_PATH and RMNOCASE_PATH must be specified.')
+      return
+
+    if not os.path.exists(database_Path):
+      reportF.write('Path for database path not found: ' + database_Path)
+      return
+    if not os.path.exists(RMNOCASE_Path):
+      reportF.write('Path for RMNOCASE_PATH dll not found: ' + RMNOCASE_Path)
+      return
+
+    # RM database file specific
+    FileModificationTime = datetime.fromtimestamp(os.path.getmtime(database_Path))
+
+    # Process the database for requested output
+    with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
+      reportF.write ("Report generated at      = " + TimeStampNow() + "\n")  
+      reportF.write ("Database processed       = " + database_Path + "\n")
+      reportF.write ("Database last changed on = " + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n\n\n")
+
+      # test option values conversion to boolean
+      try:
+        config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES')
+        config['OPTIONS'].getboolean('LIST_SOURCES')
+        config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS')
+        config['OPTIONS'].getboolean('MAKE_CHANGES')
+      except:
+        reportF.write ("One of the OPTIONS values could not be parsed as boolean. \n")
+        sys.exit()
+
+
+      #act on options which are active
+
+#-------------------------------------
+      if config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES'):
+        try:
+          oldTemplateName =  config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
+          newTemplateName =  config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
+        except:
+          reportF.write( "CHECK_TEMPLATE_NAMES option requires specification of both TEMPLATE_OLD and TEMPLATE_NEW.")
+          return
+        CheckSourceTemplates(reportF, dbConnection, oldTemplateName, newTemplateName)
+        return
+
+#-------------------------------------
+      if config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS'):
+        try:
+          oldTemplateName  =  config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
+          newTemplateName  =  config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
+          mapping          =  config['SOURCE_TEMPLATES']['MAPPING']
+        except:
+          reportF.write( "LIST_TEMPLATE_DETAILS option requires specification of TEMPLATE_OLD and TEMPLATE_NEW and MAPPING.")
+          return
+
+        oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
+        newTemplateID = GetSrcTempID(dbConnection, newTemplateName)[0][0]
+        DumpSrcTemplateFields( reportF, dbConnection, oldTemplateID)
+        DumpSrcTemplateFields( reportF, dbConnection, newTemplateID)
+        reportF.write("\n\n The field mapping, as entered in the ini configuration file: \n")
+        for each in mapping:
+          reportF.write (each)
+        reportF.write("\n\n")
+        return
+
+#-------------------------------------
+      if config['OPTIONS'].getboolean('LIST_SOURCES'):
+        try:
+          oldTemplateName =  config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
+          srcNamesLike    =  config['SOURCES']['SOURCE_NAME_LIKE']
+        except:
+          reportF.write( "LIST_SOURCES option requires specification of both TEMPLATE_OLD and SOURCE_NAME_LIKE.")
+          return
+        oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
+        reportF.write( "\nSources with template name:\n" + oldTemplateName + "\nand source name like:\n" + srcNamesLike + "\n\nSource #      Source Name\n\n")
+        srcTuples = GetSourcesSelected(reportF, dbConnection, oldTemplateID, srcNamesLike)
+        for src in srcTuples:
+          reportF.write (str(src[0]) + "    " + src[1] + "\n")
+        return
+
+#-------------------------------------
+      if config['OPTIONS'].getboolean('MAKE_CHANGES'):
+        try:
+          oldTemplateName  =  config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
+          newTemplateName  =  config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
+          srcNamesLike     =  config['SOURCES']['SOURCE_NAME_LIKE']
+          fieldMapping     =  config['SOURCE_TEMPLATES']['MAPPING']
+        except:
+          reportF.write( "MAKE_CHANGES option requires specification of TEMPLATE_OLD and TEMPLATE_NEW and SOURCE_NAME_LIKE and MAPPING.")
+          return
+
+      oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
+      newTemplateID = GetSrcTempID(dbConnection, newTemplateName)[0][0]
+
+      mapping = parseFieldMapping(fieldMapping)
+
+      srcTuples = GetSourcesSelected(reportF, dbConnection, oldTemplateID, srcNamesLike)
+      for srcTuple in srcTuples:
+        reportF.write ("=====================================================\n")
+        reportF.write (str(srcTuple[0]) + "    " + srcTuple[1] + "\n")
+        ConvertSource (reportF, dbConnection, srcTuple[0], newTemplateID, mapping)
+    
+  return 0
+
+
+# ===================================================DIV60==
+def create_DBconnection(db_file_path, RMNOCASE_Path):
+    conn = None
+    try:
+      conn = sqlite3.connect(db_file_path)
+      conn.enable_load_extension(True)
+      conn.load_extension(RMNOCASE_Path)
     except Error as e:
         reportF.write(e)
-
-    return dbConnection
+        reportF.write( "Cannot open the RM database file. \n")
+    return conn
 
 
 # ===================================================DIV60==
@@ -72,7 +229,7 @@ def ConvertSource ( reportF, dbConnection, srcID, newTemplateID, fieldMapping):
   xmlStart = "<Root"
   rootLoc=srcField.find(xmlStart)
   if rootLoc != 0:
-      srcField = srcField[rootLoc::]
+    srcField = srcField[rootLoc::]
 
   # read into DOM and parse for needed values
   srcRoot = ET.fromstring(srcField)
@@ -246,37 +403,42 @@ def GetSrcTempID( dbConnection, TemplateName):
   return rows
 
 # ===================================================DIV60==
-def DumpSrcTemplateFields (reportF, dbConnection, oldTemplateID, newTemplateID):
-  for ID in (oldTemplateID, newTemplateID):
-    # dump fields in Templates
-    SqlStmt = """
-    SELECT FieldDefs, Name
-      FROM SourceTemplateTable
-      WHERE TemplateID = ?
-      """
-    cur = dbConnection.cursor()
-    cur.execute(SqlStmt, (ID,))
-    #text = cur.fetchone()[0].decode()
-    textTuple = cur.fetchone()
-    templateName= textTuple[1]
-    newRoot = ET.fromstring(textTuple[0].decode())
+def DumpSrcTemplateFields (reportF, dbConnection, TemplateID):
+  # dump fields in Templates
+  SqlStmt = """
+  SELECT FieldDefs, Name
+    FROM SourceTemplateTable
+    WHERE TemplateID = ?
+    """
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt, (TemplateID,))
+  #text = cur.fetchone()[0].decode()
+  textTuple = cur.fetchone()
+  templateName= textTuple[1]
+  newRoot = ET.fromstring(textTuple[0].decode())
 
-    fieldItr = newRoot.findall(".Fields/Field")
-    reportF.write(templateName + "\n")
-    for item in fieldItr:
-        if CheckForTrue(item.find("CitationField").text):
-          fieldLoc = "citation"
-        else:
-          fieldLoc ="source  "
-        reportF.write(fieldLoc + "   " + item.find("Type").text + "      " + item.find("FieldName").text  + "\n")
-    reportF.write("\n\n")
-
-  #end for both templates
+  fieldItr = newRoot.findall(".Fields/Field")
+  reportF.write(templateName + "\n")
+  for item in fieldItr:
+      if CheckForTrue(item.find("CitationField").text):
+        fieldLoc = "citation"
+      else:
+        fieldLoc ="source  "
+      reportF.write(fieldLoc + "   " + item.find("Type").text + "      " + item.find("FieldName").text  + "\n")
+  reportF.write("\n\n")
   return
 
 
 # ===================================================DIV60==
-def ListSourcesSelected(reportF, dbConnection, oldTemplateID, SourceNamesLike):
+def TimeStampNow():
+     # return a TimeStamp string
+     now = datetime.now()
+     dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
+     return dt_string
+
+
+# ===================================================DIV60==
+def GetSourcesSelected(reportF, dbConnection, oldTemplateID, SourceNamesLike):
   SqlStmt = """
   SELECT  ST.SourceID, ST.Name
     FROM SourceTable ST
@@ -289,9 +451,7 @@ def ListSourcesSelected(reportF, dbConnection, oldTemplateID, SourceNamesLike):
   if len(srcTuples) == 0: 
     reportF.write( "No sources found with specified search criteria.\n")
     return
-  for src in srcTuples:
-    reportF.write (str(src[0]) + "    " + src[1] + "\n")
-  return
+  return srcTuples
 
 
 # ===================================================DIV60==
@@ -303,127 +463,6 @@ def parseFieldMapping( text ):
  for each in list:
      newList.append( tuple(each.split()))
  return newList
-
-
-# ===================================================DIV60==
-def main():
-  # Configuration
-  IniFile="RM-Python-config.ini"
-
-  # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM)
-  # Can specify an ini file location instead...
-  #IniFile=r"C:/Users/rotter/Development/Genealogy/Genealogy-scripts/RM -Switch source template" + r"/" + IniFile
-  #print (IniFile)
-  if not os.path.exists(IniFile):
-    print("ERROR: The ini configuration file, " + IniFile + " must be in the current directory." )
-    return
-
-  config = configparser.ConfigParser(interpolation=None)
-  config.read(IniFile, 'UTF-8')
-
-  # Read file paths from ini file
-  #  https://docs.python.org/3/library/configparser.html
-
-  try:
-    report_Path   = config['FILE_PATHS']['REPORT_FILE_PATH']
-  except:
-    print('REPORT_FILE_PATH must be specified.')
-    return
-
-  with open( report_Path,  mode='w', encoding='utf-8-sig') as reportF:
-    try:
-      database_Path = config['FILE_PATHS']['DB_PATH']
-      RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
-    except:
-      reportF.write('Both DB_PATH and RMNOCASE_PATH must be specified.')
-      return
-    
-    if not os.path.exists(database_Path):
-      reportF.write('Database path not found. Fix configuration file and try again.')
-      return
-    if not os.path.exists(RMNOCASE_Path):
-      reportF.write('RMNOCASE path not found. Fix configuration file and try again.')
-      return
-  
-  
-    # Process the database
-    with create_DBdbConnectionection(database_Path) as dbConnection:
-      dbConnection.enable_load_extension(True)
-      dbConnection.load_extension(RMNOCASE_Path)
-    
-      #act on options which are active
-      if config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES'):
-        try:
-          oldTemplateName  =  config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-          newTemplateName  =  config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
-        except:
-          reportF.write( "CHECK_TEMPLATE_NAMES option requires specification of both TEMPLATE_OLD and TEMPLATE_NEW.")
-          return
-        CheckSourceTemplates(reportF, dbConnection, oldTemplateName, newTemplateName)
-        return
-
-
-      if config['OPTIONS'].getboolean('LIST_SOURCES'):
-        try:
-          oldTemplateName  =  config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-          srcNamesLike   =  config['SOURCES']['SOURCE_NAME_LIKE']
-        except:
-          reportF.write( "LIST_SOURCES option requires specification of both TEMPLATE_OLD and SOURCE_NAME_LIKE.")
-          return
-        oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
-        ListSourcesSelected(reportF, dbConnection, oldTemplateID, srcNamesLike)
-        return
-  
-      if config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS'):
-        try:
-          oldTemplateName  =  config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-          newTemplateName  =  config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
-          mapping          =  config['SOURCE_TEMPLATES']['MAPPING']
-        except:
-          reportF.write( "LIST_TEMPLATE_DETAILS option requires specification of TEMPLATE_OLD and TEMPLATE_NEW and MAPPING.")
-          return
-
-        oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
-        newTemplateID = GetSrcTempID(dbConnection, newTemplateName)[0][0]
-        DumpSrcTemplateFields( reportF, dbConnection, oldTemplateID, newTemplateID)
-        reportF.write("\n\n The field mapping, as entered in the ini configuration file: \n")
-        for each in mapping:
-          reportF.write (each)
-        reportF.write("\n\n")
-        return
-  
-      if config['OPTIONS'].getboolean('MAKE_CHANGES'):
-        try:
-          oldTemplateName  =  config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-          newTemplateName  =  config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
-          srcNamesLike     =  config['SOURCES']['SOURCE_NAME_LIKE']
-          fieldMapping     =  config['SOURCE_TEMPLATES']['MAPPING']
-        except:
-          reportF.write( "MAKE_CHANGES option requires specification of TEMPLATE_OLD and TEMPLATE_NEW and SOURCE_NAME_LIKE and MAPPING.")
-          return
-
-      oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
-      newTemplateID = GetSrcTempID(dbConnection, newTemplateName)[0][0]
-
-      mapping = parseFieldMapping(fieldMapping)
-      
-      SqlStmt = """
-      SELECT  ST.SourceID, ST.Name
-        FROM SourceTable ST
-        JOIN SourceTemplateTable STT ON ST.TemplateID = STT.TemplateID
-        WHERE ST.TemplateID = ? AND ST.Name LIKE ?
-        """
-      cur = dbConnection.cursor()
-      cur.execute(SqlStmt, (oldTemplateID,srcNamesLike))
-      listSourceIDtuples = cur.fetchall()
-#      print (type())
-      
-      for srcTuple in listSourceIDtuples:
-        reportF.write ("=====================================================\n")
-        reportF.write (str(srcTuple[0]) + "    " + srcTuple[1] + "\n")
-        ConvertSource (reportF, dbConnection, srcTuple[0], newTemplateID, mapping)
-    
-  return 0
 
 
 # ===================================================DIV60==
