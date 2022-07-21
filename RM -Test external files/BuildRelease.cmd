@@ -20,7 +20,6 @@ MKDIR ".\%REL_FLDR%\%DIST_FLDR_NAME%"
 xcopy ReadMe.txt             ".\%REL_FLDR%\%DIST_FLDR_NAME%"
 xcopy RM-Python-config.ini   ".\%REL_FLDR%\%DIST_FLDR_NAME%"
 xcopy TestExternalFiles.py   ".\%REL_FLDR%\%DIST_FLDR_NAME%"
-xcopy Hash.txt               ".\%REL_FLDR%\%DIST_FLDR_NAME%"
 xcopy Version.py             ".\%REL_FLDR%\%DIST_FLDR_NAME%"
 
 
