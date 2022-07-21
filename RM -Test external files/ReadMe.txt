@@ -70,7 +70,7 @@ Tested with RootsMagic v7.6.5 and v8.2.0.0 (RM ver 7.6, 8.0 OK)
        Python for Windows v3.10.5   64bit  (ver 3.9 OK)
        unifuzz64.dll (file has no version number defined. see MD5 and file size in accompanying file Hash.txt)
        Operating system Window 11, 64bit  (Windows 10 OK)
-The exe file is Windows only. 
+The exe file is Windows only, probably Windows 10 and later.
 The py file could probably be modified to work on MacOS with Python ver 3+ is installed.
 
 
@@ -150,15 +150,15 @@ To install and use the script file version:
 ======================================================================
 Python install-
 Install Python from the Microsoft Store
-or download and install from its official web site
+or download and install from Python.org web site
 
 From Microsoft Store
-Run a command in Windows by pressing the keyborad key combination "Windows + R", then in the small window, type Python
+Run a command in Windows by pressing the keyboard key combination "Windows + R", then in the small window, type Python.
 Windows store will open in your browser and you will be be shown the current version of Python. 
 Click the Get button.
 
 Web site download and install
-Download the current version of Python 3, ( or see direct link below)
+Download the current version of Python 3, ( or see direct link below for the current as of this date)
 https://www.python.org/downloads/windows/
 
 Click on the link near the top of page. Then ...
@@ -243,6 +243,10 @@ NOTES
 
     After download, rename the file by removing the final ".bak"
 
+*   MD5 hash values are used to confirm the identity of files.
+	MD5 hash							File size		File name
+	06a1f485b0fae62caa80850a8c7fd7c2	256,406 bytes	unifuzz64.dll
+	43fe353e3e3456dc33f8f60933dbc6ab	74,240 bytes	RMNOCASE_fake-SQLiteSpy64.dll
 
 
 ======================================================================

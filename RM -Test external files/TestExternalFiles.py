@@ -29,11 +29,19 @@ def main():
   global G_DbFileFolderPath
 
   # Configuration 
-  IniFile="RM-Python-config.ini"
-  
+  IniFileName = "RM-Python-config.ini"
+
   # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM)
+  # determine if application is a script file or frozen exe and get its directory
+  # https://pyinstaller.org/en/stable/runtime-information.html
+  if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    application_path = os.path.dirname(sys.executable)
+  else:
+    application_path = os.path.dirname(__file__)
+  IniFile = os.path.join(application_path, IniFileName)
+
   if not os.path.exists(IniFile):
-      print("ERROR: The ini configuration file, " + IniFile + " must be in the current directory.\n\n" )
+      print("ERROR: The ini configuration file, " + IniFileName + " must be in the same directory as the .py or .exe file.\n\n" )
       input("Press the <Enter> key to exit...")
       return
 
@@ -41,7 +49,7 @@ def main():
   try:
     config.read(IniFile, 'UTF-8')
   except:
-   print("ERROR: The " + IniFile + " file contains a format error and cannot be parsed.\n\n" )
+   print("ERROR: The " + IniFileName + " file contains a format error and cannot be parsed.\n\n" )
    input("Press the <Enter> key to exit...")
    return
 
@@ -51,7 +59,7 @@ def main():
   try:
     report_Path   = config['FILE_PATHS']['REPORT_FILE_PATH']
   except:
-    print('ERROR: REPORT_FILE_PATH must be defined in the ' + IniFile + "\n\n")
+    print('ERROR: REPORT_FILE_PATH must be defined in the ' + IniFileName + "\n\n")
     input("Press the <Enter> key to exit...")
     return
 
