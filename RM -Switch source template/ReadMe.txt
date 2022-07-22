@@ -4,27 +4,119 @@ The RootsMagic (RM) application does not provide a way for the user to modify a 
 
 A common use is when one wants to change the fields of a SourceTemplate that's already in use. Instead of editing the template, one copies the in-use SourceTemplate in RM, renames the copy, edits the copy and then uses this utility to switch the source or set of sources to use the new SourceTemplate copy that now has the desired fields.
 
-This application is what is called a command line utility. To use it, one first edits
-the supplied text file named "RM-Python-config.ini". This can be done using the Windows app "NotePad."
-The file contains options and required configuration settings. One then double clicks 
-the SwitchSourceTemplate file. This momentarily displays the black command console window 
-and at the same time, generates the Report text file which contains the results of the requested actions.
+This application is what is called a command line utility. To use it, one first edits the supplied text file named "RM-Python-config.ini". The file contains options and required configuration settings. One then double clicks the SwitchSourceTemplate.py file. This momentarily displays the black command console window and at the same time, generates a Report text file which contains the results of the requested actions.
 
 
 Overview
 The use this this utility involves several steps-
-* download the necessary files to your computer.
+* download the necessary files to your computer and configure the ini file for your database.
 * determine witch source or set of sources should have their SourceTemplates switched.
-  (If more than one source is to be changed, they all need to be based on the same SourceTemplate.)
-* determine the exact names of the SourceTemplate already in use and the SourceTemplate to be used instead.
+* examine the existing SourceTemplate and create a new SourceTemplate, based on the old one, with the desired changes.
+* determine the exact names of the SourceTemplate already in use and the SourceTemplate to be used.
 * determine how data described by the existing SourceTemplate will be mapped to the new SourceTemplate.
 * edit the RM-Config.ini file to include the information determined above.
 * test the RM-Config.ini file values by running the options in order they appear.
 * run the utility with the MAKE_CHANGES option
 * confirm that the desired changes have been made and no others.
+* after careful examination, start using the modified database as your production database.
+
+
+======================================================================
+Getting Started
+
+To install and set up the utility:
+*  Install Python for Windows x64  -see below
+*  Create a folder on your disk
+*  Copy these files from downloaded zip file to the above folder-
+      SwitchSourceTemplate.py
+      RM-Python-config.ini
+*  Download unifuzz64.dll   -see below
+*  Move the unifuzz64.dll file to the above folder
+*  Edit the RM-Python-config.ini in the above folder to specify the location of the RM file,  
+   the unifuzz64.dll file and the output report file. 
+   The required edits should be obvious. (To edit, Open NotePad and drag the ini file onto the NotePad window.)
+
+
+======================================================================
+Python install-
+Install Python from the Microsoft Store or download and install from Python.org web site
+
+------
+From Microsoft Store
+Run a command in Windows by pressing the keyboard key combination "Windows + R", then in the small window, type Python.
+Microsoft Store will open in your browser and you will be be shown the current version of Python. 
+Click the Get button.
+Wait for install to finish. Done.
+
+------
+Web site download and install
+Download the current version of Python 3, ( or see direct link below for the current as of this date)
+https://www.python.org/downloads/windows/
+
+Click on the link near the top of page. Then ...
+Find the link near bottom of page, in "Files" section, labeled "Windows installer (64-bit)"
+Click it and save the installer.
+
+Direct link to recent version installer-
+https://www.python.org/ftp/python/3.10.5/python-3.10.5-amd64.exe
+
+
+The Python installation requires about 100 Mbytes.
+It is easily and cleanly removed using the standard method found in Windows=>Settings
+
+Run the Python installer selecting all default options.
+
+======================================================================
+unifuzz64.dll download-
+https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2018/05/unifuzz64.dll
+
+above link found in this context-
+https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlite-expert-command-line-shell-et-al/
+
+The SQLiteToolsforRootsMagic website has been around for years and is run by a trusted RM user. 
+Many posts to public RootsMagic user forums mention use of unifuzz64.dll from the SQLiteToolsforRootsMagic website.
+
+
+======================================================================
+Running the utility-
+
+In mapping- can a s-field in old template be mapped to a c-field in new?
+In mapping- can a c-field in old template be mapped to a s-field in new?
+
+
+in processing, for each source selected in set,
+it's template is changed and data from previous fields is copied to the new template as mapped. 
+Don't have access to any citation fields at this point. Even if had access, which copy of the citation field would be used? 
+So cannot "map a c-field in old template to a s-field in new"
+
+Similar log says a c-field in old template cannot be mapped to a s-field in new
+
+so mapping rule 
+all fields in old and new src templates must be listed, all old on left, all new on right
+old source fields can go to new source fields
+NULL on left side means that the field on right side will be empty
+NULL on right side means the data on left side field will not be used.
+
+not all old src fields have to be used. Can map to NULL, in which case data is not carried over.
+
+
+Check if source names need to be unique	    dups are not prevented, even with same src template
+Check if source template names need to be unique	dups are not prevented
+Check if field names in Source template need to be unique.	dups are not prevented
+
+check why the first column of mapping is needed.
+could determine at runtime that a field is a citation (Source details) field.
+
+The xml for sources is updated
+Existing xml read into DOM and manipulated, then saved back
 
 
 
+
+Note:
+RM does not prevent creation of entries with identical names.
+Important for this utility, this includes Sources, Citations, Source Templates and Source Template fields.
+If your database has duplicate names for items this utility will operate on, the safest course is to change the name so it's no longer an exact duplicate of another item of the same type.
 
 
 Step 1
@@ -68,28 +160,10 @@ If all of the desired Sources can't be found with one value of SOURCE_NAME_LIKE,
 Note that we have already determined the existing SourceTemplate name and have specified it in th RM-Config.ini file as the value of "TEMPLATE_OLD". Look in the Source template list in RM to get the name of the SourceTemplate to be used.
 
 
-======================================================================
-Getting Started
-
-To install and use the script file version:
-*  Download and install Python for Windows x64  -see below
-*  Download unifuzz64.dll   -see below
-*  Download these files from GitHub
-      Switch-source-template.py
-      RM-Python-config.ini
-*  Create a folder on disk and copy these files to it-
-      TestExternalFiles.py
-      RM-Python-config.ini
-      unifuzz64.dll
-*  Edit the RM-Python-config.ini to specify the required parameters.
-   (To edit, Open NotePad and drag the ini file onto the notepad window.)
-   location of the RM file and 
-   the unifuzz64.dll file . 
-   Some script functions may be turned on or off. The required edits should be obvious.
-*  Double click the Switch-source-template.py file to run the 
-   script and generate the report file. 
+   Some script functions may be turned on or off. -see below
+*  Double click the TestExternalFiles.py file to run the script and generate 
+   the report file. 
 *  Examine the report output file.
-
 
 
 

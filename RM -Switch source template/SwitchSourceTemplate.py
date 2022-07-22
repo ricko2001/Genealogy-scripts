@@ -144,7 +144,7 @@ def main():
           return
         oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
         reportF.write( "\nSources with template name:\n" + oldTemplateName + "\nand source name like:\n" + srcNamesLike + "\n\nSource #      Source Name\n\n")
-        srcTuples = GetSourcesSelected(reportF, dbConnection, oldTemplateID, srcNamesLike)
+        srcTuples = GetSelectedSources(reportF, dbConnection, oldTemplateID, srcNamesLike)
         for src in srcTuples:
           reportF.write (str(src[0]) + "    " + src[1] + "\n")
         return
@@ -165,53 +165,13 @@ def main():
 
       mapping = parseFieldMapping(fieldMapping)
 
-      srcTuples = GetSourcesSelected(reportF, dbConnection, oldTemplateID, srcNamesLike)
+      srcTuples = GetSelectedSources(reportF, dbConnection, oldTemplateID, srcNamesLike)
       for srcTuple in srcTuples:
         reportF.write ("=====================================================\n")
         reportF.write (str(srcTuple[0]) + "    " + srcTuple[1] + "\n")
         ConvertSource (reportF, dbConnection, srcTuple[0], newTemplateID, mapping)
     
   return 0
-
-
-# ===================================================DIV60==
-def create_DBconnection(db_file_path, RMNOCASE_Path):
-    conn = None
-    try:
-      conn = sqlite3.connect(db_file_path)
-      conn.enable_load_extension(True)
-      conn.load_extension(RMNOCASE_Path)
-    except Error as e:
-        reportF.write(e)
-        reportF.write( "Cannot open the RM database file. \n")
-    return conn
-
-
-# ===================================================DIV60==
-def GetListOfRows ( dbConnection, SqlStmt):
-    # SqlStmt should return a set of single values
-    cur = dbConnection.cursor()
-    cur.execute(SqlStmt)
-
-    result = []
-    for t in cur:
-      for x in t:
-        result.append(x)
-    return result
-
-
-# ===================================================DIV60==
-def getCitationsForSrc ( dbConnection, oldSourceID):
-    # get citations for oldSourceID
-    SqlStmt = """
-    SELECT CitationID, CitationName
-      FROM CitationTable
-      WHERE SourceID = ?
-      """
-    cur = dbConnection.cursor()
-    cur.execute(SqlStmt, (oldSourceID,))
-    return cur.fetchall()
-
 
 # ===================================================DIV60==
 def ConvertSource ( reportF, dbConnection, srcID, newTemplateID, fieldMapping):
@@ -319,7 +279,7 @@ def ConvertCitation( dbConnection, citationID, fieldMapping):
 
   # change fields in citation as per mapping:
   for eachMap in fieldMapping:
-    if eachMap[0] == "y": continue
+    if eachMap[0] == "n": continue
 
     if eachMap[1] == "NULL":
       # create a name and value pair.
@@ -333,7 +293,7 @@ def ConvertCitation( dbConnection, citationID, fieldMapping):
       if eachField.find('Name').text == eachMap[1]:
         if eachMap[2] == "NULL":
           # delete the unused field
-          srcRoot.find(".//Fields").remove(eachField)
+          citRoot.find(".//Fields").remove(eachField)
           break
         eachField.find('Name').text = eachMap[2]
         break
@@ -358,8 +318,66 @@ def ConvertCitation( dbConnection, citationID, fieldMapping):
 
 
 # ===================================================DIV60==
-def CheckForTrue( inputString):
-  return inputString.lower()  in ['on', 'true', '1', 't', 'y', 'yes']
+def getCitationsForSrc ( dbConnection, oldSourceID):
+    # get citations for oldSourceID
+    SqlStmt = """
+    SELECT CitationID, CitationName
+      FROM CitationTable
+      WHERE SourceID = ?
+      """
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, (oldSourceID,))
+    return cur.fetchall()
+
+
+# ===================================================DIV60==
+#def CheckForTrue( inputString):
+#  return inputString.lower()  in ['on', 'true', '1', 't', 'y', 'yes']
+
+
+# ===================================================DIV60==
+def create_DBconnection(db_file_path, RMNOCASE_Path):
+    conn = None
+    try:
+      conn = sqlite3.connect(db_file_path)
+      conn.enable_load_extension(True)
+      conn.load_extension(RMNOCASE_Path)
+    except Error as e:
+        reportF.write(e)
+        reportF.write( "Cannot open the RM database file. \n")
+    return conn
+
+
+# ===================================================DIV60==
+def parseFieldMapping( text ):
+# convert string to list of 2-tuple strings
+ text = text.strip()
+ list = text.split('\n')
+ newList = []
+ for each in list:
+     newList.append( tuple(each.split()))
+ return newList
+
+
+# ===================================================DIV60==
+def GetListOfRows ( dbConnection, SqlStmt):
+    # SqlStmt should return a set of single values
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt)
+
+    result = []
+    for t in cur:
+      for x in t:
+        result.append(x)
+    return result
+
+
+# ===================================================DIV60==
+def TimeStampNow():
+     # return a TimeStamp string
+     now = datetime.now()
+     dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
+     return dt_string
 
 
 # ===================================================DIV60==
@@ -390,6 +408,7 @@ def CheckSourceTemplates(reportF, dbConnection, oldTemplateName, newTemplateName
 
   return
 
+
 # ===================================================DIV60==
 def GetSrcTempID( dbConnection, TemplateName):
   SqlStmt = """
@@ -401,6 +420,7 @@ def GetSrcTempID( dbConnection, TemplateName):
   rows=[]  
   rows = cur.fetchall()
   return rows
+
 
 # ===================================================DIV60==
 def DumpSrcTemplateFields (reportF, dbConnection, TemplateID):
@@ -420,7 +440,7 @@ def DumpSrcTemplateFields (reportF, dbConnection, TemplateID):
   fieldItr = newRoot.findall(".Fields/Field")
   reportF.write(templateName + "\n")
   for item in fieldItr:
-      if CheckForTrue(item.find("CitationField").text):
+      if "True" == item.find("CitationField").text:
         fieldLoc = "citation"
       else:
         fieldLoc ="source  "
@@ -430,15 +450,7 @@ def DumpSrcTemplateFields (reportF, dbConnection, TemplateID):
 
 
 # ===================================================DIV60==
-def TimeStampNow():
-     # return a TimeStamp string
-     now = datetime.now()
-     dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
-     return dt_string
-
-
-# ===================================================DIV60==
-def GetSourcesSelected(reportF, dbConnection, oldTemplateID, SourceNamesLike):
+def GetSelectedSources(reportF, dbConnection, oldTemplateID, SourceNamesLike):
   SqlStmt = """
   SELECT  ST.SourceID, ST.Name
     FROM SourceTable ST
@@ -452,17 +464,6 @@ def GetSourcesSelected(reportF, dbConnection, oldTemplateID, SourceNamesLike):
     reportF.write( "No sources found with specified search criteria.\n")
     return
   return srcTuples
-
-
-# ===================================================DIV60==
-def parseFieldMapping( text ):
-# convert string to list of 2-tuple strings
- text = text.strip()
- list = text.split('\n')
- newList = []
- for each in list:
-     newList.append( tuple(each.split()))
- return newList
 
 
 # ===================================================DIV60==
