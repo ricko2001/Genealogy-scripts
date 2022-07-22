@@ -1,7 +1,0 @@
-﻿Report generated at      = 2022-07-21 13:50:56
-Database processed       = .\DB\TEST.rmtree
-Database last changed on = 2022-07-08 13:06:22
-
-
-=====================================================
-1673    BAP-CR-W p020-Otter, Johannes Michael
