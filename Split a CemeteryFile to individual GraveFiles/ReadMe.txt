@@ -1,5 +1,6 @@
 The Grave marker list for Waldzell is in file- 
 Friedhof Waldzell Grave List.txt
+Similar file for Oberschwarzach.
 
 It is organized by the Friedhof plot, since the stone and family in plots will change over time.
 
