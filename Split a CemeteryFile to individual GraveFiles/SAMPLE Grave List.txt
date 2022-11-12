@@ -1,0 +1,397 @@
+﻿===========================================DIV50==
+===PID: 2022-01-01     Coord: [49.861413, 10.408814]     Ort: "Oberschwarzach"     Stones: 1
+
+===Stone:	1
+===Date:	2022
+===Transcription:
+---------------------------------DIV40--
+ICH BIN
+DIE AUFERSTEHUNG
+UND DAS LEBEN
+
+FAMILIE PFISTER KAMMERFORST
+---------------------------------DIV40--
+
+===Date:	2022
+===Photos:	1
+Images 2022\IMG_20221011_101751687.jpg
+===Notes:
+_OLD_PID: 2018-1-01
+no changes since 2018, fixed transcription: LEBEN, remainder confirmed
+
+===Date:	2018
+===Photos:	1
+Images 2018\IMG_9220.JPG
+===Notes:
+_Location: pic faces north=odd row
+Clearly abuts west path. Next higher odd row plot has a bench on vacant plot.
+
+===Interpretation:
+no names/dates of individuals, limited utility
+NO KNOWN CONECTION TO MAIER FAMILY
+Assume this refers to the Pfister family from the dorf, Kammerforst (very close to Oberschwarzach).
+
+===Table:
+| FaG       | FS       | RM    | FN       | LN          | b           | d           | T |
+|-----------|----------|-------|----------|-------------|-------------|-------------|---|
+|           |          |       |          | Pfister     |             |             |   |
+
+===========================================DIV50==
+===PID: 2022-01-02     Coord: [49.861419, 10.408837]     Ort: "Oberschwarzach"     Stones: 1
+
+===Stone:	1
+===Date:	2022
+===Transcription:
+---------------------------------DIV40--
+Hier ruhen in Frieden
+
+Johann Götz   * 1880  ✝ 1949
+Maria Götz    * 1886  ✝ 1976
+Michael Götz  * 1919  ✠ 1941
+Konrad Götz   * 1910  verm. 1944
+Karl Schmitt  * 1914  ✝ 1978
+Dora Schmitt  * 1915  ✝ 1996
+---------------------------------DIV40--
+
+===Date:	2022
+===Photos:	1
+Images 2022\IMG_20221011_101758855.jpg
+===Notes:
+_OLD_PID: 2018-1-02
+Confirm transcription.
+No changes.
+
+===Date:	2018
+===Photos:	1
+Images 2018\IMG_9219.JPG
+===Notes:
+2018	Name added- Dora Schmitt.
+2018	Same stone as in 1995 as evidenced by photos.
+
+====Date:	1995
+===Photos:	1
+Images 1995\Götz, Johann & family -exp 1.jpg
+===Notes:
+
+===Interpretation:
+
+===Table:
+| FaG       | FS       | RM    | FN      | LN      | b    | d    | T |
+|-----------|----------|-------|---------|---------|------|------|---|
+|           |          |  1057 | Johann  | Götz    | 1880 | 1949 |   |
+|           |          |  1045 | Maria   | Götz    | 1886 | 1976 |   |
+|           |          |  1094 | Michael | Götz    | 1919 | 1941 |   |
+|           |          |  1090 | Konrad  | Götz    | 1910 | 1944 |   |
+|           |          |  1097 | Karl    | Schmitt | 1914 | 1978 |   |
+|           |          |  1096 | Dora    | Schmitt | 1915 | 1996 |   |
+
+===========================================DIV50==
+===PID: 2022-01-03     Coord: [49.861424, 10.408868]     Ort: "Oberschwarzach"     Stones: 1
+
+===Stone:	1
+===Date:	2022
+===Transcription:
+---------------------------------DIV40--
+Berthold-Strietzinger
+
+Georg Berthold        1892  -  1971
+Maria Berthold        1893  -  1977
+Richard Stritzinger   1917  -  1985
+Gretel Stritzinger    1920  -  2010
+     geb. Berthold
+
+<bottom>
+Johann u. Margarete Schneider
+---------------------------------DIV40--
+
+===Date:	2022
+===Photos:	1
+Images 2022\IMG_20221011_101805727.jpg
+===Notes:
+_OLD_PID: 2018-1-03
+Names at bottom are now clear.  Fixed transcription: Margarete Schneider, fixed table.
+
+
+===Date:	2018
+===Photos:	1
+Images 2018\IMG_9218.JPG
+===Notes:
+Name spelled 2 different ways- Strietzinger & Stritzinger
+Names at bottom obscured. First names not clear.
+
+===Interpretation:
+Name spelled 2 different ways- Strietzinger & Stritzinger.
+Strietzinger not used for any individuals.
+NO KNOWN CONECTION TO MAIER FAMILY
+
+===Table:
+| FaG       | FS       | RM    | FN        | LN          | b    | d    | T |
+|-----------|----------|-------|-----------|-------------|------|------|---|
+|           |          |       | Georg     | Berthold    | 1892 | 1971 |   |
+|           |          |       | Maria     | Berthold    | 1893 | 1977 |   |
+|           |          |       | Richard   | Stritzinger | 1917 | 1985 |   |
+|           |          |       | Gretel    | Stritzinger | 1920 | 2010 |   |
+|           |          |       | Gretel    | Berthold    | 1920 | 2010 | b |
+|           |          |       | Johann    | Schneider   |      |      |   |
+|           |          |       | Margarete | Schneider   |      |      |   |
+
+===========================================DIV50==
+===PID: 2022-01-04     Coord: [49.861430, 10.408895]     Ort: "Oberschwarzach"     Stones: 1
+
+===Stone:	VACANT
+===Date:	2022
+
+===Date:	2022
+===Photos:	0
+===Notes:
+_OLD_PID: 2018-1-04
+photo ??
+
+===Stone:	1
+===Date:	2018
+===Transcription:
+---------------------------------DIV40--
+FAMILIE GOLDSTEIN
+
+ELISABETH   * 14.3.1908  ✝ 10.4.1976
+JOSEF       * 1.5.1912   ✝ 9.9.2004
+---------------------------------DIV40--
+
+===Date:	2018
+===Photos:	1
+Images 2018\IMG_9217.JPG
+===Notes:
+
+===Interpretation:
+NO KNOWN CONECTION TO MAIER FAMILY
+
+===Table:
+| FaG       | FS       | RM    | FN        | LN        | b           | d           | T |
+|-----------|----------|-------|-----------|-----------|-------------|-------------|---|
+|           |          |       | Elisabeth | Goldstein | 14 Mar 1908 | 10 Apr 1976 |   |
+|           |          |       | Josef     | Goldstein | 01 May 1912 | 09 Sep 2004 |   |
+
+===========================================DIV50==
+===PID: 2022-01-05     Coord: [49.861434, 10.408920]     Ort: "Oberschwarzach"     Stones: 1
+
+===Stone:	VACANT
+===Date:	2022
+
+===Date:	2022
+===Photos:	0
+===Notes:
+_OLD_PID: 2018-1-05
+Stone was being removed as photos taken in 2022-10.
+
+===Stone:	1
+===Date:	2018
+===Transcription:
+---------------------------------DIV40--
+Familie Götz
+
+Elisabeth Weiss
+1900  1983
+---------------------------------DIV40--
+
+===Date:	2018
+===Photos:	1
+Images 2018\IMG_9216.JPG
+===Notes:
+
+===Interpretation:
+NO KNOWN CONECTION TO MAIER FAMILY
+
+===Table:
+| FaG       | FS       | RM    | FN        | LN    | b    | d    | T |
+|-----------|----------|-------|-----------|-------|------|------|---|
+|           |          |       |           | Götz  |      |      |   |
+|           |          |       | Elisabeth | Weiss | 1900 | 1983 |   |
+
+===========================================DIV50==
+===PID: 2022-01-06     Coord: [49.861437, 10.408938]     Ort: "Oberschwarzach"     Stones: 1
+
+===Stone:	1
+===Date:	2018
+===Transcription:
+---------------------------------DIV40--
+Familie Geiling
+
+Hermann   * 1938  ✝ 1995
+---------------------------------DIV40--
+
+===Date:	2022
+===Photos:	1
+Images 2022\IMG_20221011_101918799.jpg
+===Notes:
+_OLD_PID: 2018-1-06
+Transcription confirmed.
+No changes.
+
+===Date:	2018
+===Photos:	1
+Images 2018\IMG_9215.JPG
+===Notes:
+
+===Interpretation:
+NO KNOWN CONECTION TO MAIER FAMILY
+
+===Table:
+| FaG       | FS       | RM    | FN      | LN      | b    | d    | T |
+|-----------|----------|-------|---------|---------|------|------|---|
+|           |          |       | Hermann | Geiling | 1938 | 1995 |   |
+
+===========================================DIV50==
+===PID: 2022-01-07     Coord: [49.861444, 10.408973]     Ort: "Oberschwarzach"     Stones: 1
+
+===Stone:	1
+===Date:	2022
+===Transcription:
+---------------------------------DIV40--
+LUDWIG LAWALDT
+8. 3. 1929 - 5. 12. 2020
+---------------------------------DIV40--
+
+===Date:	2022
+===Photos:	1
+Images 2022\IMG_20221011_101925179.jpg
+===Notes:
+_OLD_PID: 2018-1-07
+New stone in previously vacant plot. Created transcription and table.
+
+===Stone:	VACANT
+===Date:	2018
+==Notes:
+
+===Interpretation:
+NO KNOWN CONECTION TO MAIER FAMILY
+
+===Table:
+| FaG       | FS       | RM    | FN     | LN      | b           | d           | T |
+|-----------|----------|-------|--------|---------|-------------|-------------|---|
+|           |          |       | Ludwig | Lawaldt | 08 Mar 1929 | 05 Dec 2020 |   |
+
+===========================================DIV50==
+===PID: 2022-01-08     Coord: [49.861451, 10.409002]     Ort: "Oberschwarzach"     Stones: 1
+
+===Stone:	1
+===Date:	2022
+===Transcription:
+---------------------------------DIV40--
+<center>
+<blank>
+
+<left>
+Hier ruhet
+
+Josef Biel
+* 11.9.1921  ✝ 20.2.2005
+Helene Biel
+* 5.1.1922  ✝ 31.10.2006
+
+<right>
+in Gott
+
+Otto Biel
+Privatier
+* 30.9.1892  ✝ 25.8.1953
+Theodor Biel
+* 17.8.1895  ✝ 22.10.1972
+Babette Biel
+* 30.1.1901  ✝ 16.7.1973
+---------------------------------DIV40--
+
+===Date:	2022
+===Photos:	1
+Images 2022\IMG_20221011_101925179.jpg
+===Notes:
+_OLD_PID: 2018-1-08
+Added to transcription: Hier ruhet in Gott.
+fixed dates: 25.8.1953; 31.10.2006; 17.8.1895; 22.10.1972
+fixed name: Theodor
+Updated table.
+Confirmed transcription.
+_Location: left of the central path
+
+===Date:	2018
+===Photos:	2
+Images 2018\IMG_9213.JPG
+Images 2018\IMG_9214.JPG
+===Notes:
+
+===Interpretation:
+NO KNOWN CONECTION TO MAIER FAMILY
+
+===Table:
+| FaG       | FS       | RM    | FN      | LN   | b           | d           | T |
+|-----------|----------|-------|---------|------|-------------|-------------|---|
+|           |          |       | Josef   | Biel | 11 Sep 1921 | 20 Feb 2005 |   |
+|           |          |       | Helene  | Biel | 05 Jan 1922 | 31 Oct 2006 |   |
+|           |          |       | Otto    | Biel | 30 Sep 1892 | 25 Aug 1953 |   |
+|           |          |       | Theodor | Biel | 17 Aug 1895 | 22 Oct 1972 |   |
+|           |          |       | Babette | Biel | 30 Jan 1901 | 16 Jul 1973 |   |
+
+===========================================DIV50==
+===PID: 2022-01-09     Coord: [49.861461, 10.409053]     Ort: "Oberschwarzach"     Stones: 1
+
+===Stone:	1
+===Date:	2022
+===Transcription:
+---------------------------------DIV40--
+Franz Preller   
+1.6.1913  -  4.12.1987
+Anna Preller
+26.11.1910  -  30.9.2003
+---------------------------------DIV40--
+
+===Date:	2022
+===Photos:	1
+Images 2022\IMG_3085.JPEG
+===Notes:
+_OLD_PID: 2018-1-09
+no changes
+
+===Date:	2018
+===Photos:	1
+Images 2018\IMG_9212.JPG
+===Notes:
+
+===Interpretation:
+NO KNOWN CONECTION TO MAIER FAMILY
+
+===Table:
+| FaG       | FS       | RM    | FN    | LN      | b           | d           | T |
+|-----------|----------|-------|-------|---------|-------------|-------------|---|
+|           |          |       | Franz | Preller | 01 Jun 1913 | 04 Dec 1987 |   |
+|           |          |       | Anna  | Preller | 26 Nov 1910 | 30 Sep 2003 |   |
+
+===========================================DIV50==
+===PID: 2022-01-10     Coord: [49.861468, 10.409083]     Ort: "Oberschwarzach"     Stones: 1
+
+===Stone:	1
+===Date:	2022
+===Transcription:
+---------------------------------DIV40--
+FAMILIE
+DESCHNER
+---------------------------------DIV40--
+
+===Date:	2022
+===Photos:	1
+Images 2022\IMG_3086.JPEG
+===Notes:
+_OLD_PID: 2018-1-10
+No changes.
+
+===Date:	2018
+===Photos:	1
+Images 2018\IMG_9211.JPG
+===Notes:
+
+===Interpretation:
+No individual names.
+NO KNOWN CONECTION TO MAIER FAMILY
+
+===Table:
+| FaG       | FS       | RM    | FN       | LN       | b           | d           | T |
+|-----------|----------|-------|----------|----------|-------------|-------------|---|
+|           |          |       |          | Deschner |             |             |   |
