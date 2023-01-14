@@ -5,7 +5,7 @@ FileInPath = r"."
 FileInName = r"SAMPLE Grave List.txt"
 FileOutFldrName = "Generated files"
 
-EntrySeperator = "===========================================DIV50==\n"
+EntrySeperator = "="*70 + "===DIV80==\n"
 tempFileName = "trashFile"
 pathSep = '\\'
 FileOutExt = ".txt"
@@ -23,7 +23,7 @@ while (Line != ""):
         Line = fileIn.readline() 
         # print (Line)
         # extract the plot ID for use in filename
-        PID = Line[7:Line.find(' ', 8)]
+        PID = Line[8:Line.find(' ', 8)]
         print (PID)
         FileOutName="plot " + PID
         if (Line == EntrySeperator):
