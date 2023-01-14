@@ -20,3 +20,8 @@ HIDE_*
 
 ReportFile.txt
 
+
+# ignore past run data
+logs of past runs/
+
+
