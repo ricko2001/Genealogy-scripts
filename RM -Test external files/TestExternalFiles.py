@@ -162,7 +162,14 @@ def ListUnReferencedFilesFeature(config, dbConnection, reportF):
 
   mediaFileList = FolderContentsMinusIgnored(reportF, Path(ExtFilesFolderPath), config)
 
-  unRefFiles = list(set(mediaFileList).difference(dbFileList))
+  caseSens = True
+  if (caseSens == True):
+    # case sensitive
+    unRefFiles = list(set(mediaFileList).difference(dbFileList))
+  else:
+    mediaFileList_lc = [item.lower() for item in mediaFileList]
+    dbFileList_lc = [item.lower() for item in dbFileList]
+    unRefFiles = list(set(mediaFileList_lc).difference(dbFileList_lc))
 
   if len(unRefFiles) >0:
     unRefFiles.sort()
@@ -173,14 +180,16 @@ def ListUnReferencedFilesFeature(config, dbConnection, reportF):
     for i in range(len(unRefFiles)):
       reportF.write("." + str(unRefFiles[i])[cutoff:] + "\n")
 
-  else: reportF.write ("    No unreferenced files were found.\n\n")
-
-  reportF.write("\n\nFolder processed: " + G_QT + ExtFilesFolderPath + G_QT + "\n")
-  reportF.write( "Files in processed folder not referenced by the database: "
+    reportF.write( "\nFiles in processed folder not referenced by the database: "
          + str(len(unRefFiles))  + "\n")
-  reportF.write("Processed folder contains " + str(len(mediaFileList))
+  else: reportF.write ("\n    No unreferenced files were found.\n\n")
+
+  reportF.write("    Folder processed: " + G_QT + ExtFilesFolderPath + G_QT + "\n")
+  reportF.write("    Processed folder contains " + str(len(mediaFileList))
        + " files (not counting ignored items)\n")
-  reportF.write("Database file links: " + str(len(dbFileList)) + "\n")
+  reportF.write("    Database file links: " + str(len(dbFileList)) + "\n")
+  reportF.write("    Unexplained extra DB links: " + str( len(dbFileList) - len(mediaFileList) ) + "\n")
+
 
   Section( "END", FeatureName, reportF)
   return
