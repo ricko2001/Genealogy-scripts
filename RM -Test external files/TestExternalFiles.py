@@ -6,6 +6,8 @@ from pathlib  import Path
 from datetime import datetime
 import configparser
 import xml.etree.ElementTree as ET
+import hashlib
+
 
 ## This script can only read a RootsMagic database files and cannot change it.
 ## However, until trust is established, make a backup before use.
@@ -28,7 +30,7 @@ G_QT = "\""
 def main():
   global G_DbFileFolderPath
 
-  # Configuration 
+  # Configuration
   IniFileName = "RM-Python-config.ini"
 
   # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM)
@@ -88,10 +90,10 @@ def main():
     # RM database file specific
     FileModificationTime = datetime.fromtimestamp(os.path.getmtime(database_Path))
     G_DbFileFolderPath = Path(database_Path).parent
-  
+
     # Process the database for requested output
     with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
-      reportF.write ("Report generated at      = " + TimeStampNow() + "\n")  
+      reportF.write ("Report generated at      = " + TimeStampNow() + "\n")
       reportF.write ("Database processed       = " + database_Path + "\n")
       reportF.write ("Database last changed on = " + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n\n")
 
@@ -103,24 +105,28 @@ def main():
         config['OPTIONS'].getboolean('NO_TAG_FILES')
         config['OPTIONS'].getboolean('DUP_FILES')
         config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
+        config['OPTIONS'].getboolean('HASH_FILE')
       except:
         reportF.write ("One of the OPTIONS values could not be parsed as boolean. \n")
         sys.exit()
 
       if config['OPTIONS'].getboolean('CHECK_FILES'):
          ListMissingFilesFeature(config, dbConnection, reportF)
-  
+
       if config['OPTIONS'].getboolean('UNREF_FILES'):
          ListUnReferencedFilesFeature(config, dbConnection, reportF)
-  
+
       if config['OPTIONS'].getboolean('FOLDER_LIST'):
          ListFoldersFeature(config, dbConnection, reportF)
-  
+
       if config['OPTIONS'].getboolean('NO_TAG_FILES'):
          FilesWithNoTagsFeature(config, dbConnection, reportF)
-  
+
       if config['OPTIONS'].getboolean('DUP_FILES'):
          FindDuplcateFilesFeature(dbConnection, reportF)
+
+      if config['OPTIONS'].getboolean('HASH_FILE'):
+         FileHashFeature(config, dbConnection, reportF)
 
     Section( "FINAL", "", reportF)
   return 0
@@ -139,7 +145,7 @@ def ListUnReferencedFilesFeature(config, dbConnection, reportF):
     sys.exit()
 
   # Validate the folder path
-  if not Path(ExtFilesFolderPath).exists(): 
+  if not Path(ExtFilesFolderPath).exists():
     reportF.write ("ERROR: Directory path not found:" + G_QT + ExtFilesFolderPath + G_QT + "\n")
     sys.exit()
   if not Path(ExtFilesFolderPath).is_dir():
@@ -156,9 +162,16 @@ def ListUnReferencedFilesFeature(config, dbConnection, reportF):
 
   mediaFileList = FolderContentsMinusIgnored(reportF, Path(ExtFilesFolderPath), config)
 
-  unRefFiles = list(set(mediaFileList).difference(dbFileList))
+  caseSens = True
+  if (caseSens == True):
+    # case sensitive
+    unRefFiles = list(set(mediaFileList).difference(dbFileList))
+  else:
+    mediaFileList_lc = [item.lower() for item in mediaFileList]
+    dbFileList_lc = [item.lower() for item in dbFileList]
+    unRefFiles = list(set(mediaFileList_lc).difference(dbFileList_lc))
 
-  if len(unRefFiles) >0: 
+  if len(unRefFiles) >0:
     unRefFiles.sort()
 
     # don't print full path from root folder
@@ -167,14 +180,16 @@ def ListUnReferencedFilesFeature(config, dbConnection, reportF):
     for i in range(len(unRefFiles)):
       reportF.write("." + str(unRefFiles[i])[cutoff:] + "\n")
 
-  else: reportF.write ("    No unreferenced files were found.\n\n")
-
-  reportF.write("\n\nFolder processed: " + G_QT + ExtFilesFolderPath + G_QT + "\n")
-  reportF.write( "Files in processed folder not referenced by the database: "
+    reportF.write( "\nFiles in processed folder not referenced by the database: "
          + str(len(unRefFiles))  + "\n")
-  reportF.write("Processed folder contains " + str(len(mediaFileList)) 
+  else: reportF.write ("\n    No unreferenced files were found.\n\n")
+
+  reportF.write("    Folder processed: " + G_QT + ExtFilesFolderPath + G_QT + "\n")
+  reportF.write("    Processed folder contains " + str(len(mediaFileList))
        + " files (not counting ignored items)\n")
-  reportF.write("Database file links: " + str(len(dbFileList)) + "\n")
+  reportF.write("    Database file links: " + str(len(dbFileList)) + "\n")
+  reportF.write("    Unexplained extra DB links: " + str( len(dbFileList) - len(mediaFileList) ) + "\n")
+
 
   Section( "END", FeatureName, reportF)
   return
@@ -272,9 +287,9 @@ def ListMissingFilesFeature( config, dbConnection, reportF ):
     dirPathOrig = row[0]
     dirPath = ExpandDirPath(row[0])
     filePath = dirPath / row[1]
-    if not dirPath.exists(): 
+    if not dirPath.exists():
       foundSomeMissingFiles=True
-      reportF.write ("Directory path not found:\n" 
+      reportF.write ("Directory path not found:\n"
             + G_QT + str(dirPath) + G_QT + " for file: " + G_QT + row[1] + G_QT + "\n")
       if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
 
@@ -284,13 +299,77 @@ def ListMissingFilesFeature( config, dbConnection, reportF ):
           foundSomeMissingFiles=True
           reportF.write ("File path is not a file: \n" + G_QT + str(filePath) + G_QT + "\n")
           if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
-   
+
       else:
         foundSomeMissingFiles=True
         reportF.write ("File path not found: \n" + G_QT + str(filePath) + G_QT + "\n")
         if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
 
   if not foundSomeMissingFiles: reportF.write ("\n    No files were found missing.\n")
+  Section( "END", FeatureName, reportF)
+  return
+
+
+# ===================================================DIV60==
+def FileHashFeature(config, dbConnection, reportF):
+  FeatureName = "Generate media files hash"
+  Label_OrigPath="Saved at:  "
+  foundSomeMissingFiles=False
+
+  Section( "START", FeatureName, reportF)
+  # get option
+  try:
+    hashFileFolder = config['FILE_PATHS']['HASH_FILE_FLDR_PATH']
+  except:
+    reportF.write ("ERROR: HASH_FILE_FLDR_PATH must be specified for this option. \n")
+    sys.exit()
+
+  hashFilePath = os.path.join( hashFileFolder , "MediaFiles_HASH_" + TimeStampNow("file") +".txt" )
+
+  try:
+    hashFile = open( hashFilePath,  mode='w', encoding='utf-8-sig')
+  except:
+    print('ERROR: Cannot create the hash file ' + hashFilePath + "\n\n")
+    input("Press the <Enter> key to exit...")
+    return
+
+  reportF.write( "MD5 hash of files saved in file:\n" + str(hashFilePath) + "\n\n")
+  cur= GetDBFileList(dbConnection)
+  # row[0] = path,   row[1] = fileName
+
+  for row in cur:
+    dirPathOrig = row[0]
+    dirPath = ExpandDirPath(row[0])
+    filePath = dirPath / row[1]
+    if not dirPath.exists():
+      foundSomeMissingFiles=True
+      reportF.write ("Directory path not found:\n"
+            + G_QT + str(dirPath) + G_QT + " for file: " + G_QT + row[1] + G_QT + "\n")
+
+    else:
+      if filePath.exists():
+        if not filePath.is_file():
+          foundSomeMissingFiles=True
+          reportF.write ("File path is not a file: \n" + G_QT + str(filePath) + G_QT + "\n")
+        # take hash
+        BUF_SIZE = 65536  # lets read stuff in 64kb chunks!
+
+        md5 = hashlib.md5()
+        # or sha1 = hashlib.sha1()
+
+        with open(filePath, 'rb') as f:
+            while True:
+                data = f.read(BUF_SIZE)
+                if not data:
+                    break
+                md5.update(data)
+        hashFile.write( str(filePath) + "\n" + md5.hexdigest() + "\n\n" )
+      else:
+        foundSomeMissingFiles=True
+        reportF.write ("File path not found: \n" + G_QT + str(filePath) + G_QT + "\n")
+
+  if not foundSomeMissingFiles: reportF.write ("\n    All files were processed.\n")
+
   Section( "END", FeatureName, reportF)
   return
 
@@ -308,10 +387,13 @@ def GetDBFolderList(dbConnection):
 
 
 # ===================================================DIV60==
-def TimeStampNow():
+def TimeStampNow(type=""):
      # return a TimeStamp string
      now = datetime.now()
-     dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
+     if type == '':
+       dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
+     elif type == 'file':
+       dt_string = now.strftime("%Y-%m-%d_%H%M%S")
      return dt_string
 
 
@@ -347,15 +429,15 @@ def GetDuplicateFileList(dbConnection):
 
   SqlStmt="""\
   SELECT p.MediaPath, p.MediaFile
-  FROM MultimediaTable p 
-  JOIN 
+  FROM MultimediaTable p
+  JOIN
   (
-   SELECT MediaPath, MediaFile, count(*) as cnt 
-   FROM MultimediaTable 
+   SELECT MediaPath, MediaFile, count(*) as cnt
+   FROM MultimediaTable
    GROUP BY MediaPath, MediaFile
-  ) t 
-  ON LOWER(p.MediaPath) = LOWER(t.MediaPath) AND LOWER(p.MediaFile) = LOWER(t.MediaFile) 
-  WHERE t.cnt > 1 
+  ) t
+  ON LOWER(p.MediaPath) = LOWER(t.MediaPath) AND LOWER(p.MediaFile) = LOWER(t.MediaFile)
+  WHERE t.cnt > 1
   ORDER BY p.MediaFile;
 """
   cur = dbConnection.cursor()
