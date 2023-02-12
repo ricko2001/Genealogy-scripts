@@ -94,7 +94,7 @@ def Convert ( conn, oldSourceID, newSourceID):
 
   citationIDsToMove= getCitationsToMove(conn,oldSourceID)
   if len(citationIDsToMove) == 0:  return
-  print ( "Convert " +  str(len(citationIDsToMove)) + " citations")
+  print ( "Try to convert " +  str(len(citationIDsToMove)) + " citations")
 
   #For the given old source, iterate through its citations 
   citNum=0
@@ -102,37 +102,23 @@ def Convert ( conn, oldSourceID, newSourceID):
     citNum = citNum + 1
     # if citNum > 1: input("cit enter to continue")
 
-
-    # First try parsing the data. If it fails, don't make any changes to the old source.
     # Get the SourceTable.Fields BLOB from the oldSource to extract its data
     SqlStmt = """
     SELECT Fields
       FROM SourceTable
       WHERE SourceID = ?
       """
-    cur = conn.cursor()
-    cur.execute(SqlStmt, (oldSourceID,))
-    origSrcField = cur.fetchone()[0].decode()
-    srcField = origSrcField
 
-    # test for and fix old style "XML" no longer used in RM8
-    xmlStart = "<Root>"
-    rootLoc=srcField.find(xmlStart)
-    if rootLoc != 0:
-      srcField = srcField[rootLoc::]
-
-    # read into DOM and parse for needed values
-    # only Footnote needed from old src XML data
-    srcRoot = ET.fromstring(srcField)
+    srcRoot = getFieldsXmlDataAsDOM ( conn, SqlStmt, oldSourceID )
     srcFields = srcRoot.find("Fields")
-    srcFields.iterfind("Field")
-
     FootnoteRaw = None
     for item in srcFields:
       if item[0].text == "Footnote":
         FootnoteRaw= item[1].text
     Footnote = FootnoteRaw.strip()
 
+
+# PARSE FOOTNOTE  START =========================================================
     # Parse the Footnote field for needed info
     # due to small changes in footnote format for FaG, need to do minimum of 4 runs to get max # of conversions
     # 1 using Memorial ID
@@ -149,7 +135,7 @@ def Convert ( conn, oldSourceID, newSourceID):
       [', citing '             , ';'      , 'PlaceBurial']
       ]
 
-
+    # Try parsing the Footnote string. If it fails, don't make any changes to the old source.
     parse_results={}
     searchStart = 0
     for searchText in searchStrings:
@@ -166,13 +152,12 @@ def Convert ( conn, oldSourceID, newSourceID):
         # input(str(searchTextLocS) +"  " + str(searchTextLocE) + "  " + str(searchText) + "\n" + Footnote + "\n\nE Enter to continue...")
         return
       searchStart = searchTextLocE
-      found = Footnote[searchTextLocS + len(searchText[0]) : searchTextLocE]
       # store away the parse result
-      parse_results[searchText[2]] = found
-    #end of for
+      parse_results[searchText[2]] = Footnote[searchTextLocS + len(searchText[0]) : searchTextLocE]
+     #end of for searchStrings
 
-
-    #Deal with PlaceCemetery parsing
+    # Deal with PlaceCemetery parsing
+    # PlaceBurial has the cemetery name as the first part of the coma delimited location list
     if 'PlaceBurial' in parse_results:
       Place = parse_results['PlaceBurial']
       FirstPartPlace =  Place[ 0 : Place.find(",")]
@@ -181,23 +166,19 @@ def Convert ( conn, oldSourceID, newSourceID):
           or "Memorial" in FirstPartPlace \
           or "Columbarium" in FirstPartPlace :
         parse_results["PlaceCemetery"] = FirstPartPlace
-        parse_results["PlaceBurial"] = Place[Place.find(",") +2 : ]
+        parse_results["PlaceBurial"] = Place[Place.find(",") + 2 : ]
 
-
-    # print ('\n\n')
-    # for each in searchStrings:
-    #   print (parse_results.get(each[2],None), "")
-    # input("Press Enter to continue...")
+# PARSE FOOTNOTE  END =========================================================
  
-  # Copy fields from old src to citationToMove
+
+  # Copy fields from old src record to the citationToMove
     SqlStmt = """
     UPDATE CitationTable
       SET (CitationName, ActualText, Comments, UTCModDate)
         = (SELECT Name, ActualText, Comments, UTCModDate FROM SourceTable WHERE SourceID = ?)
       WHERE CitationID = ?
       """
-    cur = conn.cursor()
-    cur.execute(SqlStmt, (oldSourceID, citationIDToMove))
+    RunSqlNoResult( conn, SqlStmt, tuple([oldSourceID, citationIDToMove]) )
 
     # Change owner & type columns for relevant web tags so they follow the citationToMove
     SqlStmt = """
@@ -206,8 +187,7 @@ def Convert ( conn, oldSourceID, newSourceID):
           OwnerID = ? 
       WHERE OwnerType = 3 AND OwnerID = ?
       """
-    cur = conn.cursor()
-    cur.execute(SqlStmt, ( citationIDToMove, oldSourceID))
+    RunSqlNoResult( conn, SqlStmt, tuple([citationIDToMove, oldSourceID]) )
 
     # Change owner & type for relevant media so they follow the citationToMove
     SqlStmt = """
@@ -216,8 +196,7 @@ def Convert ( conn, oldSourceID, newSourceID):
           OwnerID = ? 
       WHERE OwnerType = 3 AND OwnerID = ?
       """
-    cur = conn.cursor()
-    cur.execute(SqlStmt, ( citationIDToMove, oldSourceID))
+    RunSqlNoResult( conn, SqlStmt, tuple([citationIDToMove, oldSourceID]) )
 
     #  move the existing citation to the new source
     SqlStmt = """
@@ -225,34 +204,17 @@ def Convert ( conn, oldSourceID, newSourceID):
       SET SourceID = ?
       WHERE CitationID = ?
       """
-    cur = conn.cursor()
-    cur.execute(SqlStmt, (newSourceID, citationIDToMove))
+    RunSqlNoResult( conn, SqlStmt, tuple([newSourceID, citationIDToMove]) )
 
-
-    # retrieve the XML chunk that has the citation fields of the citations as it exists
+    # retrieve the XML DOM that has the citation fields of the citations as it exists
     # Get the CitationTable.Fields BLOB for the new source (must be pre-existing and named "sample citation")
     SqlStmt = """
       SELECT CT.Fields
         FROM CitationTable CT
         WHERE CitationID = ?
         """
-    cur = conn.cursor()
-    cur.execute(SqlStmt, (citationIDToMove,))
-    oldCitFieldTxt = cur.fetchone()[0].decode()
-    print (oldCitFieldTxt)
-
-    # test for and fix old style "XML" no longer used in RM8
-    xmlStart = "<Root"
-    rootLoc=oldCitFieldTxt.find(xmlStart)
-    if rootLoc != 0:
-      oldCitFieldTxt = oldCitFieldTxt[rootLoc::]
-    print (oldCitFieldTxt)
-
-    # read into DOM and parse for needed values
-    # only Page needed from old cit  XML data
-    citRoot = ET.fromstring(oldCitFieldTxt)
+    citRoot = getFieldsXmlDataAsDOM ( conn, SqlStmt, citationIDToMove)
     citFields = citRoot.find("Fields")
-
     Page = None
     if citFields != None:
       citFields.iterfind("Field")
@@ -260,7 +222,7 @@ def Convert ( conn, oldSourceID, newSourceID):
         if item[0].text == "Page":
           Page = item[1].text
           break
-      print ("Page= " + str(Page))
+
 
     # retrieve an empty sample XML chunk that has the citation fields of the source template used by the newSource
     # Get the CitationTable.Fields BLOB for the new source (must be pre-existing and named "sample citation")
@@ -270,15 +232,8 @@ def Convert ( conn, oldSourceID, newSourceID):
         JOIN SourceTable ST ON CT.SourceId = ST.SourceID
         WHERE CT.SourceID = ? AND CT.CitationName = "sample citation"
         """
-    cur = conn.cursor()
-    cur.execute(SqlStmt, (newSourceID,))
-    newFieldTxt = cur.fetchone()[0].decode()
-    # if this fails, give error- Create a citation named "sample citation"
-
-    # insert the values into the XML
-    newRoot = ET.fromstring(newFieldTxt)
+    newRoot = getFieldsXmlDataAsDOM ( conn, SqlStmt, newSourceID)
     newFields = newRoot.find("Fields")
-    newFields.findall("Field")
 
     for item in newFields:
         if item[0].text == "SrcCitation ":
@@ -292,18 +247,13 @@ def Convert ( conn, oldSourceID, newSourceID):
             if item[0].text == each[2]:
               item[1].text = parse_results.get(each[2], None)
 
-    #print ("ET.tostring(newRoot)")
-    #print (ET.tostring(newRoot))
-
-     #Update the citation Fields column with the new XML
+    # Update the citation Fields column with the new XML
     SqlStmt = """
       UPDATE CitationTable
         SET Fields = ?
         WHERE CitationID = ?
         """
-    cur = conn.cursor()
-    cur.execute(SqlStmt, (ET.tostring(newRoot), citationIDToMove,) )
-
+    RunSqlNoResult( conn, SqlStmt, tuple([ET.tostring(newRoot), citationIDToMove]) )
     conn.commit()
     #end loop for citations
 
@@ -312,12 +262,36 @@ def Convert ( conn, oldSourceID, newSourceID):
   DELETE from SourceTable
       WHERE SourceID = ?
       """
-  cur = conn.cursor()
-  cur.execute(SqlStmt, (oldSourceID,))
+  RunSqlNoResult( conn, SqlStmt, tuple([oldSourceID, ]) )
   conn.commit()
 
   return
 
+# ================================================================
+def RunSqlNoResult ( conn, SqlStmt, myTuple):
+    cur = conn.cursor()
+    cur.execute(SqlStmt, myTuple)
+
+
+# ================================================================
+def getFieldsXmlDataAsDOM ( conn, SqlStmt, rowID ):
+  cur = conn.cursor()
+  cur.execute(SqlStmt, (rowID,))
+  XmlTxt = cur.fetchone()[0].decode()
+  # print (XmlTxt)
+
+  # test for and fix old style "XML" no longer used in RM8
+  xmlStart = "<Root"
+  rootLoc=XmlTxt.find(xmlStart)
+  if rootLoc != 0:
+    XmlTxt = XmlTxt[rootLoc::]
+  # print (XmlTxt)
+
+  # read into DOM and parse for needed values
+  # only Page needed from old cit  XML data
+  XmlRoot = ET.fromstring(XmlTxt)
+
+  return XmlRoot
 
 # ================================================================
 def getCitationsToMove ( conn, oldSourceID):
