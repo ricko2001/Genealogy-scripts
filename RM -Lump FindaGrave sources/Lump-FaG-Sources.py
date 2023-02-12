@@ -114,7 +114,7 @@ def Convert ( conn, oldSourceID, newSourceID):
     cur.execute(SqlStmt, (oldSourceID,))
     origSrcField = cur.fetchone()[0].decode()
     srcField = origSrcField
-	
+
     # test for and fix old style "XML" no longer used in RM8
     xmlStart = "<Root>"
     rootLoc=srcField.find(xmlStart)
@@ -122,55 +122,54 @@ def Convert ( conn, oldSourceID, newSourceID):
       srcField = srcField[rootLoc::]
 
     # read into DOM and parse for needed values
-    # only Footnote & CD needed from old XML data
+    # only Footnote needed from old src XML data
     srcRoot = ET.fromstring(srcField)
     srcFields = srcRoot.find("Fields")
     srcFields.iterfind("Field")
 
     FootnoteRaw = None
-    CD = None
     for item in srcFields:
       if item[0].text == "Footnote":
         FootnoteRaw= item[1].text
-      if item[0].text == "CD":
-        CD = item[1].text
-
     Footnote = FootnoteRaw.strip()
 
     # Parse the Footnote field for needed info
+    # due to small changes in footnote format for FaG, need to do minimum of 4 runs to get max # of conversions
+    # 1 using Memorial ID
+    # 2 using Memorial no.
+    # 3 using Memorial ID and commenting out the citing search (when no burial place listed)
+    # 4 using Memorial no. and commenting out the citing search (when no burial place listed)
+
     searchStrings = [
       [': accessed '           , '),'     , 'DateCitation'],
       ['memorial page for '    , ' ('     , 'Name'], 
       [' ('                    , '–'      , 'DateBirth'],   #this is a long dash char
+#      ['Memorial ID '          , ','      , 'EntryNumber'], 
       ['Memorial no. '         , ','      , 'EntryNumber'], 
       [', citing '             , ';'      , 'PlaceBurial']
       ]
 
-#      ['Memorial no. '         , ','      , 'EntryNumber'], 
-#      ['Memorial ID '         , ','      , 'EntryNumber'], 
 
     parse_results={}
     searchStart = 0
     for searchText in searchStrings:
       searchTextLocS = Footnote.find(searchText[0], searchStart)
-      #print (searchTextLocS)
       if searchTextLocS == -1:
-        G_count=G_count +1
+        G_count += 1
         # parsing failed, don't change this old source
-        # input(str(searchText) + "S Press Enter to continue...")
+        # input(str(searchTextLocS) + "  " + str(searchText) + "\n" + Footnote +  "\n\nS Enter to continue...")
         return
       searchTextLocE = Footnote.find(searchText[1], searchTextLocS)
-      #print (searchTextLocE)
       if searchTextLocE == -1:
-        G_count=G_count +1
+        G_count += 1
         # parsing failed, don't change this old source
-        # input(str(searchText) + "E Press Enter to continue...")
+        # input(str(searchTextLocS) +"  " + str(searchTextLocE) + "  " + str(searchText) + "\n" + Footnote + "\n\nE Enter to continue...")
         return
       searchStart = searchTextLocE
       found = Footnote[searchTextLocS + len(searchText[0]) : searchTextLocE]
-      #print (found)
+      # store away the parse result
       parse_results[searchText[2]] = found
-      #end of for
+    #end of for
 
 
     #Deal with PlaceCemetery parsing
@@ -230,7 +229,40 @@ def Convert ( conn, oldSourceID, newSourceID):
     cur.execute(SqlStmt, (newSourceID, citationIDToMove))
 
 
-    # retrieve an XML chunk that has the citation fields of the source template used by the newSource
+    # retrieve the XML chunk that has the citation fields of the citations as it exists
+    # Get the CitationTable.Fields BLOB for the new source (must be pre-existing and named "sample citation")
+    SqlStmt = """
+      SELECT CT.Fields
+        FROM CitationTable CT
+        WHERE CitationID = ?
+        """
+    cur = conn.cursor()
+    cur.execute(SqlStmt, (citationIDToMove,))
+    oldCitFieldTxt = cur.fetchone()[0].decode()
+    print (oldCitFieldTxt)
+
+    # test for and fix old style "XML" no longer used in RM8
+    xmlStart = "<Root"
+    rootLoc=oldCitFieldTxt.find(xmlStart)
+    if rootLoc != 0:
+      oldCitFieldTxt = oldCitFieldTxt[rootLoc::]
+    print (oldCitFieldTxt)
+
+    # read into DOM and parse for needed values
+    # only Page needed from old cit  XML data
+    citRoot = ET.fromstring(oldCitFieldTxt)
+    citFields = citRoot.find("Fields")
+
+    Page = None
+    if citFields != None:
+      citFields.iterfind("Field")
+      for item in citFields:
+        if item[0].text == "Page":
+          Page = item[1].text
+          break
+      print ("Page= " + str(Page))
+
+    # retrieve an empty sample XML chunk that has the citation fields of the source template used by the newSource
     # Get the CitationTable.Fields BLOB for the new source (must be pre-existing and named "sample citation")
     SqlStmt = """
       SELECT CT.Fields
@@ -252,7 +284,7 @@ def Convert ( conn, oldSourceID, newSourceID):
         if item[0].text == "SrcCitation ":
          item[1].text = Footnote
         if item[0].text == "CD":
-         item[1].text = CD
+         item[1].text = Page
         if item[0].text == "PlaceCemetery":
          if "PlaceCemetery" in parse_results:
            item[1].text = parse_results["PlaceCemetery"]
@@ -273,7 +305,6 @@ def Convert ( conn, oldSourceID, newSourceID):
     cur.execute(SqlStmt, (ET.tostring(newRoot), citationIDToMove,) )
 
     conn.commit()
-    print ("after commit")
     #end loop for citations
 
   # delete the old src
@@ -283,7 +314,6 @@ def Convert ( conn, oldSourceID, newSourceID):
       """
   cur = conn.cursor()
   cur.execute(SqlStmt, (oldSourceID,))
-  print ("delete-", oldSourceID)
   conn.commit()
 
   return
