@@ -15,76 +15,79 @@ import sys
 ##   RM-Python-config.ini  ( Configuration ini file to set options and parameters)
 ##   unifuzz64.dll
 ##   tested with Python v3.10
-## set of sources to be lumped
-## an existing source that the old source will be made citations of
-## an existing citation named "sample citation" in the new source. Others will not interfere
+## Using RM, determine-
+##   * the set of sources to be lumped - here all starting with GSFG
+##   * an existing source that the old sources will be made citations of
+##   * an existing citation named "sample citation" in the new source. (Others will not interfere)
+##  NOTE
+##  Find a Grave citations changed over the years, see line 135
+##  This script is simply run 4 times, once for each combination of search terms.
 
-
-G_count=0
+G_count = 0
 
 # ================================================================
 def main():
-    global _G_count
+  global _G_count
 
-    # Configuration file
-    IniFile="RM-Python-config.ini"
+  # Configuration file
+  IniFile="RM-Python-config.ini"
 
-    # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM)
-    if not os.path.exists(IniFile):
-        print("ERROR: The ini configuration file, " + IniFile + " must be in the current directory." )
-        return
+  # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM)
+  if not os.path.exists(IniFile):
+      print("ERROR: The ini configuration file, " + IniFile + " must be in the current directory." )
+      return
 
-    config = configparser.ConfigParser()
-    config.read(IniFile, 'UTF-8')
+  config = configparser.ConfigParser()
+  config.read(IniFile, 'UTF-8')
 
-    # Read file paths from ini file
-    database_Path = config['File Paths']['DB_PATH']
-    RMNOCASE_Path = config['File Paths']['RMNOCASE_PATH']
+  # Read file paths from ini file
+  database_Path = config['File Paths']['DB_PATH']
+  RMNOCASE_Path = config['File Paths']['RMNOCASE_PATH']
 
-    if not os.path.exists(database_Path):
-        print('Database path not found. Fix configuration file and try again.')
-        return
+  if not os.path.exists(database_Path):
+      print('Database path not found. Fix configuration file and try again.')
+      return
 
-    # Process the database
-    with create_DBconnection(database_Path) as conn:
-      conn.enable_load_extension(True)
-      conn.load_extension(RMNOCASE_Path)
+  # Process the database
+  with create_DBconnection(database_Path) as conn:
+    conn.enable_load_extension(True)
+    conn.load_extension(RMNOCASE_Path)
 
-# List the sources to be lumped
-    SqlStmt_IndexD= """\
-       DROP INDEX idxSourceName;
- """
-    SqlStmt_IndexC= """\
-       CREATE INDEX idxSourceName ON SourceTable (Name COLLATE RMNOCASE) ;
- """
-    cur = conn.cursor()
-    cur.execute(SqlStmt_IndexD)
-    cur = conn.cursor()
-    cur.execute(SqlStmt_IndexC)
+  # List the sources to be lumped
+  SqlStmt_IndexD= """
+   DROP INDEX idxSourceName;
+   """
+  SqlStmt_IndexC= """
+   CREATE INDEX idxSourceName ON SourceTable (Name COLLATE RMNOCASE) ;
+   """
+  cur = conn.cursor()
+  cur.execute(SqlStmt_IndexD)
+  cur = conn.cursor()
+  cur.execute(SqlStmt_IndexC)
 
-    # specify which source is to get the converted citations
-    NewSourceID = 6276
+  # specify which source is to get the converted citations
+  NewSourceID = 6276
 
-# List the sources to be lumped
-    SqlStmt_FaG="""\
-SELECT SourceID
-  FROM SourceTable
-  WHERE  Name LIKE 'GSFG %'
-         AND TemplateID=0
-"""
+  # List the sources to be lumped
+  SqlStmt_FaG="""
+  SELECT SourceID
+    FROM SourceTable
+    WHERE  Name LIKE 'GSFG %'
+           AND TemplateID=0
+  """
 
-    SourcesToLump = GetListOfRows( conn, SqlStmt_FaG)
+  SourcesToLump = GetListOfRows( conn, SqlStmt_FaG)
 
-    print ("number of source to process: ", len(SourcesToLump))
+  print ("number of source to process: ", len(SourcesToLump))
 
-    #iterate through each of the old sources, converting each one separately
-    for oldSrc in SourcesToLump:
-        print ("=====================================================")
-        print (oldSrc)
-        ConvertSource (conn, oldSrc, NewSourceID)
+  #iterate through each of the old sources, converting each one separately
+  for oldSrc in SourcesToLump:
+      print ("=====================================================")
+      print (oldSrc)
+      ConvertSource (conn, oldSrc, NewSourceID)
 
-    print ("total not found",G_count)
-    return 0
+  print ("total not found",G_count)
+  return 0
 
 
 # ================================================================
@@ -106,7 +109,7 @@ def ConvertSource ( conn, oldSourceID, newSourceID):
   SqlStmt = """
   DELETE from SourceTable
       WHERE SourceID = ?
-      """
+  """
   RunSqlNoResult( conn, SqlStmt, tuple([oldSourceID, ]) )
   conn.commit()
   return
@@ -119,7 +122,7 @@ def ConvertCitation( conn, oldSourceID, newSourceID, citationIDToMove ):
   SELECT Fields
     FROM SourceTable
     WHERE SourceID = ?
-    """
+  """
 
   srcRoot = getFieldsXmlDataAsDOM ( conn, SqlStmt, oldSourceID )
   srcFields = srcRoot.find("Fields")
@@ -130,7 +133,6 @@ def ConvertCitation( conn, oldSourceID, newSourceID, citationIDToMove ):
   Footnote = FootnoteRaw.strip()
 
 
-  # PARSE FOOTNOTE  START =========================================================
   # Parse the Footnote field for needed info
   # due to small changes in footnote format for FaG, need to do minimum of 4 runs to get max # of conversions
   # 1 using Memorial ID
@@ -147,6 +149,102 @@ def ConvertCitation( conn, oldSourceID, newSourceID, citationIDToMove ):
     [', citing '             , ';'      , 'PlaceBurial']
     ]
 
+  parse_results = ParseFootnote( Footnote, searchStrings)
+  if parse_results == None: 
+    return False
+
+
+# Copy fields from old src record to the citationToMove
+  SqlStmt = """
+  UPDATE CitationTable
+    SET (CitationName, ActualText, Comments, UTCModDate)
+      = (SELECT Name, ActualText, Comments, UTCModDate FROM SourceTable WHERE SourceID = ?)
+    WHERE CitationID = ?
+  """
+  RunSqlNoResult( conn, SqlStmt, tuple([oldSourceID, citationIDToMove]) )
+
+  # Change owner & type columns for relevant web tags so they follow the citationToMove
+  SqlStmt = """
+  UPDATE URLTable
+    SET OwnerType = 4,
+        OwnerID = ? 
+    WHERE OwnerType = 3 AND OwnerID = ?
+  """
+  RunSqlNoResult( conn, SqlStmt, tuple([citationIDToMove, oldSourceID]) )
+
+  # Change owner & type for relevant media so they follow the citationToMove
+  SqlStmt = """
+  UPDATE MediaLinkTable
+    SET OwnerType = 4,
+        OwnerID = ? 
+    WHERE OwnerType = 3 AND OwnerID = ?
+  """
+  RunSqlNoResult( conn, SqlStmt, tuple([citationIDToMove, oldSourceID]) )
+
+  #  move the existing citation to the new source
+  SqlStmt = """
+  UPDATE CitationTable
+    SET SourceID = ?
+    WHERE CitationID = ?
+  """
+  RunSqlNoResult( conn, SqlStmt, tuple([newSourceID, citationIDToMove]) )
+
+  # retrieve the XML DOM that has the citation fields of the citations as it exists
+  SqlStmt = """
+  SELECT CT.Fields
+    FROM CitationTable CT
+    WHERE CitationID = ?
+  """
+  citRoot = getFieldsXmlDataAsDOM ( conn, SqlStmt, citationIDToMove)
+  citFields = citRoot.find("Fields")
+  Page = None
+  if citFields != None:
+    citFields.iterfind("Field")
+    for item in citFields:
+      if item[0].text == "Page":
+        Page = item[1].text
+        break
+
+
+  # retrieve an empty sample XML chunk that has the citation fields of the source template used by the newSource
+  # this means the citation does not retain any old data not explicitly saved.
+  # Get the CitationTable.Fields BLOB for the new source (must be pre-existing and named "sample citation")
+  SqlStmt = """
+  SELECT CT.Fields
+    FROM CitationTable CT
+    JOIN SourceTable ST ON CT.SourceId = ST.SourceID
+    WHERE CT.SourceID = ? AND CT.CitationName = "sample citation"
+  """
+  newRoot = getFieldsXmlDataAsDOM ( conn, SqlStmt, newSourceID)
+  newFields = newRoot.find("Fields")
+
+  # now fill the XML with values
+  for item in newFields:
+      if item[0].text == "SrcCitation ":
+       item[1].text = Footnote
+      if item[0].text == "CD":
+       item[1].text = Page
+      if item[0].text == "PlaceCemetery":
+       if "PlaceCemetery" in parse_results:
+         item[1].text = parse_results["PlaceCemetery"]
+      for each in searchStrings:
+          if item[0].text == each[2]:
+            item[1].text = parse_results.get(each[2], None)
+
+  # Update the citation Fields column with the new XML
+  SqlStmt = """
+  UPDATE CitationTable
+    SET Fields = ?
+    WHERE CitationID = ?
+  """
+  RunSqlNoResult( conn, SqlStmt, tuple([ET.tostring(newRoot), citationIDToMove]) )
+  conn.commit()
+  return True
+
+
+# ================================================================
+def ParseFootnote( Footnote, searchStrings ):
+  global G_count
   # Try parsing the Footnote string. If it fails, don't make any changes to the old source.
   parse_results={}
   searchStart = 0
@@ -156,13 +254,13 @@ def ConvertCitation( conn, oldSourceID, newSourceID, citationIDToMove ):
       G_count += 1
       # parsing failed, don't change this old source
       # input(str(searchTextLocS) + "  " + str(searchText) + "\n" + Footnote +  "\n\nS Enter to continue...")
-      return False
+      return None
     searchTextLocE = Footnote.find(searchText[1], searchTextLocS)
     if searchTextLocE == -1:
       G_count += 1
       # parsing failed, don't change this old source
       # input(str(searchTextLocS) +"  " + str(searchTextLocE) + "  " + str(searchText) + "\n" + Footnote + "\n\nE Enter to continue...")
-      return False
+      return None
     searchStart = searchTextLocE
     # store away the parse result
     parse_results[searchText[2]] = Footnote[searchTextLocS + len(searchText[0]) : searchTextLocE]
@@ -180,94 +278,7 @@ def ConvertCitation( conn, oldSourceID, newSourceID, citationIDToMove ):
       parse_results["PlaceCemetery"] = FirstPartPlace
       parse_results["PlaceBurial"] = Place[Place.find(",") + 2 : ]
 
-  # PARSE FOOTNOTE  END =========================================================
-
-
-# Copy fields from old src record to the citationToMove
-  SqlStmt = """
-  UPDATE CitationTable
-    SET (CitationName, ActualText, Comments, UTCModDate)
-      = (SELECT Name, ActualText, Comments, UTCModDate FROM SourceTable WHERE SourceID = ?)
-    WHERE CitationID = ?
-    """
-  RunSqlNoResult( conn, SqlStmt, tuple([oldSourceID, citationIDToMove]) )
-
-  # Change owner & type columns for relevant web tags so they follow the citationToMove
-  SqlStmt = """
-  UPDATE URLTable
-    SET OwnerType = 4,
-        OwnerID = ? 
-    WHERE OwnerType = 3 AND OwnerID = ?
-    """
-  RunSqlNoResult( conn, SqlStmt, tuple([citationIDToMove, oldSourceID]) )
-
-  # Change owner & type for relevant media so they follow the citationToMove
-  SqlStmt = """
-  UPDATE MediaLinkTable
-    SET OwnerType = 4,
-        OwnerID = ? 
-    WHERE OwnerType = 3 AND OwnerID = ?
-    """
-  RunSqlNoResult( conn, SqlStmt, tuple([citationIDToMove, oldSourceID]) )
-
-  #  move the existing citation to the new source
-  SqlStmt = """
-  UPDATE CitationTable
-    SET SourceID = ?
-    WHERE CitationID = ?
-    """
-  RunSqlNoResult( conn, SqlStmt, tuple([newSourceID, citationIDToMove]) )
-
-  # retrieve the XML DOM that has the citation fields of the citations as it exists
-  # Get the CitationTable.Fields BLOB for the new source (must be pre-existing and named "sample citation")
-  SqlStmt = """
-    SELECT CT.Fields
-      FROM CitationTable CT
-      WHERE CitationID = ?
-      """
-  citRoot = getFieldsXmlDataAsDOM ( conn, SqlStmt, citationIDToMove)
-  citFields = citRoot.find("Fields")
-  Page = None
-  if citFields != None:
-    citFields.iterfind("Field")
-    for item in citFields:
-      if item[0].text == "Page":
-        Page = item[1].text
-        break
-
-
-  # retrieve an empty sample XML chunk that has the citation fields of the source template used by the newSource
-  # Get the CitationTable.Fields BLOB for the new source (must be pre-existing and named "sample citation")
-  SqlStmt = """
-    SELECT CT.Fields
-      FROM CitationTable CT
-      JOIN SourceTable ST ON CT.SourceId = ST.SourceID
-      WHERE CT.SourceID = ? AND CT.CitationName = "sample citation"
-      """
-  newRoot = getFieldsXmlDataAsDOM ( conn, SqlStmt, newSourceID)
-  newFields = newRoot.find("Fields")
-
-  for item in newFields:
-      if item[0].text == "SrcCitation ":
-       item[1].text = Footnote
-      if item[0].text == "CD":
-       item[1].text = Page
-      if item[0].text == "PlaceCemetery":
-       if "PlaceCemetery" in parse_results:
-         item[1].text = parse_results["PlaceCemetery"]
-      for each in searchStrings:
-          if item[0].text == each[2]:
-            item[1].text = parse_results.get(each[2], None)
-
-  # Update the citation Fields column with the new XML
-  SqlStmt = """
-    UPDATE CitationTable
-      SET Fields = ?
-      WHERE CitationID = ?
-      """
-  RunSqlNoResult( conn, SqlStmt, tuple([ET.tostring(newRoot), citationIDToMove]) )
-  conn.commit()
-  return
+  return parse_results
 
 
 # ================================================================
@@ -299,23 +310,23 @@ def getFieldsXmlDataAsDOM ( conn, SqlStmt, rowID ):
 
 # ================================================================
 def getCitationsToMove ( conn, oldSourceID):
-    # get citations for oldSourceID
-    SqlStmt = """
-    SELECT CitationID
-      FROM CitationTable
-      WHERE SourceID = ?
-      """
-    cur = conn.cursor()
-    cur.execute(SqlStmt, (oldSourceID,))
-    citationsIDs = cur.fetchall()
+  # get citations for oldSourceID
+  SqlStmt = """
+  SELECT CitationID
+    FROM CitationTable
+    WHERE SourceID = ?
+  """
+  cur = conn.cursor()
+  cur.execute(SqlStmt, (oldSourceID,))
+  citationsIDs = cur.fetchall()
 
-    citationIDsToMove= []
+  citationIDsToMove= []
 
-    # change the data structure from list of tuples to list of ints
-    for each in citationsIDs:
-        citationIDsToMove.append(each[0])
+  # change the data structure from list of tuples to list of ints
+  for each in citationsIDs:
+      citationIDsToMove.append(each[0])
 
-    return citationIDsToMove
+  return citationIDsToMove
 
 
 # ================================================================
