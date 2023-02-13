@@ -22,6 +22,7 @@ import sys
 ##  NOTE
 ##  Find a Grave citations changed over the years, see line 135
 ##  This script is simply run 4 times, once for each combination of search terms.
+##  be sure to do the 2 runs with the citing" search commented out LAST
 
 G_count = 0
 
@@ -144,8 +145,8 @@ def ConvertCitation( conn, oldSourceID, newSourceID, citationIDToMove ):
     [': accessed '           , '),'     , 'DateCitation'],
     ['memorial page for '    , ' ('     , 'Name'], 
     [' ('                    , '–'      , 'DateBirth'],   #this is a long dash char
-#    ['Memorial ID '          , ','      , 'EntryNumber'], 
-    ['Memorial no. '         , ','      , 'EntryNumber'], 
+    ['Memorial ID '          , ','      , 'EntryNumber'], 
+#    ['Memorial no. '         , ','      , 'EntryNumber'], 
     [', citing '             , ';'      , 'PlaceBurial']
     ]
 
@@ -220,7 +221,7 @@ def ConvertCitation( conn, oldSourceID, newSourceID, citationIDToMove ):
 
   # now fill the XML with values
   for item in newFields:
-      if item[0].text == "SrcCitation ":
+      if item[0].text == "SrcCitation":
        item[1].text = Footnote
       if item[0].text == "CD":
        item[1].text = Page
