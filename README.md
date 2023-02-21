@@ -25,6 +25,6 @@ RM -Switch source template
 
 
 These scripts are saved in GitHub code as the simple .py text files. 
-Single file exe versions are also avalable in the Releases
+Single file exe versions are also available in the Releases
 part of the repo as zip files, accompanied by their sample ini file 
 and ReadMe file.
