@@ -88,6 +88,7 @@ def main():
       ConvertSource (conn, oldSrc, NewSourceID)
 
   print ("total not found",G_count)
+  input( "\n\nPress Enter to continue...")
   return 0
 
 
@@ -136,10 +137,11 @@ def ConvertCitation( conn, oldSourceID, newSourceID, citationIDToMove ):
 
   # Parse the Footnote field for needed info
   # due to small changes in footnote format for FaG, need to do minimum of 4 runs to get max # of conversions
-  # 1 using Memorial ID
+  # 1 using Memorial ID  (step 1 and 2 order not significant)
   # 2 using Memorial no.
   # 3 using Memorial ID and commenting out the citing search (when no burial place listed)
   # 4 using Memorial no. and commenting out the citing search (when no burial place listed)
+  #                            (step 3 and 4 order not significant)
 
   searchStrings = [
     [': accessed '           , '),'     , 'DateCitation'],
