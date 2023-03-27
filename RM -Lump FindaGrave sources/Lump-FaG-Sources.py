@@ -54,7 +54,7 @@ def main():
     conn.enable_load_extension(True)
     conn.load_extension(RMNOCASE_Path)
 
-  # List the sources to be lumped
+  # Deal with index and the fact that the collation sequence is different here than in RM
   SqlStmt_IndexD= """
    DROP INDEX idxSourceName;
    """
