@@ -135,8 +135,10 @@ def ConvertSource ( conn, oldSourceID, newSourceID):
 
   global G_count
 
-  # For the given old source, iterate through its citations 
-  # and convert each
+  # For the given old source, count its citations 
+  # Code as written only handles sources that have one citation and
+  # no info in that citation is preserved.
+  # Must make code changes to deal with #cits !=1 or preserve info in the citation.
 
   # print source name for confirmation
   SqlStmt = """
