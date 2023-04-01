@@ -64,43 +64,29 @@ def main():
   cur = conn.cursor()
   cur.execute(SqlStmt_IndexC)
 
-#   SourceID	Name
-#   6317	CenFedUSdb 1940 California
-#   6316	CenFedUSdb 1940 Colorado
-#   6333	CenFedUSdb 1940 District of Columbia
-#   6304	CenFedUSdb 1940 Hawaii
-#   6322	CenFedUSdb 1940 Illinois
-#   6323	CenFedUSdb 1940 Indiana
-#   6325	CenFedUSdb 1940 Louisiana
-#   6321	CenFedUSdb 1940 Michigan
-#   6318	CenFedUSdb 1940 Minnesota
-#   6324	CenFedUSdb 1940 New Jersey
-#   6251	CenFedUSdb 1940 New York
-#   6332	CenFedUSdb 1940 Ohio
-#   6320	CenFedUSdb 1940 Pennsylvania
-#   6315	CenFedUSdb 1940 Texas
-#   6319	CenFedUSdb 1940 Virginia
-
-
 
 # The list of states to lump in this run
 #   new SourceID, state abbrev
   stateList = [
-    ( 6317, "CA"),
-    ( 6316, "CO"),
-    ( 6333, "DC"),
-    ( 6304, "HI"),
-    ( 6322, "IL"),
-    ( 6323, "IN"),
-    ( 6325, "LA"),
-    ( 6321, "MI"),
-    ( 6318, "MN"),
-    ( 6324, "NJ"),
-    ( 6251, "NY"),
-    ( 6332, "OH"),
-    ( 6320, "PA"),
-    ( 6315, "TX"),
-    ( 6319, "VA") ]
+    ( 6362, "CA"),
+    ( 6361, "CO"),
+    ( 6360, "HI"),
+    ( 6359, "IL"),
+    ( 6358, "IN"),
+    ( 6357, "LA"),
+    ( 6355, "MD"),
+    ( 6337, "MI"),
+    ( 6354, "MN"),
+    ( 6356, "NC"),
+    ( 6353, "NJ"),
+    ( 6352, "NY"),
+    ( 6351, "OH"),
+    ( 6350, "PA"),
+    ( 6349, "RI"),
+    ( 6348, "TX"),
+    ( 6347, "UT"),
+    ( 6346, "VA"),
+    ( 6345, "WI")  ]
 
   for state in stateList:
 
@@ -109,9 +95,9 @@ def main():
     StateAbbrev=  state[1]
    
     # List the sources which will be converted to citations of the 'new' source
-    Part1 = " SELECT SourceID FROM SourceTable WHERE  Name LIKE 'C1940 "
+    Part1 = " SELECT SourceID FROM SourceTable WHERE  Name LIKE 'C-1930 "
     Part2 = " %' AND TemplateID=10026"
-    # NOTE this sql contains the old SourceTemplateID and depends on format of source names
+    # NOTE this sql contains the old SourceTemplateID and depends on format of source names to be processed
    
     SqlStmt_OldCensus = Part1 + StateAbbrev + Part2
    
@@ -151,7 +137,6 @@ def ConvertSource ( conn, oldSourceID, newSourceID):
   print ("source to get cited......" + cur.fetchone()[0]  )
 
   citationIDsToMove= getCitationsToMove(conn,oldSourceID)
-  # print ( "Try to convert " +  str(len(citationIDsToMove)) + " citations")
   if len(citationIDsToMove) != 1:  return
 
   for citationIDToMove in citationIDsToMove:
@@ -212,7 +197,6 @@ def ConvertCitation( conn, oldSourceID, newSourceID, citationIDToMove ):
   RunSqlNoResult( conn, SqlStmt, tuple([newSourceID, citationIDToMove]) )
 
 
-
   # Get the SourceTable.Fields BLOB from the oldSource to extract its data
   SqlStmt = """
   SELECT Fields
@@ -223,7 +207,12 @@ def ConvertCitation( conn, oldSourceID, newSourceID, citationIDToMove ):
   oldSrcFields = {}
   srcRoot = getFieldsXmlDataAsDOM ( conn, SqlStmt, oldSourceID )
   srcFields = srcRoot.find("Fields")
-  FootnoteRaw = None
+
+
+#  print( ET.indent(srcRoot, space=" ", level=0) )
+#  print(ET.tostring(srcRoot))
+#  return
+
   for item in srcFields:
     if   item[0].text == "Household": oldSrcFields["Household"] = item[1].text
     elif item[0].text == "BirthDateHead": oldSrcFields["BirthDateHead"] = item[1].text
@@ -281,6 +270,7 @@ def ConvertCitation( conn, oldSourceID, newSourceID, citationIDToMove ):
     elif item[0].text == "FS_SRC_ID":           item[1].text = oldSrcFields["FS_ark"]
     elif item[0].text == "DateCitation":        item[1].text = oldSrcFields["CitationDateUpdated"]
   #  elif item[0].text == "CD":                  item[1].text = oldSrcFields["CD"]
+
 
 #  NOTE field name DwellingSN should be changed to HouseholdSN. 
 #  NOTE  for now
