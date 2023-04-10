@@ -53,40 +53,26 @@ def main():
     conn.load_extension(RMNOCASE_Path)
 
   # Deal with index and the fact that the collation sequence is different here than in RM
-  SqlStmt_IndexD= """
-   DROP INDEX idxSourceName;
+  SqlStmt_ReIndex= """
+   REINDEX RMNOCASE;
    """
-  SqlStmt_IndexC= """
-   CREATE INDEX idxSourceName ON SourceTable (Name COLLATE RMNOCASE) ;
-   """
+
   cur = conn.cursor()
-  cur.execute(SqlStmt_IndexD)
-  cur = conn.cursor()
-  cur.execute(SqlStmt_IndexC)
+  cur.execute(SqlStmt_ReIndex)
 
 
 # The list of states to lump in this run
 #   new SourceID, state abbrev
   stateList = [
-    ( 6362, "CA"),
-    ( 6361, "CO"),
-    ( 6360, "HI"),
-    ( 6359, "IL"),
-    ( 6358, "IN"),
-    ( 6357, "LA"),
-    ( 6355, "MD"),
-    ( 6337, "MI"),
-    ( 6354, "MN"),
-    ( 6356, "NC"),
-    ( 6353, "NJ"),
-    ( 6352, "NY"),
-    ( 6351, "OH"),
-    ( 6350, "PA"),
-    ( 6349, "RI"),
-    ( 6348, "TX"),
-    ( 6347, "UT"),
-    ( 6346, "VA"),
-    ( 6345, "WI")  ]
+    ( 6253, "HI"),
+    ( 6388, "IL"),
+    ( 6400, "IN"),
+    ( 6401, "LA"),
+    ( 6402, "MN"),
+    ( 6403, "NY"),
+    ( 6404, "OH"),
+    ( 6405, "PA"),
+    ( 6406, "WI") ]
 
   for state in stateList:
 
@@ -95,7 +81,7 @@ def main():
     StateAbbrev=  state[1]
    
     # List the sources which will be converted to citations of the 'new' source
-    Part1 = " SELECT SourceID FROM SourceTable WHERE  Name LIKE 'C-1930 "
+    Part1 = " SELECT SourceID FROM SourceTable WHERE  Name LIKE 'C-1910-"
     Part2 = " %' AND TemplateID=10026"
     # NOTE this sql contains the old SourceTemplateID and depends on format of source names to be processed
    
