@@ -13,7 +13,7 @@ import hashlib
 ## However, until trust is established, make a backup before use.
 
 ##  Requirements: (see ReadMe.txt for details)
-##   RootsMagic v7 or v8 database file
+##   RootsMagic v7, v8 or v9 database file
 ##   RM-Python-config.ini  ( Configuration ini file to set options and parameters)
 ##   unifuzz64.dll
 ##   Python v3.9 or greater
@@ -448,13 +448,13 @@ def GetDuplicateFileList(dbConnection):
 # ===================================================DIV60==
 def Section (pos, name, reportF):
 
-  Divider = "===============================================================DIV70=="
+  Divider = "="*60 + "===DIV70==\n"
   if   pos == "START":  text = "\n" + Divider + "\n=== Start of \"" + name + "\" listing\n\n"
   elif pos == "END":  text = "\n=== End of \"" + name + "\" listing\n"
   elif pos == "FINAL":  text = "\n" + Divider + "\n=== End of Report\n"
   else:
     text = "not defined"
-    print("INTERNAL ERROR: pos not correctly defined")
+    print("INTERNAL ERROR: Section position not correctly defined")
     input("Press the <Enter> key to exit...")
     sys.exit()
 
@@ -479,7 +479,7 @@ def create_DBconnection(db_file_path, RMNOCASE_Path):
 
 # ===================================================DIV60==
 def ExpandDirPath(in_path):
-  # deal with relative paths in RootsMagic 8 databases
+  # deal with relative paths in RootsMagic 8 + 9 databases
   # RM7 path are always absolute and will never be changed here
 
   global G_MediaDirectoryPath
@@ -509,17 +509,31 @@ def ExpandDirPath(in_path):
 # ===================================================DIV60==
 def GetMediaDirectory():
 #  File location set by RootsMagic installer
-  RM_Config_FilePath = r"~\AppData\Roaming\RootsMagic\Version 8\RootsMagicUser.xml"
+  RM_Config_FilePath_9 = r"~\AppData\Roaming\RootsMagic\Version 9\RootsMagicUser.xml"
+  RM_Config_FilePath_8 = r"~\AppData\Roaming\RootsMagic\Version 8\RootsMagicUser.xml"
 
-#  if file not found, RM8 not installed, Media folder path will never be used
-  myPath=Path(os.path.expanduser(RM_Config_FilePath))
-  if not myPath.exists():
-    path = "RM8 not installed"
-  else:
-    root = ET.parse(myPath)
-    MediaFolderPathEle = root.find( "./Folders/Media")
-    path = MediaFolderPathEle.text
-  return path
+  mediaFolderPath = "RM8 or later not installed"
+
+#  If xml settings file for RM 8 or 9 not found, return the medaiPath containing the
+#  RM8 or later not installed message. It will never be used  becasue RM 7 does not
+#  need to know the media folder path.
+
+#  Potential problem if RM 8 and 9 both installed and they have different
+#  media folders specified. The highest ver number path is found here.
+
+#  Could base this off of the database version number, but that's not readily available.
+
+  xmlSettingsPath=Path(os.path.expanduser(RM_Config_FilePath_9))
+  if not xmlSettingsPath.exists():
+    xmlSettingsPath=Path(os.path.expanduser(RM_Config_FilePath_8))
+    if not xmlSettingsPath.exists():
+      return mediaFolderPath
+
+  root = ET.parse(xmlSettingsPath)
+  MediaFolderPathEle = root.find( "./Folders/Media")
+  mediaFolderPath = MediaFolderPathEle.text
+
+  return mediaFolderPath
 
 
 # ===================================================DIV60==
@@ -556,3 +570,5 @@ def FolderContentsMinusIgnored(reportF, dirPath, config):
 # Call the "main" function
 if __name__ == '__main__':
     main()
+
+# ===================================================DIV60==
