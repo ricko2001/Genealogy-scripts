@@ -11,7 +11,7 @@ import sys
 ## WARNING make a known-good backup of the rmtree file before use.
 
 ##  Requirements: (see ReadMe.txt for details)
-##   RootsMagic v8 database file
+##   RootsMagic v8 or 9 database file
 ##   RM-Python-config.ini  ( Configuration ini file to set options and parameters)
 ##   unifuzz64.dll
 ##   tested with Python v3.10
@@ -64,15 +64,17 @@ def main():
 # The list of states to lump in this run
 #   new SourceID, state abbrev
   stateList = [
-    ( 6253, "HI"),
-    ( 6388, "IL"),
-    ( 6400, "IN"),
-    ( 6401, "LA"),
-    ( 6402, "MN"),
-    ( 6403, "NY"),
-    ( 6404, "OH"),
-    ( 6405, "PA"),
-    ( 6406, "WI") ]
+    (6416, "HI"),
+    (6417, "IL"),
+    (6418, "IN"),
+    (6419, "LA"),
+    (6420, "MN"),
+    (6421, "NY"),
+    (6422, "OH"),
+    (6423, "PA"),
+    (6424, "VA"),
+    (6425, "WI") ]
+
 
   for state in stateList:
 
@@ -81,7 +83,7 @@ def main():
     StateAbbrev=  state[1]
    
     # List the sources which will be converted to citations of the 'new' source
-    Part1 = " SELECT SourceID FROM SourceTable WHERE  Name LIKE 'C-1910-"
+    Part1 = " SELECT SourceID FROM SourceTable WHERE  Name LIKE 'C-1900-"
     Part2 = " %' AND TemplateID=10026"
     # NOTE this sql contains the old SourceTemplateID and depends on format of source names to be processed
    
@@ -89,7 +91,7 @@ def main():
    
     SourcesToLump = GetListOfRows( conn, SqlStmt_OldCensus)
    
-    print ("\n\n\nnumber of source to process: ", len(SourcesToLump))
+    print ("\n\n\n number of source to process: ", len(SourcesToLump))
    
     #iterate through each of the old sources, converting each one separately
     for oldSrc in SourcesToLump:
