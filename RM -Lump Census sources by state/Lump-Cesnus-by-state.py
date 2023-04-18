@@ -64,16 +64,10 @@ def main():
 # The list of states to lump in this run
 #   new SourceID, state abbrev
   stateList = [
-    (6416, "HI"),
-    (6417, "IL"),
-    (6418, "IN"),
-    (6419, "LA"),
-    (6420, "MN"),
-    (6421, "NY"),
-    (6422, "OH"),
-    (6423, "PA"),
-    (6424, "VA"),
-    (6425, "WI") ]
+     (6426, "IN"),
+     (6427, "LA"),
+     (6428, "NY"),
+     (6429, "WI") ]
 
 
   for state in stateList:
@@ -83,7 +77,7 @@ def main():
     StateAbbrev=  state[1]
    
     # List the sources which will be converted to citations of the 'new' source
-    Part1 = " SELECT SourceID FROM SourceTable WHERE  Name LIKE 'C-1900-"
+    Part1 = " SELECT SourceID FROM SourceTable WHERE  Name LIKE 'C-1880-"
     Part2 = " %' AND TemplateID=10026"
     # NOTE this sql contains the old SourceTemplateID and depends on format of source names to be processed
    
