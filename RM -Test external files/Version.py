@@ -31,7 +31,7 @@ StringFileInfo(
     u'040904B0',
     [StringStruct(u'CompanyName', u'RJOtter SW'),
     StringStruct(u'FileDescription', u'Utility to work with RootsMagic database files'),
-    StringStruct(u'FileVersion', u'1.2.1.0'),
+    StringStruct(u'FileVersion', u'1.3.0.0'),
     StringStruct(u'InternalName', u''),
     StringStruct(u'LegalCopyright', u'Open Source'),
     StringStruct(u'OriginalFilename', u'TestExternalFiles.exe'),
