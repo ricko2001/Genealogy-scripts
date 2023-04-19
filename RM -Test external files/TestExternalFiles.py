@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 import hashlib
 
 
-## This script can only read a RootsMagic database files and cannot change it.
+## This script can only read a RootsMagic database file and cannot change it.
 ## However, until trust is established, make a backup before use.
 
 ##  Requirements: (see ReadMe.txt for details)
@@ -33,9 +33,9 @@ def main():
   # Configuration
   IniFileName = "RM-Python-config.ini"
 
-  # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM)
-  # determine if application is a script file or frozen exe and get its directory
-  # https://pyinstaller.org/en/stable/runtime-information.html
+  # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM).
+  # Determine if application is a script file or frozen exe and get its directory
+  # see   https://pyinstaller.org/en/stable/runtime-information.html
   if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
     application_path = os.path.dirname(sys.executable)
   else:
@@ -56,7 +56,7 @@ def main():
    return
 
   # Read file paths from ini file
-  #  https://docs.python.org/3/library/configparser.html
+  # see   https://docs.python.org/3/library/configparser.html
 
   try:
     report_Path   = config['FILE_PATHS']['REPORT_FILE_PATH']
