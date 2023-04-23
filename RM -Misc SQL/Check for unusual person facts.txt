@@ -1,5 +1,5 @@
 ===========================================DIV50==
-count primary name !=1
+count PERSONS WITH primary name !=1
 
 SELECT PersonTable.PersonID
 FROM PersonTable
@@ -33,8 +33,8 @@ WHERE NameTable.IsPrivate = 1
 Note- cannot fix via RM UI if also Primary
 
 ===========================================DIV50==
-
-Persons using Family facts (except Marriage & Divorce)
+Persons using Family facts
+(except Marriage, Marriage License, Partnership, & Divorce)
 
 
 SELECT PersonTable.PersonID, NameTable.Surname, NameTable.Given, FactTypeTable.Name
@@ -44,14 +44,17 @@ INNER JOIN EventTable ON EventTable.OwnerID = PersonTable.PersonID
 INNER JOIN FactTypeTable ON FactTypeTable.FactTypeID = EventTable.EventType
 WHERE NameTable.IsPrimary = 1
 AND FactTypeTable.OwnerType = 1
-EXCEPT 
+EXCEPT
 SELECT PersonTable.PersonID, NameTable.Surname, NameTable.Given, FactTypeTable.Name
 FROM PersonTable
 INNER JOIN NameTable ON NameTable.OwnerID = PersonTable.PersonID
 INNER JOIN EventTable ON EventTable.OwnerID = PersonTable.PersonID
 INNER JOIN FactTypeTable ON FactTypeTable.FactTypeID = EventTable.EventType
 WHERE NameTable.IsPrimary = 1
-AND ( FactTypeTable.Name = "Marriage" OR FactTypeTable.Name = "Divorce")
+AND ( FactTypeTable.Name = "Marriage"
+         OR FactTypeTable.Name = "Divorce"
+         OR FactTypeTable.Name = "Partnership"
+         OR FactTypeTable.Name = "Marriage License" )
 
 ORDER BY FactTypeTable.Name
 

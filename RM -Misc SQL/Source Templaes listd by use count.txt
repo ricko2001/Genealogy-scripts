@@ -1,54 +1,11 @@
+===========================================DIV50==
 List source templates by the number of uses
 
-
-SELECT stt.Name, st.TemplateID, COUNT(st.TemplateID)
+SELECT COUNT(*), stt.Name, st.TemplateID
 FROM SourceTemplateTable stt
 JOIN SourceTable st ON  stt.TemplateID = st.TemplateID
 GROUP BY stt.TemplateID
-ORDER BY COUNT(st.TemplateID) desc
+ORDER BY COUNT(*) desc
 
+===========================================DIV50==
 
-
-Name	TemplateID	COUNT(st.TemplateID)
-_Title and Date	10023	1120
-_Census: US Federal Population Schedules -1850-1940 -S	10026	259
-_Passenger Lists, Ancestry	10043	139
-_TMG_Interview-family	10001	122
-_Obituary: Newspapers.com -S	10037	110
-_Ancestry Database-Single -L	10036	107
-_Ancestry SrcInfo, SrcCitation, Person, Access Date -S	10034	93
-_Obituary - OnLine -S	10038	49
-_Ancestry Database-Double (marriage) -L	10041	40
-_TMG_Photograph (Private Possession) (Annotated with Provenance)	10025	37
-_Census: US State -L	10030	22
-_Marriage Announcement: Newspapers.com -S	10039	17
-_TMG_Book (Authored)	10014	13
-_SSDI: Ancestry.com	10008	11
-_TMG_Letter (Annotated Citation)	10009	10
-_SSACI-Ancestry	10033	9
-_Obituary: GenealogyBank.com -S	10040	7
-_TMG_Death Registration (State Level)	10011	6
-_TMG_Birth Registration (Local Level)	10006	6
-_TMG_Personal Knowledge	10000	6
-_TMG_E-Mail Message	10022	4
-_TMG_Family Group Sheet (with Annotation)	10007	4
-_TMG_Research Report	10005	3
-_Social Security Data -L	10044	2
-_TMG_Periodical (Issued in Multiple Series)	10024	2
-_TMG_Interview	10015	2
-_Obituary/Newspaper item (Copy)	10035	1
-_TMG_Town Record	10032	1
-_TMG_Article (Serialized; Annotated Citation)	10031	1
-_TMG_Electronic Web Site	10028	1
-_TMG_Cemetery Marker	10027	1
-_TMG_Guess-Person	10021	1
-_TMG_Guess-Place	10020	1
-_TMG_Guess-Calc date	10019	1
-_TMG_Research Report-short	10017	1
-_TMG_Book (Multi-Volume)	10016	1
-_TMG_Book (Edited)	10013	1
-_Social Security Account Application	10012	1
-_TMG_Birth Registration (State Level)	10004	1
-Website "as book"	197	1
-
-=====================================================
