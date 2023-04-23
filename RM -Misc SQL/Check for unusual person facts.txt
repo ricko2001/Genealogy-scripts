@@ -1,0 +1,58 @@
+===========================================DIV50==
+count primary name !=1
+
+SELECT PersonTable.PersonID
+FROM PersonTable
+INNER JOIN NameTable ON NameTable.OwnerID = PersonTable.PersonID
+WHERE NameTable.IsPrimary = 1
+GROUP BY NameTable.OwnerID
+HAVING COUNT(*) != 1
+
+===========================================DIV50==
+Evidence-Summary or ChildParent count >1
+
+SELECT PersonTable.PersonID, NameTable.Surname, NameTable.Given, FactTypeTable.Name, COUNT(*)
+FROM PersonTable
+INNER JOIN NameTable ON NameTable.OwnerID = PersonTable.PersonID
+INNER JOIN EventTable ON EventTable.OwnerID = PersonTable.PersonID
+INNER JOIN FactTypeTable ON FactTypeTable.FactTypeID = EventTable.EventType
+WHERE NameTable.IsPrimary = 1
+AND (FactTypeTable.Name = 'Evidence-Summary' OR FactTypeTable.Name = 'ChildParent')
+GROUP BY PersonTable.PersonID, FactTypeTable.FactTypeID
+HAVING COUNT(*) >1
+
+===========================================DIV50==
+Person has a Private Name
+
+SELECT PersonTable.PersonID, NameTable.Given, IsPrimary,
+   case when IsPrimary = 1 then "Primary"  else "" end as IsPrimary
+FROM PersonTable
+INNER JOIN NameTable ON NameTable.OwnerID = PersonTable.PersonID
+WHERE NameTable.IsPrivate = 1
+
+Note- cannot fix via RM UI if also Primary
+
+===========================================DIV50==
+
+Persons using Family facts (except Marriage & Divorce)
+
+
+SELECT PersonTable.PersonID, NameTable.Surname, NameTable.Given, FactTypeTable.Name
+FROM PersonTable
+INNER JOIN NameTable ON NameTable.OwnerID = PersonTable.PersonID
+INNER JOIN EventTable ON EventTable.OwnerID = PersonTable.PersonID
+INNER JOIN FactTypeTable ON FactTypeTable.FactTypeID = EventTable.EventType
+WHERE NameTable.IsPrimary = 1
+AND FactTypeTable.OwnerType = 1
+EXCEPT 
+SELECT PersonTable.PersonID, NameTable.Surname, NameTable.Given, FactTypeTable.Name
+FROM PersonTable
+INNER JOIN NameTable ON NameTable.OwnerID = PersonTable.PersonID
+INNER JOIN EventTable ON EventTable.OwnerID = PersonTable.PersonID
+INNER JOIN FactTypeTable ON FactTypeTable.FactTypeID = EventTable.EventType
+WHERE NameTable.IsPrimary = 1
+AND ( FactTypeTable.Name = "Marriage" OR FactTypeTable.Name = "Divorce")
+
+ORDER BY FactTypeTable.Name
+
+===========================================DIV50==

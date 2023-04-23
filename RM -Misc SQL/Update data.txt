@@ -1,0 +1,5 @@
+
+Use Replace function
+
+Update MultimediaTable
+ set MediaFile = replace(MediaFile, 'K800_Gräber Waldzell', 'K800_Gräber_Waldzell' )
