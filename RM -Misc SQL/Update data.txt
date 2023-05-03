@@ -1,5 +1,67 @@
-
+===========================================DIV50==
 Use Replace function
 
 Update MultimediaTable
  set MediaFile = replace(MediaFile, 'K800_Gräber Waldzell', 'K800_Gräber_Waldzell' )
+
+===========================================DIV50==
+trim leading & trailing spaces from names
+These use special collation . Rebuild index in RM.
+given
+surname
+prefix
+suffix
+nickname
+
+
+
+reindex RMNOCASE
+
+
+select NameID, given
+from nameTable
+where given != trim(given)
+
+select NameID, surname
+from nameTable
+where surname != trim(surname)
+
+select NameID, prefix
+from nameTable
+where prefix != trim(prefix)
+
+select NameID, suffix
+from nameTable
+where suffix != trim(suffix)
+
+select NameID, nickname
+from nameTable
+where nickname != trim(nickname)
+
+
+
+update nameTable
+set given = trim(given)
+where given != trim(given)
+
+update nameTable
+set surname = trim(surname)
+where surname != trim(surname)
+
+
+
+
+
+===========================================DIV50==
+
+===========================================DIV50==
+
+===========================================DIV50==
+
+===========================================DIV50==
+===========================================DIV50==
+===========================================DIV50==
+===========================================DIV50==
+===========================================DIV50==
+===========================================DIV50==
+
