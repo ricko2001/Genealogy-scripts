@@ -1,0 +1,12 @@
+
+
+
+Has OwnerEventType
+OwnerID can be either 0 or 1
+0 person event
+1 family event
+
+This is redundant with the EventType which also says what kind of event it is.
+
+PlaceID
+if placeiD is a detail, then use PlaceTable MasterID to find its top level place

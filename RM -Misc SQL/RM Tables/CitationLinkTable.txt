@@ -1,0 +1,76 @@
+CREATE TABLE CitationLinkTable (LinkID INTEGER PRIMARY KEY, CitationID INTEGER, OwnerType INTEGER, OwnerID INTEGER, SortOrder INTEGER, Quality TEXT, IsPrivate INTEGER, Flags INTEGER, UTCModDate FLOAT );
+
+CREATE INDEX idxCitationLinkOwnerID ON CitationLinkTable (OwnerID);
+
+
+CitationLinkTable 
+LinkID         INTEGER PRIMARY KEY
+CitationID     INTEGER
+OwnerType      INTEGER
+OwnerID        INTEGER
+SortOrder      INTEGER
+Quality        TEXT
+IsPrivate      INTEGER
+Flags          INTEGER
+UTCModDate     FLOAT
+
+LinkID			primary key
+CitationID		foreign key
+
+
+OwnerType is one of 
+0	link to a person			PersonTable.PersonID
+1	link to a family			FamilyTable.FamilyID
+2	link to a fact/event		EventTable.EventID
+6	link to a task				TaskTable.TaskID
+7	link to a name				NameTable.NameID
+19	link to an association		FANTable.FanID
+
+OwnerID		foreign key to one of several tables, depending on value of OwnerType
+
+
+Quality is one of
+~~~
+P~~
+S~~
+PDO
+SDX
+P~X
+S~O
+PDX
+PN~
+S~X
+~N~
+P~O
+SNX
+SDO
+
+In RM UI
+Source
+	Original	O
+	Derivative	X
+	Don't know	~
+
+Information
+	Primary		P
+	Secondary	S
+	Don't know	~
+
+Evidence
+	Direct		D
+	Indirect	I
+	Negative	N
+	Don't know	~
+
+Quality has three positions
+1	Information		P,S,~
+2	Evidence		D,I,N,~
+3	Source			O,X,~
+
+
+SortOrder is either 0 or null
+
+IsPrivate is all 0
+
+Flags is all 0
+

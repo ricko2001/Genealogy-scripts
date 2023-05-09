@@ -44,11 +44,13 @@ inner join CitationTable as ct      on ct.CitationID = clt.CitationID
 where et.OwnerType = 0
 and   clt.OwnerType = 2
 and   nt.IsPrimary = 1
+
 order by pt.PersonID, EventID
 
 
 --===========================================DIV50==
 --Finds events for which the same citation is linked more than once
+-- ignores citations on other obeject
 
 select pt.PersonID, nt.Given, nt.surname, et.EventID, ftt.Name, ct.CitationID, count(ct.CitationID), ct.CitationName
 from EventTable as et
@@ -62,13 +64,87 @@ where et.OwnerType = 0
 and   clt.OwnerType = 2
 and   nt.IsPrimary = 1
 --and pt.PersonID=17
-group by et.EventID, ct.CitationID
+group by clt.OwnerID, clt.CitationID, clt.OwnerType
 
 HAVING   count(ct.CitationID) >1
 -- order by count(ct.CitationID) DESC
 order by ftt.Name DESC
 
+--===========================================DIV50==
+--delete duplicate citations on any object
+--be careful, the link deleted may have other data set.
+--OwnerType, SortOrder, Quality, IsPrivate, Flags, UTCModDate
+--group by determines which are considerd duplicate
+
+DELETE FROM CitationLinkTable
+WHERE LinkID NOT IN
+(
+    SELECT MIN(LinkID)
+    FROM CitationLinkTable
+    group by OwnerID, CitationID, OwnerType
+)
+
+--===========================================DIV50==
+-- just count the duplicates to be deleted
+
+select count (*) FROM CitationLinkTable
+WHERE LinkID NOT IN
+(
+    SELECT MIN(LinkID)
+    FROM CitationLinkTable
+    group by OwnerID, CitationID, OwnerType
+)
+
+--===========================================DIV50==
+-- examine them first
+
+select * FROM CitationLinkTable
+WHERE LinkID NOT IN
+(
+    SELECT MIN(LinkID)
+    FROM CitationLinkTable
+    group by OwnerID, CitationID, OwnerType
+)
+
+--===========================================DIV50==
+-- shows association facts that have a source
+
+select pt.PersonID, nt.Given, nt.surname, ftt.Role1, ct.CitationID, ct.CitationName
+from FANTable as ft
+inner join PersonTable as pt        on pt.PersonID = ft.ID1
+inner join NameTable as nt          on nt.OwnerID = pt.PersonID
+inner join FANTypeTable as ftt      on ftt.FANTypeID = ft.FanTypeID
+inner join CitationLinkTable as clt on clt.OwnerID = ft.FanID
+inner join CitationTable as ct      on ct.CitationID = clt.CitationID
+
+where 
+   clt.OwnerType = 19
+and   nt.IsPrimary = 1
+
+--===========================================DIV50==
+-- shows Tasks that have a source
+
+select tt.Name, ct.CitationID, st.Name, ct.CitationName
+
+from TaskTable as tt
+inner join CitationLinkTable as clt  on clt.OwnerID = tt.TaskID
+inner join CitationTable     as ct   on ct.CitationID = clt.CitationID
+inner join SourceTable       as st   on st.SourceID = ct.SourceID
+where 
+ tt.TaskID = clt.OwnerID
+ and  clt.OwnerType = 6
 
 --===========================================DIV50==
 
+--===========================================DIV50==
+
+--===========================================DIV50==
+
+--===========================================DIV50==
+
+--===========================================DIV50==
+
+--===========================================DIV50==
+
+--===========================================DIV50==
 
