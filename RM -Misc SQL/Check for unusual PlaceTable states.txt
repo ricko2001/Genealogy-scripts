@@ -1,0 +1,43 @@
+
+Records that serve as Top Level places should have MasterID=0
+
+FIND
+select pt.PlaceID, pt.PlaceType, MasterID, pt.Name
+from PlaceTable as pt
+where pt.PlaceType=0 and pt.MasterID <> 0;
+
+FIX
+reindex RMNOCASE;
+UPDATE PlaceTable
+SET  MasterID = 0
+where PlaceType=0 and MasterID <> 0;
+
+
+Records that are Details must have a MasterID non zero 
+
+FIND
+select pt.PlaceID, pt.PlaceType, pt.MasterID, pt.Name
+from PlaceTable as pt
+where pt.PlaceType=2 and pt.MasterID = 0;
+
+FIX
+reindex RMNOCASE;
+delete from PlaceTable
+where PlaceType=2 and MasterID = 0;
+
+
+
+Records that are Details must have a MasterID that points to o a valid top leve place
+
+FIND
+reindex RMNOCASE;
+select pt.PlaceID 
+from PlaceTable as pt
+where pt.PlaceType=2
+except
+select pt.PlaceID 
+from PlaceTable as pt
+inner join PlaceTable as pt2 on pt.MasterID = pt2.PlaceID
+where pt.PlaceType=2;
+
+
