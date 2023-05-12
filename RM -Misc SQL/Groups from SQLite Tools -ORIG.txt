@@ -1,0 +1,87 @@
+-- Group-PersonsWithDuplicateEvents-RM8.sql
+
+/* 
+2013-09-02 Tom Holden ve3meo
+rev 2018-07-07 bug fixed when no other existing group 
+Creates and updates a named group of persons
+having duplicate events within the same calendar year.
+2023-02-19 version for RM8
+*/
+-- Create Named Group if it does not exist 'SQL: Duplicate Events'
+INSERT OR IGNORE INTO TagTable 
+VALUES
+(
+  (SELECT TagID FROM TagTable WHERE TagName LIKE 'SQL: Duplicate Events')
+  ,0
+  ,(SELECT IFNULL(MAX(TagValue),0)+1 FROM TagTable)
+  ,'SQL: Duplicate Events'
+  ,'SQLite query'
+  ,julianday('now') - 2415018.5
+)
+;
+
+-- Delete all members of the named group
+DELETE FROM GroupTable 
+WHERE GroupID = 
+(SELECT TagValue 
+  FROM TagTable 
+  WHERE TagName 
+  LIKE 'SQL: Duplicate Events'
+)
+;
+
+-- Add members to the named group
+INSERT INTO GroupTable
+SELECT
+ null
+ ,(SELECT TagValue 
+  FROM TagTable 
+  WHERE TagName 
+  LIKE 'SQL: Duplicate Events'
+   )
+ ,PersonID AS StartID
+ ,PersonID AS EndID
+ ,(julianday('now') - 2415018.5) AS UTCModDate 
+
+FROM
+(
+ SELECT DISTINCT OwnerID AS PersonID FROM 
+(
+-- Individual events
+SELECT E1.OwnerID, F.Name, E1.Date AS Date1, E2.Date AS Date2 FROM EventTable E1
+JOIN FactTypeTable F ON  E1.EventType = F.FactTypeID
+JOIN EventTable E2 ON E1.EventType = E2.EventType AND E1.OwnerID = E2.OwnerID AND E1.EventID < E2.EventID AND E1.IsPrimary = E2.IsPrimary
+WHERE F.UseDate
+AND F.OwnerType = 0
+
+UNION
+
+-- Family events - husband
+SELECT Fam.FatherID, F.Name, E1.Date AS Date1, E2.Date AS Date2 FROM EventTable E1
+JOIN FactTypeTable F ON  E1.EventType = F.FactTypeID
+JOIN EventTable E2 ON E1.EventType = E2.EventType AND E1.OwnerID = E2.OwnerID AND E1.EventID < E2.EventID AND E1.IsPrimary = E2.IsPrimary
+JOIN FamilyTable Fam ON E1.OwnerID = Fam.FamilyID
+WHERE F.UseDate  -- exclude FactTypes that don't use dates
+AND F.OwnerType = 1
+
+UNION
+
+-- Family events - wife
+SELECT Fam.MotherID, F.Name, E1.Date AS Date1, E2.Date AS Date2 FROM EventTable E1
+JOIN FactTypeTable F ON  E1.EventType = F.FactTypeID
+JOIN EventTable E2 ON E1.EventType = E2.EventType AND E1.OwnerID = E2.OwnerID AND E1.EventID < E2.EventID AND E1.IsPrimary = E2.IsPrimary
+JOIN FamilyTable Fam ON E1.OwnerID = Fam.FamilyID
+WHERE F.UseDate  -- exclude FactTypes that don't use dates
+AND F.OwnerType = 1
+
+UNION
+
+-- Alternate name events (not sure this is a worthy test because a person can have alternate names at the same time)
+SELECT N1.OwnerID, 'AltName' AS Name, N1.Date AS Date1, N2.Date AS Date2 FROM NameTable N1
+JOIN NameTable N2 ON N1.OwnerID = N2.OwnerID AND N1.NameID < N2.NameID AND NOT +N1.IsPrimary AND NOT +N2.IsPrimary
+)
+WHERE ABS(SUBSTR(Date1,4,4) - SUBSTR(Date2,4,4)) <2 -- this controls how tight the year match must be.
+-- in future, the date comparison could call on a date calculator that could compute the difference in days
+
+)
+; --END of SCRIPT

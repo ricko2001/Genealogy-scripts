@@ -1,0 +1,21 @@
+CREATE TABLE GroupTable (RecID INTEGER PRIMARY KEY, GroupID INTEGER, StartID INTEGER, EndID INTEGER, UTCModDate FLOAT );
+
+
+GroupTable 
+RecID INTEGER PRIMARY KEY
+GroupID INTEGER
+
+StartID		 INTEGER
+EndID INTEGER
+UTCModDate FLOAT
+
+
+GroupID		GroupTable.GroupID ==> TagTable.TagValue
+
+StartID		GroupTable.StartID ==> PersonTable.PersonID 
+EndID		GroupTable.StartID ==> PersonTable.PersonID 
+
+
+If the groups are only writtten by some code, then one can always use StartID == EndID
+The table will be bigger, but who cares.
+

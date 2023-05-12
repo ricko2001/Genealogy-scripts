@@ -1,0 +1,55 @@
+CREATE TABLE PersonTable (PersonID INTEGER PRIMARY KEY, UniqueID TEXT, Sex INTEGER, ParentID INTEGER, SpouseID INTEGER, Color INTEGER, Color1 INTEGER, Color2 INTEGER, Color3 INTEGER, Color4 INTEGER, Color5 INTEGER, Color6 INTEGER, Color7 INTEGER, Color8 INTEGER, Color9 INTEGER, Relate1 INTEGER, Relate2 INTEGER, Flags INTEGER, Living INTEGER, IsPrivate INTEGER, Proof INTEGER, Bookmark INTEGER, Note TEXT, UTCModDate FLOAT );
+
+
+PersonTable
+PersonID INTEGER PRIMARY KEY
+UniqueID TEXT, Sex INTEGER
+ParentID INTEGER
+SpouseID INTEGER
+Color INTEGER
+Color1 INTEGER
+Color2 INTEGER
+Color3 INTEGER
+Color4 INTEGER
+Color5 INTEGER
+Color6 INTEGER
+Color7 INTEGER
+Color8 INTEGER
+Color9 INTEGER
+Relate1 INTEGER
+Relate2 INTEGER
+Flags INTEGER
+Living INTEGER
+IsPrivate INTEGER
+Proof INTEGER
+Bookmark INTEGER
+Note TEXT
+UTCModDate FLOAT
+===========================================DIV50==
+
+
+
+PersonTable
+PersonID PRIMARY KEY
+UniqueID TEXT, Sex INTEGER
+
+ParentID => FamilyID		primary set of parents (one to one) (used for report)
+SpouseID => FamilyId		primary spouse (one to one)
+
+ColorN		color id for the person
+
+Relate1 0 -> 12 & 999 (7 o these)
+Relate2 1 -> 12
+
+Flags INTEGER
+
+Living		1=yes, 0=no
+IsPrivate not seen in UI
+Proof		not seen in UI
+Bookmark 	used to see bookmarked people. Odd that there isn't a bookmark table
+Note		person note
+UTCModDate
+
+
+There are a number of fields in PersonTable that can change for book keeping reasons. 
+Data for person not changesd. Doees all changes update date edited field?

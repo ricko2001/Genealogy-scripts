@@ -27,7 +27,7 @@ where PlaceType=2 and MasterID = 0;
 
 
 
-Records that are Details must have a MasterID that points to o a valid top leve place
+Records that are Details must have a MasterID that points to o a valid top level place
 
 FIND
 reindex RMNOCASE;

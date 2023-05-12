@@ -1,0 +1,13 @@
+TaskLinkTable
+
+Handle linking of Tasks to owning object
+and 
+linking of task to a folder name (TagTable)
+
+OwnerType
+0	TaskTable.TaskID to PersonTable.PersonID
+1	TaskTable.TaskID to FamilyTable.FamilyID
+2	TaskTable.TaskID to EventTable.EventID
+18	TaskTable.TaskID to TagTable.TagID			TagValue not used
+
+

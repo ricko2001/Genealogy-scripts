@@ -1,0 +1,61 @@
+
+--to get a list of a person's parent sets (FamilyID), 
+SELECT  pt.PersonID, ct.FamilyID
+FROM PersonTable as pt
+INNER JOIN NameTable AS nt ON nt.OwnerID = pt.PersonID
+INNER JOIN ChildTable AS ct ON ct.ChildID = pt.PersonID
+WHERE
+     nt.IsPrimary = 1
+AND  nt.SurName = 'Otter'
+AND  nt.Given = 'Richard'
+
+
+
+--to get a list of a person's parents (both names) (all sets)
+SELECT  pt.PersonID, ct.FamilyID, nt2.Given, nt2.Surname, nt3.Given, nt3.Surname
+FROM PersonTable as pt
+INNER JOIN NameTable AS nt1 ON nt1.OwnerID = pt.PersonID
+INNER JOIN ChildTable AS ct ON ct.ChildID = pt.PersonID
+INNER JOIN FamilyTable AS ft ON ft.FamilyID = ct.FamilyID
+INNER JOIN NameTable AS nt2 ON nt2.OwnerID = ft.FatherID
+INNER JOIN NameTable AS nt3 ON nt3.OwnerID = ft.MotherID
+WHERE
+     nt1.IsPrimary = 1 AND nt2.IsPrimary = 1 AND nt3.IsPrimary = 1
+AND  nt1.Surname = 'Otter'
+AND  nt1.Given = 'Richard'
+
+
+
+
+
+
+
+--to get a list of children (names) of a father's name (all families)
+SELECT  ft.FamilyID, ct.ChildID, nt2.Given, nt2.Surname
+FROM NameTable AS nt1 
+INNER JOIN FamilyTable AS ft ON nt1.OwnerID = ft.FatherID
+INNER JOIN ChildTable AS ct ON ct.FamilyID = ft.FamilyID
+INNER JOIN NameTable AS nt2 ON ct.ChildID = nt2.OwnerID
+WHERE
+     nt1.IsPrimary = 1 AND nt2.IsPrimary = 1
+AND  nt1.Given = 'Daniel Kung-Hua'
+AND  nt1.Surname = 'Chao'
+
+
+
+
+
+
+
+--to get a list of children (names) of a mother (all families)
+SELECT  ft.FamilyID, ct.ChildID, nt2.Given, nt2.Surname
+--ft.FatherID, ft.MotherID
+FROM NameTable AS nt1 
+INNER JOIN FamilyTable AS ft ON nt1.OwnerID = ft.MotherID
+INNER JOIN ChildTable AS ct ON ct.FamilyID = ft.FamilyID
+INNER JOIN NameTable AS nt2 ON ct.ChildID = nt2.OwnerID
+WHERE
+     nt1.IsPrimary = 1 AND nt2.IsPrimary = 1
+AND  nt1.Given = 'Gloria Chieko'
+AND  nt1.Surname = 'Saito'
+

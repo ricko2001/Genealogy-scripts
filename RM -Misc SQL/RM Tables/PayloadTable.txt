@@ -1,0 +1,16 @@
+
+
+https://sqlitetoolsforrootsmagic.com/rm9-data-definitions/
+
+PayloadTable
+New table added in support of Saved Criteria Search and Saved Criteria Group. So far:
+
+OwnerType
+New OwnerType values have been added in support of the new tables. These will be identified as encountered through usage and testing.
+
+Table	RecType	OwnerType	OwnerID	
+Payload	1 (SavedCriteriaSearch)	8	0	
+Payload	2 (SavedCriteriaGroup)	20	TagTable.TagValue, GroupTable.GroupID	
+FANTable		19	CitationLinkTable, MediaLinkTable,…	
+
+
