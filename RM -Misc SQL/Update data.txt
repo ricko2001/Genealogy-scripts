@@ -5,6 +5,12 @@ Update MultimediaTable
  set MediaFile = replace(MediaFile, 'K800_Gräber Waldzell', 'K800_Gräber_Waldzell' )
 
 ===========================================DIV50==
+Update SourceTable
+Set Name= replace (Name, 'MIL DE', 'MIL BA' )
+Where 
+   Name like 'MIL DE%'
+
+===========================================DIV50==
 trim leading & trailing spaces from names
 These use special collation . Rebuild index in RM.
 given

@@ -1,12 +1,92 @@
-﻿select pt.PersonID, nt.Surname, nt.Given, substr(et.Date, 4,4), et.EventID, ftt.Name, rt.RoleName
-from nameTable as nt
-join PersonTable as pt on nt.OwnerID = pt.PersonID
-join EventTable as et on et.OwnerID = pt.PersonID
-join FactTypeTable as ftt on et.EventType = ftt.FactTypeID
-join WitnessTable as wt on wt.EventID = et.EventID
-join RoleTable as rt on rt.RoleID = wt.Role
-where
-    nt.IsPrimary= 1
-and et.OwnerType = 0
-and ftt.Name = 'Census'
-and rt.RoleName = 'witness'
+﻿--===========================================DIV50==
+-- Trim leading and trailing spaces in
+-- NameTable: Surname, Give, Suffix, Prefix
+-- PlaceTable: Name, Normalized
+-- SourceTable: Name
+-- CitationTable: CitationName
+-- SourceTemplateTable: Name
+
+--  Select queries highlight location of blank chars
+
+REINDEX RMNOCASE;
+
+SELECT 
+       REPLACE( Surname, ' ', '■'), 
+       REPLACE( Given, ' ', '■'), 
+       REPLACE( Suffix, ' ', '■'), 
+       REPLACE( Prefix, ' ', '■')
+   FROM NameTable
+   WHERE 
+         Surname <> TRIM(Surname)
+     OR  Given   <> TRIM(Given)
+     OR  Suffix  <> TRIM(Suffix)
+     OR  Prefix  <> TRIM(Prefix);
+
+
+SELECT 
+    REPLACE( Name, ' ', '■'), 
+    REPLACE( Normalized, ' ', '■')
+   FROM PlaceTable
+   WHERE
+       Name <> TRIM(Name)
+    OR Normalized <> TRIM(Normalized);
+
+SELECT
+   REPLACE( Name, ' ', '■')
+   FROM SourceTable
+   WHERE
+       Name <> TRIM(Name);
+
+SELECT
+   REPLACE( CitationName, ' ', '■')
+   FROM CitationTable
+   WHERE
+       CitationName <> TRIM(CitationName);
+
+SELECT 
+   REPLACE( Name, ' ', '■')
+   FROM SourceTemplateTable
+   WHERE
+       Name <> TRIM(Name);
+
+
+
+REINDEX RMNOCASE;
+
+UPDATE NameTable
+   SET
+   Surname = TRIM(Surname),
+   Given = TRIM(Given),
+   Suffix = TRIM(Suffix),
+   Prefix = TRIM(Prefix)
+   WHERE 
+         Surname <> TRIM(Surname)
+     OR  Given   <> TRIM(Given)
+     OR  Suffix  <> TRIM(Suffix)
+     OR  Prefix  <> TRIM(Prefix);
+
+UPDATE PlaceTable
+   SET
+   Name = TRIM(Name),
+   Normalized =  TRIM(Normalized)
+   WHERE 
+         Name <> TRIM(Name)
+     OR  Normalized <> TRIM(Normalized);
+
+UPDATE SourceTable
+   SET
+   Name = TRIM(Name)
+   WHERE
+         Name <> TRIM(Name);
+
+UPDATE CitationTable
+   SET
+   CitationName = TRIM(CitationName)
+   WHERE
+         CitationName <> TRIM(CitationName);
+
+UPDATE SourceTemplateTable
+   SET
+   Name = TRIM(Name)
+   WHERE
+         Name <> TRIM(Name);

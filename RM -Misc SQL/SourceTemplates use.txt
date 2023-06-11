@@ -1,0 +1,12 @@
+
+-- Produce list of Source Templates
+-- and the number of sources using each
+-- ordered by frequency
+
+
+
+SELECT COUNT(*), stt.Name
+FROM SourceTemplateTable stt, SourceTable st
+WHERE stt.TemplateID = st.TemplateID
+GROUP BY st.TemplateID
+ORDER BY COUNT(*) DESC
