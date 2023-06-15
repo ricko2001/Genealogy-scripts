@@ -17,6 +17,7 @@ The use this this utility involves several steps-
 * edit the RM-Config.ini file to include the information determined above.
 * test the RM-Config.ini file values by running the options in order they appear.
 * run the utility with the MAKE_CHANGES option
+* open the database in RootsMagic and immediately run the database tools "Rebuild Indexes" command. Optionally, run Test Integrity to confirm indexes were rebuilt.
 * confirm that the desired changes have been made and no others.
 * after careful examination, start using the modified database as your production database.
 
@@ -80,18 +81,7 @@ Many posts to public RootsMagic user forums mention use of unifuzz64.dll from th
 ======================================================================
 Running the utility-
 
-In mapping- can a s-field in old template be mapped to a c-field in new?
-In mapping- can a c-field in old template be mapped to a s-field in new?
-
-
-in processing, for each source selected in set,
-it's template is changed and data from previous fields is copied to the new template as mapped. 
-Don't have access to any citation fields at this point. Even if had access, which copy of the citation field would be used? 
-So cannot "map a c-field in old template to a s-field in new"
-
-Similar log says a c-field in old template cannot be mapped to a s-field in new
-
-so mapping rule 
+mapping rule 
 all fields in old and new src templates must be listed, all old on left, all new on right
 old source fields can go to new source fields
 NULL on left side means that the field on right side will be empty
@@ -99,6 +89,7 @@ NULL on right side means the data on left side field will not be used.
 
 not all old src fields have to be used. Can map to NULL, in which case data is not carried over.
 
+TODO
 
 Check if source names need to be unique	    dups are not prevented, even with same src template
 Check if source template names need to be unique	dups are not prevented
@@ -110,7 +101,15 @@ could determine at runtime that a field is a citation (Source details) field.
 The xml for sources is updated
 Existing xml read into DOM and manipulated, then saved back
 
+In mapping- can a s-field in old template be mapped to a c-field in new? NO
+In mapping- can a c-field in old template be mapped to a s-field in new? NO
 
+in processing, for each source selected in set,
+its template is changed and data from previous fields is copied to the new template as mapped. 
+Don't have access to any citation fields at this point. Even if had access, which copy of the citation field would be used? 
+So cannot "map a c-field in old template to a s-field in new"
+
+Similar logic says a c-field in old template cannot be mapped to a s-field in new
 
 
 Note:
@@ -161,9 +160,7 @@ Note that we have already determined the existing SourceTemplate name and have s
 
 
    Some script functions may be turned on or off. -see below
-*  Double click the TestExternalFiles.py file to run the script and generate 
-   the report file. 
-*  Examine the report output file.
+*  Double click the SwitchSourceTemplate.py file to run the script and see results in the console window.
 
 
 
