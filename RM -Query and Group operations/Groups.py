@@ -79,34 +79,50 @@ def main():
 
   return 0
 
+# ===================================================DIV60==
+def GroupOperationFeature(config, dbConnection):
+
+#  Group-1
+#  Group-2
 
 # ===================================================DIV60==
 def RunSQLFeature(config, dbConnection):
-  FeatureName = "Unreferenced Files"
 
   # get option
+  updateGroup = False
   if config['OPTIONS'].getboolean('QUERY_GROUP_UPDATE'):
-     updateGroup = True
+    updateGroup = True
+
+  viewStmt = "DROP VIEW IF EXISTS PersonIdList"
+  cur = dbConnection.cursor()
+  cur.execute( viewStmt )
 
   try:
-    SqlStmt = config['OPTIONS']['SQL_QUERY']
+    SqlStmt = "CREATE VIEW PersonIdList AS " + config['OPTIONS']['SQL_QUERY']
   except:
     print ("ERROR: SQL_QUERY must be specified for this option. \n")
     input("Press the <Enter> key to exit...")
-    sys.exit()
+    return
 
   try:
-    cur= GetDBFileList(SqlStmt, dbConnection)
+    cur = dbConnection.cursor()
+    cur.execute( SqlStmt )
   except:
     print ("ERROR: SQL_QUERY returned an error. \n")
     input("Press the <Enter> key to exit...")
-    sys.exit()
+    return
 
+  try:  # errors in SQL show up here, not in view creation
+    SqlStmt = "select count() from PersonIdList"
+    cur = dbConnection.cursor()
+    cur.execute( SqlStmt )
+    numInView = cur.fetchone()[0]
+    print ("# of persons selected: " + str(numInView) + "\n")
+  except:
+    print ("ERROR: SQL_QUERY returned an error. \n")
+    input("Press the <Enter> key to exit...")
+    return
 
-  peresonIdList=[]
-  for row in cur:
-    peresonIdList.append(row[0])
-  
 
   groupName = ""
   try:
@@ -114,77 +130,102 @@ def RunSQLFeature(config, dbConnection):
   except:
     groupName = "SqlQueryGroup_" + TimeStamp()
 
+  CreateGroup( groupName, updateGroup, dbConnection)
 
-  CreateGroup( groupName, peresonIdList, dbConnection)
-
-
-
+  viewStmt = "DROP VIEW IF EXISTS PersonIdList"
+  cur = dbConnection.cursor()
+  cur.execute( viewStmt )
 
   return
 
+
 # ===================================================DIV60==
-def CreateGroup(Name, Members, dbConnection):
-  print (len(Members))
-  print ( Name)
+def CreateGroup(Name, updateGroup, dbConnection):
 
 #  TagTable
 #   TagID=rowid
 #   TagType =0 for Groups
-#   TagValue  for groups, value > 1000    not clear if this is required or what
+#   TagValue  for groups, value > 1000    not clear if this is required  to be >1000 or what
 #   TagName   duplicates nor constrained
 
-
-
-  # check if name with TagTape=0 already exists and how many times
+  # check how many groupNames with name and TagTape=0 already exist
   SqlStmt = """
-  SELECT count(*) FROM TagTable WHERE TagName=? AND TagType=0
+  SELECT count(*), TagValue FROM TagTable WHERE TagName=? AND TagType=0
   """
-  cur = conn.cursor()
-  cur.execute(SqlStmt, (,Name) )
-  number = cur.fetch()
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt, (Name,) )
+  result = cur.fetchone()
+  existingNumber = result[0]
+  GroupID = result[1]
 
-  print (str(number))
+  if existingNumber >1 :
+    print ("ERROR: Group: " + Name + " already exists more than once.\n Use a different name. \n")
+    input("Press the <Enter> key to exit...")
+    sys.exit()
 
+  if existingNumber == 1 and not updateGroup :
+    print ("ERROR: Group: " + Name + " already exists and Update was not specified.\n Use a different name or allow update. \n")
+    input("Press the <Enter> key to exit...")
+    sys.exit()
 
-#  GroupID = FindGroupID(GroupName)
-#  PopulateGroup(GroupID, Members)
-#
-#  -- Create Named Group if it does not exist 'SQL: Duplicate Events'
-#  INSERT INTO TagTable 
-#  VALUES
-#  (
-#    (SELECT TagID FROM TagTable WHERE TagName LIKE 'SQL: Duplicate Events')
-#    ,0
-#    ,(SELECT IFNULL(MAX(TagValue),0)+1 FROM TagTable)
-#    ,'SQL: Duplicate Events'
-#    ,'SQLite query'
-#    ,julianday('now') - 2415018.5
-#  )
+  if existingNumber == 1 and updateGroup :
+    print ("INFO: Group: " + Name + " already exists and will be updated. \n")
 
+  else:  # existingNumber == 0
+     SqlStmt = """
+     INSERT INTO TagTable (TagType, TagValue, TagName, Description, UTCModDate)
+     VALUES
+     (
+       0
+       ,(SELECT IFNULL(MAX(TagValue),0)+1 FROM TagTable)
+       ,?
+       ,'Created or updated by external utility'
+       ,julianday('now') - 2415018.5
+     )
+     """
+     cur = dbConnection.cursor()
+     cur.execute(SqlStmt, (Name,) )
+    
+     SqlStmt = """
+     SELECT TagValue from TagTable where TagID == last_insert_rowid()
+     """
+     cur = dbConnection.cursor()
+     cur.execute(SqlStmt )
+     GroupID = cur.fetchone()[0]
 
-#  return GroupName
+  PopulateGroup(GroupID, dbConnection)
+
+  return
+
 
 # ===================================================DIV60==
-def DoesGroupNameExist(Name, dbConnection):
+def PopulateGroup(GroupID, dbConnection):
+  # print ("GroupID=" + str(GroupID))
 
+  # Empty out the group if it has any members
+  SqlStmt = """
+  DELETE FROM GroupTable 
+  WHERE GroupID = ?
+  """
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt, (GroupID,) )
 
+  # add the members
+  SqlStmt = """
+  INSERT INTO GroupTable
+  SELECT
+   null
+   ,?        AS GroupID
+   ,PersonID AS StartID
+   ,PersonID AS EndID
+   ,(julianday('now') - 2415018.5) AS UTCModDate 
 
-# ===================================================DIV60==
-def PopulateGroup(GroupID, Members):
+  FROM PersonIdList
+  """
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt, (GroupID,) )
 
--- Add members to the named group
-INSERT INTO GroupTable
-SELECT
- null
- ,(SELECT TagValue 
-  FROM TagTable 
-  WHERE TagName 
-  LIKE 'SQL: Duplicate Events'
-   )
- ,PersonID AS StartID
- ,PersonID AS EndID
- ,(julianday('now') - 2415018.5) AS UTCModDate 
-
+  return
 
 
 # ===================================================DIV60==
@@ -196,15 +237,6 @@ def TimeStampNow(type=""):
      elif type == 'file':
        dt_string = now.strftime("%Y-%m-%d_%H%M%S")
      return dt_string
-
-
-# ===================================================DIV60==
-def GetDBFileList(SqlStmt, dbConnection):
-
-  cur = dbConnection.cursor()
-  cur.execute(SqlStmt)
-  return cur
-
 
 
 # ===================================================DIV60==
@@ -220,9 +252,6 @@ def create_DBconnection(db_file_path, RMNOCASE_Path):
         input("Press the <Enter> key to exit...")
         sys.exit()
     return dbConnection
-
-
-
 
 
 # ===================================================DIV60==
