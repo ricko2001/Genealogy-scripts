@@ -1,51 +1,52 @@
 Change the source template used by a source
 
-The RootsMagic (RM) application does not provide a way for the user to modify a Source by changing which SourceTemplate it uses. This utility does that.
+Purpose
+The RootsMagic (RM) application does not provide a way to change which SourceTemplate a Source is based on. That is exactly what this utility does.
 
-A common use is when one wants to change the fields of a SourceTemplate that's already in use. Instead of editing the template, one copies the in-use SourceTemplate in RM, renames the copy, edits the copy and then uses this utility to switch the source or set of sources to use the new SourceTemplate copy that now has the desired fields.
-
-This application is what is called a command line utility. To use it, one first edits the supplied text file named "RM-Python-config.ini". The file contains options and required configuration settings. One then double clicks the SwitchSourceTemplate.py file. This momentarily displays the black command console window and at the same time, generates a Report text file which contains the results of the requested actions.
-
+A common use is when one wants to change the details of a SourceTemplate that's already in use. Instead of editing the template, one copies the in-use SourceTemplate in RM, renames the copy, edits the copy and then uses this utility to switch a source or set of sources to use the newly created SourceTemplate.
 
 Overview
-The use this this utility involves several steps-
+This application is what is called a command line utility. To use it, one first edits the supplied text file named "RM-Python-config.ini". The file contains options and required configuration settings. One then double clicks the SwitchSourceTemplate.py file. This momentarily displays the black command console window and at the same time, generates a Report text file which contains the results of the requested actions.
+
+Use of this utility involves these steps-
 * download the necessary files to your computer and configure the ini file for your database.
 * determine witch source or set of sources should have their SourceTemplates switched.
-* examine the existing SourceTemplate and create a new SourceTemplate, based on the old one, with the desired changes.
+* examine the existing SourceTemplate and create a new SourceTemplate, probably based on the old one, with the desired changes.
 * determine the exact names of the SourceTemplate already in use and the SourceTemplate to be used.
 * determine how data described by the existing SourceTemplate will be mapped to the new SourceTemplate.
 * edit the RM-Config.ini file to include the information determined above.
-* test the RM-Config.ini file values by running the options in order they appear.
+* test the RM-Config.ini file values by running the test options in the order they appear.
 * run the utility with the MAKE_CHANGES option
-* open the database in RootsMagic and immediately run the database tools "Rebuild Indexes" command. Optionally, run Test Integrity to confirm indexes were rebuilt.
+* open the database in RootsMagic and immediately run the database tools "Rebuild Indexes" command. 
+  Optionally, run Test Integrity to confirm the database is intact.
 * confirm that the desired changes have been made and no others.
 * after careful examination, start using the modified database as your production database.
 
 
-======================================================================
+===========================================DIV50==
 Getting Started
 
 To install and set up the utility:
 *  Install Python for Windows x64  -see below
-*  Create a folder on your disk
-*  Copy these files from downloaded zip file to the above folder-
+*  Create a working folder on your disk (maybe in your Documents folder)
+*  Copy these files to the working folder-
       SwitchSourceTemplate.py
       RM-Python-config.ini
 *  Download unifuzz64.dll   -see below
-*  Move the unifuzz64.dll file to the above folder
-*  Edit the RM-Python-config.ini in the above folder to specify the location of the RM file,  
-   the unifuzz64.dll file and the output report file. 
+*  Move the unifuzz64.dll file to the working folder
+*  Edit the RM-Python-config.ini in the working folder to specify the location of 
+   the RM file (use a copy of your production file), the unifuzz64.dll file and the output report file. 
    The required edits should be obvious. (To edit, Open NotePad and drag the ini file onto the NotePad window.)
 
 
-======================================================================
+===========================================DIV50==
 Python install-
 Install Python from the Microsoft Store or download and install from Python.org web site
 
 ------
 From Microsoft Store
 Run a command in Windows by pressing the keyboard key combination "Windows + R", then in the small window, type Python.
-Microsoft Store will open in your browser and you will be be shown the current version of Python. 
+Microsoft Store will open in your browser and you will be be shown the current version of Python. If in doubt, get the highest version.
 Click the Get button.
 Wait for install to finish. Done.
 
@@ -67,7 +68,7 @@ It is easily and cleanly removed using the standard method found in Windows=>Set
 
 Run the Python installer selecting all default options.
 
-======================================================================
+===========================================DIV50==
 unifuzz64.dll download-
 https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2018/05/unifuzz64.dll
 
@@ -75,60 +76,26 @@ above link found in this context-
 https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlite-expert-command-line-shell-et-al/
 
 The SQLiteToolsforRootsMagic website has been around for years and is run by a trusted RM user. 
-Many posts to public RootsMagic user forums mention use of unifuzz64.dll from the SQLiteToolsforRootsMagic website.
+Many posts to the public RootsMagic user forums mention use of unifuzz64.dll from the SQLiteToolsforRootsMagic website.
 
 
-======================================================================
+===========================================DIV50==
 Running the utility-
 
-mapping rule 
-all fields in old and new src templates must be listed, all old on left, all new on right
-old source fields can go to new source fields
-NULL on left side means that the field on right side will be empty
-NULL on right side means the data on left side field will not be used.
-
-not all old src fields have to be used. Can map to NULL, in which case data is not carried over.
-
-TODO
-
-Check if source names need to be unique	    dups are not prevented, even with same src template
-Check if source template names need to be unique	dups are not prevented
-Check if field names in Source template need to be unique.	dups are not prevented
-
-check why the first column of mapping is needed.
-could determine at runtime that a field is a citation (Source details) field.
-
-The xml for sources is updated
-Existing xml read into DOM and manipulated, then saved back
-
-In mapping- can a s-field in old template be mapped to a c-field in new? NO
-In mapping- can a c-field in old template be mapped to a s-field in new? NO
-
-in processing, for each source selected in set,
-its template is changed and data from previous fields is copied to the new template as mapped. 
-Don't have access to any citation fields at this point. Even if had access, which copy of the citation field would be used? 
-So cannot "map a c-field in old template to a s-field in new"
-
-Similar logic says a c-field in old template cannot be mapped to a s-field in new
-
-
-Note:
-RM does not prevent creation of entries with identical names.
-Important for this utility, this includes Sources, Citations, Source Templates and Source Template fields.
-If your database has duplicate names for items this utility will operate on, the safest course is to change the name so it's no longer an exact duplicate of another item of the same type.
 
 
 Step 1
 Specify which sources should have their SourceTemplate switched.
-We need to create a list of these. A SQL select will create the list using search criteria: 
+We need to create a list of these. A SQL select will create the list using the search criteria: 
  * SourceTemplate name (exact match)
  * Source name allowing SQL LIKE wild card characters "%" and "_".
 
-The RM_Config.ini file has a field named "old" which is assigned the name of the existing SourceTemplate
-and the ini file has a field named "SourceNamesLike" which is assigned the search expression.
+The RM_Config.ini file has a field named "TEMPLATE_OLD" which is assigned the name of the existing SourceTemplate
+and the ini file has a field named "SOURCE_NAME_LIKE" which is assigned to the search expression.
 
 An example:
 Say there are a bunch of sources in the RM file that have SourceTemplate names and SourceNames
+
 SourceTemplate		SourceName
 TemplBIRTH			BIRTH Ancestry John Smith
 TemplBIRTH			BIRTH MyHeritage JOE
@@ -148,13 +115,17 @@ SOURCE_NAME_LIKE = BIRTH %
 
 the list would only include the 5th source.
 
+
+
 One could work with just one source at a time by giving the full source name and not including a wild card, say
 TEMPLATE_OLD = TemplBIRTH
 SOURCE_NAME_LIKE = BIRTH Helen Sauer
 
 the list would include only the 3rd source. (Note that the search is not case sensitive)
 
-If all of the desired Sources can't be found with one value of SOURCE_NAME_LIKE, you can run the utility multiple times with different values of SOURCE_NAME_LIKE.
+
+
+If all of the desired Sources can't be found with one value of SOURCE_NAME_LIKE, you can run the utility multiple times with different values of SOURCE_NAME_LIKE. Or, you may consider renaming your source so they fit an easy to find pattern.
 
 Note that we have already determined the existing SourceTemplate name and have specified it in th RM-Config.ini file as the value of "TEMPLATE_OLD". Look in the Source template list in RM to get the name of the SourceTemplate to be used.
 
@@ -316,38 +287,51 @@ NULL		EventType
 CD			CD
 
 
+Note:
+RM does not prevent creation of entries with identical names.
+Important for this utility, this includes Sources, Citations, Source Templates and Source Template fields.
+If your database has duplicate names for items this utility will operate on, the safest course is to change the name so it's no longer an exact duplicate of another item of the same type.
 
-Sample RM XML
-NOTE- when copying from SQLite expert BLOB editor, the leading 3 BOM bytes and line feed 0A byes are copied as periods.
+
+
+
+
+===========================================DIV50==
+===========================================DIV50==
+Development Notes   (not needed to use utility)
+===========================================DIV50==
+
+
+===========================================DIV50==
+sample SourceTemplateTable XML
+...<?xml version="1.0" encoding="UTF-8"?>.<Root><Fields><Field><FieldName>Compiler</FieldName><DisplayName>Compiler</DisplayName><Type>Name</Type><Hint>name of the original compiler/author (put slashes around multi-part surnames, like /van Durren/.)</Hint><LongHint/><CitationField>True</CitationField></Field><Field><FieldName>FamilyGroup</FieldName><DisplayName>Family Group</DisplayName><Type>Text</Type><Hint>e.g. John Doe-May Smith family group sheet</Hint><LongHint/><CitationField>True</CitationField></Field><Field><FieldName>Type</FieldName><DisplayName>Type</DisplayName><Type>Text</Type><Hint>e.g. undocumented, partially documented, or fully documented</Hint><LongHint/><CitationField>True</CitationField></Field><Field><FieldName>AFNumbers</FieldName><DisplayName>AF numbers</DisplayName><Type>Text</Type><Hint>Ancestral File number(s)</Hint><LongHint>e.g. A5DX-3R and A5DX-S6</LongHint><CitationField>True</CitationField></Field><Field><FieldName>AFVersion</FieldName><DisplayName>AF version</DisplayName><Type>Text</Type><Hint>Ancestral File version, e.g. 4.13</Hint><LongHint/><CitationField>False</CitationField></Field><Field><FieldName>Year</FieldName><DisplayName>Year</DisplayName><Type>Date</Type><Hint>the year of the AF Version, e.g. 1994</Hint><LongHint/><CitationField>False</CitationField></Field></Fields></Root>.
+
+===========================================DIV50==
+sample SourceTable XML
+...<?xml version="1.0" encoding="UTF-8"?>.<Root><Fields><Field><Name>Informant</Name><Value>Alban Josef Otter</Value></Field><Field><Name>InterviewDate</Name><Value>1996-10-20</Value></Field><Field><Name>Interviewer</Name><Value>Richard Otter</Value></Field></Fields></Root>.
+
+===========================================DIV50==
+sample CitationTable XML
+<Root><Fields><Field><Name>CD</Name><Value>Listed on p2 as &apos;Longin heiratet die Agnes Ludwig aus Waldzell (Maria ihr Eltern!)&apos;</Value></Field></Fields></Root>
+
+===========================================DIV50==
+
+
+===========================================DIV50==
+RootsMagic XML format
+XML in fields BLOB has changed format from v7 to v8
 
 Old style XML
 ...<?xml version="1.0" encoding="UTF-8"?>.
 and an 0A at end of BLOB
 
-==============================================
-sample SourceTemplateTable XML
-...<?xml version="1.0" encoding="UTF-8"?>.<Root><Fields><Field><FieldName>Compiler</FieldName><DisplayName>Compiler</DisplayName><Type>Name</Type><Hint>name of the original compiler/author (put slashes around multi-part surnames, like /van Durren/.)</Hint><LongHint/><CitationField>True</CitationField></Field><Field><FieldName>FamilyGroup</FieldName><DisplayName>Family Group</DisplayName><Type>Text</Type><Hint>e.g. John Doe-May Smith family group sheet</Hint><LongHint/><CitationField>True</CitationField></Field><Field><FieldName>Type</FieldName><DisplayName>Type</DisplayName><Type>Text</Type><Hint>e.g. undocumented, partially documented, or fully documented</Hint><LongHint/><CitationField>True</CitationField></Field><Field><FieldName>AFNumbers</FieldName><DisplayName>AF numbers</DisplayName><Type>Text</Type><Hint>Ancestral File number(s)</Hint><LongHint>e.g. A5DX-3R and A5DX-S6</LongHint><CitationField>True</CitationField></Field><Field><FieldName>AFVersion</FieldName><DisplayName>AF version</DisplayName><Type>Text</Type><Hint>Ancestral File version, e.g. 4.13</Hint><LongHint/><CitationField>False</CitationField></Field><Field><FieldName>Year</FieldName><DisplayName>Year</DisplayName><Type>Date</Type><Hint>the year of the AF Version, e.g. 1994</Hint><LongHint/><CitationField>False</CitationField></Field></Fields></Root>.
+NOTE- when copying from SQLite expert BLOB editor, the leading 3 BOM bytes and line feed 0A byes are copied as periods.
 
-==============================================
-sample SourceTable XML
-...<?xml version="1.0" encoding="UTF-8"?>.<Root><Fields><Field><Name>Informant</Name><Value>Alban Josef Otter</Value></Field><Field><Name>InterviewDate</Name><Value>1996-10-20</Value></Field><Field><Name>Interviewer</Name><Value>Richard Otter</Value></Field></Fields></Root>.
+===========================================DIV50==
+Odd cases of XML format found:
 
-==============================================
-sample CitationTable XML
-<Root><Fields><Field><Name>CD</Name><Value>Listed on p2 as &apos;Longin heiratet die Agnes Ludwig aus Waldzell (Maria ihr Eltern!)&apos;</Value></Field></Fields></Root>
-
-==============================================
-
-
-
-
-==================
-Odd cases found:
-==================
-
-Fix done-
-Found an odd Fields value in citationTable.
-citationID 101294 had just <root />
+Found an odd Fields value in CitationTable.
+CitationID 101294 had just <root />
 <Root> <Fields> </Fields> </Root>
 
 for citations, found one that had no Fields tag.
@@ -358,115 +342,40 @@ maybe do a search for just <Root > in citations.
 
 Fixed by adding a Fields empty element within Root, then continuing.
 
-==================
-Fix done:
+
 Caused by same fields value of <Root />
-When looking to remove processing instruction element found in old data, was looking for strt or XML by searinging for <Root>, but it wasn't found in this case. So look for "<Root"
-==================
+When looking to remove processing instruction element found in old data, was
+looking for start of XML by searching for <Root>, but it wasn't found in this case. So look for "<Root"
+
+===========================================DIV50==
+
+mapping rules
+all fields in old and new src templates must be listed, all old on left, all new on right
+old source fields can go to new source fields
+NULL on left side means that the field on right side will be empty
+NULL on right side means the data on left side field will not be used.
+
+not all old src fields have to be used. Can map to NULL, in which case data is not carried over.
 
 
+Check if source names need to be unique	    dups are not prevented, even with same src template
+Check if source template names need to be unique	dups are not prevented
+Check if field names in Source template need to be unique.	dups are not prevented
 
+check why the first column of mapping is needed.
+could determine at runtime that a field is a citation (Source details) field.
 
+The xml for sources is updated
+Existing xml read into DOM and manipulated, then saved back
 
+In mapping- can a s-field in old template be mapped to a c-field in new? NO
+In mapping- can a c-field in old template be mapped to a s-field in new? NO
 
-=======================================
-=======================================
+in processing, for each source selected in set,
+its template is changed and data from previous fields is copied to the new template as mapped. 
+Don't have access to any citation fields at this point. Even if had access, which copy of the citation field would be used? 
+So cannot "map a c-field in old template to a s-field in new"
 
+Similar logic says a c-field in old template cannot be mapped to a s-field in new
 
-
-=====================================================
-=====================================================
-=====================================================
-
-=====================================================
-
-
-
-
-Sample output from test case
-Using TEST database
-
-Script output
-
-=====================================================
-1007       MR Motsinger & Choe m1979 -ANC
-30118     Record states that Donald W Motsinger, age 32, and Inja Choe, age 22 w
-30119     Record states that Donald W Motsinger, age 32, and Inja Choe, age 22 w
-30120     Record states that Donald W Motsinger, age 32, and Inja Choe, age 22 w
-=====================================================
-1008       MR Motsinger & Wong m1976  -ANC
-30127     Index does not mention the bride.
-=====================================================
-1195       MR Cho & Tsuji m1948  -ANC
-32414     Name: Clara Hiroko Tsuji
-Age: 24
-Birth Year: abt 1924
-Birth Plac
-=====================================================
-1292       MR Schwab & Reuss m1935  -ANC
-33090     Listed as Margert Reuss, age 21, b in Germany, daughter of Friedrich R
-33096     Listed as second marriage for Leo. His first wife is deceased.
-33097     Lists Leonard Schwab as son of Nicholas Schwab and Mary A. Siekhartner
-33101     Lists Leonard Schwabs as son of Nicholas Schwab and Mary A. Siekhartne
-33106     Lists Margret Reuss as daughter of Friedrich Reuss and Kunigunde Lips.
-=====================================================
-1642       MR Och & Kilgus m1887 -ANC
-51830     Lists Henry Och and Kilgus married in 1887 in Philadelphia. License #
-=====================================================
-2074       MR Lumsden & Horn m1972 -ANC
-84626
-=====================================================
-2098       MR Kurisu & Nakawaki -ANC
-84779
-84782     Listed as 22 yr old in 1958 => b 1935-36
-=====================================================
-2802       MR Bell & Bernal m1992 -ANC
-94220
-=====================================================
-2803       MR Bell & Barker m1972 -ANC
-94240
-=====================================================
-2922       MR Urcia & Cheung m1990  -ANC
-96973
-=====================================================
-3056       MR Herko & Betner m1905  -ANC
-100024
-=====================================================
-3069       MR Lake & Haberkern m1938 -ANC
-100132     Lists Theresa's parents establishing the correct Theresa.
-=====================================================
-4097       MR Bungay & Lake m1950  -ANC
-101294
-=====================================================
-4127       MR Ripberger & Gerding m1963  -ANC
-103484
-=====================================================
-4249       MR Gardner & Hess m1963  -ANC
-104219
-=====================================================
-4302       MR Grant & Green m1900  -ANC
-104533
-=====================================================
-4325       MR Plooster,Roger Dean b1927  -ANC
-104719
-=====================================================
-4549       MR Imai & Takano m1925  -ANC
-105970
-105971     Lists parents.
-=====================================================
-4654       MR Morris & Lumsden m1936  -ANC
-106595
-106598     Lists parents.
-=====================================================
-4657       MR Hirely & Ikemoto m1928  -ANC
-106615
-106617     Lists parents.
-=====================================================
-4819       MR Takagawa & Kinoshita ml 1926  -license -ANC
-107694
-107695     Lists parents.
-=====================================================
-4831       MR Koike & Yoshima m1918 -ANC
-107783
-107786     Lists parents.
-Press any key to continue . . .
+===========================================DIV50==

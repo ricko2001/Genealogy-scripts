@@ -160,17 +160,17 @@ def main():
           reportF.write( "MAKE_CHANGES option requires specification of TEMPLATE_OLD and TEMPLATE_NEW and SOURCE_NAME_LIKE and MAPPING.")
           return
 
-      oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
-      newTemplateID = GetSrcTempID(dbConnection, newTemplateName)[0][0]
+        oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
+        newTemplateID = GetSrcTempID(dbConnection, newTemplateName)[0][0]
 
-      mapping = parseFieldMapping(fieldMapping)
+        mapping = parseFieldMapping(fieldMapping)
 
-      srcTuples = GetSelectedSources(reportF, dbConnection, oldTemplateID, srcNamesLike)
-      for srcTuple in srcTuples:
-        reportF.write ("=====================================================\n")
-        reportF.write (str(srcTuple[0]) + "    " + srcTuple[1] + "\n")
-        ConvertSource (reportF, dbConnection, srcTuple[0], newTemplateID, mapping)
-    
+        srcTuples = GetSelectedSources(reportF, dbConnection, oldTemplateID, srcNamesLike)
+        for srcTuple in srcTuples:
+          reportF.write ("=====================================================\n")
+          reportF.write (str(srcTuple[0]) + "    " + srcTuple[1] + "\n")
+          ConvertSource (reportF, dbConnection, srcTuple[0], newTemplateID, mapping)
+
   return 0
 
 # ===================================================DIV60==
