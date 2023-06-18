@@ -95,7 +95,8 @@ def main():
     with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
       reportF.write ("Report generated at      = " + TimeStampNow() + "\n")
       reportF.write ("Database processed       = " + database_Path + "\n")
-      reportF.write ("Database last changed on = " + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n\n")
+      reportF.write ("Database last changed on = " + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n")
+      reportF.write ("SQLite library version   = " + GetSQLiteLibraryVersion (dbConnection) + "\n\n")
 
       # test option values conversion to boolean
       try:
@@ -443,6 +444,17 @@ def GetDuplicateFileList(dbConnection):
   cur = dbConnection.cursor()
   cur.execute(SqlStmt)
   return cur
+
+
+# ===================================================DIV60==
+def GetSQLiteLibraryVersion (dbConnection):
+  # returns a string like 3.42.0
+  SqlStmt="""\
+  SELECT sqlite_version()
+  """
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt)
+  return cur.fetchone()[0]
 
 
 # ===================================================DIV60==
