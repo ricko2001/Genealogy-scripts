@@ -16,7 +16,7 @@ Use of this utility involves these steps-
 * determine how data described by the existing SourceTemplate will be mapped to the new SourceTemplate.
 * edit the RM-Config.ini file to include the information determined above.
 * test the RM-Config.ini file values by running the test options in the order they appear.
-* run the utility with the MAKE_CHANGES option
+* run the utility with the MAKE_CHANGES option set to on.
 * open the database in RootsMagic and immediately run the database tools "Rebuild Indexes" command. 
   Optionally, run Test Integrity to confirm the database is intact.
 * confirm that the desired changes have been made and no others.
@@ -26,6 +26,17 @@ Use of this utility involves these steps-
 ===========================================DIV50==
 Getting Started
 
+Determine what you want done.
+You should have one of more sources that need to have the source template switched.
+That means you'll need to know:
+ * the exact name of the source template the source is currently using. The "old" source template.
+ * the exact name of the source template that the source should be switched to.  The "new" source template.
+ * where data in the fields in the "old" source template should be moved to in the "new" source template. The "mapping".
+
+The new source template needs to be created before running the script. The mapping should also be determined before the first run. 
+Experience says that the first (several) runs of the script will not give exactly what you want. Each run will give results that will hep you refine the new source template and the mapping from old to new fields.
+
+
 To install and set up the utility:
 *  Install Python for Windows x64  -see below
 *  Create a working folder on your disk (maybe in your Documents folder)
@@ -34,6 +45,7 @@ To install and set up the utility:
       RM-Python-config.ini
 *  Download unifuzz64.dll   -see below
 *  Move the unifuzz64.dll file to the working folder
+
 *  Edit the RM-Python-config.ini in the working folder to specify the location of 
    the RM file (use a copy of your production file), the unifuzz64.dll file and the output report file. 
    The required edits should be obvious. (To edit, Open NotePad and drag the ini file onto the NotePad window.)
@@ -82,15 +94,43 @@ Many posts to the public RootsMagic user forums mention use of unifuzz64.dll fro
 ===========================================DIV50==
 Running the utility-
 
-
-
 Step 1
+Close RM if it's open and make a copy of the database file. 
+Move it into the working folder that you created in the Getting Started section above.
+
+Edit the RM-config.ini file in the working folder by dragging it onto the opened notepad application.
+Look for the section at the top-
+[FILE_PATHS]
+DB_PATH               = .\MyDatabaseFileCopy.rmtree
+RMNOCASE_PATH         = .\unifuzz64.dll
+REPORT_FILE_PATH      = .\ReportFile.txt
+
+Change the name of the roots magic database file to that of the file you placed in the working folder
+The other 2 lines should be OK.
+The commented out lines below just show that full path notation may be used if desired.
+
+Look at the section of the ini file containing options.
+[OPTIONS]
+CHECK_TEMPLATE_NAMES   = off
+LIST_TEMPLATE_DETAILS  = off
+LIST_SOURCES           = off
+MAKE_CHANGES           = off
+
+Confirm all 4 options are set to off
+Save the ini file (to the working folder), and leave the file open in the editor.
+
+Double click the SwitchSourceTemplate.py script file to run it
+A black console window should momentarily open and then close
+A new file, ReportFile.txt, should appear in the working folder.
+Open the file and confirm that there are no error messages.
+
+
 Specify which sources should have their SourceTemplate switched.
 We need to create a list of these. A SQL select will create the list using the search criteria: 
  * SourceTemplate name (exact match)
  * Source name allowing SQL LIKE wild card characters "%" and "_".
 
-The RM_Config.ini file has a field named "TEMPLATE_OLD" which is assigned the name of the existing SourceTemplate
+The RM-Config.ini file has a field named "TEMPLATE_OLD" which is assigned the name of the existing SourceTemplate
 and the ini file has a field named "SOURCE_NAME_LIKE" which is assigned to the search expression.
 
 An example:
