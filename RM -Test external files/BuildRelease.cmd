@@ -64,7 +64,7 @@ ECHO  Write an announcement post to groups.
 ECHO  
 
 
-use git tag name = %APPNAME%_v%VERSION_NUMBER%
+ECHO use git tag name = %APPNAME%_v%VERSION_NUMBER%
 
 pause
 
