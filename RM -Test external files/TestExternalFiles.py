@@ -14,7 +14,7 @@ import hashlib
 
 ##  Requirements: (see ReadMe.txt for details)
 ##   RootsMagic v7, v8 or v9 database file
-##   RM-Python-config.ini  ( Configuration ini file to set options and parameters)
+##   RM-Python-config.ini  ( Configuration ini text file to set options and parameters)
 ##   unifuzz64.dll
 ##   Python v3.9 or greater
 
@@ -51,7 +51,6 @@ def main():
    input("Press the <Enter> key to exit...")
    return
 
-  # Read file paths from ini file
   # Set up the report file first. That's where all subsequent user messages will appear.
   try:
     report_Path   = config['FILE_PATHS']['REPORT_FILE_PATH']
@@ -68,6 +67,7 @@ def main():
     input("Press the <Enter> key to exit...")
     return
 
+  # Read database and dll file paths from ini file
   with open( report_Path,  mode='w', encoding='utf-8-sig') as reportF:
     try:
       database_Path = config['FILE_PATHS']['DB_PATH']
@@ -83,12 +83,12 @@ def main():
       reportF.write('Path for RMNOCASE_PATH dll not found: ' + RMNOCASE_Path)
       return
 
-    # RM database file specific
+    # RM database file specific info
     FileModificationTime = datetime.fromtimestamp(os.path.getmtime(database_Path))
     G_DbFileFolderPath = Path(database_Path).parent
 
-    # Process the database for requested output
-    with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
+    # write header to report file
+    with create_DBconnection(database_Path, RMNOCASE_Path, reportF) as dbConnection:
       reportF.write ("Report generated at      = " + TimeStampNow() + "\n")
       reportF.write ("Database processed       = " + database_Path + "\n")
       reportF.write ("Database last changed on = " + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n")
@@ -107,6 +107,7 @@ def main():
         reportF.write ("One of the OPTIONS values could not be parsed as boolean. \n")
         sys.exit()
 
+      # Run the requested options. Usually multiple options.
       if config['OPTIONS'].getboolean('CHECK_FILES'):
          ListMissingFilesFeature(config, dbConnection, reportF)
 
@@ -382,6 +383,7 @@ def GetDBFolderList(dbConnection):
   cur.execute(SqlStmt)
   return cur
 
+
 # ===================================================DIV60==
 def GetCurrentDirectory():
   # Determine if application is a script file or frozen exe and get its directory
@@ -433,20 +435,14 @@ def GetDBNoTagFileList(dbConnection):
 
 # ===================================================DIV60==
 def GetDuplicateFileList(dbConnection):
-
+  # see for examples https://database.guide/6-ways-to-select-duplicate-rows-in-sqlite/
   SqlStmt="""\
-  SELECT p.MediaPath, p.MediaFile
+  SELECT p.MediaPath, p.MediaFile, COUNT(*) AS "Count"
   FROM MultimediaTable p
-  JOIN
-  (
-   SELECT MediaPath, MediaFile, count(*) as cnt
-   FROM MultimediaTable
-   GROUP BY MediaPath, MediaFile
-  ) t
-  ON LOWER(p.MediaPath) = LOWER(t.MediaPath) AND LOWER(p.MediaFile) = LOWER(t.MediaFile)
-  WHERE t.cnt > 1
-  ORDER BY p.MediaFile;
-"""
+  GROUP BY MediaPath COLLATE NOCASE, MediaFile COLLATE NOCASE
+  HAVING COUNT(*) > 1
+  ORDER BY p.MediaFile
+  """
   cur = dbConnection.cursor()
   cur.execute(SqlStmt)
   return cur
@@ -465,7 +461,6 @@ def GetSQLiteLibraryVersion (dbConnection):
 
 # ===================================================DIV60==
 def Section (pos, name, reportF):
-
   Divider = "="*60 + "===DIV70==\n"
   if   pos == "START":  text = "\n" + Divider + "\n=== Start of \"" + name + "\" listing\n\n"
   elif pos == "END":  text = "\n=== End of \"" + name + "\" listing\n"
@@ -482,15 +477,16 @@ def Section (pos, name, reportF):
 
 
 # ===================================================DIV60==
-def create_DBconnection(db_file_path, RMNOCASE_Path):
+def create_DBconnection(db_file_path, RMNOCASE_Path, reportF):
     dbConnection = None
     try:
       dbConnection = sqlite3.connect(db_file_path)
       dbConnection.enable_load_extension(True)
       dbConnection.load_extension(RMNOCASE_Path)
     except Error as e:
-        print(e)
-        print( "Cannot open the RM database file. \n")
+        reportF.write(e)
+        reportF.write("\n\n")
+        reportF.write( "Cannot open the RM database file. \n")
         input("Press the <Enter> key to exit...")
         sys.exit()
     return dbConnection
