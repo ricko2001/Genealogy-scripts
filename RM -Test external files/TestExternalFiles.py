@@ -34,14 +34,10 @@ def main():
   IniFileName = "RM-Python-config.ini"
 
   # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM).
-  # Determine if application is a script file or frozen exe and get its directory
-  # see   https://pyinstaller.org/en/stable/runtime-information.html
-  if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-    application_path = os.path.dirname(sys.executable)
-  else:
-    application_path = os.path.dirname(__file__)
-  IniFile = os.path.join(application_path, IniFileName)
+  # see   https://docs.python.org/3/library/configparser.html
+  IniFile = os.path.join(GetCurrentDirectory(), IniFileName)
 
+  # Check that ini file is at expected path and that it is readable & valid.
   if not os.path.exists(IniFile):
       print("ERROR: The ini configuration file, " + IniFileName + " must be in the same directory as the .py or .exe file.\n\n" )
       input("Press the <Enter> key to exit...")
@@ -56,8 +52,7 @@ def main():
    return
 
   # Read file paths from ini file
-  # see   https://docs.python.org/3/library/configparser.html
-
+  # Set up the report file first. That's where all subsequent user messages will appear.
   try:
     report_Path   = config['FILE_PATHS']['REPORT_FILE_PATH']
   except:
@@ -66,6 +61,7 @@ def main():
     return
 
   try:
+    # Use UTF-8 encoding for the report file. Include BOM.
     open( report_Path,  mode='w', encoding='utf-8-sig')
   except:
     print('ERROR: Cannot create the report file ' + report_Path + "\n\n")
@@ -386,6 +382,16 @@ def GetDBFolderList(dbConnection):
   cur.execute(SqlStmt)
   return cur
 
+# ===================================================DIV60==
+def GetCurrentDirectory():
+  # Determine if application is a script file or frozen exe and get its directory
+  # see   https://pyinstaller.org/en/stable/runtime-information.html
+  if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    application_path = os.path.dirname(sys.executable)
+  else:
+    application_path = os.path.dirname(__file__)
+  return application_path
+
 
 # ===================================================DIV60==
 def TimeStampNow(type=""):
@@ -471,6 +477,7 @@ def Section (pos, name, reportF):
     sys.exit()
 
   reportF.write (text)
+  reportF.flush()
   return
 
 
