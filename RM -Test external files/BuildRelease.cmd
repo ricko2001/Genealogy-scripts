@@ -66,5 +66,8 @@ ECHO
 
 ECHO use git tag name = %APPNAME%_v%VERSION_NUMBER%
 
+ECHO  ============================================
+ECHO  END OF SCRIPT
+ECHO  ============================================
 pause
 
