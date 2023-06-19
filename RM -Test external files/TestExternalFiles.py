@@ -100,7 +100,8 @@ def main():
         config['OPTIONS'].getboolean('UNREF_FILES')
         config['OPTIONS'].getboolean('FOLDER_LIST')
         config['OPTIONS'].getboolean('NO_TAG_FILES')
-        config['OPTIONS'].getboolean('DUP_FILES')
+        config['OPTIONS'].getboolean('DUP_FILENAMES')
+        config['OPTIONS'].getboolean('DUP_FILEPATHS')
         config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
         config['OPTIONS'].getboolean('HASH_FILE')
       except:
@@ -120,8 +121,11 @@ def main():
       if config['OPTIONS'].getboolean('NO_TAG_FILES'):
          FilesWithNoTagsFeature(config, dbConnection, reportF)
 
-      if config['OPTIONS'].getboolean('DUP_FILES'):
-         FindDuplcateFilesFeature(dbConnection, reportF)
+      if config['OPTIONS'].getboolean('DUP_FILEPATHS'):
+         FindDuplcateFilePathsFeature(dbConnection, reportF)
+
+      if config['OPTIONS'].getboolean('DUP_FILENAMES'):
+         FindDuplcateFileNamesFeature(dbConnection, reportF)
 
       if config['OPTIONS'].getboolean('HASH_FILE'):
          FileHashFeature(config, dbConnection, reportF)
@@ -221,14 +225,14 @@ def FilesWithNoTagsFeature(config, dbConnection, reportF):
 
 
 # ===================================================DIV60==
-def FindDuplcateFilesFeature(dbConnection, reportF):
+def FindDuplcateFilePathsFeature(dbConnection, reportF):
 # this currently find exact duplicates as saved in DB path & filename (ignoring case)
-# duplicates after expansion of relative paths not yet searched for
-  FeatureName = "Duplicated Files"
+# duplicates *after expansion* of relative paths not found
+  FeatureName = "Duplicated File Paths"
   foundSomeDupFiles = False
 
   Section( "START", FeatureName, reportF)
-  cur= GetDuplicateFileList(dbConnection)
+  cur= GetDuplicateFilePathsList(dbConnection)
 
   for row in cur:
     foundSomeDupFiles = True
@@ -237,7 +241,27 @@ def FindDuplcateFilesFeature(dbConnection, reportF):
     filePath = dirPath / row[1]
     reportF.write (G_QT + str(filePath) + G_QT + "\n")
 
-  if not foundSomeDupFiles: reportF.write ("\n    No Duplicate Files in Media Gallery were found.\n")
+  if not foundSomeDupFiles: reportF.write ("\n    No Duplicate File Paths in Media Gallery were found.\n")
+
+  Section( "END", FeatureName, reportF)
+  return
+
+
+# ===================================================DIV60==
+def FindDuplcateFileNamesFeature(dbConnection, reportF):
+# this finds exact filename duplicates as saved in DB (ignoring case)
+  FeatureName = "Duplicated File Names"
+  foundSomeDupFiles = False
+
+  Section( "START", FeatureName, reportF)
+  cur= GetDuplicateFileNamesList(dbConnection)
+
+  for row in cur:
+    foundSomeDupFiles = True
+    fileName = row[0]
+    reportF.write (G_QT + str(fileName) + G_QT + "\n")
+
+  if not foundSomeDupFiles: reportF.write ("\n    No Duplicate File Names in Media Gallery were found.\n")
 
   Section( "END", FeatureName, reportF)
   return
@@ -434,7 +458,22 @@ def GetDBNoTagFileList(dbConnection):
 
 
 # ===================================================DIV60==
-def GetDuplicateFileList(dbConnection):
+def GetDuplicateFileNamesList(dbConnection):
+  # see for examples https://database.guide/6-ways-to-select-duplicate-rows-in-sqlite/
+  SqlStmt="""\
+  SELECT p.MediaFile, COUNT(*) AS "Count"
+  FROM MultimediaTable p
+  GROUP BY MediaFile COLLATE NOCASE
+  HAVING COUNT(*) > 1
+  ORDER BY p.MediaFile
+  """
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt)
+  return cur
+
+
+# ===================================================DIV60==
+def GetDuplicateFilePathsList(dbConnection):
   # see for examples https://database.guide/6-ways-to-select-duplicate-rows-in-sqlite/
   SqlStmt="""\
   SELECT p.MediaPath, p.MediaFile, COUNT(*) AS "Count"
