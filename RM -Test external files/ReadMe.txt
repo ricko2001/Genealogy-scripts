@@ -260,18 +260,20 @@ NOTES
     as they might have different captions etc.
 
 *   DUP_FILENAMES feature:  Files listed have the same file names, ignoring case.
-    Duplicate file names are not a problem. This function is provided as a troubleshooting tool
+    Duplicate file names are not a problem. This function is provided as a
+    troubleshooting tool
 
 *   SHOW_ORIG_PATH feature: (RM 8&9 only)
-    A display option is available for files found by either the CHECK_FILES or NO_TAG_FILES or DUP_FILES
+    A display option is available for files found by either the CHECK_FILES or
+    NO_TAG_FILES or DUP_FILES
     The option is turned on with the option SHOW_ORIG_PATH in the ini file.
     With this option on, the path for each file is shown twice,
     - the path on disk, that is, after any RM8 token in the path has been expanded.
     - the path as saved in the database with the token not expanded.
 
 *   RMNOCASE_fake-SQLiteSpy64.dll
-    An alternate for unifuzz64.dll named "RMNOCASE_fake-SQLiteSpy64.dll" has recently been created and
-    has been successfully tested. The 2 dlls work equally well for this script.
+    An alternate for unifuzz64.dll named "RMNOCASE_fake-SQLiteSpy64.dll" has recently
+    been created and has been successfully tested. The 2 dlls work equally well for this script.
     https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2017/12/RMNOCASE_fake-SQLiteSpy64.dll.bak
     in the context of this page:
     https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlitespy/rmnocase_fake-sqlitespy64-dll/
@@ -279,13 +281,13 @@ NOTES
     After download, rename the file by removing the final ".bak"
 
 *   Switching between RM 8 and RM 9
-    If the machine running the script has had multiple versions of RootsMagic installed, over
-    the years, there may be slightly unexpected behavior in some cases.
+    If the machine running the script has had multiple versions of RootsMagic
+    installed, over the years, there may be slightly unexpected behavior in some cases.
     RootsMagic saves some of its settings in an xml file located in the user's home
-    folder/AppData/Roaming/RootsMagic. A separate sub folder is created for each RM major version.
-    The script will read the Media Folder location setting found in the highest installed RM
-    version xml file. This is fine if you are not using ver 8 after having installed ver 9,
-    or when the same media folder location has been used for ver 8 and later.
+    folder/AppData/Roaming/RootsMagic. A separate sub folder is created for each RM major
+    version. The script will read the Media Folder location setting found in the highest
+    installed RM version xml file. This is fine if you are not using ver 8 after having
+    installed ver 9, or when the same media folder location has been used for ver 8 and later.
     When run on a RM7 database, the Media Folder location is not needed so the xml file is
     not referenced, so switching  between ver 7 and ver 9 will not be an issue.
 
@@ -304,7 +306,7 @@ Sample report output-
 ++++++++++
 ++++++++++
 Report generated at      = 2023-06-19 13:18:16
-Database processed       = C:\Users\me\Genealogy\MyFile.rmtreeDatabase last changed on = 2023-06-18 13:29:41
+Database processed       = C:\Users\me\Genealogy\MyFile.rmtree
 Database last changed on = 2023-06-18 13:29:41
 SQLite library version   = 3.42.0
 
