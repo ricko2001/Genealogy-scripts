@@ -1,5 +1,5 @@
-===========================================DIV50==
-count PERSONS WITH primary name !=1
+--===========================================DIV50==
+--count PERSONS WITH primary name !=1
 
 SELECT PersonTable.PersonID
 FROM PersonTable
@@ -8,8 +8,8 @@ WHERE NameTable.IsPrimary = 1
 GROUP BY NameTable.OwnerID
 HAVING COUNT(*) != 1
 
-===========================================DIV50==
-Evidence-Summary or ChildParent count >1
+--===========================================DIV50==
+--Evidence-Summary or ChildParent count >1
 
 SELECT PersonTable.PersonID, NameTable.Surname, NameTable.Given, FactTypeTable.Name, COUNT(*)
 FROM PersonTable
@@ -21,8 +21,8 @@ AND (FactTypeTable.Name = 'Evidence-Summary' OR FactTypeTable.Name = 'ChildParen
 GROUP BY PersonTable.PersonID, FactTypeTable.FactTypeID
 HAVING COUNT(*) >1
 
-===========================================DIV50==
-Person has a Private Name
+--===========================================DIV50==
+--Person has a Private Name
 
 SELECT PersonTable.PersonID, NameTable.Given, IsPrimary,
    case when IsPrimary = 1 then "Primary"  else "" end as IsPrimary
@@ -32,9 +32,9 @@ WHERE NameTable.IsPrivate = 1
 
 Note- cannot fix via RM UI if also Primary
 
-===========================================DIV50==
-Persons using Family facts
-(except Marriage, Marriage License, Partnership, & Divorce)
+--===========================================DIV50==
+--Persons using Family facts
+--(except Marriage, Marriage License, Partnership, & Divorce)
 
 
 SELECT PersonTable.PersonID, NameTable.Surname, NameTable.Given, FactTypeTable.Name
@@ -58,4 +58,4 @@ AND ( FactTypeTable.Name = "Marriage"
 
 ORDER BY FactTypeTable.Name
 
-===========================================DIV50==
+--===========================================DIV50==

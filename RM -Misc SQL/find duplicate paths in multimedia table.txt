@@ -14,3 +14,17 @@ on LOWER(p.MediaPath) = LOWER(t.MediaPath) and LOWER(p.MediaFile)=LOWER(t.MediaF
 ORDER BY p.MediaFile;
 
 
+  SELECT p.MediaPath, p.MediaFile, COUNT(*) AS "Count"
+  FROM MultimediaTable p
+  GROUP BY MediaPath COLLATE NOCASE, MediaFile COLLATE NOCASE
+  HAVING COUNT(*) > 1
+  ORDER BY p.MediaFile
+
+  SELECT p.MediaFile, COUNT(*) AS "Count"
+  FROM MultimediaTable p
+  GROUP BY MediaFile COLLATE NOCASE
+  HAVING COUNT(*) > 1
+  ORDER BY p.MediaFile
+
+try to give a line output for each dup
+

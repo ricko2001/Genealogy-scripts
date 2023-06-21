@@ -1,0 +1,18 @@
+
+# ignore shortcut files
+*.lnk
+
+
+from SQLite Tools site/
+DB/
+Release*/
+build/
+dist/
+*.spec
+
+HIDE_*
+
+DEV_RM-Python-config.ini
+DISTO_RM-Python-config.ini
+
+

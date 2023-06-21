@@ -1,0 +1,33 @@
+REINDEX RMNOCASE;
+
+
+UPDATE URLTable
+SET Name = 'otter-saito'
+WHERE Name = 'ott';
+
+
+UPDATE NameTable
+   SET
+   Surname = TRIM(Surname),
+   Given = TRIM(Given),
+   Suffix = TRIM(Suffix),
+   Prefix = TRIM(Prefix)
+   WHERE 
+         Surname <> TRIM(Surname)
+     OR  Given   <> TRIM(Given)
+     OR  Suffix  <> TRIM(Suffix)
+     OR  Prefix  <> TRIM(Prefix);
+
+
+--===========================================DIV50==
+--Evidence-Summary or ChildParent count >1
+
+SELECT PersonTable.PersonID, NameTable.Surname, NameTable.Given, FactTypeTable.Name, COUNT(*)
+FROM PersonTable
+INNER JOIN NameTable ON NameTable.OwnerID = PersonTable.PersonID
+INNER JOIN EventTable ON EventTable.OwnerID = PersonTable.PersonID
+INNER JOIN FactTypeTable ON FactTypeTable.FactTypeID = EventTable.EventType
+WHERE NameTable.IsPrimary = 1
+AND (FactTypeTable.Name = 'Evidence-Summary' OR FactTypeTable.Name = 'ChildParent')
+GROUP BY PersonTable.PersonID, FactTypeTable.FactTypeID
+HAVING COUNT(*) >1

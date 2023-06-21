@@ -13,21 +13,6 @@ and et.OwnerType = 0
 and ftt.Name = 'Census'
 
 
---===========================================DIV50==
---show ID for people with Witness census roles
-
-select pt.PersonID, nt.Surname, nt.Given, substr(et.Date, 4,4), et.EventID, ftt.Name, rt.RoleName
-from nameTable as nt
-join PersonTable as pt on nt.OwnerID = pt.PersonID
-join EventTable as et on et.OwnerID = pt.PersonID
-join FactTypeTable as ftt on et.EventType = ftt.FactTypeID
-join WitnessTable as wt on wt.EventID = et.EventID
-join RoleTable as rt on rt.RoleID = wt.Role
-where
-    nt.IsPrimary= 1
-and et.OwnerType = 0
-and ftt.Name = 'Census'
-and rt.RoleName = 'witness'
 
 
 --===========================================DIV50==
