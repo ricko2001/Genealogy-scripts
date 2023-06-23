@@ -187,7 +187,7 @@ def ListUnReferencedFilesFeature(config, dbConnection, reportF):
   else: reportF.write ("\n    No unreferenced files were found.\n\n")
 
   reportF.write("    Folder processed: " + G_QT + ExtFilesFolderPath + G_QT + "\n")
-  reportF.write("    Processed folder contains " + str(len(mediaFileList))
+  reportF.write("    Contains " + str(len(mediaFileList))
        + " files (not counting ignored items)\n")
   reportF.write("    Database file links: " + str(len(dbFileList)) + "\n")
   reportF.write("    Unexplained extra DB links: " + str( len(dbFileList) - len(mediaFileList) ) + "\n")
