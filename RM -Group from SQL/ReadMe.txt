@@ -1,4 +1,4 @@
-Query and Group operations
+Group from SQL
 
 RootsMagic (RM) software uses a database as its main storage.
 Groups may be created with Roots Magic software, but the types of queries are limited
@@ -10,12 +10,9 @@ This application is what is called a command line utility. To use it:
 1: first edit the supplied text file named "RM-Python-config.ini". This can be done
    using the Windows NotePad app. The file contains options and required configuration settings.
 
-2: Double click the TestExternalFiles file. This momentarily displays the
+2: Double click the GroupFromSQLs.py file. This momentarily displays the
    black command console window and at the same time, generates the report text file.
-   (7,000 media files requires about 3 seconds run time for 4 features turned on without hash file.
-    Generating a hash file for 7,000 files takes about a minute.)
 
-3  Open the Report text file in Notepad. The file will contain the report results.
 
 
 ======================================================================
@@ -36,7 +33,7 @@ The py file could probably be modified to work on MacOS with Python ver 3+ insta
 Backups
 
 You should run this script on a copy of your database file or at least have a known-good backup.
-
+This script only changes the TagTable and the GroupsTable/
 
 ======================================================================
 Getting Started

@@ -84,11 +84,11 @@ def GroupOperationFeature(config, dbConnection):
 
 #  Group-1
 #  Group-2
-
+  return
 
 # ===================================================DIV60==
 def GroupToTable(config, dbConnection):
-
+  return
 
 # ===================================================DIV60==
 def RunSQLFeature(config, dbConnection):
