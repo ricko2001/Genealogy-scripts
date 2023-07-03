@@ -1,22 +1,47 @@
 Group from SQL
 
 RootsMagic (RM) software uses a database as its main storage.
-Groups may be created with Roots Magic software, but the types of queries are limited
+Groups may be created with Roots Magic software, but the types of queries are limited.
+This utility will create a RM group from any query that returns a list of PersonIDs (RINs).
+
 
 ======================================================================
 Command Line Utility
 
 This application is what is called a command line utility. To use it:
-1: first edit the supplied text file named "RM-Python-config.ini". This can be done
-   using the Windows NotePad app. The file contains options and required configuration settings.
+1: first edit the supplied text file named "RM-Python-config.ini". 
+   The file contains the SQL statement and required configuration settings.
 
-2: Double click the GroupFromSQLs.py file. This momentarily displays the
-   black command console window and at the same time, generates the report text file.
+2: Double click the GroupFromSQLs.py file. This displays the black command
+   console window and at the same time, generates the group.
+   The console window displays the number of people selected by the SQL
+   and then prompts the use to hit the enter key to close the console.
 
 
 
 ======================================================================
 Features
+  RUN_SQL     = yes
+   Temporary option required to be yes.
+
+QUERY_GROUP_NAME = fix_FaG
+    The name of the RM group to store the results.
+
+QUERY_GROUP_UPDATE = yes
+    The group name may be new or existing. 
+    If it is new, it will be created. 
+    If it is existing, the group will be updated only if QUERY_GROUP_UPDATE is set to yes.
+    If QUERY_GROUP_UPDATE is set to no, the utility exits without making any changes.
+
+SQL_QUERY =
+     This is set to the SQL statement to be run. 
+     The statement may begin on the next line as long as the sql lines are all indented 
+     with white space. Either blanks or tabs.
+     Blank lines are not allowed. use lank comments to add spacing.
+
+    The utility does not check that the SQL statement does not do destructive changes.
+     Should it confirm first word is select? does not contain delete, insert or update?
+
 
 
 ======================================================================
@@ -33,7 +58,8 @@ The py file could probably be modified to work on MacOS with Python ver 3+ insta
 Backups
 
 You should run this script on a copy of your database file or at least have a known-good backup.
-This script only changes the TagTable and the GroupsTable/
+This script only changes the TagTable and the GroupsTable.
+
 
 ======================================================================
 Getting Started
@@ -41,7 +67,7 @@ Getting Started
 To install and use the single file version:
 *  Create a folder on your disk
 *  Copy these files from downloaded zip file to the above folder-
-      TestExternalFiles.exe
+      GroupFromSQLs.exe
       RM-Python-config.ini
 *  Download unifuzz64.dll   -see below
 *  Move the unifuzz64.dll file to the above folder
@@ -49,7 +75,7 @@ To install and use the single file version:
    the unifuzz64.dll file and the output report file. Some script functions
    may be turned on or off. The required edits should be obvious.
    (To edit, Open NotePad and drag the ini file onto the NotePad window.)
-*  Double click the TestExternalFiles.exe file to run the script and generate
+*  Double click the GroupFromSQLs.exe file to run the script and generate
    the report file.
 *  Examine the report output file.
 
@@ -61,7 +87,7 @@ To install and use the script file version:
 *  Install Python for Windows x64  -see below
 *  Create a folder on your disk
 *  Copy these files from downloaded zip file to the above folder-
-      TestExternalFiles.py
+      GroupFromSQLs.py
       RM-Python-config.ini
 *  Download unifuzz64.dll   -see below
 *  Move the unifuzz64.dll file to the above folder
@@ -69,7 +95,7 @@ To install and use the script file version:
    the unifuzz64.dll file and the output report file. Some script functions
    may be turned on or off. The required edits should be obvious.
    (To edit, Open NotePad and drag the ini file onto the NotePad window.)
-*  Double click the TestExternalFiles.py file to run the script and generate
+*  Double click the GroupFromSQLs.py file to run the script and generate
    the report file.
 *  Examine the report output file.
 
