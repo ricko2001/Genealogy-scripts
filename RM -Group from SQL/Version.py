@@ -6,7 +6,7 @@ VSVersionInfo(
   ffi=FixedFileInfo(
 # filevers and prodvers should be always a tuple with four items: (1, 2, 3, 4)
 # Set not needed items to zero 0.
-filevers=(0, 1, 0, 0),
+filevers=(1, 0, 0, 0),
 prodvers=(1, 0, 0, 0),
 # Contains a bitmask that specifies the valid bits 'flags'r
 mask=0x3f,
@@ -31,7 +31,7 @@ StringFileInfo(
     u'040904B0',
     [StringStruct(u'CompanyName', u'RJOtter SW'),
     StringStruct(u'FileDescription', u'Utility to work with RootsMagic database files'),
-    StringStruct(u'FileVersion', u'0.1.1.0'),
+    StringStruct(u'FileVersion', u'1.0.0.0'),
     StringStruct(u'InternalName', u''),
     StringStruct(u'LegalCopyright', u'Open Source'),
     StringStruct(u'OriginalFilename', u'GroupFromSQL.exe'),
