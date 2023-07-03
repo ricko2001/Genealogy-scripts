@@ -221,8 +221,9 @@ NOTES
 *  RM-Python-config.ini
    If there are any non-ASCII characters in the RM-Python-config.ini file,
    perhaps in a database path, or in ignored objects, then the file
-   must be saved in UTF-8 format, with no byte order mark (BOM). This is
-   a save option in NotePad.
+   must be saved in UTF-8 format, with no byte order mark (BOM).
+   This is an option in the save dialog box in NotePad.
+
 
 *  UNREF_FILES
    If there is a difference in capitalization of file name or directory
@@ -263,22 +264,13 @@ NOTES
     Duplicate file names are not a problem. This function is provided as a
     troubleshooting tool
 
-*   SHOW_ORIG_PATH feature: (RM 8&9 only)
+*   SHOW_ORIG_PATH feature: (RM v8 & v9 only)
     A display option is available for files found by either the CHECK_FILES or
     NO_TAG_FILES or DUP_FILES
     The option is turned on with the option SHOW_ORIG_PATH in the ini file.
     With this option on, the path for each file is shown twice,
     - the path on disk, that is, after any RM8 token in the path has been expanded.
     - the path as saved in the database with the token not expanded.
-
-*   RMNOCASE_fake-SQLiteSpy64.dll
-    An alternate for unifuzz64.dll named "RMNOCASE_fake-SQLiteSpy64.dll" has recently
-    been created and has been successfully tested. The 2 dlls work equally well for this script.
-    https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2017/12/RMNOCASE_fake-SQLiteSpy64.dll.bak
-    in the context of this page:
-    https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlitespy/rmnocase_fake-sqlitespy64-dll/
-
-    After download, rename the file by removing the final ".bak"
 
 *   Switching between RM 8 and RM 9
     If the machine running the script has had multiple versions of RootsMagic
@@ -292,11 +284,9 @@ NOTES
     not referenced, so switching  between ver 7 and ver 9 will not be an issue.
 
 
-
 *   MD5 hash values are used to confirm the identity of files.
 	MD5 hash							File size		File name
 	06a1f485b0fae62caa80850a8c7fd7c2	256,406 bytes	unifuzz64.dll
-	43fe353e3e3456dc33f8f60933dbc6ab	74,240 bytes	RMNOCASE_fake-SQLiteSpy64.dll
 
 
 ======================================================================
@@ -379,12 +369,6 @@ C:\Users\me\Genealogy\GeneDB\Exhibits\Images\Photos\Imai, Ethel
 ======================================================================
 TODO
 *  Add code to find duplicate files represented by different relative paths in database.
-*  Determine whether using the RMNOCASE collation in unifuzz64.dll will cause erroneous
-   output in this utility. Ideally, one would first run reindex RMNOCARE using the
-   collation in unifuzz64.dll, do the queries, and then rebuild index within RootsMagic
-   using the RM's version of RMNOCASE. However, this utility DOES NOT MODIFY the database.
-   No problems have bee detected so far.
-
 
 ======================================================================
 Feedback
@@ -394,5 +378,8 @@ Richard.J.Otter@gmail.com
 Public comments may be made at-
 https://github.com/ricko2001/Genealogy-scripts/discussions
 
+
 See my Linked-In profile at-
 https://www.linkedin.com/in/richardotter/
+
+======================================================================

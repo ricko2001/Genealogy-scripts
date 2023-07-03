@@ -33,7 +33,7 @@ def main():
   # Configuration
   IniFileName = "RM-Python-config.ini"
 
-  # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM).
+  # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
   # see   https://docs.python.org/3/library/configparser.html
   IniFile = os.path.join(GetCurrentDirectory(), IniFileName)
 
@@ -43,7 +43,7 @@ def main():
       input("Press the <Enter> key to exit...")
       return
 
-  config = configparser.ConfigParser()
+  config = configparser.ConfigParser(empty_lines_in_values=False)
   try:
     config.read(IniFile, 'UTF-8')
   except:
@@ -78,9 +78,11 @@ def main():
 
     if not os.path.exists(database_Path):
       reportF.write('Path for database not found: ' + database_Path)
+      reportF.write('checked for: ' + os.path.abspath(database_Path))
       return
     if not os.path.exists(RMNOCASE_Path):
       reportF.write('Path for RMNOCASE_PATH dll not found: ' + RMNOCASE_Path)
+      reportF.write('checked for: ' + os.path.abspath(RMNOCASE_Path))
       return
 
     # RM database file specific info
@@ -90,7 +92,7 @@ def main():
     # write header to report file
     with create_DBconnection(database_Path, RMNOCASE_Path, reportF) as dbConnection:
       reportF.write ("Report generated at      = " + TimeStampNow() + "\n")
-      reportF.write ("Database processed       = " + database_Path + "\n")
+      reportF.write ("Database processed       = " + os.path.abspath(database_Path) + "\n")
       reportF.write ("Database last changed on = " + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n")
       reportF.write ("SQLite library version   = " + GetSQLiteLibraryVersion (dbConnection) + "\n\n")
 

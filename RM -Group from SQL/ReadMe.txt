@@ -17,7 +17,7 @@ This application is what is called a command line utility. To use it:
 1: Edit the supplied text file named "RM-Python-config.ini".
    The file contains the SQL statement and required configuration settings.
 
-2: Double click the GroupFromSQLs.py file. This displays the black command
+2: Double click the GroupFromSQL.py file. This displays the black command
    console window and at the same time, generates the group.
    The console window displays:
       the full path of the database operated on
@@ -36,21 +36,22 @@ The example values shown are from the supplied example RM-Python-config.ini file
    ( I'm still considering how to use the same ini file for multiple script files.)
 
 [OPTIONS]
-    OPTION_SET_ID = Group_SMITH
+    OPTION_SET_ID = OptGroup_SMITH
     The name of the INI file group of options that will be used
     by the utility to create the group.
 
-[Group_SMITH]
+[OptGroup_SMITH]
 QUERY_GROUP_NAME = GroupSmith
     The name of the RM group to store the results.
 
-[Group_SMITH]
+[OptGroup_SMITH]
 QUERY_GROUP_UPDATE = yes
     The group name may be new or existing.
     If it is new, it will be created.
     If it is existing, the group will be updated only if QUERY_GROUP_UPDATE is set to yes.
     If QUERY_GROUP_UPDATE is set to no, the utility exits without making any changes.
 
+[OptGroup_SMITH]
 SQL_QUERY =
     SELECT pt.PersonID
     FROM PersonTable AS pt
@@ -78,24 +79,71 @@ The py file could probably be modified to work on MacOS with Python ver 3+ insta
 
 
 ======================================================================
+Which to use? Standalone .exe file or .py file
+
+Decide whether you wish to use the script file (.py) or the executable file (.exe) version.
+They produce exactly the same output at the same speed.
+
+* Executable file Version
+Pro:
+The single exe file is all you need. No need to install Python.
+Con:
+The exe file is not human readable.
+A certain amount of trust is required to run a program not published by a major software house.
+Unknown software from an unknown software author could contain mal-ware.
+
+or
+
+* Script File Version
+Pro:
+The script file is easily readable and one can confirm what it does
+You may want to learn Python and make your own changes to the script.
+Con:
+The script version requires an installation of the Python environment to run.
+This is a 100 MB investment in disk space. (Small for modern day hard disks)
+
+
+======================================================================
 Backups
 
-You should run this script on a copy of your database file until you have some confidence with it.
-Or at least have a very recent known-good backup.
+IMPORTANT: You should run this script on a copy of your database file until you
+have some confidence with it. Or at least have a very recent known-good backup.
 
 This script only changes the TagTable and the GroupsTable.
-It could, if asked to,update a group that is important to you. Be careful assigning QUERY_GROUP_NAME
-A temporary view is created, but temp views are always removed after disconnect.
+It could, if asked to, update a group that is important to you. Be careful
+when assigning QUERY_GROUP_NAME.
+A light-weight temporary view is created, but temp views are always removed after disconnect.
 
 
 ======================================================================
 Getting Started
 
+To install and use the single file version:
+*  Create a working folder on your disk, perhaps in your Documents folder.
+*  Copy these files from downloaded zip file to the working folder-
+      GroupFromSQL.exe
+      RM-Python-config.ini
+*  Download the SQLite extension: unifuzz64.dll   -see below
+*  Move the unifuzz64.dll file to the working folder
+*  Edit the RM-Python-config.ini in the above folder to specify the location of the RM file and
+   the unifuzz64.dll file. For the initial setup, you may want to set RUN_SQL  = no
+   so that only the database and dll path values are checked. Continue as below.
+   This avoids dealing with more than one issue at once. After you solve any path issues, if any,
+   set RUN_SQL  = yes and continue onward.
+   (To edit, Open NotePad and drag the ini file onto the NotePad window.)
+*  Double click the GroupFromSQL.exe file to run the utility.
+*  Examine the console window and press enter to dismiss it.
+*  Open the database in RM, open the People view window and select the created group as filter.
+
+----
+OR
+----
+
 To install and use the script file version:
 *  Install Python for Windows x64  -see below
 *  Create a folder on your disk
 *  Copy these files from downloaded zip file to the above folder-
-      GroupFromSQLs.py
+      GroupFromSQL.py
       RM-Python-config.ini
 *  Download unifuzz64.dll   -see below
 *  Move the unifuzz64.dll file to the above folder
@@ -105,9 +153,9 @@ To install and use the script file version:
    This avoids dealing with more than one issue at once. After you solve any path issues, if any,
    set RUN_SQL  = yes and continue onward.
    (To edit, Open NotePad and drag the ini file onto the NotePad window.)
-*  Double click the GroupFromSQLs.py file to run the script.
+*  Double click the GroupFromSQL.py file to run the script.
 *  Examine the console window and press enter to dismiss it.
-*  Open the database in RM, open the People view window and select the created group.
+*  Open the database in RM, open the People view window and select the created group as filter.
 
 
 
@@ -183,7 +231,6 @@ NOTES
 	MD5 hash							File size		File name
 	06a1f485b0fae62caa80850a8c7fd7c2	256,406 bytes	unifuzz64.dll
 
-======================================================================
 
 ======================================================================
 TODO
@@ -209,3 +256,6 @@ https://github.com/ricko2001/Genealogy-scripts/discussions
 
 See my Linked-In profile at-
 https://www.linkedin.com/in/richardotter/
+
+
+======================================================================
