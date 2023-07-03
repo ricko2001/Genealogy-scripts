@@ -5,6 +5,13 @@ UPDATE URLTable
 SET Name = 'otter-saito'
 WHERE Name = 'ott';
 
+UPDATE URLTable
+SET Name = 'lumsden-horn'
+WHERE Name = 'lums';
+
+UPDATE URLTable
+SET Name = 'felton-tsujimoto'
+WHERE Name = 'felton';
 
 UPDATE NameTable
    SET
@@ -17,6 +24,12 @@ UPDATE NameTable
      OR  Given   <> TRIM(Given)
      OR  Suffix  <> TRIM(Suffix)
      OR  Prefix  <> TRIM(Prefix);
+
+UPDATE EventTable
+   SET
+   Details = TRIM(Details)
+   WHERE 
+         Details <> TRIM(Details);
 
 
 --===========================================DIV50==

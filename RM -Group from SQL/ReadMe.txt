@@ -1,87 +1,95 @@
 Group from SQL
 
-RootsMagic (RM) software uses a database as its main storage.
+RootsMagic (RM) software uses a SQLite database as its main storage. This utility uses SQL
+to modify the database file independently of RM.
 Groups may be created with Roots Magic software, but the types of queries are limited.
-This utility will create a RM group from any query that returns a list of PersonIDs (RINs).
+Some group search criteria can be saved and refreshed, but again, the search criteria are limited.
+
+This utility will create and/or update a RM group from any SQL query that returns
+a list of PersonIDs (RINs).
 
 
 ======================================================================
 Command Line Utility
 
 This application is what is called a command line utility. To use it:
-1: first edit the supplied text file named "RM-Python-config.ini". 
+
+1: Edit the supplied text file named "RM-Python-config.ini".
    The file contains the SQL statement and required configuration settings.
 
 2: Double click the GroupFromSQLs.py file. This displays the black command
    console window and at the same time, generates the group.
-   The console window displays the number of people selected by the SQL
-   and then prompts the use to hit the enter key to close the console.
-
+   The console window displays:
+      the full path of the database operated on
+      the number of people selected by the SQL
+   and then prompts the user to hit the enter key to close the console.
+   It will also display and error messages.
 
 
 ======================================================================
-Features
-  RUN_SQL     = yes
-   Temporary option required to be yes.
+Option specification
+The example values shown are from the supplied example RM-Python-config.ini file
 
-QUERY_GROUP_NAME = fix_FaG
+[OPTIONS]
+   RUN_SQL     = yes
+   Required to be yes for utility to run.
+   ( I'm still considering how to use the same ini file for multiple script files.)
+
+[OPTIONS]
+    OPTION_SET_ID = Group_SMITH
+    The name of the INI file group of options that will be used
+    by the utility to create the group.
+
+[Group_SMITH]
+QUERY_GROUP_NAME = GroupSmith
     The name of the RM group to store the results.
 
+[Group_SMITH]
 QUERY_GROUP_UPDATE = yes
-    The group name may be new or existing. 
-    If it is new, it will be created. 
+    The group name may be new or existing.
+    If it is new, it will be created.
     If it is existing, the group will be updated only if QUERY_GROUP_UPDATE is set to yes.
     If QUERY_GROUP_UPDATE is set to no, the utility exits without making any changes.
 
 SQL_QUERY =
-     This is set to the SQL statement to be run. 
-     The statement may begin on the next line as long as the sql lines are all indented 
-     with white space. Either blanks or tabs.
-     Blank lines are not allowed. use lank comments to add spacing.
+    SELECT pt.PersonID
+    FROM PersonTable AS pt
+    INNER JOIN NameTable AS nt ON pt.PersonID = nt.OwnerID
+    WHERE nt.NameType = 5 -- married name
+    AND nt.Surname = 'Smith'
 
-    The utility does not check that the SQL statement does not do destructive changes.
-     Should it confirm first word is select? does not contain delete, insert or update?
 
+     The SQL statement that will be run. It must return a set of PersonID's.
+     The statement may begin on the next line, as above, as long as the SQL lines are
+     all indented with white space. Either blanks or tabs.
+     Blank lines are not allowed. Use indented blank SQL comments (--) to add spacing.
+
+     Your ini file can contain multiple SQL statements and group names. Each is called an option set.
+     Only the option set specified by OPTION_SET_ID will be used.
 
 
 ======================================================================
 Compatibility
-Tested with RootsMagic v7.6.5, v8 and v9
-       Python for Windows v3.10.5   64bit
-       unifuzz64.dll (file has no version number defined. see MD5 and file size in accompanying file Hash.txt)
+Tested with RootsMagic v9. Should be OK with previous version at least to v7
+       Python for Windows v3.11.4   64bit
+       unifuzz64.dll (file has no version number defined. see MD5 and file size below)
        Operating system Window 11, 64bit  (Windows 10 OK)
-The exe file is Windows only, probably Windows 10 and later.
 The py file could probably be modified to work on MacOS with Python ver 3+ installed.
 
 
 ======================================================================
 Backups
 
-You should run this script on a copy of your database file or at least have a known-good backup.
+You should run this script on a copy of your database file until you have some confidence with it.
+Or at least have a very recent known-good backup.
+
 This script only changes the TagTable and the GroupsTable.
+It could, if asked to,update a group that is important to you. Be careful assigning QUERY_GROUP_NAME
+A temporary view is created, but temp views are always removed after disconnect.
 
 
 ======================================================================
 Getting Started
-
-To install and use the single file version:
-*  Create a folder on your disk
-*  Copy these files from downloaded zip file to the above folder-
-      GroupFromSQLs.exe
-      RM-Python-config.ini
-*  Download unifuzz64.dll   -see below
-*  Move the unifuzz64.dll file to the above folder
-*  Edit the RM-Python-config.ini in the above folder to specify the location of the RM file,
-   the unifuzz64.dll file and the output report file. Some script functions
-   may be turned on or off. The required edits should be obvious.
-   (To edit, Open NotePad and drag the ini file onto the NotePad window.)
-*  Double click the GroupFromSQLs.exe file to run the script and generate
-   the report file.
-*  Examine the report output file.
-
-----
-OR
-----
 
 To install and use the script file version:
 *  Install Python for Windows x64  -see below
@@ -91,13 +99,15 @@ To install and use the script file version:
       RM-Python-config.ini
 *  Download unifuzz64.dll   -see below
 *  Move the unifuzz64.dll file to the above folder
-*  Edit the RM-Python-config.ini in the above folder to specify the location of the RM file,
-   the unifuzz64.dll file and the output report file. Some script functions
-   may be turned on or off. The required edits should be obvious.
+*  Edit the RM-Python-config.ini in the above folder to specify the location of the RM file and
+   the unifuzz64.dll file. For the initial setup, you may want to set RUN_SQL  = no
+   so that only the database and dll path values are checked. Continue as below.
+   This avoids dealing with more than one issue at once. After you solve any path issues, if any,
+   set RUN_SQL  = yes and continue onward.
    (To edit, Open NotePad and drag the ini file onto the NotePad window.)
-*  Double click the GroupFromSQLs.py file to run the script and generate
-   the report file.
-*  Examine the report output file.
+*  Double click the GroupFromSQLs.py file to run the script.
+*  Examine the console window and press enter to dismiss it.
+*  Open the database in RM, open the People view window and select the created group.
 
 
 
@@ -119,9 +129,8 @@ Click on the link near the top of page. Then ...
 Find the link near bottom of page, in "Files" section, labeled "Windows installer (64-bit)"
 Click it and save the installer.
 
-Direct link to recent version installer-
-https://www.python.org/ftp/python/3.10.5/python-3.10.5-amd64.exe
-
+Direct link to recent (2023-07) version installer-
+https://www.python.org/ftp/python/3.11.4/python-3.11.4-amd64.exe
 
 The Python installation requires about 100 Mbytes.
 It is easily and cleanly removed using the standard method found in Windows=>Settings
@@ -137,40 +146,57 @@ https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2018/05/unifuzz64.dll
 above link found in this context-
 https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlite-expert-command-line-shell-et-al/
 
-The SQLiteToolsforRootsMagic website has been around for years and is run by a trusted RM user.
-Many posts to public RootsMagic user forums mention use of unifuzz64.dll from the SQLiteToolsforRootsMagic website.
+The SQLiteToolsforRootsMagic website has been around for years and is run by a
+trusted RM user. Many posts to public RootsMagic user forums mention use of unifuzz64.dll from
+the SQLiteToolsforRootsMagic website.
 
 ======================================================================
 NOTES
 
+*  This utility will not help you write the SQL statement. Confirm you query works before
+   running it in this utility. You'll probably want to do that in your favorite SQLite manager app.
+
+*  RM will not recognize a new group created externally after it has loaded the database.
+   So if you are creating a new group, you'll have to restart RM or run the
+   utility while the database is not loaded.
+
+*  Updating the contents of a group while the database is open in RM works OK. However,
+   RM lists using group filters do not have a refresh button, so, for example, if you
+   displaying People view filtered by the group that has been updated, you'll need to
+   switch to another group and then back again to see the effect of the group having been updated.
+
+*  I have not tested all SQL statements :)
+   The utility takes the input SQL and creates a temporary view based on it. If that
+   fails, an appropriate error is returned. That should protect against SQL that
+   modifies/deletes data. (This is not confirmed beyond simple cases.)
+
 *  RM-Python-config.ini
    If there are any non-ASCII characters in the RM-Python-config.ini file,
-   perhaps in a database path, or in ignored objects, then the file
-   must be saved in UTF-8 format, with no byte order mark (BOM). This is a simple
-   save option in NotePad.
+   perhaps in a database path, or in ignored objects, then the file must be
+   saved in UTF-8 format, with no byte order mark (BOM).
+   This is an option in the save dialog box in NotePad.
 
-
-*   RMNOCASE_fake-SQLiteSpy64.dll
-    An alternate for unifuzz64.dll named "RMNOCASE_fake-SQLiteSpy64.dll" has recently been created and
-    has been successfully tested. The 2 dlls work equally well for this script.
-    https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2017/12/RMNOCASE_fake-SQLiteSpy64.dll.bak
-    in the context of this page:
-    https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlitespy/rmnocase_fake-sqlitespy64-dll/
-
-    After download, rename the file by removing the final ".bak"
-
+*   This utility creates a temporary view named: PersonIdList_RJO_utils
+    and deletes it when done.
 
 *   MD5 hash values are used to confirm the identity of files.
 	MD5 hash							File size		File name
 	06a1f485b0fae62caa80850a8c7fd7c2	256,406 bytes	unifuzz64.dll
-	43fe353e3e3456dc33f8f60933dbc6ab	74,240 bytes	RMNOCASE_fake-SQLiteSpy64.dll
-
 
 ======================================================================
 
 ======================================================================
 TODO
+Consider possibly operating on existing RM groups and forming intersections, unions etc.
 
+Do some testing on running queries using unifuzz64.dll's version of RMNOCASE on a database
+ indexed using RM's version of RMNOCASE. 
+
+Due to RMNOCASE issue, should queries include COLLATE BINARY or COLLATE NOCASE override as in-
+SELECT Surname FROM NameTable  
+WHERE Surname = 'Öhring'  COLLATE BINARY
+
+Look at possibility of fully populating the new SurnameMP, GivenMP & NicknameMP columns and ...?
 
 ======================================================================
 Feedback
@@ -179,6 +205,7 @@ Richard.J.Otter@gmail.com
 
 Public comments may be made at-
 https://github.com/ricko2001/Genealogy-scripts/discussions
+
 
 See my Linked-In profile at-
 https://www.linkedin.com/in/richardotter/

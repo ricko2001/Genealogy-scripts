@@ -16,32 +16,22 @@ import configparser
 
 
 # ===================================================DIV60==
-#  Global Variables
-G_QT = "\""
-
-
-# ===================================================DIV60==
 def main():
 
   # Configuration
   IniFileName = "RM-Python-config.ini"
 
-  # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM).
-  # Determine if application is a script file or frozen exe and get its directory
-  # see   https://pyinstaller.org/en/stable/runtime-information.html
-  if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-    application_path = os.path.dirname(sys.executable)
-  else:
-    application_path = os.path.dirname(__file__)
-  IniFile = os.path.join(application_path, IniFileName)
+  # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
+  # see   https://docs.python.org/3/library/configparser.html
+  IniFile = os.path.join(GetCurrentDirectory(), IniFileName)
 
+  # Check that ini file is at expected path and that it is readable & valid.
   if not os.path.exists(IniFile):
       print("ERROR: The ini configuration file, " + IniFileName + " must be in the same directory as the .py or .exe file.\n\n" )
       input("Press the <Enter> key to exit...")
       return
 
-  config = configparser.ConfigParser()
-
+  config = configparser.ConfigParser(empty_lines_in_values=False)
   try:
     config.read(IniFile, 'UTF-8')
   except:
@@ -49,9 +39,7 @@ def main():
     input("Press the <Enter> key to exit...")
     return
 
-  # Read file paths from ini file
-  # see   https://docs.python.org/3/library/configparser.html
-
+  # Read database and dll file paths from ini file
   try:
     database_Path = config['FILE_PATHS']['DB_PATH']
     RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
@@ -59,85 +47,80 @@ def main():
     print('Both DB_PATH and RMNOCASE_PATH must be specified.')
     return
 
-
   if not os.path.exists(database_Path):
-    reportF.write('Path for database not found: ' + database_Path)
+    print('Path for database not found: ' + database_Path)
+    print ('checked for ' + os.path.abspath(database_Path))
     return
   if not os.path.exists(RMNOCASE_Path):
-    reportF.write('Path for RMNOCASE_PATH dll not found: ' + RMNOCASE_Path)
+    print('Path for RMNOCASE_PATH dll not found: ' + RMNOCASE_Path)
     return
 
 
   # Process the database for requested output
   with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
-    print ("Database processed       = " + database_Path + "\n")
+    print ("Database processed       = " + os.path.abspath(database_Path) + "\n")
 
-    if config['OPTIONS'].getboolean('RUN_SQL'):
-       RunSQLFeature(config, dbConnection)
+    if config['OPTIONS'].getboolean('RUN_SQL_GROUP'):
+       RunSQLGroupFeature(config, dbConnection)
 
   input("Press the <Enter> key to exit...")
 
   return 0
 
-# ===================================================DIV60==
-def GroupOperationFeature(config, dbConnection):
-
-#  Group-1
-#  Group-2
-  return
 
 # ===================================================DIV60==
-def GroupToTable(config, dbConnection):
-  return
-
-# ===================================================DIV60==
-def RunSQLFeature(config, dbConnection):
+def RunSQLGroupFeature(config, dbConnection):
 
   # get option
+  try:
+    OptionSet = config['OPTIONS']['OPTION_SET_ID']
+  except:
+    print('OPTION_SET_ID must be specified.')
+    return
+
+  # operate on one set of options named above
   updateGroup = False
-  if config['OPTIONS'].getboolean('QUERY_GROUP_UPDATE'):
+  if config[OptionSet].getboolean('UPDATE_GROUP'):
     updateGroup = True
 
-  viewStmt = "DROP VIEW IF EXISTS PersonIdList"
+  viewStmt = "DROP VIEW IF EXISTS PersonIdList_RJO_utils"
   cur = dbConnection.cursor()
   cur.execute( viewStmt )
 
+   # get the SQL statement and create the view
   try:
-    SqlStmt = "CREATE VIEW PersonIdList AS " + config['OPTIONS']['SQL_QUERY']
+    SqlStmt = "CREATE TEMP VIEW PersonIdList_RJO_utils AS " + config[OptionSet]['SQL_QUERY']
   except:
-    print ("ERROR: SQL_QUERY must be specified for this option. \n")
-    input("Press the <Enter> key to exit...")
+    print ("ERROR: SQL_QUERY in the ini file group " + OptionSet + " must be specified. \n")
     return
 
   try:
     cur = dbConnection.cursor()
     cur.execute( SqlStmt )
   except:
-    print ("ERROR: SQL_QUERY returned an error. \n")
-    input("Press the <Enter> key to exit...")
+    print ("ERROR: Creating a VIEW on SQL_QUERY returned an error. \n")
     return
 
   try:  # errors in SQL show up here, not in view creation
-    SqlStmt = "select count() from PersonIdList"
+    SqlStmt = "select count() from PersonIdList_RJO_utils"
     cur = dbConnection.cursor()
     cur.execute( SqlStmt )
     numInView = cur.fetchone()[0]
     print ("# of persons selected: " + str(numInView) + "\n")
   except:
-    print ("ERROR: SQL_QUERY returned an error. \n")
-    input("Press the <Enter> key to exit...")
+    print ("ERROR: SQL_QUERY returned an error when run as a VIEW. \n")
     return
 
 
   groupName = ""
   try:
-    groupName = config['OPTIONS']['QUERY_GROUP_NAME']
+    groupName = config['OptionSet']['QUERY_GROUP_NAME']
   except:
-    groupName = "SqlQueryGroup_" + TimeStamp()
+    groupName = "SqlQueryGroup_" + TimeStampNow()
 
   CreateGroup( groupName, updateGroup, dbConnection)
 
-  viewStmt = "DROP VIEW IF EXISTS PersonIdList"
+  viewStmt = "DROP VIEW IF EXISTS PersonIdList_RJO_utils"
   cur = dbConnection.cursor()
   cur.execute( viewStmt )
 
@@ -225,7 +208,7 @@ def PopulateGroup(GroupID, dbConnection):
    ,PersonID AS EndID
    ,(julianday('now') - 2415018.5) AS UTCModDate 
 
-  FROM PersonIdList
+  FROM PersonIdList_RJO_utils
   """
   cur = dbConnection.cursor()
   cur.execute(SqlStmt, (GroupID,) )
@@ -242,6 +225,17 @@ def TimeStampNow(type=""):
      elif type == 'file':
        dt_string = now.strftime("%Y-%m-%d_%H%M%S")
      return dt_string
+
+
+# ===================================================DIV60==
+def GetCurrentDirectory():
+  # Determine if application is a script file or frozen exe and get its directory
+  # see   https://pyinstaller.org/en/stable/runtime-information.html
+  if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    application_path = os.path.dirname(sys.executable)
+  else:
+    application_path = os.path.dirname(__file__)
+  return application_path
 
 
 # ===================================================DIV60==
