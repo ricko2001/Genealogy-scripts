@@ -58,7 +58,7 @@ def main():
 
   # Process the database for requested output
   with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
-    print ("Database processed       = " + os.path.abspath(database_Path) + "\n")
+    print ("Database processed = " + os.path.abspath(database_Path) + "\n")
 
     if config['OPTIONS'].getboolean('RUN_SQL_GROUP'):
        RunSQLGroupFeature(config, dbConnection)
@@ -114,7 +114,7 @@ def RunSQLGroupFeature(config, dbConnection):
 
   groupName = ""
   try:
-    groupName = config['OptionSet']['QUERY_GROUP_NAME']
+    groupName = config[OptionSet]['QUERY_GROUP_NAME']
   except:
     groupName = "SqlQueryGroup_" + TimeStampNow()
 
