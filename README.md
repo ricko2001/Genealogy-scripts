@@ -12,6 +12,8 @@ RM -Test external files
   A utility to check status of external files linked to a RootsMagic file.
   This only reads the RM file. No changes are made.
 
+RM -Group from SQL
+  A utility to quickly update a RM group by running an SQL query.
 
 RM -Switch source template
   A utility to switch the source template used by one or a set of sources.
@@ -23,7 +25,7 @@ RM -Switch source template
 
   My process is to always run the script on a copy of the main database.
   Then after iterating thru fixes to the ini file and I'm satisfies with the results,
-  I b1ackup the main database and then move the copy with the changes 
+  I backup the main database and then move the copy with the changes 
   done by the script to the main database file location.
 
 
