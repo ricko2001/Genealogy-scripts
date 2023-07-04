@@ -60,7 +60,7 @@ def main():
   with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
     print ("Database processed = " + os.path.abspath(database_Path) + "\n")
 
-    if config['OPTIONS'].getboolean('RUN_GROUP_FROM_SQL '):
+    if config['OPTIONS'].getboolean('RUN_GROUP_FROM_SQL'):
        RunSQLGroupFeature(config, dbConnection)
 
   input("Press the <Enter> key to exit...")
