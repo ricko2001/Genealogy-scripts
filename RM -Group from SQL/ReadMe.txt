@@ -31,33 +31,33 @@ Option specification
 The example values shown are from the supplied example RM-Python-config.ini file
 
 [OPTIONS]
-   RUN_SQL     = yes
-   Required to be yes for utility to run.
-   ( I'm still considering how to use the same ini file for multiple script files.)
+RUN_GROUP_FROM_SQL      = yes
+   yes : execute the SQL and create/update group in database. 
+   no  : check validity of file paths and exit.
 
 [OPTIONS]
-    OPTION_SET_ID = OptGroup_SMITH
-    The name of the INI file group of options that will be used
-    by the utility to create the group.
+GROUP_FROM_SQL_OPTIONS = OptSet_SMITH
+    The name of the INI file section set of options that will be used
+    by the utility to create the group. Other set may exist, but are ignored.
 
-[OptGroup_SMITH]
+[OptSet_SMITH]
 QUERY_GROUP_NAME = GroupSmith
     The name of the RM group to store the results.
 
-[OptGroup_SMITH]
+[OptSet_SMITH]
 QUERY_GROUP_UPDATE = yes
     The group name may be new or existing.
     If it is new, it will be created.
     If it is existing, the group will be updated only if QUERY_GROUP_UPDATE is set to yes.
     If QUERY_GROUP_UPDATE is set to no, the utility exits without making any changes.
 
-[OptGroup_SMITH]
+[OptSet_SMITH]
 SQL_QUERY =
-    SELECT pt.PersonID
-    FROM PersonTable AS pt
-    INNER JOIN NameTable AS nt ON pt.PersonID = nt.OwnerID
-    WHERE nt.NameType = 5 -- married name
-    AND nt.Surname = 'Smith'
+   SELECT pt.PersonID
+   FROM PersonTable AS pt
+   INNER JOIN NameTable AS nt ON pt.PersonID = nt.OwnerID
+   WHERE nt.NameType = 5 -- married name
+   AND nt.Surname = 'Smith'
 
 
      The SQL statement that will be run. It must return a set of PersonID's.
@@ -126,10 +126,10 @@ To install and use the single file version:
 *  Download the SQLite extension: unifuzz64.dll   -see below
 *  Move the unifuzz64.dll file to the working folder
 *  Edit the RM-Python-config.ini in the above folder to specify the location of the RM file and
-   the unifuzz64.dll file. For the initial setup, you may want to set RUN_SQL  = no
+   the unifuzz64.dll file. For the initial setup, you may want to set RUN_GROUP_FROM_SQL   = no
    so that only the database and dll path values are checked. Continue as below.
    This avoids dealing with more than one issue at once. After you solve any path issues, if any,
-   set RUN_SQL  = yes and continue onward.
+   set RUN_GROUP_FROM_SQL   = yes and continue onward.
    (To edit, Open NotePad and drag the ini file onto the NotePad window.)
 *  Double click the GroupFromSQL.exe file to run the utility.
 *  Examine the console window and press enter to dismiss it.

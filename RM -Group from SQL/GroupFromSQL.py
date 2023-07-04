@@ -60,7 +60,7 @@ def main():
   with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
     print ("Database processed = " + os.path.abspath(database_Path) + "\n")
 
-    if config['OPTIONS'].getboolean('RUN_SQL_GROUP'):
+    if config['OPTIONS'].getboolean('RUN_GROUP_FROM_SQL '):
        RunSQLGroupFeature(config, dbConnection)
 
   input("Press the <Enter> key to exit...")
@@ -73,9 +73,9 @@ def RunSQLGroupFeature(config, dbConnection):
 
   # get option
   try:
-    OptionSet = config['OPTIONS']['OPTION_SET_ID']
+    OptionSet = config['OPTIONS']['GROUP_FROM_SQL_OPTIONS']
   except:
-    print('OPTION_SET_ID must be specified.')
+    print('GROUP_FROM_SQL_OPTIONS must be specified.')
     return
 
   # operate on one set of options named above
