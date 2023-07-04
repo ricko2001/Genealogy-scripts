@@ -224,12 +224,6 @@ NOTES
    must be saved in UTF-8 format, with no byte order mark (BOM).
    This is an option in the save dialog box in NotePad.
 
-
-*  UNREF_FILES
-   If there is a difference in capitalization of file name or directory
-   path in the database vs. the file system, the file will be listed as
-   un-referenced.  (Unix-like file system case sensitivity)
-
 *  General information: File paths pointing to external files
    in RM 7:   all paths are absolute starting with a drive letter
    in RM 8&9: absolute file path starting with a drive letter
@@ -244,27 +238,43 @@ NOTES
 *   CHECK_FILES feature: file path case in the database or in the file system
     path name is not significant.
 
-*   UNREF_FILES feature: The folder specified in RM's preferences as the Media
+*  UNREF_FILES
+   If there is a difference in capitalization of file name or directory
+   path in the database vs. the file system, the file will be listed as
+   un-referenced.  (Unix-like file system case sensitivity)
+
+*   UNREF_FILES
+    The folder specified in RM's preferences as the Media
     folder is not necessarily the same as the folder specified by the
     SEARCH_ROOT_FLDR_PATH variable in the RM-Python-config.ini file, but it is
     recommended that they be the same.
 
+*   UNREF_FILES
     To shorten the list of unreferenced items, the IGNORED_OBJECTS section can
-    be edited to list items to be ignored. The goal would be to produce a report
-    file with no unreferenced filed found. This is an easy result to interpret.
-    If a file is to be added to the folder that won't be referenced by
-    RM, add it to the IGNORED_OBEJECTS section. The goal is to have this test
-    produce no output under normal circumstances. If a file is added to the media
-    folder and inadvertent not added to the RM database, it will show up here.
+    be used to list items that are to be ignored by the utility.
+    The goal should be to produce a report with no unreferenced files found. That
+    is an easy result to interpret. If a file is added to the media folder but
+    not added to the RM database, it will show up here.
+
+    If a file is in the media folder but is intentionally not referenced by
+    RM, add it to the IGNORED_OBEJECTS section. That prevents it from showing
+    up in the report and confusing interpretation.
+
+*   UNREF_FILES
+    Only file names and folder names may be added to the IGNORED_OBJECTS list.
+    I suggest that you organize your file and folders so that ignored folders
+    all have the same name, even though there may be many of them in different
+    locations in the media folder.
 
 *   DUP_FILEPATHS feature:  Files may be duplicated in the media tab intentionally
     as they might have different captions etc.
 
-*   DUP_FILENAMES feature:  Files listed have the same file names, ignoring case.
+*   DUP_FILENAMES
+    Files listed have the same file names, ignoring case.
     Duplicate file names are not a problem. This function is provided as a
     troubleshooting tool
 
-*   SHOW_ORIG_PATH feature: (RM v8 & v9 only)
+*   SHOW_ORIG_PATH (RM v8 & v9 only)
     A display option is available for files found by either the CHECK_FILES or
     NO_TAG_FILES or DUP_FILES
     The option is turned on with the option SHOW_ORIG_PATH in the ini file.
