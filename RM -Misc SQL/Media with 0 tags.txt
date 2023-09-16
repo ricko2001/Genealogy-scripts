@@ -1,0 +1,16 @@
+
+
+
+
+select MediaPath, MediaFile
+from MultimediaTable mmt
+left join MediaLinkTable mlt on mlt.MediaID =  mmt.MediaID
+where OwnerType is NULL
+order by MediaPath, MediaFile
+
+
+
+select count (MediaFile)
+from MultimediaTable mmt
+left join MediaLinkTable mlt on mlt.MediaID =  mmt.MediaID
+where OwnerType is NULL

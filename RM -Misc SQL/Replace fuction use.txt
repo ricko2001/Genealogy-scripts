@@ -1,0 +1,7 @@
+
+
+
+UPDATE EventTable
+SET Details = replace( Details, 'Cesnus', 'Census')
+WHERE EventType=18;
+

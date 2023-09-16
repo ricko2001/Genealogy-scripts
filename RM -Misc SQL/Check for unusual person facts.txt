@@ -1,5 +1,13 @@
 --===========================================DIV50==
---count PERSONS WITH primary name !=1
+--PERSONS WITH a FACt of type 0
+   SELECT personID
+   FROM PersonTable
+   JOIN EventTable ON PersonID = OwnerID
+   WHERE OwnerType =0 AND EventType=0
+
+
+--===========================================DIV50==
+--count  !=1 PERSONS WITH primary name
 
 SELECT PersonTable.PersonID
 FROM PersonTable
@@ -30,7 +38,7 @@ FROM PersonTable
 INNER JOIN NameTable ON NameTable.OwnerID = PersonTable.PersonID
 WHERE NameTable.IsPrivate = 1
 
-Note- cannot fix via RM UI if also Primary
+--Note- cannot fix via RM UI if also Primary
 
 --===========================================DIV50==
 --Persons using Family facts

@@ -149,7 +149,14 @@ external; articles
 https://data-nerd.blog/2021/10/28/recursive-sql-for-querying-hierarchical-data-part-2-levels-and-ancestors/
 
 
+
+
 All cousins of person 1  Had to remove variables because they don't work as a view.
+
+
+
+
+This is also in RM -SQL for creating useful groups\List of cousins.txt
 
   WITH RECURSIVE
   child_of(ParentID, ChildID) AS

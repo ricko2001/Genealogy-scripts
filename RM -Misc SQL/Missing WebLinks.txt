@@ -1,0 +1,52 @@
+
+-- Source: Look for Blank URL name field or no WebLink 
+
+SELECT st.Name, ut.url
+FROM SourceTable AS st
+LEFT JOIN URLTable AS ut ON st.SourceID = ut.OwnerID
+WHERE ut.LinkID IS NULL OR (ut.OwnerType=3 AND URL='')
+ORDER BY URL DESC
+
+-- Citation: Look for Blank URL field or no WebLink 
+SELECT st.Name, ct.CitationName, ut.url
+FROM CitationTable AS ct
+LEFT JOIN URLTable AS ut ON ct.CitationID = ut.OwnerID
+JOIN SourceTable AS st ON st.SourceID = ct.SourceID
+WHERE ut.LinkID IS NULL OR (ut.OwnerType=4 AND URL='')
+ORDER BY URL DESC
+
+
+
+reindex rmnocase;
+
+-- ignore sources that are "Split" (no meaningful citations) & non-online sources
+
+SELECT st.Name, ct.CitationName, ut.url
+FROM CitationTable AS ct
+LEFT JOIN URLTable AS ut ON ct.CitationID = ut.OwnerID
+JOIN SourceTable AS st ON st.SourceID = ct.SourceID
+WHERE 
+     ( ut.LinkID IS NULL OR (ut.OwnerType=4 AND URL=''))
+  AND ct.CitationName <> '-' 
+
+  AND st.Name NOT LIKE('%no listing found%')
+  AND st.Name NOT LIKE('%-FS%') 
+  AND st.Name NOT LIKE('%ORIG%') 
+
+  AND st.Name NOT LIKE('_TEMPORARY%')
+  AND st.Name NOT LIKE('ChurchBook%')
+  AND st.Name NOT LIKE('BOOK%')
+  AND st.Name NOT LIKE('G-%')
+  AND st.Name NOT LIKE('EMAIL%')
+  AND st.Name NOT LIKE('Funeral%')
+  AND st.Name NOT LIKE('GS%') 
+  AND st.Name NOT LIKE('I%')
+  AND st.Name NOT LIKE('LETTER%')
+  AND st.Name NOT LIKE('MISC%')
+  AND st.Name NOT LIKE('MR-L%') 
+  AND st.Name NOT LIKE('PH%')
+  AND st.Name NOT LIKE('RR%')
+  AND st.Name NOT LIKE('SS Acct%') 
+  AND st.Name NOT LIKE('SS Card%') 
+  AND st.Name NOT LIKE('Z_%')
+ORDER BY st.name;

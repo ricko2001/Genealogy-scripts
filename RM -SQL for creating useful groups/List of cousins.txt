@@ -1,0 +1,49 @@
+  -- Hard coded for starting with PersonID/RIN = 1
+  -- See line 37          WHERE ChildID=1
+  -- change the 1 to the RIN of the person you want to start from
+  -- 
+  -- 
+  WITH RECURSIVE
+  child_of(ParentID, ChildID) AS
+    (SELECT PersonID, ChildTable.ChildID FROM PersonTable
+       LEFT JOIN FamilyTable ON PersonID=FatherID
+       LEFT JOIN ChildTable USING(FamilyID)
+       WHERE RelFather=0
+     UNION
+     SELECT PersonID, ChildTable.ChildID FROM PersonTable
+       LEFT JOIN FamilyTable ON PersonID=MotherID
+       LEFT JOIN ChildTable USING(FamilyID)
+       WHERE RelMother=0
+     ),
+  --
+  descendant_of_person(DescendantID) AS
+    (SELECT ChildID FROM AncestorList
+     UNION 
+     SELECT ChildID FROM child_of
+       INNER JOIN descendant_of_person ON ParentID = DescendantID),
+  --
+  parent_of(ChildID, ParentID) AS
+    (SELECT PersonID, FatherID AS ParentID FROM PersonTable
+       LEFT JOIN ChildTable ON PersonID=ChildTable.ChildID
+       LEFT JOIN FamilyTable USING(FamilyID)
+       WHERE RelFather=0
+     UNION
+     SELECT PersonID, MotherID AS ParentID FROM PersonTable
+       LEFT JOIN ChildTable ON PersonID=ChildTable.ChildID
+       LEFT JOIN FamilyTable USING(FamilyID)
+       WHERE RelMother=0
+     ),
+  --
+  ancestor_of_person(AncestorID) AS
+    (SELECT ParentID FROM parent_of
+       WHERE ChildID=1
+     UNION
+     SELECT ParentID FROM parent_of
+       INNER JOIN ancestor_of_person ON ChildID = AncestorID),
+  --
+  AncestorList (ChildID) AS
+    (SELECT AncestorID FROM ancestor_of_person, PersonTable
+     WHERE ancestor_of_person.AncestorID=PersonTable.PersonID)
+  --
+  SELECT DescendantID as PersonID 
+   FROM descendant_of_person

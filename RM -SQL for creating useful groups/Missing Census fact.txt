@@ -1,0 +1,41 @@
+  -- Search for missing 1950 Census linked to
+  -- people who might be in 1950 census. Not perfect !
+  -- Assumes Census description contain "1950" (census year), person born in United States.
+  -- Edit line 34 to adjust census year in description and lines 14,15,16 to select b & d dates
+
+  SELECT personID
+  FROM personTable as pt
+  INNER JOIN EventTable AS et_birth ON et_birth.OwnerID = pt.PersonID
+  INNER JOIN EventTable AS et_death ON et_death.OwnerID = pt.PersonID 
+  INNER JOIN PlaceTable AS plt ON et_birth.PlaceID = plt.PlaceID 
+  WHERE et_birth.EventType = 1
+    AND et_death.EventType = 2
+    AND plt.Name LIKE '%United States%'
+    AND SUBSTR(et_birth.DATE, 4,4) < '1950' --birth date before ...
+    AND SUBSTR(et_birth.DATE, 4,4) > '1850' --birth date after ...
+    AND SUBSTR(et_death.DATE, 4,4) > '1950' --death date after ...
+  -- 
+  EXCEPT
+  -- people who have a census fact of specified type
+  SELECT personID
+  FROM personTable as pt
+  JOIN EventTable AS et ON et.OwnerID = pt.PersonID
+  WHERE et.EventType =  18
+    AND et.Details LIKE '%1950%'
+  -- 
+  EXCEPT
+  -- people who are witness to a census fact of specified type
+  SELECT ptw.PersonID
+  FROM PersonTable AS ptf
+  JOIN EventTable AS et ON et.OwnerID = ptf.PersonID
+  JOIN WitnessTable AS wt ON wt.EventID = et.EventID
+  JOIN PersonTable AS ptw ON wt.PersonID = ptw.PersonID
+  WHERE et.EventType =  18
+    AND et.Details LIKE '%1950%'
+  -- 
+  ORDER BY PersonID ASC;
+  
+
+
+ --NOTES
+ --Does not include people born not in US but immigrated before 1950
