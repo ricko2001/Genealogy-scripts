@@ -31,7 +31,7 @@ def main():
       input("Press the <Enter> key to exit...")
       return
 
-  config = configparser.ConfigParser(empty_lines_in_values=False)
+  config = configparser.ConfigParser(empty_lines_in_values=False, interpolation=None)
   try:
     config.read(IniFile, 'UTF-8')
   except:
@@ -57,11 +57,15 @@ def main():
 
 
   # Process the database for requested output
-  with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
-    print ("Database processed = " + os.path.abspath(database_Path) + "\n")
+  try:
+    with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
+      print ("Database processed = " + os.path.abspath(database_Path) + "\n")
+  
+      if config['OPTIONS'].getboolean('RUN_GROUP_FROM_SQL'):
+         RunSQLGroupFeature(config, dbConnection)
+  except:
+    print('Database probably locked.')
 
-    if config['OPTIONS'].getboolean('RUN_GROUP_FROM_SQL'):
-       RunSQLGroupFeature(config, dbConnection)
 
   input("Press the <Enter> key to exit...")
 
