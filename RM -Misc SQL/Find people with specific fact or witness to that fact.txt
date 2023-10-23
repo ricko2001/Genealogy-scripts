@@ -1,0 +1,58 @@
+
+
+-- Get list id PersonIDs who have either a fact or a witness to a fact of
+-- type Census
+-- detail LIKE ('1950%')
+
+-- what if a person has more than 1 qualifying fact or witness
+
+with sel_events AS
+(
+Select EventID
+from EventTable as et 
+join FactTypeTable as ftt on et.EventType = ftt.FactTypeID
+where
+     et.OwnerType = 0
+and et.Details LIKE ('1950%')
+and ftt.Name = 'Census'
+)
+select et.OwnerID
+from EventTable as et 
+join sel_events on sel_events.EventID = et.EventID
+UNION
+select wt.PersonID
+from WitnessTable as wt 
+join sel_events on sel_events.EventID = wt.EventID
+
+ORDER BY  1
+
+
+
+
+
+OLD
+select wt.PersonID
+from EventTable as et 
+join FactTypeTable as ftt on et.EventType = ftt.FactTypeID
+join WitnessTable as wt on wt.EventID = et.EventID
+where
+     et.OwnerType = 0
+and et.Details LIKE ('1950%')
+and ftt.Name = 'Census'
+
+UNION
+
+select pt.PersonID
+from PersonTable as pt
+join EventTable as et on et.OwnerID = pt.PersonID
+join FactTypeTable as ftt on et.EventType = ftt.FactTypeID
+where
+     et.OwnerType = 0
+and et.Details LIKE ('1950%')
+and ftt.Name = 'Census'
+
+ORDER BY  pt.PersonID
+
+
+
+

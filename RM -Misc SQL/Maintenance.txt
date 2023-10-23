@@ -81,7 +81,7 @@ UPDATE EventTable
 SELECT Date, sortdate
 FROM EventTable
   WHERE Date = 'T=' 
-   OR Details = 'T-';
+   OR Date = 'T-';
 
 UPDATE EventTable
   SET Date = '.',
@@ -111,8 +111,6 @@ SELECT
      OR  Given   <> TRIM(Given)
      OR  Suffix  <> TRIM(Suffix)
      OR  Prefix  <> TRIM(Prefix);
-
-SELECT $PAUSE;
 
 UPDATE NameTable
   SET
