@@ -1,41 +1,46 @@
-  -- Search for missing 1950 Census linked to
-  -- people who might be in 1950 census. Not perfect !
-  -- Assumes Census description contain "1950" (census year), person born in United States.
-  -- Edit line 34 to adjust census year in description and lines 14,15,16 to select b & d dates
-
+  -- Search for missing 1950 Census on appropriate people
+  -- people who might be in 1950 census but have no FACT or SHARED FACT
+  -- Requires Birth place in United States
+  -- Requires Birth birth date in specified range
+  -- Death Fact not required
+  -- Does not find people with Census fact or shared fact Detail 1950%
+  -- Does not find people not born in US but residing in USA in 1950
+  --
+  WITH sel_events AS
+  (
+  SELECT EventID
+  FROM EventTable AS et
+  INNER JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
+  WHERE
+      et.OwnerType = 0
+  AND et.Details LIKE ('1950%')
+  AND ftt.Name = 'Census'
+  )
+  --
   SELECT personID
-  FROM personTable as pt
-  INNER JOIN EventTable AS et_birth ON et_birth.OwnerID = pt.PersonID
-  INNER JOIN EventTable AS et_death ON et_death.OwnerID = pt.PersonID 
-  INNER JOIN PlaceTable AS plt ON et_birth.PlaceID = plt.PlaceID 
-  WHERE et_birth.EventType = 1
-    AND et_death.EventType = 2
-    AND plt.Name LIKE '%United States%'
-    AND SUBSTR(et_birth.DATE, 4,4) < '1950' --birth date before ...
-    AND SUBSTR(et_birth.DATE, 4,4) > '1850' --birth date after ...
-    AND SUBSTR(et_death.DATE, 4,4) > '1950' --death date after ...
-  -- 
+  FROM PersonTable as pt
+    INNER JOIN PlaceTable AS plt ON et_birth.PlaceID = plt.PlaceID
+    INNER JOIN EventTable AS et_birth ON et_birth.OwnerID = pt.PersonID
+                                      AND et_birth.EventType = 1
+    LEFT JOIN EventTable AS et_death  ON et_death.OwnerID = pt.PersonID
+                                      AND et_death.EventType = 2
+  WHERE
+    plt.Name LIKE '%United States%'
+    AND SUBSTR(et_birth.DATE, 4,4) < '1950'
+    AND SUBSTR(et_birth.DATE, 4,4) > '1850'
+    AND (SUBSTR(et_death.DATE, 4,4) > '1950' OR et_death.OwnerID IS NULL)
+  --
   EXCEPT
   -- people who have a census fact of specified type
-  SELECT personID
-  FROM personTable as pt
-  JOIN EventTable AS et ON et.OwnerID = pt.PersonID
-  WHERE et.EventType =  18
-    AND et.Details LIKE '%1950%'
-  -- 
+  SELECT et.OwnerID
+  FROM EventTable AS et
+  INNER JOIN sel_events ON sel_events.EventID = et.EventID
+  --
   EXCEPT
   -- people who are witness to a census fact of specified type
-  SELECT ptw.PersonID
-  FROM PersonTable AS ptf
-  JOIN EventTable AS et ON et.OwnerID = ptf.PersonID
-  JOIN WitnessTable AS wt ON wt.EventID = et.EventID
-  JOIN PersonTable AS ptw ON wt.PersonID = ptw.PersonID
-  WHERE et.EventType =  18
-    AND et.Details LIKE '%1950%'
-  -- 
-  ORDER BY PersonID ASC;
-  
-
-
- --NOTES
- --Does not include people born not in US but immigrated before 1950
+  SELECT wt.PersonID
+  FROM WitnessTable AS wt
+  INNER JOIN sel_events ON sel_events.EventID = wt.EventID
+  --
+  ORDER BY 1 ASC;
+  --

@@ -20,7 +20,8 @@
     (SELECT ChildID FROM AncestorList
      UNION 
      SELECT ChildID FROM child_of
-       INNER JOIN descendant_of_person ON ParentID = DescendantID),
+       INNER JOIN descendant_of_person ON ParentID = DescendantID
+    ),
   --
   parent_of(ChildID, ParentID) AS
     (SELECT PersonID, FatherID AS ParentID FROM PersonTable
@@ -39,11 +40,14 @@
        WHERE ChildID=1
      UNION
      SELECT ParentID FROM parent_of
-       INNER JOIN ancestor_of_person ON ChildID = AncestorID),
+       INNER JOIN ancestor_of_person ON ChildID = AncestorID
+     ),
   --
   AncestorList (ChildID) AS
     (SELECT AncestorID FROM ancestor_of_person, PersonTable
-     WHERE ancestor_of_person.AncestorID=PersonTable.PersonID)
+     WHERE ancestor_of_person.AncestorID=PersonTable.PersonID
+    )
   --
   SELECT DescendantID as PersonID 
    FROM descendant_of_person
+  -- 

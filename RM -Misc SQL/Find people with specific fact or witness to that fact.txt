@@ -1,58 +1,35 @@
-
+-- FACT and WITNESS to that fact
+-- FACT and SHARED
 
 -- Get list id PersonIDs who have either a fact or a witness to a fact of
--- type Census
+-- for example, type Census
 -- detail LIKE ('1950%')
 
--- what if a person has more than 1 qualifying fact or witness
-
-with sel_events AS
+-- create a common table expression so criteria appear once in statement.
+WITH sel_events AS
 (
-Select EventID
-from EventTable as et 
-join FactTypeTable as ftt on et.EventType = ftt.FactTypeID
-where
-     et.OwnerType = 0
-and et.Details LIKE ('1950%')
-and ftt.Name = 'Census'
+SELECT EventID
+FROM EventTable AS et 
+INNER JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
+WHERE
+    et.OwnerType = 0
+AND et.Details LIKE ('1950%')
+AND ftt.Name = 'Census'
 )
-select et.OwnerID
-from EventTable as et 
-join sel_events on sel_events.EventID = et.EventID
+
+-- get the people with the Fact attached
+SELECT et.OwnerID
+FROM EventTable AS et 
+INNER JOIN sel_events ON sel_events.EventID = et.EventID
+
 UNION
-select wt.PersonID
-from WitnessTable as wt 
-join sel_events on sel_events.EventID = wt.EventID
+
+-- get the people with the Shared Fact attached
+SELECT wt.PersonID
+FROM WitnessTable AS wt 
+INNER JOIN sel_events ON sel_events.EventID = wt.EventID
 
 ORDER BY  1
-
-
-
-
-
-OLD
-select wt.PersonID
-from EventTable as et 
-join FactTypeTable as ftt on et.EventType = ftt.FactTypeID
-join WitnessTable as wt on wt.EventID = et.EventID
-where
-     et.OwnerType = 0
-and et.Details LIKE ('1950%')
-and ftt.Name = 'Census'
-
-UNION
-
-select pt.PersonID
-from PersonTable as pt
-join EventTable as et on et.OwnerID = pt.PersonID
-join FactTypeTable as ftt on et.EventType = ftt.FactTypeID
-where
-     et.OwnerType = 0
-and et.Details LIKE ('1950%')
-and ftt.Name = 'Census'
-
-ORDER BY  pt.PersonID
-
 
 
 
