@@ -1,0 +1,163 @@
+  -- Hard coded for starting with PersonID/RIN = 2361  CAO
+  -- See line 3         SELECT   2361   AS C_StartPerson
+  WITH RECURSIVE
+  constants(C_StartPerson, C_BioParetOnly) AS
+    (SELECT   2361   AS C_StartPerson,
+                 1   AS C_BioParetOnly
+    ),
+  child_of(ParentID, ChildID) AS
+    (SELECT PersonID, ChildTable.ChildID 
+       FROM PersonTable AS pt
+       LEFT JOIN FamilyTable AS ft ON pt.PersonID=ft.FatherID
+       LEFT JOIN ChildTable USING(FamilyID)
+       WHERE RelFather=0  --biological parent
+     UNION
+     SELECT PersonID, ChildTable.ChildID
+       FROM PersonTable AS pt
+       LEFT JOIN FamilyTable AS ft ON pt.PersonID=ft.MotherID
+       LEFT JOIN ChildTable USING(FamilyID)
+       WHERE RelMother=0  --biological parent
+    ),
+  descendant_of_person(DescendantID) AS
+    (SELECT ChildID FROM AncestorList
+     UNION 
+     SELECT ChildID FROM child_of
+       INNER JOIN descendant_of_person ON ParentID = DescendantID
+    ),
+  parent_of(ChildID, ParentID) AS
+    (SELECT PersonID, FatherID AS ParentID FROM PersonTable
+       LEFT JOIN ChildTable ON PersonID=ChildTable.ChildID
+       LEFT JOIN FamilyTable USING(FamilyID)
+       WHERE
+         CASE (SELECT C_BioParetOnly FROM constants )
+         WHEN 1 THEN RelFather=0
+         ELSE 1
+         END
+     UNION
+     SELECT PersonID, MotherID AS ParentID FROM PersonTable
+       LEFT JOIN ChildTable ON PersonID=ChildTable.ChildID
+       LEFT JOIN FamilyTable USING(FamilyID)
+       WHERE 
+         CASE (SELECT C_BioParetOnly FROM constants )
+         WHEN 1 THEN RelMother=0
+         ELSE 1
+         END
+    ),
+  ancestor_of_person(AncestorID) AS
+    (SELECT ParentID FROM parent_of
+       WHERE ChildID=(SELECT C_StartPerson FROM constants)
+     UNION
+     SELECT ParentID FROM parent_of
+       INNER JOIN ancestor_of_person ON ChildID = AncestorID
+    ),
+  AncestorList (ChildID) AS
+    (SELECT AncestorID FROM ancestor_of_person, PersonTable
+     WHERE ancestor_of_person.AncestorID=PersonTable.PersonID
+    )
+  SELECT DescendantID as PersonID, count(*)
+   FROM descendant_of_person
+  -- 
+
+--===========================================DIV50==
+--work on putting in my style
+
+
+
+  -- Hard coded for starting with PersonID/RIN = 2361  CAO
+  -- See line 3         SELECT   2361   AS C_StartPerson
+  WITH RECURSIVE
+  constants(C_StartPerson, C_BioParetOnly) AS
+    (SELECT   2361   AS C_StartPerson,
+                 1   AS C_BioParetOnly
+    ),
+  cousin_of_person(CousinID) AS
+    (SELECT AncestorID FROM ancestor_of_person
+     UNION 
+     SELECT ChildID FROM child_of
+       INNER JOIN cousin_of_person ON ParentID = CousinID
+    ),
+  ancestor_of_person(AncestorID) AS
+    (SELECT ParentID FROM parent_of
+       WHERE ChildID=(SELECT C_StartPerson FROM constants)
+     UNION
+     SELECT ParentID FROM parent_of
+       INNER JOIN ancestor_of_person ON ChildID = AncestorID
+    ),
+  parent_of(ChildID, ParentID) AS
+    (SELECT PersonID, FatherID AS ParentID FROM PersonTable
+       LEFT JOIN ChildTable ON PersonID=ChildTable.ChildID
+       LEFT JOIN FamilyTable USING(FamilyID)
+       WHERE
+         CASE (SELECT C_BioParetOnly FROM constants)
+         WHEN 1 THEN RelFather=0
+         ELSE 1
+         END
+     UNION
+     SELECT PersonID, MotherID AS ParentID FROM PersonTable
+       LEFT JOIN ChildTable ON PersonID=ChildTable.ChildID
+       LEFT JOIN FamilyTable USING(FamilyID)
+       WHERE 
+         CASE (SELECT C_BioParetOnly FROM constants)
+         WHEN 1 THEN RelMother=0
+         ELSE 1
+         END
+    ),
+  child_of(ParentID, ChildID) AS
+    (SELECT PersonID, ChildTable.ChildID FROM PersonTable AS pt
+       LEFT JOIN FamilyTable AS ft ON pt.PersonID=ft.FatherID
+       LEFT JOIN ChildTable USING(FamilyID)
+       WHERE
+         CASE (SELECT C_BioParetOnly FROM constants)
+         WHEN 1 THEN RelFather=0
+         ELSE 1
+         END
+     UNION
+     SELECT PersonID, ChildTable.ChildID FROM PersonTable AS pt
+       LEFT JOIN FamilyTable AS ft ON pt.PersonID=ft.MotherID
+       LEFT JOIN ChildTable USING(FamilyID)
+       WHERE
+         CASE (SELECT C_BioParetOnly FROM constants)
+         WHEN 1 THEN RelMother=0
+         ELSE 1
+         END
+    )
+  SELECT CousinID as PersonID, count(*) FROM cousin_of_person
+  -- 
+
+removed on CE table- not needed,
+renamed ancestorList to cousin_of_person
+change DescendantID to CousinID
+
+
+
+2 recursions- one to get ancestors, two to get descendants of each ancestor
+only the first needs to be seeded with start person
+
+
+ends with getting full list from 
+cousin_of_person
+
+ancestor_of_person
+which is the start of recursion for ancestors
+
+parent_of
+
+child_of
+
+Explainer
+  constants(C_StartPerson, C_BioParetOnly) AS
+    (SELECT   2361   AS C_StartPerson,
+                 1   AS C_BioParetOnly
+    )
+Common Table expression pattern to define constants.
+Get then by subquery " (SELECT C_BioParetOnly FROM constants)"
+
+       WHERE
+         CASE (SELECT C_BioParetOnly FROM constants )
+         WHEN 1 THEN RelMother=0
+         ELSE 1
+         END
+
+if C_BioParetOnly = 1 (true), then result of CASE is RelMother=0, and the clause is "WHERE RelMother=0"
+if C_BioParetOnly = 0 (lalse), then result of CASE is 1, and the clause is "WHERE 1"  (no selection, all valid.)
+

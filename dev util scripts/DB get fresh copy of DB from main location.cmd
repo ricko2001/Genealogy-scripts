@@ -1,6 +1,6 @@
 REM DB folder in in script development folder
 
-SET PRODUCTION_FILE_PATH=C:\Users\rotter\Documents\Genealogy\GeneDB\Otter-Saito.rmtree
+SET PRODUCTION_FILE_PATH=C:\Users\rotter\Genealogy\GeneDB\Otter-Saito.rmtree
 
 REM delete test database files
 del "TEST.rmtree" "TEST-localcopy.rmtree"

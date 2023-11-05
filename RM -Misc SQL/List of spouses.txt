@@ -1,0 +1,43 @@
+  WITH
+  constants(C_StartPerson) AS
+    (SELECT   1   AS C_StartPerson
+    ),
+  List(PersonID, FamilyID) AS
+    (SELECT ft.FatherID, ft.FamilyID
+     FROM FamilyTable AS ft
+     WHERE MotherID = (SELECT C_StartPerson FROM constants)
+     UNION
+     SELECT ft.MotherID, ft.FamilyID
+     FROM FamilyTable AS ft
+     WHERE FatherID = (SELECT C_StartPerson FROM constants)
+    )
+
+  SELECT nt.Given, nt.Surname
+  FROM NameTable AS nt
+  INNER JOIN List ON nt.OwnerID = List.PersonID
+  WHERE nt.IsPrimary = 1
+
+
+
+OR the same
+
+
+
+  WITH
+  constants(C_StartPerson) AS
+    (SELECT   6   AS C_StartPerson
+    ),
+  List(PersonID, FamilyID) AS
+    (SELECT ft.FatherID, ft.FamilyID
+     FROM FamilyTable AS ft
+     WHERE (
+         MotherID = (SELECT C_StartPerson FROM constants)
+         OR
+         FatherID = (SELECT C_StartPerson FROM constants)
+         )
+    )
+
+  SELECT nt.Given, nt.Surname
+  FROM NameTable AS nt
+  INNER JOIN List ON nt.OwnerID = List.PersonID
+  WHERE nt.IsPrimary = 1
