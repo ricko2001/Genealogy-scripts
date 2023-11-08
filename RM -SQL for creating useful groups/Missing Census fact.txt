@@ -6,7 +6,7 @@
   -- Does not find people with Census fact or shared fact Detail 1950%
   -- Does not find people not born in US but residing in USA in 1950
   --
-  WITH sel_events AS
+  WITH existing_events AS
   (
   SELECT EventID
   FROM EventTable AS et
@@ -34,13 +34,13 @@
   -- people who have a census fact of specified type
   SELECT et.OwnerID
   FROM EventTable AS et
-  INNER JOIN sel_events ON sel_events.EventID = et.EventID
+  INNER JOIN existing_events ON existing_events.EventID = et.EventID
   --
   EXCEPT
   -- people who are witness to a census fact of specified type
   SELECT wt.PersonID
   FROM WitnessTable AS wt
-  INNER JOIN sel_events ON sel_events.EventID = wt.EventID
+  INNER JOIN existing_events ON existing_events.EventID = wt.EventID
   --
   ORDER BY 1 ASC;
   --
