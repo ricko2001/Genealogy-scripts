@@ -1,6 +1,6 @@
   -- Hard coded for starting with PersonID/RIN = 2361  CAO
   -- See line 3         SELECT   2361   AS C_StartPerson
-  -- C_BirthParentOnly = 1: only birth parents included
+  -- C_BirthParentOnly = 0 or 1.   1=only birth parents included
   WITH RECURSIVE
   constants(C_StartPerson, C_BirthParentOnly) AS
     (SELECT   2361   AS C_StartPerson,
@@ -66,4 +66,5 @@
   SELECT SpouseID
     FROM spouse_of AS so
     INNER JOIN cousin_of AS co ON co.CousinID = so.PersonID
+  --
 
