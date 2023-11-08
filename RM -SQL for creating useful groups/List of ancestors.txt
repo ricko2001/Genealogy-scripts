@@ -14,16 +14,16 @@
        INNER JOIN ancestor_of_person ON ChildID = AncestorID
     ),
   parent_of(ChildID, ParentID) AS
-    (SELECT ct.ChildID, ft.FatherID AS ParentID
+    (SELECT ct.ChildID, FatherID AS ParentID
        FROM ChildTable AS ct
-       LEFT JOIN FamilyTable AS ft USING(FamilyID)
+       LEFT JOIN FamilyTable USING(FamilyID)
        WHERE CASE (SELECT C_BirthParentOnly FROM constants)
              WHEN 1 THEN RelFather=0 ELSE 1
              END
     UNION
-    SELECT ct.ChildID, ft.MotherID AS ParentID
+    SELECT ct.ChildID, MotherID AS ParentID
        FROM ChildTable AS ct
-       LEFT JOIN FamilyTable AS ft USING(FamilyID)
+       LEFT JOIN FamilyTable USING(FamilyID)
        WHERE CASE (SELECT C_BirthParentOnly FROM constants)
              WHEN 1 THEN RelMother=0 ELSE 1
              END
