@@ -84,7 +84,7 @@ def main():
     G_DbFileFolderPath = Path(database_Path).parent
 
     # write header to report file
-    with create_DBconnection(database_Path, RMNOCASE_Path, reportF) as dbConnection:
+    with create_DBconnection(database_Path, reportF) as dbConnection:
       reportF.write ("Report generated at      = " + TimeStampNow() + "\n")
       reportF.write ("Database processed       = " + os.path.abspath(database_Path) + "\n")
       reportF.write ("Database last changed on = " + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n")
@@ -512,7 +512,7 @@ def Section (pos, name, reportF):
 
 
 # ===================================================DIV60==
-def create_DBconnection(db_file_path, RMNOCASE_Path, reportF):
+def create_DBconnection(db_file_path, reportF):
     dbConnection = None
     try:
       dbConnection = sqlite3.connect(db_file_path)
