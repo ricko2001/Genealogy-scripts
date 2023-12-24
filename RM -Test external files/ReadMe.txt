@@ -1,6 +1,6 @@
 TestExternalFiles
 Utility for RootsMagic databases
-
+version 1.5
 
 RootsMagic (RM) software uses a database as its main storage. The database
 includes a table that points to external files. These file appear
@@ -87,7 +87,6 @@ HASH_FILE
 Compatibility
 Tested with RootsMagic v7.6.5, v8 and v9
        Python for Windows v3.11.4   64bit
-       unifuzz64.dll (file has no version number defined. see MD5 and file size below)
        Operating system Window 11, 64bit  (Windows 10 OK)
 The exe file is Windows only, probably Windows 10 and later.
 The py file could probably be modified to work on MacOS with Python ver 3+ installed.
@@ -135,10 +134,8 @@ To install and use the single file version:
 *  Copy these files from downloaded zip file to the working folder-
       TestExternalFiles.exe
       RM-Python-config.ini
-*  Download the SQLite extension: unifuzz64.dll   -see below
-*  Move the unifuzz64.dll file to the working folder
 *  Edit the RM-Python-config.ini in the working folder to specify the location
-   of the RM file, the unifuzz64.dll file and the output report file.
+   of the RM file and the output report file.
    Some script functions may be turned on or off. The required edits should
    be obvious. (To edit, Open NotePad and drag the ini file onto the NotePad window.)
 *  Double click the TestExternalFiles.exe file to run the utility and
@@ -155,10 +152,8 @@ To install and use the script file version:
 *  Copy these files from downloaded zip file to the working folder-
       TestExternalFiles.py
       RM-Python-config.ini
-*  Download the SQLite extension: unifuzz64.dll   -see below
-*  Move the unifuzz64.dll file to the working folder
 *  Edit the RM-Python-config.ini in the working folder to specify the
-   location of the RM file, the unifuzz64.dll file and the output report file.
+   location of the RM file and the output report file.
    Some script functions may be turned on or off. The required edits should
    be obvious. (To edit, Open NotePad and drag the ini file onto the
    NotePad window.)
@@ -197,20 +192,6 @@ The Python installation requires about 100 Mbytes.
 It is easily and cleanly removed using the standard method found in Windows=>Settings
 
 Run the Python installer selecting all default options.
-
-
-======================================================================
-unifuzz64.dll download-
-
-Direct download link-
-https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2018/05/unifuzz64.dll
-
-above link found in this context-
-https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlite-expert-command-line-shell-et-al/
-
-The SQLiteToolsforRootsMagic website has been around for years and
-is run by a trusted RM user. Many posts to public RootsMagic user forums
-mention use of unifuzz64.dll from the SQLiteToolsforRootsMagic website.
 
 ======================================================================
 NOTES
@@ -294,11 +275,6 @@ NOTES
     not referenced, so switching  between ver 7 and ver 9 will not be an issue.
 
 
-*   MD5 hash values are used to confirm the identity of files.
-	MD5 hash							File size		File name
-	06a1f485b0fae62caa80850a8c7fd7c2	256,406 bytes	unifuzz64.dll
-
-
 ======================================================================
 ======================================================================
 Sample report output-
@@ -324,7 +300,7 @@ File path not found:
 ===============================================================DIV70==
 === Start of "Unreferenced Files" listing
 
-.\Sources\Birth\Hauer, Theadore Joseph b1912 -Birth Certificate.jpg
+.\Sources\Birth\Hauer, Theodore Joseph b1912 -Birth Certificate.jpg
 .\Sources\Birth\Scamihorn, Samuel Jay b1942 -Birth Certificate.jpg
 
 

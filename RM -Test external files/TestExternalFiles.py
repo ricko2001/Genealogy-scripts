@@ -15,7 +15,6 @@ import hashlib
 ##  Requirements: (see ReadMe.txt for details)
 ##   RootsMagic v7, v8 or v9 database file
 ##   RM-Python-config.ini  ( Configuration ini text file to set options and parameters)
-##   unifuzz64.dll
 ##   Python v3.9 or greater
 
 
@@ -43,7 +42,7 @@ def main():
       input("Press the <Enter> key to exit...")
       return
 
-  config = configparser.ConfigParser(empty_lines_in_values=False)
+  config = configparser.ConfigParser(empty_lines_in_values=False, interpolation=None)
   try:
     config.read(IniFile, 'UTF-8')
   except:
@@ -67,22 +66,17 @@ def main():
     input("Press the <Enter> key to exit...")
     return
 
-  # Read database and dll file paths from ini file
+  # Read database file path from ini file
   with open( report_Path,  mode='w', encoding='utf-8-sig') as reportF:
     try:
       database_Path = config['FILE_PATHS']['DB_PATH']
-      RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
     except:
-      reportF.write('Both DB_PATH and RMNOCASE_PATH must be specified.')
+      reportF.write('DB_PATH must be specified.')
       return
 
     if not os.path.exists(database_Path):
       reportF.write('Path for database not found: ' + database_Path)
       reportF.write('checked for: ' + os.path.abspath(database_Path))
-      return
-    if not os.path.exists(RMNOCASE_Path):
-      reportF.write('Path for RMNOCASE_PATH dll not found: ' + RMNOCASE_Path)
-      reportF.write('checked for: ' + os.path.abspath(RMNOCASE_Path))
       return
 
     # RM database file specific info
@@ -437,7 +431,7 @@ def GetDBFileList(dbConnection):
   SqlStmt="""\
   SELECT  MediaPath, MediaFile
   FROM MultimediaTable
-    ORDER BY MediaPath, MediaFile
+    ORDER BY MediaPath, MediaFile COLLATE NOCASE
 """
   cur = dbConnection.cursor()
   cur.execute(SqlStmt)
@@ -452,7 +446,7 @@ def GetDBNoTagFileList(dbConnection):
   FROM MultimediaTable mmt
   LEFT JOIN MediaLinkTable mlt ON mlt.MediaID =  mmt.MediaID
    WHERE OwnerType is NULL
-   ORDER by MediaPath, MediaFile
+   ORDER by MediaPath, MediaFile COLLATE NOCASE
 """
   cur = dbConnection.cursor()
   cur.execute(SqlStmt)
@@ -467,7 +461,7 @@ def GetDuplicateFileNamesList(dbConnection):
   FROM MultimediaTable p
   GROUP BY MediaFile COLLATE NOCASE
   HAVING COUNT(*) > 1
-  ORDER BY p.MediaFile
+  ORDER BY p.MediaFile COLLATE NOCASE
   """
   cur = dbConnection.cursor()
   cur.execute(SqlStmt)
@@ -482,7 +476,7 @@ def GetDuplicateFilePathsList(dbConnection):
   FROM MultimediaTable p
   GROUP BY MediaPath COLLATE NOCASE, MediaFile COLLATE NOCASE
   HAVING COUNT(*) > 1
-  ORDER BY p.MediaFile
+  ORDER BY p.MediaFile COLLATE NOCASE
   """
   cur = dbConnection.cursor()
   cur.execute(SqlStmt)
@@ -522,8 +516,6 @@ def create_DBconnection(db_file_path, RMNOCASE_Path, reportF):
     dbConnection = None
     try:
       dbConnection = sqlite3.connect(db_file_path)
-      dbConnection.enable_load_extension(True)
-      dbConnection.load_extension(RMNOCASE_Path)
     except Error as e:
         reportF.write(e)
         reportF.write("\n\n")
