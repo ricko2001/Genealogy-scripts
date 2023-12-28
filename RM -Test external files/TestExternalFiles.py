@@ -186,7 +186,7 @@ def ListUnReferencedFilesFeature(config, dbConnection, reportF):
   reportF.write("    Contains " + str(len(mediaFileList))
        + " files (not counting ignored items)\n")
   reportF.write("    Database file links: " + str(len(dbFileList)) + "\n")
-  reportF.write("    Unexplained extra DB links: " + str( len(dbFileList) - len(mediaFileList) ) + "\n")
+  reportF.write("    # DB links minus # non-ignored files: " + str( len(dbFileList) - len(mediaFileList) ) + "\n")
 
 
   Section( "END", FeatureName, reportF)
