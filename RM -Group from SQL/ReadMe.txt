@@ -1,7 +1,9 @@
 Group from SQL
+Utility application for use with RootsMagic databases
 
-RootsMagic (RM) software uses a SQLite database as its main storage. This utility uses SQL
-to modify the database file independently of RM.
+
+RootsMagic (RM) software uses a SQLite relational database as its main storage. This utility uses SQL
+to query the database file and create a RM group independently of RM.
 Groups may be created with Roots Magic software, but the types of queries are limited.
 Some group search criteria can be saved and refreshed, but again, the search criteria are limited.
 
@@ -10,25 +12,42 @@ a list of PersonIDs (RINs).
 
 
 ======================================================================
-Command Line Utility
+Overview
 
-This application is what is called a command line utility. To use it:
+This program is what is called a "command line utility".
 
-1: Edit the supplied text file named "RM-Python-config.ini".
-   The file contains the SQL statement and required configuration settings.
+To use it:
 
-2: Double click the GroupFromSQL.py file. This displays the black command
+1:  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
+    referred to as the "ini file".)
+    The utility needs to know where the RM database file is located, what SQL to use for the query, and the name for the group.
+    Editing the ini file can be done using the Windows NotePad app.
+
+2: Double click the GroupFromSQL file. This momentarily displays the black command
    console window and at the same time, generates the group.
    The console window displays:
       the full path of the database operated on
       the number of people selected by the SQL
    and then prompts the user to hit the enter key to close the console.
-   It will also display and error messages.
+   It will also display any error messages. Read the console window messages carefully before closing it.
 
+3: Return to the RootsMagic window and refresh the group if it is already being used.  TODO
 
 ======================================================================
-Option specification
-The example values shown are from the supplied example RM-Python-config.ini file
+Backups
+
+IMPORTANT: You should run this script on a copy of your database file until you
+have confidence with it. Or at least have a very recent known-good backup.
+
+This script only changes the TagTable and the GroupsTable.
+It could, if asked to, update a pre-existing group that is important to you. Be carefulwhen assigning QUERY_GROUP_NAME.
+A light-weight temporary view is created for each run, but temp views are always removed after disconnect.
+
+======================================================================
+ini file configuration
+
+The example values shown are from the supplied sample RM-Python-config.ini file
+The names with lower case characters are all examples. Use names that make sense to you.
 
 [OPTIONS]
 RUN_GROUP_FROM_SQL      = yes
@@ -38,24 +57,25 @@ RUN_GROUP_FROM_SQL      = yes
 [OPTIONS]
 GROUP_FROM_SQL_OPTIONS = OptSet_SMITH
     The name of the INI file section set of options that will be used
-    by the utility to create the group. Other set may exist, but are ignored.
+    by the utility to create the group. Other sets may exist in the ini file, but are ignored.
 
 [OptSet_SMITH]
 QUERY_GROUP_NAME = GroupSmith
     The name of the RM group to store the results.
 
 [OptSet_SMITH]
-QUERY_GROUP_UPDATE = yes
+UPDATE_GROUP = yes
     The group name may be new or existing.
     If it is new, it will be created.
-    If it is existing, the group will be updated only if QUERY_GROUP_UPDATE is set to yes.
-    If QUERY_GROUP_UPDATE is set to no, the utility exits without making any changes.
+    If it is existing, the group will be updated only if UPDATE_GROUP is set to yes.
+    If UPDATE_GROUP is set to no, the utility exits without making any changes.
 
 [OptSet_SMITH]
 SQL_QUERY =
    SELECT pt.PersonID
    FROM PersonTable AS pt
    INNER JOIN NameTable AS nt ON pt.PersonID = nt.OwnerID
+   --         demonstrates indented SQL comment for spacing
    WHERE nt.NameType = 5 -- married name
    AND nt.Surname = 'Smith'
 
@@ -71,48 +91,15 @@ SQL_QUERY =
 
 ======================================================================
 Compatibility
-Tested with RootsMagic v9. Should be OK with previous version at least to v7
+Tested with 
+       RootsMagic v9. Not tested with RM 7 or 8.
        Python for Windows v3.11.4   64bit
        unifuzz64.dll (file has no version number defined. see MD5 and file size below)
        Operating system Window 11, 64bit  (Windows 10 OK)
-The py file could probably be modified to work on MacOS with Python ver 3+ installed.
+The py file could probably be modified to work on MacOS with Python ver 3 installed.
 
 
-======================================================================
-Which to use? Standalone .exe file or .py file
 
-Decide whether you wish to use the script file (.py) or the executable file (.exe) version.
-They produce exactly the same output at the same speed.
-
-* Executable file Version
-Pro:
-The single exe file is all you need. No need to install Python.
-Con:
-The exe file is not human readable.
-A certain amount of trust is required to run a program not published by a major software house.
-Unknown software from an unknown software author could contain mal-ware.
-
-or
-
-* Script File Version
-Pro:
-The script file is easily readable and one can confirm what it does
-You may want to learn Python and make your own changes to the script.
-Con:
-The script version requires an installation of the Python environment to run.
-This is a 100 MB investment in disk space. (Small for modern day hard disks)
-
-
-======================================================================
-Backups
-
-IMPORTANT: You should run this script on a copy of your database file until you
-have some confidence with it. Or at least have a very recent known-good backup.
-
-This script only changes the TagTable and the GroupsTable.
-It could, if asked to, update a group that is important to you. Be careful
-when assigning QUERY_GROUP_NAME.
-A light-weight temporary view is created, but temp views are always removed after disconnect.
 
 
 ======================================================================
@@ -135,55 +122,13 @@ To install and use the single file version:
 *  Examine the console window and press enter to dismiss it.
 *  Open the database in RM, open the People view window and select the created group as filter.
 
-----
-OR
-----
+--- OR ---
 
-To install and use the script file version:
-*  Install Python for Windows x64  -see below
-*  Create a folder on your disk
-*  Copy these files from downloaded zip file to the above folder-
-      GroupFromSQL.py
-      RM-Python-config.ini
-*  Download unifuzz64.dll   -see below
-*  Move the unifuzz64.dll file to the above folder
-*  Edit the RM-Python-config.ini in the above folder to specify the location of the RM file and
-   the unifuzz64.dll file. For the initial setup, you may want to set RUN_SQL  = no
-   so that only the database and dll path values are checked. Continue as below.
-   This avoids dealing with more than one issue at once. After you solve any path issues, if any,
-   set RUN_SQL  = yes and continue onward.
-   (To edit, Open NotePad and drag the ini file onto the NotePad window.)
-*  Double click the GroupFromSQL.py file to run the script.
-*  Examine the console window and press enter to dismiss it.
-*  Open the database in RM, open the People view window and select the created group as filter.
+use the py script file.  See below, after the Notes section, entitled-
+   "Which to use? Standalone .exe file or .py file"
 
 
 
-======================================================================
-Python install-
-Install Python from the Microsoft Store
-or download and install from Python.org web site
-
-From Microsoft Store
-Run a command in Windows by pressing the keyboard key combination "Windows + R", then in the small window, type Python.
-Windows store will open in your browser and you will be be shown the current version of Python.
-Click the Get button.
-
-Web site download and install
-Download the current version of Python 3, ( or see direct link below for the current as of this date)
-https://www.python.org/downloads/windows/
-
-Click on the link near the top of page. Then ...
-Find the link near bottom of page, in "Files" section, labeled "Windows installer (64-bit)"
-Click it and save the installer.
-
-Direct link to recent (2023-07) version installer-
-https://www.python.org/ftp/python/3.11.4/python-3.11.4-amd64.exe
-
-The Python installation requires about 100 Mbytes.
-It is easily and cleanly removed using the standard method found in Windows=>Settings
-
-Run the Python installer selecting all default options.
 
 
 ======================================================================
@@ -233,6 +178,78 @@ NOTES
 
 
 ======================================================================
+Which to use? Standalone .exe file or .py file
+
+Decide whether you wish to use the script file (.py) or the executable file (.exe) version.
+They produce exactly the same output at the same speed.
+
+* Executable file Version
+Pro:
+The single exe file is all you need. No need to install Python.
+Con:
+The exe file is not human readable.
+A certain amount of trust is required to run a program not published by a major software house.
+Unknown software from an unknown software author could contain mal-ware.
+
+or
+
+* Script File Version
+Pro:
+The script file is easily readable and one can confirm what it does
+You may want to learn Python and make your own changes to the script.
+Con:
+The script version requires an installation of the Python environment to run.
+This is a 100 MB investment in disk space. (Small for modern day hard disks)
+
+
+To install and use the script file version:
+*  Install Python for Windows x64  -see below
+*  Create a folder on your disk
+*  Copy these files from downloaded zip file to the above folder-
+      GroupFromSQL.py
+      RM-Python-config.ini
+*  Download unifuzz64.dll   -see below
+*  Move the unifuzz64.dll file to the above folder
+*  Edit the RM-Python-config.ini in the above folder to specify the location of the RM file and
+   the unifuzz64.dll file. For the initial setup, you may want to set RUN_SQL  = no
+   so that only the database and dll path values are checked. Continue as below.
+   This avoids dealing with more than one issue at once. After you solve any path issues, if any,
+   set RUN_SQL  = yes and continue onward.
+   (To edit, Open NotePad and drag the ini file onto the NotePad window.)
+*  Double click the GroupFromSQL.py file to run the script.
+*  Examine the console window and press enter to dismiss it.
+*  Open the database in RM, open the People view window and select the created group as filter.
+
+
+
+======================================================================
+Python install-
+Install Python from the Microsoft Store
+or download and install from Python.org web site
+
+From Microsoft Store
+Run a command in Windows by pressing the keyboard key combination "Windows + R", then in the small window, type Python.
+Windows store will open in your browser and you will be be shown the current version of Python.
+Click the Get button.
+
+Web site download and install
+Download the current version of Python 3, ( or see direct link below for the current as of this date)
+https://www.python.org/downloads/windows/
+
+Click on the link near the top of page. Then ...
+Find the link near bottom of page, in "Files" section, labeled "Windows installer (64-bit)"
+Click it and save the installer.
+
+Direct link to recent (2023-07) version installer-
+https://www.python.org/ftp/python/3.11.4/python-3.11.4-amd64.exe
+
+The Python installation requires about 100 Mbytes.
+It is easily and cleanly removed using the standard method found in Windows=>Settings
+
+Run the Python installer selecting all default options.
+
+
+======================================================================
 TODO
 Consider possibly operating on existing RM groups and forming intersections, unions etc.
 
@@ -254,8 +271,19 @@ Public comments may be made at-
 https://github.com/ricko2001/Genealogy-scripts/discussions
 
 
-See my Linked-In profile at-
+Also see:
+My website containing other RootsMagic relevant information:
+https://RichardOtter.github.io
+
+My Linked-In profile at-
 https://www.linkedin.com/in/richardotter/
 
+
+======================================================================
+Distribution
+Everyone is free to use this utility. However, instead of
+distributing it yourself, please instead distribute the URL
+of my website where I describe it- https://RichardOtter.github.io
+This is especially true of the exe file version.
 
 ======================================================================

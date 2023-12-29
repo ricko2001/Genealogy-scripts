@@ -21,7 +21,13 @@ ECHO Is the Version.py updated in both places ?
 pause
 
 MKDIR ".\%REL_FLDR%"
+
+type nul > "%REL_FLDR%\Build_Log.txt"
+REM create empty build log file to be filled in by user
+
 MKDIR ".\%REL_FLDR%\%DIST_FLDR_NAME%"
+REM These are files that will be distributed in the zip
+
 xcopy ReadMe.txt             ".\%REL_FLDR%\%DIST_FLDR_NAME%"
 xcopy RM-Python-config.ini   ".\%REL_FLDR%\%DIST_FLDR_NAME%"
 xcopy %APPNAME%.py           ".\%REL_FLDR%\%DIST_FLDR_NAME%"
