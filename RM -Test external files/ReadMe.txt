@@ -357,7 +357,7 @@ https://www.linkedin.com/in/richardotter/
 
 ======================================================================
 Distribution
-Everyone is free to use this utility. However, instead or
+Everyone is free to use this utility. However, instead of
 distributing it yourself, please instead distribute the URL
 of my website where I describe it- https://RichardOtter.github.io
 This is especially true of the exe file version.
