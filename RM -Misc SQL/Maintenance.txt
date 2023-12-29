@@ -28,6 +28,7 @@ UPDATE URLTable
     AND Name <> 'lumsden-horn';
 
 
+
 SELECT Name, OwnerID
  FROM URLTable
   WHERE OwnerType =0 
@@ -39,6 +40,7 @@ UPDATE URLTable
   WHERE OwnerType =0 
     AND URL LIKE 'https://www.ancestry.com/family-tree/person/tree/111652204/person%'
     AND Name <> 'felton-tsujimoto';
+
 
 
 SELECT Name, OwnerID
@@ -54,6 +56,23 @@ UPDATE URLTable
     AND Name <> 'smith-burke';
 
 
+
+
+--Find a Grave
+SELECT Name, OwnerID
+ FROM URLTable
+  WHERE OwnerType =4
+    AND URL LIKE 'https://www.findagrave.com/memorial%'
+    AND Name <> 'Find a Grave';
+    
+
+UPDATE URLTable
+  SET Name='Find a Grave'
+  WHERE OwnerType =4
+    AND URL LIKE 'https://www.findagrave.com/memorial%'
+    AND Name <> 'Find a Grave';
+
+--===========================================DIV50==
 -- Trim the Event details
 
 SELECT Details, OwnerID
@@ -65,6 +84,18 @@ UPDATE EventTable
   WHERE Details <> TRIM(Details);
 
 
+--===========================================DIV50==
+-- Trim the SourceTable Names
+
+SELECT Name
+ FROM SourceTable
+ WHERE Name <> TRIM(Name);
+
+UPDATE SourceTable
+  SET Name = TRIM(Name)
+  WHERE Name <> TRIM(Name);
+
+--===========================================DIV50==
 -- Fix placeholder in Details and Date
 
 SELECT Details
@@ -96,6 +127,13 @@ UPDATE EventTable
 -- REQUIRES REINDEX
 -- REQUIRES REINDEX
 
+--===========================================DIV50==
+-- Check for more than one Primary name per person
+
+
+
+--===========================================DIV50==
+
 REINDEX RMNOCASE;
 
 -- Trim the names table
@@ -111,6 +149,7 @@ SELECT
      OR  Given   <> TRIM(Given)
      OR  Suffix  <> TRIM(Suffix)
      OR  Prefix  <> TRIM(Prefix);
+
 
 UPDATE NameTable
   SET
@@ -128,7 +167,7 @@ UPDATE NameTable
 
 
 --===========================================DIV50==
---Evidence-Summary or ChildParent count >1
+--Evidence-Summary or ChildParent count >1 or more than 1 primary name.
 
 SELECT pt.PersonID, nt.Surname, nt.Given, ftt.Name, COUNT(*)
   FROM PersonTable AS pt
@@ -146,14 +185,14 @@ SELECT pt.PersonID, nt.Surname, nt.Given, ftt.Name, COUNT(*)
 --Some people have facts of blank type
 --They have 0 as fact type
 
-SELECT personID
+SELECT personID, 'has Fact type 0 event'
   FROM PersonTable
   JOIN EventTable ON PersonID = OwnerID
   WHERE OwnerType =0 AND EventType=0;
 
 
 --===========================================DIV50==
---Check for missing event data
+--Check for missing or misplaced event data
 
 SELECT OwnerID, Date, EventType, Details
    FROM EventTable
@@ -171,4 +210,7 @@ SELECT OwnerID, Date, EventType, Details
 --===========================================DIV50==
 --Check PlaceTable
 
+
+--===========================================DIV50==
+--Check for Person # 0
 
