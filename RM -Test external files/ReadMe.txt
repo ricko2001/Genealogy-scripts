@@ -2,14 +2,15 @@ TestExternalFiles
 Utility application for use with RootsMagic databases
 
 
-RootsMagic (RM) software uses a database as its main storage. The database
-includes a table that points to external files. These files appear
-under the RM Media tab.
+RootsMagic (RM) software uses a relational database as its main storage.
+The database includes links to external files called "media files".
+These files appear under the RM version 9 Media tab.
 
 As the number of linked files increases, user errors become more likely.
 * A file on disk may get renamed or moved, breaking the link
-    from the database. RM has tools to fix these, but it does not
-    give a log of what it has done. There is a report that can be run, but
+    from the database.
+    RM has tools to fix these, but it does not give a log of what it has done.
+    There is a report that can be run, but
     with effort.
 * A file may be added to the media folder on disk but then not attached to the
     desired database element. A common oversight when working quickly.
@@ -46,9 +47,9 @@ To use it:
 
 
 ======================================================================
-Features
+Capabilities
 
-The utility is capable of several functions, as configured in the
+The utility is can perform several functions, as configured in the
 ini file's Options section, either separately or in combination:
 
 CHECK_FILES
@@ -59,8 +60,8 @@ CHECK_FILES
 UNREF_FILES
     Lists all files found in the folder specified by SEARCH_ROOT_FLDR_PATH in
     the ini file (see below) that are NOT referenced in the RM database.
-    Perhaps the file was added to the folder, but was mistakenly never
-    added to the database.
+    This will find files that were perhaps added to the folder, but were
+    mistakenly never added to the database.
     This feature is designed for use when media files referenced by RM are all
     under a single folder hierarchy.
 
@@ -167,7 +168,7 @@ NOTES
 *   UNREF_FILES
     The folder specified in RM's preferences as the Media
     folder is not necessarily the same as the folder specified by the
-    SEARCH_ROOT_FLDR_PATH variable in the RM-Python-config.ini file, but it is
+    SEARCH_ROOT_FLDR_PATH variable in the ini file, but it is
     recommended that they be the same.
 
 *   UNREF_FILES
@@ -189,7 +190,7 @@ NOTES
 
 *   UNREF_FILES
     The value of- "# DB links minus # non-ignored files" should, in a
-    sense, be zero. If a folder is ignored, but there are linked files
+    sense, be zero. However, if a folder is ignored, but there are linked files
     within, then the value will be positive.
 
 *   DUP_FILEPATHS
