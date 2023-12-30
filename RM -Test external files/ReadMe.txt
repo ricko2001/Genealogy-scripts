@@ -256,25 +256,25 @@ Using one does not preclude using the other.
 
 Pro's and Con's
 
-*   The .exe Executable File Version
-    Pro:
-    The single exe file is all you need. No need to install Python.
-    Con:
-    The exe file is not human readable.
-    A certain amount of trust is required to run a program not distributed
-    by a major software publisher. Unknown software from an untrusted source
-    could contain mal-ware. Rely on reviews by other users to establish trust.
+*   The .exe Executable File Version 
+  Pro:
+   The single exe file is all you need. No need to install Python.
+  Con:
+   The exe file is not human readable.
+   A certain amount of trust is required to run a program not distributed
+   by a major software publisher. Unknown software from an untrusted source
+   could contain mal-ware. Rely on reviews by other users to establish trust.
 
 --- OR ---
 
 *   The .py Script File Version
-    Pro:
-    The script file is easily readable and one can confirm what it does.
-    You may want to learn Python and make your own changes to the script
-    and be able to use other scripts.
-    Con:
-    The script version requires an installation of the Python environment to run.
-    This is a 100 MB investment in disk space. (Not big for modern day hard disks)
+  Pro:
+   The script file is easily readable and one can confirm what it does.
+   You may want to learn Python and make your own changes to the script
+   and be able to use other scripts.
+  Con:
+   The script version requires an installation of the Python environment to run.
+   This is a 100 MB investment in disk space. (Not big for modern day hard disks)
 
 
 ======================================================================
