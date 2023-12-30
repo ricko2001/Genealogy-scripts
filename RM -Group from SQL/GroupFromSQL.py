@@ -6,10 +6,10 @@ from datetime import datetime
 import configparser
 
 
-## Always make a backup before using this script.
+## Always make a database backup before using this script.
 
 ##  Requirements: (see ReadMe.txt for details)
-##   RootsMagic v7, v8 or v9 database file
+##   RootsMagic v9 database file
 ##   RM-Python-config.ini  ( Configuration ini file to set options and parameters)
 ##   unifuzz64.dll
 ##   Python v3.9 or greater
@@ -17,7 +17,6 @@ import configparser
 
 # ===================================================DIV60==
 def main():
-
   # Configuration
   IniFileName = "RM-Python-config.ini"
 
@@ -27,45 +26,86 @@ def main():
 
   # Check that ini file is at expected path and that it is readable & valid.
   if not os.path.exists(IniFile):
-      print("ERROR: The ini configuration file, " + IniFileName + " must be in the same directory as the .py or .exe file.\n\n" )
+      print("ERROR: The ini configuration file, " + IniFileName + 
+           " must be in the same directory as the .py or .exe file.\n\n" )
       input("Press the <Enter> key to exit...")
-      return
+      return 1
 
   config = configparser.ConfigParser(empty_lines_in_values=False, interpolation=None)
   try:
     config.read(IniFile, 'UTF-8')
-  except:
-    print("ERROR: The " + IniFileName + " file contains a format error and cannot be parsed.\n\n" )
+  except Exception as e:
+    print("ERROR: The " + IniFileName + 
+             " file contains a format error and cannot be parsed.\n\n" )
+    print (e)
     input("Press the <Enter> key to exit...")
-    return
+    return 1
 
   # Read database and dll file paths from ini file
   try:
     database_Path = config['FILE_PATHS']['DB_PATH']
     RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
-  except:
+  except Exception as e:
     print('Both DB_PATH and RMNOCASE_PATH must be specified.')
-    return
+    print (str(e) + " not found")
+    input("Press the <Enter> key to exit...")
+    return 1
 
   if not os.path.exists(database_Path):
-    print('Path for database not found: ' + database_Path)
-    print ('checked for ' + os.path.abspath(database_Path))
-    return
+    print('Path for database file not found: ' + database_Path)
+    print ('Path checked: ' + os.path.abspath(database_Path))
+    return 1
   if not os.path.exists(RMNOCASE_Path):
-    print('Path for RMNOCASE_PATH dll not found: ' + RMNOCASE_Path)
-    return
+    print('Path for RMNOCASE_PATH dll file not found: ' + RMNOCASE_Path)
+    return 1
 
-
-  # Process the database for requested output
+  # Validate existence of all required key values before opening database
   try:
-    with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
-      print ("Database processed = " + os.path.abspath(database_Path) + "\n")
-  
-      if config['OPTIONS'].getboolean('RUN_GROUP_FROM_SQL'):
-         RunSQLGroupFeature(config, dbConnection)
+    OptSet = config['OPTIONS']['GROUP_FROM_SQL_OPTION_SET']
+    if OptSet == '':
+      # This is the way to inactivate the database processing, 
+      # but allow testing of file paths.
+      print('No value for "GROUP_FROM_SQL_OPTION_SET" was entered. \nexiting.' )
+      input("Press the <Enter> key to exit...")
+      return 0
   except:
-    print('Database probably locked.')
+    print('"GROUP_FROM_SQL_OPTION_SET" key not found. exiting.')
+    input("Press the <Enter> key to exit...")
+    return 1
 
+  try:
+    config[OptSet]
+  except:
+    print('section: [' + OptSet + ']   not found. \n\nNo changes made.')
+    input("Press the <Enter> key to exit...")
+    return 1
+
+  try:
+    config[OptSet]['UPDATE_GROUP']
+  except:
+    print('section: [' + OptSet + '],  value: UPDATE_GROUP   not found. \n\nNo changes made.')
+    input("Press the <Enter> key to exit...")
+    return 1
+
+  try:
+    config[OptSet]['RM_GROUP_NAME']
+  except:
+    print('section: [' + OptSet + '],  value: RM_GROUP_NAME   not found. \n\nNo changes made.')
+    input("Press the <Enter> key to exit...")
+    return 1
+
+  try:
+    config[OptSet]['SQL_QUERY']
+  except:
+    print('section: [' + OptSet + '],  value: SQL_QUERY   not found. \n\nNo changes made.')
+    input("Press the <Enter> key to exit...")
+    return 1
+
+  # Process the SQL and create the group
+
+  with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
+    print ("\nDatabase processed = " + os.path.abspath(database_Path) + "\n")
+    RunSQLGroupFeature(config, dbConnection)
 
   input("Press the <Enter> key to exit...")
 
@@ -74,38 +114,33 @@ def main():
 
 # ===================================================DIV60==
 def RunSQLGroupFeature(config, dbConnection):
+  # get value, key existence already validated
+  OptSet = config['OPTIONS']['GROUP_FROM_SQL_OPTION_SET']
 
-  # get option
-  try:
-    OptionSet = config['OPTIONS']['GROUP_FROM_SQL_OPTIONS']
-  except:
-    print('GROUP_FROM_SQL_OPTIONS must be specified.')
-    return
-
-  # operate on one set of options named above
+  # get value, key existence already validated
   updateGroup = False
-  if config[OptionSet].getboolean('UPDATE_GROUP'):
+  if config[OptSet].getboolean('UPDATE_GROUP'):
     updateGroup = True
 
   viewStmt = "DROP VIEW IF EXISTS PersonIdList_RJO_utils"
   cur = dbConnection.cursor()
   cur.execute( viewStmt )
 
-   # get the SQL statement and create the view
-  try:
-    SqlStmt = "CREATE TEMP VIEW PersonIdList_RJO_utils AS " + config[OptionSet]['SQL_QUERY']
-  except:
-    print ("ERROR: SQL_QUERY in the ini file group " + OptionSet + " must be specified. \n")
-    return
+  # get value, key existence already validated
+  SQLvalue = config[OptSet]['SQL_QUERY']
 
+  # generate the SQL statement and create the view
+  SqlStmt = "CREATE TEMP VIEW PersonIdList_RJO_utils AS " + SQLvalue
   try:
     cur = dbConnection.cursor()
     cur.execute( SqlStmt )
   except:
     print ("ERROR: Creating a VIEW on SQL_QUERY returned an error. \n")
-    return
+    print ("SQL entered was:\n" + SQLvalue + "\n")
+    sys.exit()
 
-  try:  # errors in SQL show up here, not in view creation
+  # errors in SQL show up here, not in view creation
+  try:  
     SqlStmt = "select count() from PersonIdList_RJO_utils"
     cur = dbConnection.cursor()
     cur.execute( SqlStmt )
@@ -113,12 +148,13 @@ def RunSQLGroupFeature(config, dbConnection):
     print ("# of persons selected: " + str(numInView) + "\n")
   except:
     print ("ERROR: SQL_QUERY returned an error when run as a VIEW. \n")
-    return
+    print ("SQL entered was:\n" + SQLvalue + "\n")
+    sys.exit()
 
-
+  # group name key existence already determined, so this try is not needed
   groupName = ""
   try:
-    groupName = config[OptionSet]['QUERY_GROUP_NAME']
+    groupName = config[OptSet]['RM_GROUP_NAME']
   except:
     groupName = "SqlQueryGroup_" + TimeStampNow()
 
@@ -133,7 +169,6 @@ def RunSQLGroupFeature(config, dbConnection):
 
 # ===================================================DIV60==
 def CreateGroup(Name, updateGroup, dbConnection):
-
 #  TagTable
 #   TagID=rowid
 #   TagType =0 for Groups
@@ -151,17 +186,20 @@ def CreateGroup(Name, updateGroup, dbConnection):
   GroupID = result[1]
 
   if existingNumber >1 :
-    print ("ERROR: Group: " + Name + " already exists more than once.\n Use a different name. \n")
-    input("Press the <Enter> key to exit...")
-    sys.exit()
+    print ("ERROR: Group: " + Name + 
+          " already exists more than once.\n Use a different name. \n")
+    # return does cleanup and pause
+    return
 
   if existingNumber == 1 and not updateGroup :
-    print ("ERROR: Group: " + Name + " already exists and Update was not specified.\n Use a different name or allow update. \n")
-    input("Press the <Enter> key to exit...")
-    sys.exit()
+    print ("ERROR: Group: " + Name +
+          " already exists and Update was not specified.\n Use a different name or allow update. \n")
+    # return does cleanup and pause
+    return
 
   if existingNumber == 1 and updateGroup :
-    print ("INFO: Group: " + Name + " already exists and will be updated. \n")
+    print ("INFO: Group: " + Name + 
+          " already exists and will be updated. \n")
 
   else:  # existingNumber == 0
      SqlStmt = """
@@ -175,9 +213,15 @@ def CreateGroup(Name, updateGroup, dbConnection):
        ,julianday('now') - 2415018.5
      )
      """
-     cur = dbConnection.cursor()
-     cur.execute(SqlStmt, (Name,) )
-    
+     try:
+       cur = dbConnection.cursor()
+       cur.execute(SqlStmt, (Name,) )
+     except Exception as e:
+       print('Database probably locked. Close RM and try again.')
+       print (e)
+       # return does cleanup and pause
+       return
+
      SqlStmt = """
      SELECT TagValue from TagTable where TagID == last_insert_rowid()
      """
@@ -199,8 +243,15 @@ def PopulateGroup(GroupID, dbConnection):
   DELETE FROM GroupTable 
   WHERE GroupID = ?
   """
-  cur = dbConnection.cursor()
-  cur.execute(SqlStmt, (GroupID,) )
+  try:
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, (GroupID,) )
+  except Exception as e:
+    print('Database probably locked. Close RM and try again.')
+    print (e)
+    # return does cleanup and pause
+    return
+
 
   # add the members
   SqlStmt = """
@@ -214,8 +265,14 @@ def PopulateGroup(GroupID, dbConnection):
 
   FROM PersonIdList_RJO_utils
   """
-  cur = dbConnection.cursor()
-  cur.execute(SqlStmt, (GroupID,) )
+  try:
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, (GroupID,) )
+  except Exception as e:
+    print('Database probably locked. Close RM and try again.')
+    print (e)
+    # return does cleanup and pause
+    return
 
   return
 
@@ -249,7 +306,7 @@ def create_DBconnection(db_file_path, RMNOCASE_Path):
       dbConnection = sqlite3.connect(db_file_path)
       dbConnection.enable_load_extension(True)
       dbConnection.load_extension(RMNOCASE_Path)
-    except Error as e:
+    except Exception as e:
         print(e)
         print( "Cannot open the RM database file. \n")
         input("Press the <Enter> key to exit...")
