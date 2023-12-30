@@ -147,7 +147,7 @@ To install and use the exe single file version:
 
 --- OR ---
 
-use the py script file.  See below, after the Notes section, entitled-
+Use the py script file.  See section below, after the Notes section, entitled-
    "Which to use? Standalone .exe file or .py file"
 
 
@@ -299,6 +299,7 @@ To install and use the script file version:
 *  Examine the report output file.
 
 
+======================================================================
 Python install-
 Install Python from the Microsoft Store
 or download and install from Python.org web site
@@ -320,7 +321,7 @@ Find the link near bottom left side of the page, in the "Stable Releases"
 section, labeled "Download Windows installer (64-bit)"
 Click it and save the installer.
 
-Direct download link-
+Direct link to recent (2023-07) version installer-
 https://www.python.org/ftp/python/3.11.4/python-3.11.4-amd64.exe
 
 The Python installation requires about 100 Mbytes.
@@ -328,8 +329,6 @@ It is easily and cleanly removed using the standard method found in
 Windows=>Settings
 
 Run the Python installer selecting all default options.
-
-
 
 
 ======================================================================
