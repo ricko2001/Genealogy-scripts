@@ -23,10 +23,9 @@ def main():
   # Configuration
   IniFileName = "RM-Python-config.ini"
   IniFile = os.path.join(GetCurrentDirectory(), IniFileName)
-
   try:
     TestConfigurationFile(IniFileName)
-  except Exception as config_message:
+  except:
     return
 
   # Inifile validated already
@@ -40,7 +39,9 @@ def main():
   try:
     with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
       print ("\nDatabase = " + os.path.abspath(database_Path) + "\n")
+
       RunSQLGroupFeature(config, dbConnection)
+
   except Exception as RunError:
     print( RunError)
     Pause()
@@ -48,8 +49,6 @@ def main():
 
   #sucess !
   Pause()
-
-
   return 0
 
 
@@ -89,14 +88,14 @@ def TestConfigurationFile(IniFileName):
       raise Exception('Path for RMNOCASE_PATH dll file not found: ' + RMNOCASE_Path +
               '\nPath checked: ' + os.path.abspath(RMNOCASE_Path))
 
-    # Validate existence of key & values before opening database
     try:
       ActiveOptionsSection = config['OPTIONS']['GROUP_FROM_SQL_OPTION_SET']
     except:
-      raise Exception('"GROUP_FROM_SQL_OPTION_SET" key not found.')
+      raise Exception('section: [OPTIONS],  key: GROUP_FROM_SQL_OPTION_SET   not found.')
 
     if ActiveOptionsSection == '':
-        raise Exception('No value for "GROUP_FROM_SQL_OPTION_SET" was entered.' )
+        raise Exception('section: [OPTIONS], key: GROUP_FROM_SQL_OPTION_SET \n' +
+                                    'No value entered.\n Nothing to do.' )
 
     try:
       config[ActiveOptionsSection]
@@ -122,7 +121,8 @@ def TestConfigurationFile(IniFileName):
       config[ActiveOptionsSection].getboolean('UPDATE_GROUP')
     except:
       raise Exception('section: [' + ActiveOptionsSection + '],  key: UPDATE_GROUP value not interpretable.')
-  except Exception as  config_message:
+
+  except Exception as config_message:
     # Handle all configuration test failures
     print( IniFileName + " file configuration error\n")
     print( config_message )
@@ -131,16 +131,21 @@ def TestConfigurationFile(IniFileName):
     raise
   return
 
+
 # ===================================================DIV60==
 def RunSQLGroupFeature(config, dbConnection):
-  # get value, key existence already validated
+  # config already validated, no error checking on config needed here
+
   ActiveOptionsSection = config['OPTIONS']['GROUP_FROM_SQL_OPTION_SET']
 
   viewStmt = "DROP VIEW IF EXISTS PersonIdList_RJO_utils"
-  cur = dbConnection.cursor()
-  cur.execute( viewStmt )
+  try:
+    cur = dbConnection.cursor()
+    cur.execute( viewStmt )
+  except Exception as e:
+    # database open issues don't appear until here !
+    raise Exception('Cannot open the database.\n' + str(e) )
 
-  # get value, key existence already validated
   SQLvalue = config[ActiveOptionsSection]['SQL_QUERY']
 
   # generate the SQL statement and create the view
@@ -149,9 +154,8 @@ def RunSQLGroupFeature(config, dbConnection):
     cur = dbConnection.cursor()
     cur.execute( SqlStmt )
   except:
-    print ("ERROR: Creating a VIEW on SQL_QUERY returned an error. \n")
-    print ("SQL entered was:\n" + SQLvalue + "\n")
-    sys.exit()
+    raise Exception("ERROR: Creating a VIEW on SQL_QUERY returned an error. \n" +
+                "SQL entered was:\n\n" + SQLvalue + "\n")
 
   # errors in SQL show up here, not in view creation
   try:  
@@ -161,17 +165,10 @@ def RunSQLGroupFeature(config, dbConnection):
     numInView = cur.fetchone()[0]
     print ("# of persons selected: " + str(numInView) + "\n")
   except:
-    print ("ERROR: SQL_QUERY returned an error when run as a VIEW. \n")
-    print ("SQL entered was:\n" + SQLvalue + "\n")
-    sys.exit()
+    raise ("ERROR: SQL_QUERY returned an error when run as a VIEW. \n\n" +
+           + "SQL entered was:\n" + SQLvalue + "\n")
 
-  # group name key existence already determined, so this try is not needed
-  groupName = ""
-  try:
-    groupName = config[ActiveOptionsSection]['RM_GROUP_NAME']
-  except:
-    groupName = "SqlQueryGroup_" + TimeStampNow()
-
+  groupName = config[ActiveOptionsSection]['RM_GROUP_NAME']
   updateGroup = config[ActiveOptionsSection].getboolean('UPDATE_GROUP')
 
   CreateGroup( groupName, updateGroup, dbConnection)
@@ -188,7 +185,8 @@ def CreateGroup(Name, updateGroup, dbConnection):
 #  TagTable
 #   TagID=rowid
 #   TagType =0 for Groups
-#   TagValue  for groups, value > 1000    not clear if this is required  to be >1000 or what
+#   TagValue  for groups, value > 1000   
+#      not clear if this is required  to be >1000 or what
 #   TagName   duplicates nor constrained
 
   # check how many groupNames with name and TagTape=0 already exist
@@ -233,10 +231,7 @@ def CreateGroup(Name, updateGroup, dbConnection):
        cur = dbConnection.cursor()
        cur.execute(SqlStmt, (Name,) )
      except Exception as e:
-       print('Database probably locked. Close RM and try again.')
-       print (e)
-       # return does cleanup and pause
-       return
+       raise Exception('Cannot update TagTable. Close RM and try again.\n' + str(e) )
 
      SqlStmt = """
      SELECT TagValue from TagTable where TagID == last_insert_rowid()
@@ -263,10 +258,7 @@ def PopulateGroup(GroupID, dbConnection):
     cur = dbConnection.cursor()
     cur.execute(SqlStmt, (GroupID,) )
   except Exception as e:
-    print('Database probably locked. Close RM and try again.')
-    print (e)
-    # return does cleanup and pause
-    return
+    print('Cannot clear the group members. Close RM and try again.\n' + str(e))
 
 
   # add the members
@@ -285,16 +277,17 @@ def PopulateGroup(GroupID, dbConnection):
     cur = dbConnection.cursor()
     cur.execute(SqlStmt, (GroupID,) )
   except Exception as e:
-    print('Database probably locked. Close RM and try again.')
-    print (e)
-    # return does cleanup and pause
-    return
+    raise Exception('Cannot populate group. Close RM and try again.\n' + str(e))
+
 
   return
 
+
+# ===================================================DIV60==
 def Pause():
   input("Press the <Enter> key to exit...")
   return
+
 
 # ===================================================DIV60==
 def TimeStampNow(type=""):
@@ -320,18 +313,16 @@ def GetCurrentDirectory():
 
 # ===================================================DIV60==
 def create_DBconnection(db_file_path, RMNOCASE_Path):
-    dbConnection = None
-    try:
-      dbConnection = sqlite3.connect(db_file_path)
-      dbConnection.enable_load_extension(True)
-      dbConnection.load_extension(RMNOCASE_Path)
-    except Exception as e:
-        print(e)
-        print( "Cannot open the RM database file. \n")
-        Pause()
-        sys.exit()
-    return dbConnection
+  dbConnection = None
 
+  try:
+    dbConnection = sqlite3.connect(db_file_path)
+    dbConnection.enable_load_extension(True)
+    dbConnection.load_extension(RMNOCASE_Path)
+  except Exception as e:
+     raise Exception( "Cannot open the RM database file. \n" + str(e))
+
+  return dbConnection
 
 # ===================================================DIV60==
 # Call the "main" function

@@ -226,6 +226,9 @@ deletes it when done.
 *    This utility could, if configured to, modify a pre-existing group that is
 important to you. Take care when assigning the group name: QUERY_GROUP_NAME.
 
+*     To create a "database locked" situation, in SQLite Expert, start a 
+transaction, try to run this utility. Will get locked message until transaction
+in SQLite Expert is either committed or RolledBack.
 
 *    MD5 hash values are used to confirm the identity of files.
         MD5 hash							File size		File name
