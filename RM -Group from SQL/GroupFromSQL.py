@@ -17,117 +17,131 @@ import configparser
 
 # ===================================================DIV60==
 def main():
-  # Configuration
-  IniFileName = "RM-Python-config.ini"
-
   # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
   # see   https://docs.python.org/3/library/configparser.html
+
+  # Configuration
+  IniFileName = "RM-Python-config.ini"
   IniFile = os.path.join(GetCurrentDirectory(), IniFileName)
 
-  # Check that ini file is at expected path and that it is readable & valid.
-  if not os.path.exists(IniFile):
-      print("ERROR: The ini configuration file, " + IniFileName + 
-           " must be in the same directory as the .py or .exe file.\n\n" )
-      input("Press the <Enter> key to exit...")
-      return 1
+  try:
+    TestConfigurationFile(IniFileName)
+  except Exception as config_message:
+    return
 
+  # Inifile validated already
   config = configparser.ConfigParser(empty_lines_in_values=False, interpolation=None)
-  try:
-    config.read(IniFile, 'UTF-8')
-  except Exception as e:
-    print("ERROR: The " + IniFileName + 
-             " file contains a format error and cannot be parsed.\n\n" )
-    print (e)
-    input("Press the <Enter> key to exit...")
-    return 1
+  config.read(IniFile, 'UTF-8')
 
-  # Read database and dll file paths from ini file
-  try:
-    database_Path = config['FILE_PATHS']['DB_PATH']
-    RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
-  except Exception as e:
-    print('Both DB_PATH and RMNOCASE_PATH must be specified.')
-    print (str(e) + " not found")
-    input("Press the <Enter> key to exit...")
-    return 1
-
-  if not os.path.exists(database_Path):
-    print('Path for database file not found: ' + database_Path)
-    print ('Path checked: ' + os.path.abspath(database_Path))
-    return 1
-  if not os.path.exists(RMNOCASE_Path):
-    print('Path for RMNOCASE_PATH dll file not found: ' + RMNOCASE_Path)
-    return 1
-
-  # Validate existence of all required key values before opening database
-  try:
-    OptSet = config['OPTIONS']['GROUP_FROM_SQL_OPTION_SET']
-    if OptSet == '':
-      # This is the way to inactivate the database processing, 
-      # but allow testing of file paths.
-      print('No value for "GROUP_FROM_SQL_OPTION_SET" was entered. \nexiting.' )
-      input("Press the <Enter> key to exit...")
-      return 0
-  except:
-    print('"GROUP_FROM_SQL_OPTION_SET" key not found. exiting.')
-    input("Press the <Enter> key to exit...")
-    return 1
-
-  try:
-    config[OptSet]
-  except:
-    print('section: [' + OptSet + ']   not found. \n\nNo changes made.')
-    input("Press the <Enter> key to exit...")
-    return 1
-
-  try:
-    config[OptSet]['UPDATE_GROUP']
-  except:
-    print('section: [' + OptSet + '],  value: UPDATE_GROUP   not found. \n\nNo changes made.')
-    input("Press the <Enter> key to exit...")
-    return 1
-
-  try:
-    config[OptSet]['RM_GROUP_NAME']
-  except:
-    print('section: [' + OptSet + '],  value: RM_GROUP_NAME   not found. \n\nNo changes made.')
-    input("Press the <Enter> key to exit...")
-    return 1
-
-  try:
-    config[OptSet]['SQL_QUERY']
-  except:
-    print('section: [' + OptSet + '],  value: SQL_QUERY   not found. \n\nNo changes made.')
-    input("Press the <Enter> key to exit...")
-    return 1
+  database_Path = config['FILE_PATHS']['DB_PATH']
+  RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
 
   # Process the SQL and create the group
+  try:
+    with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
+      print ("\nDatabase = " + os.path.abspath(database_Path) + "\n")
+      RunSQLGroupFeature(config, dbConnection)
+  except Exception as RunError:
+    print( RunError)
+    Pause()
+    return 2
 
-  with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
-    print ("\nDatabase processed = " + os.path.abspath(database_Path) + "\n")
-    RunSQLGroupFeature(config, dbConnection)
+  #sucess !
+  Pause()
 
-  input("Press the <Enter> key to exit...")
 
   return 0
 
 
 # ===================================================DIV60==
+def TestConfigurationFile(IniFileName):
+  IniFile = os.path.join(GetCurrentDirectory(), IniFileName)
+
+  try:
+    # Check that ini file is at expected path and that it is readable & valid.
+    if not os.path.exists(IniFile):
+      raise Exception("ERROR: The ini configuration file, " + IniFileName + 
+             " must be in the same directory as the .py or .exe file.\n\n" )
+  
+    config = configparser.ConfigParser(empty_lines_in_values=False, interpolation=None)
+    try:
+      config.read(IniFile, 'UTF-8')
+    except Exception as e:
+      raise Exception("ERROR: The " + IniFileName + 
+               " file contains a format error and cannot be parsed.\n\n" + e )
+
+    # Read database and dll file paths from ini file
+    try:
+      database_Path = config['FILE_PATHS']['DB_PATH']
+    except:
+      raise Exception('DB_PATH must be specified.')
+
+    try:
+      RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
+    except:
+      raise Exception('RMNOCASE_PATH must be specified.')
+
+    if not os.path.exists(database_Path):
+      raise Exception('Path for database file not found as specified: ' + database_Path +
+              '\nPath checked: ' + os.path.abspath(database_Path))
+
+    if not os.path.exists(RMNOCASE_Path):
+      raise Exception('Path for RMNOCASE_PATH dll file not found: ' + RMNOCASE_Path +
+              '\nPath checked: ' + os.path.abspath(RMNOCASE_Path))
+
+    # Validate existence of key & values before opening database
+    try:
+      ActiveOptionsSection = config['OPTIONS']['GROUP_FROM_SQL_OPTION_SET']
+    except:
+      raise Exception('"GROUP_FROM_SQL_OPTION_SET" key not found.')
+
+    if ActiveOptionsSection == '':
+        raise Exception('No value for "GROUP_FROM_SQL_OPTION_SET" was entered.' )
+
+    try:
+      config[ActiveOptionsSection]
+    except:
+      raise Exception('section: [' + ActiveOptionsSection + ']   not found.')
+
+    try:
+      config[ActiveOptionsSection]['RM_GROUP_NAME']
+    except:
+      raise Exception('section: [' + ActiveOptionsSection + '],  key: RM_GROUP_NAME   not found.')
+
+    try:
+      config[ActiveOptionsSection]['UPDATE_GROUP']
+    except:
+      raise Exception('section: [' + ActiveOptionsSection + '],  key: UPDATE_GROUP   not found.')
+
+    try:
+      config[ActiveOptionsSection]['SQL_QUERY']
+    except:
+      raise Exception('section: [' + ActiveOptionsSection + '],  key: SQL_QUERY   not found.')
+
+    try:
+      config[ActiveOptionsSection].getboolean('UPDATE_GROUP')
+    except:
+      raise Exception('section: [' + ActiveOptionsSection + '],  key: UPDATE_GROUP value not interpretable.')
+  except Exception as  config_message:
+    # Handle all configuration test failures
+    print( IniFileName + " file configuration error\n")
+    print( config_message )
+    print( "\nNo changes made." )
+    Pause()
+    raise
+  return
+
+# ===================================================DIV60==
 def RunSQLGroupFeature(config, dbConnection):
   # get value, key existence already validated
-  OptSet = config['OPTIONS']['GROUP_FROM_SQL_OPTION_SET']
-
-  # get value, key existence already validated
-  updateGroup = False
-  if config[OptSet].getboolean('UPDATE_GROUP'):
-    updateGroup = True
+  ActiveOptionsSection = config['OPTIONS']['GROUP_FROM_SQL_OPTION_SET']
 
   viewStmt = "DROP VIEW IF EXISTS PersonIdList_RJO_utils"
   cur = dbConnection.cursor()
   cur.execute( viewStmt )
 
   # get value, key existence already validated
-  SQLvalue = config[OptSet]['SQL_QUERY']
+  SQLvalue = config[ActiveOptionsSection]['SQL_QUERY']
 
   # generate the SQL statement and create the view
   SqlStmt = "CREATE TEMP VIEW PersonIdList_RJO_utils AS " + SQLvalue
@@ -154,9 +168,11 @@ def RunSQLGroupFeature(config, dbConnection):
   # group name key existence already determined, so this try is not needed
   groupName = ""
   try:
-    groupName = config[OptSet]['RM_GROUP_NAME']
+    groupName = config[ActiveOptionsSection]['RM_GROUP_NAME']
   except:
     groupName = "SqlQueryGroup_" + TimeStampNow()
+
+  updateGroup = config[ActiveOptionsSection].getboolean('UPDATE_GROUP')
 
   CreateGroup( groupName, updateGroup, dbConnection)
 
@@ -276,16 +292,19 @@ def PopulateGroup(GroupID, dbConnection):
 
   return
 
+def Pause():
+  input("Press the <Enter> key to exit...")
+  return
 
 # ===================================================DIV60==
 def TimeStampNow(type=""):
-     # return a TimeStamp string
-     now = datetime.now()
-     if type == '':
-       dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
-     elif type == 'file':
-       dt_string = now.strftime("%Y-%m-%d_%H%M%S")
-     return dt_string
+  # return a TimeStamp string
+  now = datetime.now()
+  if type == '':
+    dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
+  elif type == 'file':
+    dt_string = now.strftime("%Y-%m-%d_%H%M%S")
+  return dt_string
 
 
 # ===================================================DIV60==
@@ -309,7 +328,7 @@ def create_DBconnection(db_file_path, RMNOCASE_Path):
     except Exception as e:
         print(e)
         print( "Cannot open the RM database file. \n")
-        input("Press the <Enter> key to exit...")
+        Pause()
         sys.exit()
     return dbConnection
 
