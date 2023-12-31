@@ -42,7 +42,7 @@ def main():
       RunSQLGroupFeature(config, dbConnection)
 
   except Exception as RunError:
-    print( RunError)
+    print( str(RunError))
     Pause()
     return 2
 
@@ -66,7 +66,8 @@ def TestConfigurationFile(IniFileName):
       config.read(IniFile, 'UTF-8')
     except Exception as e:
       raise Exception("ERROR: The " + IniFileName + 
-               " file contains a format error and cannot be parsed.\n\n" + e )
+               " file contains a format error and cannot be parsed.\n\n" + 
+                str(e) )
 
     # Read database and dll file paths from ini file
     try:
@@ -80,11 +81,11 @@ def TestConfigurationFile(IniFileName):
       raise Exception('RMNOCASE_PATH must be specified.')
 
     if not os.path.exists(database_Path):
-      raise Exception('Path for database file not found as specified: ' + database_Path +
+      raise Exception('DB_PATH for database file not found as specified: ' + database_Path +
               '\nPath checked: ' + os.path.abspath(database_Path))
 
     if not os.path.exists(RMNOCASE_Path):
-      raise Exception('Path for RMNOCASE_PATH dll file not found: ' + RMNOCASE_Path +
+      raise Exception('RMNOCASE_PATH for dll file not found as specified: ' + RMNOCASE_Path +
               '\nPath checked: ' + os.path.abspath(RMNOCASE_Path))
 
     try:
@@ -124,7 +125,7 @@ def TestConfigurationFile(IniFileName):
   except Exception as config_message:
     # Handle all configuration test failures
     print( IniFileName + " file configuration error\n")
-    print( config_message )
+    print( str(config_message) )
     print( "\nNo changes made." )
     Pause()
     raise
