@@ -39,7 +39,6 @@ def main():
   try:
     with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
       print ("\nDatabase = " + os.path.abspath(database_Path) + "\n")
-
       RunSQLGroupFeature(config, dbConnection)
 
   except Exception as RunError:
@@ -216,29 +215,31 @@ def CreateGroup(Name, updateGroup, dbConnection):
           " already exists and will be updated. \n")
 
   else:  # existingNumber == 0
-     SqlStmt = """
-     INSERT INTO TagTable (TagType, TagValue, TagName, Description, UTCModDate)
-     VALUES
-     (
-       0
-       ,(SELECT IFNULL(MAX(TagValue),0)+1 FROM TagTable)
-       ,?
-       ,'Created or updated by external utility'
-       ,julianday('now') - 2415018.5
-     )
-     """
-     try:
-       cur = dbConnection.cursor()
-       cur.execute(SqlStmt, (Name,) )
-     except Exception as e:
-       raise Exception('Cannot update TagTable. Close RM and try again.\n' + str(e) )
+    print ("INFO: Group: " + Name + " will be created. \n")
 
-     SqlStmt = """
-     SELECT TagValue from TagTable where TagID == last_insert_rowid()
-     """
-     cur = dbConnection.cursor()
-     cur.execute(SqlStmt )
-     GroupID = cur.fetchone()[0]
+    SqlStmt = """
+    INSERT INTO TagTable (TagType, TagValue, TagName, Description, UTCModDate)
+    VALUES
+    (
+      0
+      ,(SELECT IFNULL(MAX(TagValue),0)+1 FROM TagTable)
+      ,?
+      ,'Created or updated by external utility'
+      ,julianday('now') - 2415018.5
+    )
+    """
+    try:
+      cur = dbConnection.cursor()
+      cur.execute(SqlStmt, (Name,) )
+    except Exception as e:
+      raise Exception('Cannot update TagTable. Close RM and try again.\n' + str(e) )
+
+    SqlStmt = """
+    SELECT TagValue from TagTable where TagID == last_insert_rowid()
+    """
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt )
+    GroupID = cur.fetchone()[0]
 
   PopulateGroup(GroupID, dbConnection)
 

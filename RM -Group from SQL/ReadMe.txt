@@ -43,17 +43,16 @@ and then prompts the user to hit the enter key to close the console window. It
 will also display any warning/error messages. Read the console window messages
 carefully before closing it.
 
-3:  TODO Return to the RootsMagic window and refresh the group if it is already 
-being used.  
+3:  Return to the RootsMagic window and examine the group membership.
 
 
 ======================================================================
 Compatibility
 Tested with 
        RootsMagic v9.   Not tested with RM 7 or 8.
-       Python for Windows v3.11.4   64bit
        unifuzz64.dll (file has no version number defined. see MD5 and file size below)
-       Operating system Window 11, 64bit  (Windows 10 OK)
+       Operating system Window 11, 64bit  (Windows 10 most probably OK)
+       Python for Windows v3.11.4   64bit  (when using the py version)
 
 The py script file could be modified to work on MacOS with Python ver 3 installed.
 
@@ -62,16 +61,19 @@ The py script file could be modified to work on MacOS with Python ver 3 installe
 Backups
 
 IMPORTANT: You should run this script on a copy of your database file until you
-have confidence using it. Or at least have a very recent known-good backup.
+have confidence using it and confidence in its results. Or at least have a 
+current known-good backup.
+Assume software developers are fallible and make mistakes, but are not 
+malevolent.
 
 Similarly, always use a database copy when you are developing your SQL. It's
-possible to make unintended database changes in GUI based database manager apps.
+easy to make unintended database changes in GUI based database manager apps.
 
 
 ======================================================================
 Getting Started
 
-To install and use the single file version:
+To install and use the single .exe file version:
 
 *  Create a working folder on your disk, perhaps in the same folder
    that contains your RM database.
@@ -80,18 +82,20 @@ To install and use the single file version:
       GroupFromSQL.exe
       RM-Python-config.ini
 
-*  Download the SQLite extension: unifuzz64.dll   -see below
+*  Download the SQLite extension file: unifuzz64.dll   -see below
 
 *  Move the unifuzz64.dll file to the working folder
 
-*  Edit the RM-Python-config.ini in the working folder to specify the location of the RM file and
-   the unifuzz64.dll file. To edit, Open NotePad and drag the ini file onto the NotePad window.
+*  Edit the RM-Python-config.ini in the working folder to specify the location 
+   of the RM file and the unifuzz64.dll file. 
+   To edit, Open NotePad and drag the ini file onto the NotePad window.
 
 *  Double click the GroupFromSQL.exe file to run the utility.
 
-*  Examine the console window text and press enter to close it.
+*  Examine the console window text and press the enter key to close it.
 
-*  Open the database in RM, open the People view window and select the created group as filter.
+*  Open the database in RM, open the People view window and select the created
+   group as filter to see the results.
 
 --- OR ---
 
@@ -182,15 +186,36 @@ statements. Only the option set specified by GROUP_FROM_SQL_OPTION_SET will be u
 NOTES
 
 *    This utility will not help you write the SQL statement and is not a good 
-working environment in which to create your SQL statement. It is suggested that 
-you write and debug your SQL in a GUI SQLite manager app, such as 
-"SQLite Expert Personal", the 64bit version, a free app. Several others are also
-available. 
-Confirm you query works before running it in this utility.
+working environment in which to create your SQL statement. 
+Confirm you query works before running it in this utility. (Or get the SQL from
+a source that has confirmed its results. This app is written so that incorrect 
+SQL will not damage your database, only give groups with unwanted members.)
+It is suggested that you write and debug your SQL in a GUI SQLite manager app,
+such as "SQLite Expert Personal", the 64bit version, a free app. Several others 
+are also available. 
+
 When opening a RM database in a SQL manager app, many of your queries will
 require loading the same database extension used by this utility. Use the 64 bit
  version of the extension and the 64 bit version of the SQL manager app. This 
 utility is also 64 bit.
+
+*    Not all RM windows will not automatically recognize a new group created by
+this utility while the database is loaded. So if you are creating a new group, 
+the most straight forward approach is to restart RM or run the utility while the
+database is not loaded.
+In practice, it is the People list that does not recognize the new group. 
+Workaround: open the "Group" tab (in the same panel as the main "Index"), and click
+the "Pencil" icon to display the New, Edit, Delete window. Close the window.
+This nudges the People list window into seeing the new group.
+No issues have been see with updating an existing group. The group always shows 
+the current members (unless it is already in use for filtering a list. In that 
+case, switch to a different group, and then back.)
+
+*    Updating the contents of a group while the database is open in RM works OK. 
+However, RM lists using group filters do not have a refresh button, so, for 
+example, if you displaying People view filtered by the group that has been 
+updated, you'll need to switch to another group and then back again to see the 
+effect of the group having been updated.
 
 *    On some occasions, the utility console window will display a "Database 
 Locked" message. In that case. close the console window, close RM and re-run the
@@ -198,15 +223,8 @@ Locked" message. In that case. close the console window, close RM and re-run the
  rare. No database damage has ever been seem after many hundreds of uses (as 
 expected. "Database locked" is a normal message encountered with SQLite.)
 
-*    RM will not automatically recognize a new group created by this utility while
- the database is loaded. So if you are creating a new group, you'll have to 
-restart RM or run the utility while the database is not loaded.
 
-*    Updating the contents of a group while the database is open in RM works OK. 
-However, RM lists using group filters do not have a refresh button, so, for 
-example, if you displaying People view filtered by the group that has been 
-updated, you'll need to switch to another group and then back again to see the 
-effect of the group having been updated.
+Less important notes included for completeness..
 
 *    RM-Python-config.ini, the ini file.
 If there are any non-ASCII characters in the RM-Python-config.ini file,
@@ -226,7 +244,7 @@ deletes it when done.
 *    This utility could, if configured to, modify a pre-existing group that is
 important to you. Take care when assigning the group name: QUERY_GROUP_NAME.
 
-*     To create a "database locked" situation, in SQLite Expert, start a 
+*     (For testing) To create a "database locked" situation, in SQLite Expert, start a 
 transaction, try to run this utility. Will get locked message until transaction
 in SQLite Expert is either committed or RolledBack.
 
@@ -235,6 +253,7 @@ in SQLite Expert is either committed or RolledBack.
         06a1f485b0fae62caa80850a8c7fd7c2	256,406 bytes	unifuzz64.dll
 
 
+======================================================================
 ======================================================================
 Which to use? Standalone .exe file or .py file
 
@@ -275,15 +294,15 @@ To install and use the script file version:
 *  Copy these files from downloaded zip file to the above folder-
       GroupFromSQL.py
       RM-Python-config.ini
-*  Download unifuzz64.dll   -see above
+*  Download the SQLite extension file: unifuzz64.dll   -see above
 *  Move the unifuzz64.dll file to the working folder
 *  Edit the RM-Python-config.ini in the working folder to specify the location 
    of the RM file and the unifuzz64.dll file. 
    To edit, Open NotePad and drag the ini file onto the NotePad window.
-*  Double click the GroupFromSQL.py file to run the script.
-*  Examine the console window and press enter to dismiss it.
+*  Double click the GroupFromSQL.exe file to run the utility.
+*  Examine the console window text and press the enter key to close it.
 *  Open the database in RM, open the People view window and select the created
-   group as filter to verify desired result.
+   group as filter to see the results.
 
 
 ======================================================================
