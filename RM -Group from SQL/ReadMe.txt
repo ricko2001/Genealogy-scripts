@@ -1,7 +1,6 @@
 Group from SQL
 Utility application for use with RootsMagic databases
 
-SEARCH FOR TODO **********************
 
 RootsMagic (RM) software uses a SQLite relational database as its main storage.
 This utility uses SQL to query the database file and create a RM group in the 
