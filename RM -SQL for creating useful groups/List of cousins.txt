@@ -51,7 +51,6 @@
              WHEN 1 THEN RelFather=0 ELSE 1
              END
     )
-
   SELECT CousinID as PersonID FROM cousin_of
   --
 

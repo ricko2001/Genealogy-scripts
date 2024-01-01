@@ -60,7 +60,7 @@
        FROM FamilyTable AS ft
        WHERE PersonID <> 0 AND SpouseID <> 0
     )
-  SELECT CousinID
+  SELECT CousinID as PersonID
     FROM cousin_of
   UNION
   SELECT SpouseID
