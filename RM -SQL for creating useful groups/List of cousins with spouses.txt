@@ -63,7 +63,7 @@
   SELECT CousinID as PersonID
     FROM cousin_of
   UNION
-  SELECT SpouseID
+  SELECT SpouseID as PersonID
     FROM spouse_of AS so
     INNER JOIN cousin_of AS co ON co.CousinID = so.PersonID
   --
