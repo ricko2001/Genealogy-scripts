@@ -1,8 +1,5 @@
-﻿
+﻿Research for converting Fam type facts to individual shared facts
 
-Research for converting Fam type facts to individual shared facts
-
-Use "Fam CONVERT test Otter-Saito.rmgs" file for testing.
 
 FactTypeTable
 
@@ -13,19 +10,12 @@ take one say Census (family)
 
 FactTypeTable
 FactTypeID=311
-note, it
 OwnerType=1
 
 
 SELECT Name 
 from FactTypeTable
 where OwnerType = 1;
-
-
-Event Table
-EventType =311  
-
-
 
 
 SELECT Count(*)
@@ -93,7 +83,7 @@ update EventTable where EventID=16655
 EventType=18
 OwnerType=0
 OwnerID=447
-FamilyID=0		currently always 0 ??? what is it for?
+FamilyID=0		currently always 0 ??? what is thi column for?
 
 now must add the mother as a Witness
 in WitnessTable

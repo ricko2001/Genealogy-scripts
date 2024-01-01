@@ -76,6 +76,7 @@ Notes:
 TODO
 *  Output report file not yet implemented. If the output is needed, copy it from the console window. Right click 
 
+*   for RM v9  include Association source/citations
 
 
 =====================

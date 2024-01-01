@@ -1,16 +1,15 @@
 
 NOTES ON COLATION SEQUENCE RMNOCASE
 
-SQLite needs the ability to sort data. It does so by comparing two items and dciding if they are eqaul, less or greater than by using a collation function. 
+SQLite needs the ability to sort data. It does so by comparing two items and determining if they are equal, less or greater than by using a collation function. 
 A summary can be found at:
 https://www.w3resource.com/sqlite/sqlite-collating-function-or-sequence.php
 
-RMNOCASE is the name of a collation used by the RM schema for columns that represent names.  If you look at the data table design tab in SQLite expert, you'll see that the name columns in the NameTable and SourceTable are ordered by RMNOCASE. (may not be complete list...)
+RMNOCASE is the name of a collation used by the RM schema for columns that represent names.  If you look at the data table design tab in SQLite expert, you'll see that the name columns in the NameTable and SourceTable are ordered by RMNOCASE. Many other names also use the same collation.
 
 The collation is also used to create any indexes where it is specified.
 
-RMNOCASE is designed to sort upper and lower case names together (not tested by me) like
-SQLite's builtin NOCASE collation. 
+RMNOCASE is designed to sort upper and lower case names together (not tested by me) like SQLite's builtin NOCASE collation. 
 NOCASE does this for the 26 letters of the latin alphabet, but not for accented characters found, for example, in European languages. RMNOCASE also sorts upper and lower case accented characters together.
 
 RMNOCASE is not part of SQLite. It's a piece of sw created by RM Inc. as a SQLite extension. That software is proprietary and its specification has not be made public.
@@ -19,17 +18,36 @@ A dll that approximates the function of the RMNOCASE collation extension is on T
 The key point is the available dll and the proprietary code found inside RootsMagic do not function identically.
 SQLite documentation states that while a database is operational, a collation may not change. If it does, it may lead to indeterminate results. BAD.
 
+
+===========================================DIV50==
+unifuzz64.dll download-
+
+direct download:
+https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2018/05/unifuzz64.dll
+
+the link above is found in this context-
+https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlite-expert-command-line-shell-et-al/
+
+The SQLiteToolsforRootsMagic website has been around for many years and is run by a trusted RM user. Many posts to public RootsMagic user forums mention use of unifuzz64.dll from the SQLiteToolsforRootsMagic website.
+
+ MD5 hash values are used to confirm the identity of files.
+ MD5 hash							File size		File name
+ 06a1f485b0fae62caa80850a8c7fd7c2	256,406 bytes	unifuzz64.dll
+
+===========================================DIV50==
+
+
 What to worry about
 
 While operating on a database with RootsMagic alone, there is no problem. The authentic RMNOCASE collation is always used.
 
 When working on a RootsMagic database externally, there can be issues if precautions are not take,
 
-If names contain only the 26 latin characters, it would seem that there should not be a problem because the fake and authentic RMNOCASE should produce the same results.
+If names contain only the 26 latin characters, it would seem that there should not be a problem because the fake and authentic RMNOCASE should produce the same results. NOT TESTED
 
 
-Indexes do not contain data that can't be easily reconstructed by the SQLite command "reindex"
-However, if a datbase is opened and it already has an index created with, say the authentic RMNOCASE and one operates on the date using the fake RMNOCASE and an index using RMNOCASE collation is used, bad things may happen.
+Indexes contain data that can be easily reconstructed by the SQLite command "reindex"
+However, if a database is opened and it already has an index created with, say the authentic RMNOCASE and one operates on the date using the fake RMNOCASE and an index using RMNOCASE collation is used, bad things may happen.
 
 
 Two situations to consider
@@ -37,18 +55,18 @@ Two situations to consider
 Operating on a database opened only in an external tool
 Operating on a database opened in RootsMagic and an external tool simultaneously.
 
-Every time you plan to add, remove, or modify a column sorted by RMNOCASE, you must run the command to reindex first.
+Every time you plan to add, remove, or modify data in a column sorted by RMNOCASE, you must run the command to reindex first.
 
 reindex RMNOCASE
 
-Then all of your modification will work fine. But then, when you open your file in RM, the very first try hing to do is the Rebuild indexes took. After that, you'll be ok 
-I always confirm by running check file integrity after the build index is fine.
+Then all of your modification will work fine. But then, when you open your file in RM, the very first thing to do is the RM Rebuild indexes tool. After that, you'll be ok 
+I always confirm by running check file integrity after the build index.
 
 The above is critical to maintain your database integrity. Maybe one day we'll be able to reverse engineer RM's RMNOCASE so an exact 'copy' can be made.
 
 
 As regards to what you can do with sql- it's anything you can code. 
-Try here are lots of examples on Tom's site and I've put my stuff on GitHub .
+There are lots of examples on Tom's site and I've put my stuff on GitHub.
 
 
 When opening RootsMagic after having had the database reindexed using a fake RMNOCASE-
@@ -121,6 +139,8 @@ WitnessTable	WitnessTable	CREATE TABLE WitnessTable (WitnessID INTEGER PRIMARY K
 FANTypeTable	FANTypeTable	CREATE TABLE FANTypeTable (FANTypeID INTEGER PRIMARY KEY, Name TEXT COLLATE RMNOCASE, Role1 TEXT, Role2 TEXT, Sentence1 TEXT, Sentence2 TEXT, UTCModDate FLOAT )
 
 CitationTable	CitationTable	CREATE TABLE CitationTable (CitationID INTEGER PRIMARY KEY, SourceID INTEGER, Comments TEXT, ActualText TEXT, RefNumber TEXT, Footnote TEXT, ShortFootnote TEXT, Bibliography TEXT, Fields BLOB, UTCModDate FLOAT, CitationName TEXT COLLATE RMNOCASE )
+
+
 
 idxSourceName	SourceTable	CREATE INDEX idxSourceName ON SourceTable (Name COLLATE RMNOCASE) 
 

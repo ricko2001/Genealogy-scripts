@@ -132,11 +132,12 @@ def main():
 
     RMNOCASE_extention = r"C:\Users\rotter\Documents\Genealogy\Genealogy SW\RootsMagic\SQL access\RMNOCASE\unifuzz64.dll"
 
-    # Facts to convert
-    #  311	Cesus fam			18		Census			role	420 Principal2
-    #  310	Residence fam		29		Residence		role	417 Principal2
-    # 1071	Psgr List fam 		1001	Psgr List		role	421 Principal2
-    # 1066	Note fam			1026	Note			role	416 Principal2
+    # Facts to convert				 new fact to create
+    #  FTID	name				FTID	name			2nd person		RoleID
+    #  311	Census fam			18		Census			spouse			420 
+    #  310	Residence fam		29		Residence		spouse			417 
+    # 1071	Psgr List fam 		1001	Psgr List		Principal2		421
+    # 1066	Note fam			1026	Note			Principal2		416 
 
     frFactToFactRole = [
      (  311,   18, 420 ),
