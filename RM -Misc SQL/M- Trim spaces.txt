@@ -1,0 +1,113 @@
+﻿--  Select queries highlight location of blank chars
+
+REINDEX RMNOCASE;
+
+--===========================================DIV50==
+-- Trim Surname, Give, Suffix, Prefix in NameTable
+
+SELECT 
+   REPLACE( Surname, ' ', '■'), 
+   REPLACE( Given,   ' ', '■'), 
+   REPLACE( Suffix,  ' ', '■'), 
+   REPLACE( Prefix,  ' ', '■')
+  FROM NameTable
+  WHERE 
+        Surname <> TRIM(Surname)
+    OR  Given   <> TRIM(Given)
+    OR  Suffix  <> TRIM(Suffix)
+    OR  Prefix  <> TRIM(Prefix);
+
+UPDATE NameTable
+  SET
+    Surname = TRIM(Surname),
+    Given   = TRIM(Given),
+    Suffix  = TRIM(Suffix),
+    Prefix  = TRIM(Prefix)
+  WHERE 
+        Surname <> TRIM(Surname)
+    OR  Given   <> TRIM(Given)
+    OR  Suffix  <> TRIM(Suffix)
+    OR  Prefix  <> TRIM(Prefix);
+
+
+--===========================================DIV50==
+-- Trim Details in EventTable
+
+SELECT 
+  REPLACE( Details, ' ', '■')
+  FROM  EventTable
+  WHERE Details <> TRIM(Details);
+
+UPDATE EventTable
+  SET   Details =  TRIM(Details)
+  WHERE Details <> TRIM(Details);
+
+
+--===========================================DIV50==
+-- Trim Name, Abbrev, Normalized in PlaceTable
+
+SELECT 
+    REPLACE( Name,       ' ', '■'), 
+    REPLACE( Abbrev,     ' ', '■'),
+    REPLACE( Normalized, ' ', '■')
+  FROM PlaceTable
+  WHERE
+       Name       <> TRIM(Name)
+    OR Abbrev     <> TRIM(Abbrev)
+    OR Normalized <> TRIM(Normalized);
+
+UPDATE PlaceTable
+  SET
+    Name       = TRIM(Name),
+    Abbrev     = TRIM(Abbrev),
+    Normalized = TRIM(Normalized)
+  WHERE
+        Name       <> TRIM(Name)
+    OR  Abbrev     <> TRIM(Abbrev)
+    OR  Normalized <> TRIM(Normalized);
+
+
+--===========================================DIV50==
+-- Trim Name in SourceTemplateTable
+
+SELECT 
+  REPLACE( Name, ' ', '■')
+  FROM  SourceTemplateTable
+  WHERE Name <> TRIM(Name);
+
+UPDATE SourceTemplateTable
+  SET   Name =  TRIM(Name)
+  WHERE Name <> TRIM(Name);
+
+
+--===========================================DIV50==
+-- Trim Name in SourceTable
+
+SELECT
+   REPLACE( Name, ' ', '■')
+  FROM   SourceTable
+  WHERE  Name <> TRIM(Name);
+
+UPDATE SourceTable
+  SET   Name =  TRIM(Name)
+  WHERE Name <> TRIM(Name);
+
+
+--===========================================DIV50==
+-- Trim CitationName in CitationTable
+
+SELECT
+  REPLACE( CitationName, ' ', '■')
+  FROM  CitationTable
+  WHERE CitationName <> TRIM(CitationName);
+
+UPDATE CitationTable
+  SET   CitationName =  TRIM(CitationName)
+  WHERE CitationName <> TRIM(CitationName);
+
+
+--===========================================DIV50==
+
+
+
+

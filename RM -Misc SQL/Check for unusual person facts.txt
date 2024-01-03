@@ -17,17 +17,19 @@ GROUP BY NameTable.OwnerID
 HAVING COUNT(*) != 1
 
 --===========================================DIV50==
---Evidence-Summary or ChildParent count >1
+--Evidence-Summary or ChildParent count >1 or more than 1 primary name.
 
-SELECT PersonTable.PersonID, NameTable.Surname, NameTable.Given, FactTypeTable.Name, COUNT(*)
-FROM PersonTable
-INNER JOIN NameTable ON NameTable.OwnerID = PersonTable.PersonID
-INNER JOIN EventTable ON EventTable.OwnerID = PersonTable.PersonID
-INNER JOIN FactTypeTable ON FactTypeTable.FactTypeID = EventTable.EventType
-WHERE NameTable.IsPrimary = 1
-AND (FactTypeTable.Name = 'Evidence-Summary' OR FactTypeTable.Name = 'ChildParent')
-GROUP BY PersonTable.PersonID, FactTypeTable.FactTypeID
-HAVING COUNT(*) >1
+SELECT pt.PersonID, nt.Surname, nt.Given, ftt.Name, COUNT(*)
+  FROM PersonTable AS pt
+  INNER JOIN NameTable     AS nt  ON nt.OwnerID = pt.PersonID
+  INNER JOIN EventTable    AS et  ON et.OwnerID = pt.PersonID
+  INNER JOIN FactTypeTable AS ftt ON ftt.FactTypeID = et.EventType
+  WHERE nt.IsPrimary = 1
+    AND (ftt.Name = 'Evidence-Summary' 
+    OR ftt.Name = 'ChildParent')
+  GROUP BY pt.PersonID, ftt.FactTypeID
+  HAVING COUNT(*) >1;
+
 
 --===========================================DIV50==
 --Person has a Private Name

@@ -1,0 +1,73 @@
+--===========================================DIV50==
+--Evidence-Summary or ChildParent count >1 or more than 1 primary name.
+
+SELECT pt.PersonID, nt.Surname, nt.Given, ftt.Name, COUNT(*)
+  FROM PersonTable AS pt
+  INNER JOIN NameTable     AS nt  ON nt.OwnerID = pt.PersonID
+  INNER JOIN EventTable    AS et  ON et.OwnerID = pt.PersonID
+  INNER JOIN FactTypeTable AS ftt ON ftt.FactTypeID = et.EventType
+  WHERE nt.IsPrimary = 1
+    AND (ftt.Name = 'Evidence-Summary' 
+    OR ftt.Name = 'ChildParent')
+  GROUP BY pt.PersonID, ftt.FactTypeID
+  HAVING COUNT(*) >1;
+
+
+--===========================================DIV50==
+--Some people have facts of blank type
+--They have 0 as fact type
+
+SELECT personID, 'has Fact type 0 event'
+  FROM PersonTable
+  JOIN EventTable ON PersonID = OwnerID
+  WHERE OwnerType =0 AND EventType=0;
+
+
+--===========================================DIV50==
+--Check for missing or misplaced event data
+
+SELECT OwnerID, Date, EventType, Details
+  FROM EventTable
+  WHERE 
+    (   EventType = 1094  --ID_FG
+    OR  EventType = 1063  --ID_FSFT
+    OR  EventType = 26    --Occupation
+    OR  EventType = 1064  --ID_TMG 
+    )
+    AND Details = ''
+    AND OwnerType = 0
+  ORDER BY OwnerID, Date;
+
+
+--===========================================DIV50==
+--Check PlaceTable  for 0 ?
+
+
+--===========================================DIV50==
+--Check people that have more than 1 BIRT fact
+
+SELECT et.OwnerID as PersonID
+FROM EventTable et
+WHERE et.OwnerType = 0 and EventType = 1 -- Birth 
+GROUP BY et.OwnerID
+HAVING COUNT(EventID) > 1
+
+
+--===========================================DIV50==
+--Check people that have more than 1 DEATH fact
+
+SELECT et.OwnerID as PersonID
+FROM EventTable et
+WHERE et.OwnerType = 0 and EventType = 3 -- Death 
+GROUP BY et.OwnerID
+HAVING COUNT(EventID) > 1
+
+
+--===========================================DIV50==
+--Check for Person # 0
+
+
+
+--===========================================DIV50==
+--Check for FamilyID # 0
+

@@ -1,0 +1,24 @@
+--===========================================DIV50==
+-- Fix placeholder in Details and Date
+
+SELECT Details, Count(*)
+FROM EventTable
+  WHERE Details = '=' 
+   OR Details = '-';
+
+UPDATE EventTable
+  SET Details = ''
+  WHERE Details = '=' 
+   OR Details = '-';
+
+
+SELECT Date, sortdate
+FROM EventTable
+  WHERE Date = 'T=' 
+   OR Date = 'T-';
+
+UPDATE EventTable
+  SET Date = '.',
+      SortDate ='9223372036854775807'
+  WHERE Date = 'T=' 
+   OR Date = 'T-';
