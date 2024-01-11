@@ -23,6 +23,12 @@ Release are available as zip files.
 ### RM -SQL for creating useful groups
 As the name says, contains SQL that can be used by the GroupFromSQL utility.
 
+### RM -Maintenance SQL
+Consists of a Windows cmd script that runs a SQL file containing SQL updates 
+that fix reoccurring problems in my database caused by user errors during 
+data entry. The cmd script generates a report file which is then 
+automatically displayed in NotePad++.
+
 
 ### RM -Switch source template
 A utility to switch the source template used by one or a set of sources.
@@ -33,14 +39,16 @@ This makes changes to the RM file when run with the "MAKE_CHANGES" option. Be ab
 
 My process is to always run the script on a copy of the main database. Then after iterating through fixes to the ini file and I'm satisfied with the results, I backup the main database and then move the copy with the changes done by the script to the main database file location.
 
+This is close to release.
 
-### RM -Lump XXX sources
+
+### RM -Lump misc sources
 I started in TMG as splitting all sources. Now in RM, I am lumping the sources that make sense to me. So far, Find_a_Grave, Census and Social Security SSDI and SSACI. These scripts do that. They will most likely  need modification for your circumstances.
  
 
  ---
 
-Some utils are also available as Release, which include single file exe versions. No Python installation needed.
+Released utilities are available as zip archives which include single file exe versions. No Python installation needed.
 The others are saved in GitHub code as the simple .py text files.
 
 
