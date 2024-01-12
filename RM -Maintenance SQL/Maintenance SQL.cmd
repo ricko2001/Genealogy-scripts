@@ -4,6 +4,11 @@ REM
 REM  File paths must use either doubled back slash or
 REM     forward slash due to Sqlite3.exe limitation
 
+REM requires SQLite3.exe from
+REM https://sqlite.org/download.html
+REM see download labeled: sqlite-tools-win-x64-3440200.zip
+REM   A bundle of command-line tools for managing SQLite database files ...
+
 REM file locations
 SET DATABASE=DB/TEST.rmtree
 REM SET DATABASE=../Otter-Saito.rmtree
