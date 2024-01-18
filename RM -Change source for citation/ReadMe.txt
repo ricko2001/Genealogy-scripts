@@ -6,7 +6,7 @@ RootsMagic (RM) software has Sources and Citations.
 Sources are also called "Master Sources".
 Citations are also called "Source Details".
 
-Sources are created using a Source Template. If 2 sources are created 
+Sources are created using a Source Template. If 2 sources are created
 from the same source template, they will have the same fundamental structure
 
 Citations are created as a child of a Source. Citations of different sources
@@ -18,7 +18,7 @@ but only if the 2 sources were created using the same source template.
 
 For example, if you lump census source by US state and year, you will have a
 number of sources all based on the same source template.
-When entering a citation, you may accidentally cite a source set up for the 
+When entering a citation, you may accidentally cite a source set up for the
 wrong year or state. Instead of deleting and recreating the citation, use this
 utility to move it to the correct source.
 
@@ -39,9 +39,9 @@ Works with RootsMagic v8 and v9
 ======================================================================
 Backups
 
-IMPORTANT: This utility modifies the RM database file. 
+IMPORTANT: This utility modifies the RM database file.
 You should run this script on a copy of your database file or at least
-have a known-good backup until you are confident that the changes made 
+have a known-good backup until you are confident that the changes made
 are the ones desired.
 
 
@@ -64,8 +64,8 @@ To use it:
    NotePad window.)
 
 *  Double click the ChangeSrcForCitation.exe file to run the utility.
-   Enter the requested information in the black command console window
-   that is displayed. 
+   Enter the requested information in the displayed black command
+   console window.
 
 *  Confirm that the desired change was made in RM.
 
@@ -86,30 +86,35 @@ NOTES
     applications such as TestExternalFiles and GroupFromSQL.
 
 *   Information that the user enters in the command window is checked before
-    it is used. It is unlikely that random data would be accepted by 
+    it is used. It is unlikely that random data would be accepted by
     the utility.
+
+*   The utility asks for the name of the citation to change and the source
+    that it should use. In both cases, only enough of the name needs to be
+    entered to make it unique among all citations for all sources. One may
+    start the name entry with a % char and it will be used as the standard
+     'SQL Like' wild card.
+    If the full citation name is not unique, then as a workaround, you
+    could add some text to the citation name of the citation you want
+    to modify to make the name unique.
 
 *   Checks made by the utility:
     1- User is asked for the citation name of the citation to modify.
-        a) the name must be found. 
+        a) the name must be found.
         b) the name must be unique among all citations for all sources.
-       The entire citation name does not need to be entered, as long as enough 
-       is entered to make it unique. 
        You will be made aware of problems.
     2- User is asked for the source that is to be used as the new parent of
        the citation.
-        a) the source name must be found. 
+        a) the source name must be found.
         b) the source name must be unique.
         c) the existing source used by the citation and the new source
            specified must both use the same source template.
-       The entire source name does not need to be entered, as long as enough 
-       is entered to make it unique. 
        You will be made aware of problems.
 
 *   RM-Python-config.ini  (the ini file)
     If there are any non-ASCII characters in the ini file, perhaps in a database
-    path, then the file must be saved in UTF-8 format, with no byte order 
-    mark (BOM). The included sample ini file has an umlauted ä in a comment at 
+    path, then the file must be saved in UTF-8 format, with no byte order
+    mark (BOM). The included sample ini file has an umlauted ä in a comment at
     the end to force it to be in the correct format.
     File format is an option in the save dialog box in NotePad.
 
@@ -124,7 +129,7 @@ Using one does not preclude using the other.
 
 Pro's and Con's
 
-*   The .exe Executable File Version 
+*   The .exe Executable File Version
   Pro:
    The single exe file is all you need. No need to install Python.
   Con:
@@ -161,7 +166,7 @@ To install and use the script file version:
    The same ini file may be used with either the .exe or .py version of the utility.
 *  Double click the ChangeSrcForCitation.py file to run the utility.
    Enter the requested information in the black command console window
-   that is displayed. 
+   that is displayed.
 *  Confirm that the desired change was made in RM.
 
 
@@ -200,6 +205,11 @@ Run the Python installer selecting all default options.
 ======================================================================
 TODO
 *  ?? what would you find useful?
+
+*  Do you have citations in different sources with the same citation name?
+That situation will prevent you from using this app.
+I could add a feature where the utility will first ask for the source
+first and then ask for a citation name that is used by that source, but it increases the effort by the use for a situation that may be uncommon.
 
 
 ======================================================================

@@ -38,38 +38,39 @@ def main():
 
   # Check that ini file is at expected path and that it is readable & valid.
   if not os.path.exists(IniFile):
-      print("ERROR: The ini configuration file, " + IniFileName + " must be in the same directory as the .py or .exe file.\n\n" )
-      input("Press the <Enter> key to exit...")
-      return
+    PauseWithMessage("ERROR: The ini configuration file, " + IniFileName + 
+             " must be in the same directory as the .py or .exe file.\n\n" )
+    return 1
 
   config = configparser.ConfigParser(empty_lines_in_values=False, interpolation=None)
   try:
     config.read(IniFile, 'UTF-8')
   except:
-   print("ERROR: The " + IniFileName + " file contains a format error and cannot be parsed.\n\n" )
-   input("Press the <Enter> key to exit...")
-   return
+    PauseWithMessage("ERROR: The " + IniFileName + 
+          " file contains a format error and cannot be parsed.\n\n" )
+    return 1
 
   # Read database file path from ini file
   try:
     database_Path = config['FILE_PATHS']['DB_PATH']
   except:
-    print('DB_PATH must be specified.')
-    return
+    PauseWithMessage('DB_PATH must be specified.')
+    return 1
 
   if not os.path.exists(database_Path):
-    print('Path for database not found: ' + database_Path)
-    print('checked for: ' + os.path.abspath(database_Path))
-    return
+    PauseWithMessage('Path for database not found: ' + database_Path +
+           '\nchecked for: ' + os.path.abspath(database_Path))
+    return 1
 
   dbConnection = create_DBconnection(database_Path)
+
   print("\nDatabase = " + os.path.abspath(database_Path) + "\n")
 
   # Deal with the citation as it is
   CitName = input("Enter the citation name for citation to change source:\n")
 
   SqlStmt = """
-   SELECT COUNT(), st.TemplateID, ct.CitationID, ct.SourceID, st.Name
+   SELECT COUNT(), st.TemplateID, ct.CitationID, ct.SourceID, st.Name, ct.CitationName
     FROM SourceTable AS st
     JOIN CitationTable AS ct ON ct.SourceID = st.SourceID
     WHERE ct.CitationName LIKE ( ? || '%' )
@@ -84,15 +85,16 @@ def main():
   CitationID = row[2]
   OldSourceID = row[3]
   OldSourceName= row[4]
+  FullCitationName= row[5]
 
   if (numberOfCitations > 1):
-    print('Found more than 1 citation. Try again.')
+    PauseWithMessage('Found more than 1 citation. Try again.')
     return 1
   if (numberOfCitations == 0):
-    print('Citation not found. Try again.')
+    PauseWithMessage('Citation not found. Try again.')
     return 1
 
-  print( "\nThis citation is currently using source:\n" + OldSourceName)
+  print( "\nThis citation:\n" + FullCitationName + "\n\nis currently found in source:\n" + OldSourceName)
 
 
   # Deal with the new source
@@ -112,18 +114,18 @@ def main():
   NewSourceTemplateID = row[2]
 
   if (numfound > 1):
-    print('More than 1 source found. Try again.')
+    PauseWithMessage('More than 1 source found. Try again.')
     return 1
   if (numfound == 0):
-    print('Source not found. Try again.')
+    PauseWithMessage('Source not found. Try again.')
     return 1
 
   if (NewSourceID == OldSourceID):
-    print('The citation is already using the specified new source. Try again.')
+    PauseWithMessage('The citation is already using the specified new source. Try again.')
     return 1
 
   if (NewSourceTemplateID != OldSourceTemplateID):
-    print('The new source must be based on the same SourceTemplate as the current source. Try again.')
+    PauseWithMessage('The new source must be based on the same SourceTemplate as the current source. Try again.')
     return 1
 
 
@@ -157,14 +159,15 @@ def main():
   # Close the connection so that it's not open when waiting at the Pause.
   dbConnection.close()
  
-  print( "\n\nConfirmation of change\nCitation:\n" + CitationName + "\n\nis now using source:\n" + SourceName + "\n\n")
-  Pause()
+  PauseWithMessage( "\n\nConfirmation of change\nCitation:\n" + CitationName + "\n\nis now using source:\n" + SourceName + "\n\n")
   return 0
 
 
 # ===================================================DIV60==
-def Pause():
-  input("Press the <Enter> key to exit...")
+def PauseWithMessage(message = None):
+  if (message != None): 
+    print(message)
+  input("\nPress the <Enter> key to exit...")
   return
 
 
