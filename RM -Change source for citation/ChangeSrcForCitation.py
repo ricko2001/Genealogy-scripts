@@ -153,6 +153,10 @@ def main():
   CitationName = row[0]
   SourceName = row[1]
 
+
+  # Close the connection so that it's not open when waiting at the Pause.
+  dbConnection.close()
+ 
   print( "\n\nConfirmation of change\nCitation:\n" + CitationName + "\n\nis now using source:\n" + SourceName + "\n\n")
   Pause()
   return 0
