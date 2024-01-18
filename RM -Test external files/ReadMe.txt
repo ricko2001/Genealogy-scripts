@@ -230,6 +230,14 @@ NOTES
     umlauted ä in a comment at the end to force it to be in the correct format.
     File format is an option in the save dialog box in NotePad.
 
+*   IGNORED_OBJECTS section of the ini file
+    Due to how the ini file is parsed by the python library, files and folders
+    whose names start with the # character are not added to the FILES or FOLDERS.
+    Instead, they are considered comments. There is a way to overcome this 
+    limitation but the explanation of how is not worth the confusion it would
+    create. Bottom line- change the name of the folder or file so it doesn't
+    start with a #.
+
 *   Switching between RM 8 and RM 9
     This section probably applies to no-one. Please don't read it and get confused !
     If the machine running the script has had multiple versions of RootsMagic
