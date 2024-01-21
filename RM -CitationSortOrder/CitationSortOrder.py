@@ -62,7 +62,31 @@ def main():
   # input the PersonID  RIN
   PersonID = input("Enter the RIN of the person who has the citations:\n")
 
-  attacdhedTo = input("Are the citations attached to a Fact (f), a name (n) or the Person (p)?:\n")
+  SqlStmt = """
+   SELECT nt.Given, nt.Surname
+    FROM PersonTable AS pt
+    INNER JOIN NameTable AS nt ON nt.OwnerID=pt.PersonID
+    WHERE nt.OwnerID = ?
+      AND nt.IsPrimary = 1
+   """
+
+  cur = dbConnection.cursor()
+  cur.execute( SqlStmt, (PersonID, ) )
+  rows = cur.fetchall()
+
+  if len(rows) == 0:
+    PauseWithMessage("That RIN does not exist.")
+    return 1
+  elif len(rows) > 1:
+    PauseWithMessage("PersonID index not primary key. Not unique.")
+    return 1
+  elif len(rows) ==1:
+   print( "RIN= " + PersonID + "  points to:\n" +
+          rows[0][0] + " " + rows[0][1] )
+
+
+
+  attacdhedTo = input("\nAre the citations attached to a Fact (f), a name (n) or the Person (p)?:\n")
 
 # ===========================================DIV50==
   if attacdhedTo in "P p":
@@ -176,6 +200,31 @@ def main():
 # ===========================================DIV50==
 # Do the re-order
 
+  rowDict = OrderTheLocalCitations( rows)
+
+
+  # Now update the SortOrder column for the given Citation Links
+  SqlStmt = """
+  UPDATE  CitationLinkTable AS clt
+    SET SortOrder = ?
+    WHERE LinkID = ?
+  """
+
+  for i in range( 1, len(rowDict)+1):
+    cur = dbConnection.cursor()
+    cur.execute( SqlStmt, (i, rowDict[i][0]) )
+    dbConnection.commit()
+
+
+  # Close the connection so that it's not open when waiting at the Pause.
+  dbConnection.close()
+
+  PauseWithMessage()
+  return 0
+
+
+# ===========================================DIV50==
+def OrderTheLocalCitations( rows):
   rowDict = dict()
   # Create the origin 1 based dictionary
   # Use 1 based indexing for human users
@@ -233,27 +282,9 @@ def main():
       return 1
     # assume No
     print ("\n\n")
+    # End while Done
 
-  # End while Done
-
-
-  # Now update the SortOrder column for the given Citation Links
-  SqlStmt = """
-  UPDATE  CitationLinkTable AS clt
-    SET SortOrder = ?
-    WHERE LinkID = ?
-  """
-  for i in range( 1, citNumberLimit):
-    cur = dbConnection.cursor()
-    cur.execute( SqlStmt, (i, rowDict[i][0]) )
-    dbConnection.commit()
-
-
-  # Close the connection so that it's not open when waiting at the Pause.
-  dbConnection.close()
-
-  PauseWithMessage()
-  return 0
+  return rowDict
 
 
 # ===================================================DIV60==
