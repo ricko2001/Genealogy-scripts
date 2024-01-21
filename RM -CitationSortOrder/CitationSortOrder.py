@@ -29,7 +29,7 @@ def main():
 
   # Check that ini file is at expected path and that it is readable & valid.
   if not os.path.exists(IniFile):
-    PauseWithMessage("ERROR: The ini configuration file, " + IniFileName + 
+    PauseWithMessage("ERROR: The ini configuration file, " + IniFileName +
              " must be in the same directory as the .py or .exe file.\n\n" )
     return 1
 
@@ -38,7 +38,7 @@ def main():
   try:
     config.read(IniFile, 'UTF-8')
   except:
-    PauseWithMessage("ERROR: The " + IniFileName + 
+    PauseWithMessage("ERROR: The " + IniFileName +
           " file contains a format error and cannot be parsed.\n\n" )
     return 1
 
@@ -65,30 +65,30 @@ def main():
   attacdhedTo = input("Are the citations attached to a Fact (f), a name (n) or the Person (p)?:\n")
 
 # ===========================================DIV50==
-  if attacdhedTo in "P p Person person":
+  if attacdhedTo in "P p":
 
     SqlStmt = """
-    SELECT clt.SortOrder, clt.LinkID, st.Name, ct.CitationName
-      FROM CitationTable AS ct
-      JOIN CitationLinkTable AS clt ON clt.CitationID = ct.CitationID
-      JOIN SourceTable AS st ON ct.SourceID = st.SourceID
-      WHERE clt.OwnerID = ?
-        AND clt.OwnerType = 0
-    ORDER BY clt.SortOrder ASC
-      """
+     SELECT clt.SortOrder, clt.LinkID, st.Name, ct.CitationName
+       FROM CitationTable AS ct
+       JOIN CitationLinkTable AS clt ON clt.CitationID = ct.CitationID
+       JOIN SourceTable AS st ON ct.SourceID = st.SourceID
+       WHERE clt.OwnerID = ?
+         AND clt.OwnerType = 0
+     ORDER BY clt.SortOrder ASC
+    """
     cur = dbConnection.cursor()
     cur.execute( SqlStmt, (PersonID, ) )
     rows = cur.fetchall()
-  
+
     if len(rows) == 0:
       PauseWithMessage("Either RIN does not exist or that person has no citations attached.")
       return 1
 
 # ===========================================DIV50==
-  elif attacdhedTo in "F f Fact fact":
-  
+  elif attacdhedTo in "F f":
+
     FactTypeID = input("Enter the FactTypeID:\n")
-  
+
     SqlStmt = """
      SELECT COUNT(), et.EventID
       FROM EventTable AS et
@@ -96,23 +96,23 @@ def main():
         AND et.OwnerType = 0
         AND et.EventType = ?
      """
-  
+
     cur = dbConnection.cursor()
     cur.execute( SqlStmt, (PersonID, FactTypeID) )
     row = cur.fetchone()
-  
+
     numberOfEvents = row[0]
     EventID = row[1]
-  
-  
+
+
     if (numberOfEvents > 1):
       PauseWithMessage('Found more than 1 event. Try again.')
       return 1
     if (numberOfEvents == 0):
       PauseWithMessage('Event not found. Try again.')
       return 1
-  
-  
+
+
     SqlStmt = """
      SELECT clt.SortOrder, clt.LinkID, st.Name, ct.CitationName
       FROM CitationTable AS ct
@@ -125,33 +125,34 @@ def main():
     cur = dbConnection.cursor()
     cur.execute( SqlStmt, (EventID, ) )
     rows = cur.fetchall()
-    
-# ===========================================DIV50==
-  elif attacdhedTo in "N n Name name":
-  
-    SqlStmt = """
-     SELECT COUNT(), et.NameID
-      FROM EventTable AS et
-      WHERE et.OwnerID = ?
-        AND et.OwnerType = 0
-        AND et.EventType = ?
-    """
-  
-    cur = dbConnection.cursor()
-    cur.execute( SqlStmt, (PersonID, FactTypeID) )
-    row = cur.fetchone()
-  
-    numberOfEvents = row[0]
-    EventID = row[1]
-  
-  
-    if (numberOfEvents > 1):
-      PauseWithMessage('Found more than 1 event. Try again.')
-      return 1
-    if (numberOfEvents == 0):
-      PauseWithMessage('Event not found. Try again.')
-      return 1
 
+# ===========================================DIV50==
+  elif attacdhedTo in "N n":
+
+    SqlStmt = """
+     SELECT COUNT(), nt.NameID
+      FROM NameTable AS nt
+      WHERE nt.OwnerID = ?
+    """
+
+    cur = dbConnection.cursor()
+    cur.execute( SqlStmt, (PersonID, ) )
+    rows = cur.fetchall()
+    
+    print (rows)
+    numberOfNames = rows[0][0]
+
+    if (numberOfNames == 0):
+      PauseWithMessage('Either RIN does not exist or no names found. ')
+      return 1
+    elif (numberOfNames > 1):
+      PauseWithMessage('Found more than 1 name. Try again.')
+      return 1
+    elif (numberOfNames == 1):
+      PauseWithMessage('One name found.')
+
+    NameID = rows[0][1]
+    print (NameID)
 
     SqlStmt = """
      SELECT clt.SortOrder, clt.LinkID, st.Name, ct.CitationName
@@ -161,9 +162,9 @@ def main():
        WHERE clt.OwnerID = ?
          AND clt.OwnerType = 7
      ORDER BY clt.SortOrder ASC
-     """
+    """
     cur = dbConnection.cursor()
-    cur.execute( SqlStmt, (EventID, ) )
+    cur.execute( SqlStmt, (NameID, ) )
     rows = cur.fetchall()
 
 # ===========================================DIV50==
@@ -186,24 +187,25 @@ def main():
   # range limit when using 1 based indexing
   citNumberLimit = len(rowDict) +1
 
-  # Print the initial order (matches default in RM)
-  for i in range( 1, citNumberLimit):
-    print( i, rowDict[i][1] )
   print ( "\n" +
           "To re-order citations, at each prompt, enter one of:\n"+
-          "*  the number of the current citation that should go into this slot\n" +
+          "*  the number of the citation that should go into this slot\n" +
           "*  nothing- to accept current slot as correct\n" +
           "*  s to accept current and following slots as correct\n")
 
   Done = False
   while not Done:
+    # Print the list in current order
+    for i in range( 1, citNumberLimit):
+      print( i, rowDict[i][1] )
+
     for j in range( 1, citNumberLimit-1):
-      response =  str(input( "for slot # " + str(j) + " : "))
+      response =  str(input( "\nWhat goes in slot # " + str(j) + " : "))
       if response == '': continue
       elif response in 'S s': break
-      else : 
+      else :
         try:
-          swapVal = int(response) 
+          swapVal = int(response)
         except ValueError:
           print('Please enter an integer, blank or S or s')
           return 1
@@ -217,7 +219,7 @@ def main():
     # Print order after a round of sorting
     for i in range( 1, citNumberLimit):
       print( i, rowDict[i][1] )
-    
+
     respponse = input("\n\n" +
                       "Are you satisfied with the citation order shown above?\n" +
                       "Enter one of-\n" +
@@ -230,15 +232,17 @@ def main():
       PauseWithMessage("No changes made to database")
       return 1
     # assume No
+    print ("\n\n")
+
   # End while Done
 
 
-  # Now update the SortOrder column for the given Citation Links 
+  # Now update the SortOrder column for the given Citation Links
   SqlStmt = """
   UPDATE  CitationLinkTable AS clt
-    SET SortOrder = ? 
+    SET SortOrder = ?
     WHERE LinkID = ?
-    """
+  """
   for i in range( 1, citNumberLimit):
     cur = dbConnection.cursor()
     cur.execute( SqlStmt, (i, rowDict[i][0]) )
@@ -247,14 +251,14 @@ def main():
 
   # Close the connection so that it's not open when waiting at the Pause.
   dbConnection.close()
- 
+
   PauseWithMessage()
   return 0
 
 
 # ===================================================DIV60==
 def PauseWithMessage(message = None):
-  if (message != None): 
+  if (message != None):
     print(message)
   input("\nPress the <Enter> key to exit...")
   return
