@@ -68,9 +68,6 @@ def main():
   print("\nDatabase = " + os.path.abspath(database_Path) + "\n")
 
 
-
-
-
   # input the PersonID  RIN and type
   PersonID = input("Enter the RIN:\n")
   FactTypeID = input("Enter the FactTypeID:\n")
@@ -111,29 +108,22 @@ def main():
   cur = dbConnection.cursor()
   cur.execute( SqlStmt, (EventID, ) )
   rows = cur.fetchall()
-
-  for row in rows:
-    print (row[2] + "  ==  " + row[3])
   
   rowDict = dict()
 
   for i in range( 0, len(rows)):
     rowDict[i] =( (rows[i][1], (rows[i][2], rows[i][3])))
 
-
-
-#  for i in range( 0, len(rowDict)):
-#    print( rowDict[i] )
-
-  print ("\n\n\n")
-
+  # Print the initial order
   for i in range( 0, len(rowDict)):
     print( i, rowDict[i][1] )
 
   Done = False
   while not Done:
+    print ("\n\n")
+
     for j in range( 0, len(rowDict)-1):
-      firstStr =  input( "position (or s)" + str(j) + " : ")
+      firstStr =  input( "position # (or s)" + str(j) + " : ")
       if firstStr == '': firstStr = j
       if firstStr in 'Ss': break
       swapVal = int(firstStr)
@@ -141,12 +131,24 @@ def main():
       for i in range( 0, len(rowDict)):
         print( i, rowDict[i][1] )
 
-    print ("\n\n\n")
+    print ("\n\n")
 
+    # Print order after round of sorting
     for i in range( 0, len(rowDict)):
-      print( i, rowDict[i][0],  rowDict[i][1] )
+      print( i, rowDict[i][1] )
     
     if input("Finished ? Yy/Nn") in "Yy": Done = True
+
+  # Now update the SortOrder column for the given Citation Links 
+  SqlStmt = """
+  UPDATE  CitationLinkTable AS clt
+    SET SortOrder = ? 
+    WHERE LinkID = ?
+    """
+  for i in range( 0, len(rowDict)):
+    cur = dbConnection.cursor()
+    cur.execute( SqlStmt, (i, rowDict[i][0]) )
+    dbConnection.commit()
 
 
   # Close the connection so that it's not open when waiting at the Pause.
