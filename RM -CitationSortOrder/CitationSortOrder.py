@@ -197,11 +197,20 @@ def main():
     return 1
 
 
+  rowDict = OrderTheLocalCitations( rows )
+  UpdateDatabase( rowDict, dbConnection )
+
+  # Close the connection so that it's not open when waiting at the Pause.
+  dbConnection.close()
+
+  PauseWithMessage()
+  return 0
+
 # ===========================================DIV50==
-# Do the re-order
+def UpdateDatabase( rowDict, dbConnection ):
 
-  rowDict = OrderTheLocalCitations( rows)
-
+  # range limit when using 1 based indexing
+  citNumberLimit = len(rowDict) +1
 
   # Now update the SortOrder column for the given Citation Links
   SqlStmt = """
@@ -215,13 +224,7 @@ def main():
     cur.execute( SqlStmt, (i, rowDict[i][0]) )
     dbConnection.commit()
 
-
-  # Close the connection so that it's not open when waiting at the Pause.
-  dbConnection.close()
-
-  PauseWithMessage()
-  return 0
-
+  return
 
 # ===========================================DIV50==
 def OrderTheLocalCitations( rows):
