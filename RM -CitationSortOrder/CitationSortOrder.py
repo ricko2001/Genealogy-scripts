@@ -20,50 +20,79 @@ import hashlib
 # ===================================================DIV60==
 def main():
 
-  # Configuration
-  IniFileName = "RM-Python-config.ini"
-
-  # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
-  # see   https://docs.python.org/3/library/configparser.html
-  IniFile = os.path.join(GetCurrentDirectory(), IniFileName)
-
-  # Check that ini file is at expected path and that it is readable & valid.
-  if not os.path.exists(IniFile):
-    PauseWithMessage("ERROR: The ini configuration file, " + IniFileName +
-             " must be in the same directory as the .py or .exe file.\n\n" )
-    return 1
-
-  config = configparser.ConfigParser(empty_lines_in_values=False,
-                                      interpolation=None)
   try:
-    config.read(IniFile, 'UTF-8')
-  except:
-    PauseWithMessage("ERROR: The " + IniFileName +
-          " file contains a format error and cannot be parsed.\n\n" )
-    return 1
+    # Configuration
+    IniFileName = "RM-Python-config.ini"
 
-  # Read database file path from ini file
-  try:
-    database_Path = config['FILE_PATHS']['DB_PATH']
-  except:
-    PauseWithMessage('DB_PATH must be specified.')
-    return 1
+    # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
+    # see   https://docs.python.org/3/library/configparser.html
+    IniFile = os.path.join(GetCurrentDirectory(), IniFileName)
 
-  if not os.path.exists(database_Path):
-    PauseWithMessage('Path for database not found: ' + database_Path +
-           '\nchecked for: ' + os.path.abspath(database_Path))
-    return 1
+    # Check that ini file is at expected path and that it is readable & valid.
+    if not os.path.exists(IniFile):
+      raise Exception("ERROR: The ini configuration file, " + IniFileName +
+               " must be in the same directory as the .py or .exe file.\n\n" )
 
-  dbConnection = create_DBconnection(database_Path)
+    config = configparser.ConfigParser(empty_lines_in_values=False,
+                                        interpolation=None)
+    try:
+      config.read(IniFile, 'UTF-8')
+    except:
+      raise Exception("ERROR: The " + IniFileName +
+            " file contains a format error and cannot be parsed.\n\n" )
 
-  print("\nDatabase = " + os.path.abspath(database_Path) + "\n")
+    # Read database file path from ini file
+    try:
+      database_Path = config['FILE_PATHS']['DB_PATH']
+    except:
+      raise Exception('DB_PATH must be specified.')
 
+    if not os.path.exists(database_Path):
+      raise Exception('Path for database not found: ' + database_Path +
+             '\nchecked for: ' + os.path.abspath(database_Path))
 
+    dbConnection = create_DBconnection(database_Path)
+
+    print("\nDatabase = " + os.path.abspath(database_Path) + "\n")
+
+    PersonID = GetRINFromUser( dbConnection )
+
+    attacdhedTo = input("\nAre the citations attached to a Fact (f), a name (n) or the Person (p)?:\n")
+
+    if attacdhedTo == "":
+      raise Exception("Cannot interpret response.")
+
+    if attacdhedTo in "P p":
+      rows = AttachedToPerson( PersonID, dbConnection)
+
+    elif attacdhedTo in "F f":
+      rows = AttachedToFact( PersonID, dbConnection)
+
+    elif attacdhedTo in "N n":
+      rows = AttachedToName( PersonID, dbConnection)
+
+    else:
+      raise Exception("Cannot interpret response.")
+
+    rowDict = OrderTheLocalCitations( rows )
+    UpdateDatabase( rowDict, dbConnection )
+
+    # Close the connection so that it's not open when waiting at the Pause.
+    dbConnection.close()
+
+  except Exception as RunError:
+    print( str(RunError))
+
+  PauseWithMessage()
+  return 0
+
+# ===========================================DIV50==
+def GetRINFromUser( dbConnection ):
   # input the PersonID  RIN
   PersonID = input("Enter the RIN of the person who has the citations:\n")
 
   SqlStmt = """
-   SELECT nt.Given, nt.Surname
+   SELECT nt.Prefix, nt.Given, nt.Surname, nt.Suffix
     FROM PersonTable AS pt
     INNER JOIN NameTable AS nt ON nt.OwnerID=pt.PersonID
     WHERE nt.OwnerID = ?
@@ -75,136 +104,192 @@ def main():
   rows = cur.fetchall()
 
   if len(rows) == 0:
-    PauseWithMessage("That RIN does not exist.")
-    return 1
+    raise Exception("That RIN does not exist.")
   elif len(rows) > 1:
-    PauseWithMessage("PersonID index not primary key. Not unique.")
-    return 1
+    raise Exception("PersonID index not primary key. Not unique.")
   elif len(rows) ==1:
    print( "RIN= " + PersonID + "  points to:\n" +
-          rows[0][0] + " " + rows[0][1] )
+          rows[0][0], rows[0][1], rows[0][2], rows[0][3], )
 
-
-
-  attacdhedTo = input("\nAre the citations attached to a Fact (f), a name (n) or the Person (p)?:\n")
+  return PersonID
 
 # ===========================================DIV50==
-  if attacdhedTo in "P p":
+def AttachedToName( PersonID, dbConnection):
+
+  # Select nameID's that have more than 1 citation attached
+  SqlStmt = """
+   SELECT  nt.NameID, nt.Prefix, nt.Given, nt.Surname, nt.Suffix
+    FROM NameTable AS nt
+        INNER JOIN CitationLinkTable AS clt ON clt.OwnerID = nt.NameID AND clt.OwnerType = 7
+        WHERE  nt.OwnerID = ?
+        GROUP BY nt.NameID
+        HAVING COUNT() > 1
+  """
+  cur = dbConnection.cursor()
+  cur.execute( SqlStmt, (PersonID, ) )
+  rows = cur.fetchall()
+
+  numberOfNames = len(rows)
+  if (numberOfNames == 0):
+    raise Exception('Either RIN does not exist or no names found. ')
+  elif (numberOfNames > 1):
+#    raise Exception('Found more than 1 name. Try again.')
+    nameID = SelectNameFromList(rows)
+  elif (numberOfNames == 1):
+    PauseWithMessage('One name found.')
+    #continue ...
+
+
+  NameID = rows[0][0]
+  print (NameID)
+  SqlStmt = """
+   SELECT clt.SortOrder, clt.LinkID, st.Name, ct.CitationName
+     FROM CitationTable AS ct
+     JOIN CitationLinkTable AS clt ON clt.CitationID = ct.CitationID
+     JOIN SourceTable AS st ON ct.SourceID = st.SourceID
+     WHERE clt.OwnerID = ?
+       AND clt.OwnerType = 7
+   ORDER BY clt.SortOrder ASC
+  """
+  cur = dbConnection.cursor()
+  cur.execute( SqlStmt, (NameID, ) )
+  rows = cur.fetchall()
+
+  return rows
+
+
+# ===========================================DIV50==
+def SelectNameFromList( rows ):
+
+  # clt.SortOrder, clt.LinkID, st.Name, ct.CitationName
+
+  for i in range( 1, len(rows)+1):
+    print (i, rows[i-1][1], rows[i-1][2], rows[i-1][3], rows[i-1][4] )
+
+  try:
+    citNumber = int(input("Which name's citations shall be ordered? ") )
+  except ValueError as e:
+    raise Exception('Type a number')
+
+  nameID = rows[citNumber -1][0]
+
+  return nameID
+
+
+# ===========================================DIV50==
+def SelectEventFromList( rows ):
+
+  # et.EventID, ftt.Name, et.Date, et.Details
+
+  for i in range( 1, len(rows)+1):
+    print (i, rows[i-1][1], rows[i-1][2], rows[i-1][3] )
+
+  try:
+    citNumber = int(input("Which event's citations shall be ordered? ") )
+  except ValueError as e:
+    raise Exception('Type a number')
+
+  eventID = rows[citNumber -1][0]
+
+  return eventID
+
+
+# ===========================================DIV50==
+def AttachedToFact( PersonID, dbConnection):
+
+  EventID = None
+
+  FactTypeID = input("Enter the FactTypeID or\n" +
+              "blank for full list of attached Facts with more than one citation\n")
+
+  if FactTypeID == '':
+  # Select all EventID's that have more than 1 citation attached
 
     SqlStmt = """
-     SELECT clt.SortOrder, clt.LinkID, st.Name, ct.CitationName
-       FROM CitationTable AS ct
-       JOIN CitationLinkTable AS clt ON clt.CitationID = ct.CitationID
-       JOIN SourceTable AS st ON ct.SourceID = st.SourceID
-       WHERE clt.OwnerID = ?
-         AND clt.OwnerType = 0
-     ORDER BY clt.SortOrder ASC
-    """
+     SELECT et.EventID, ftt.Name, et.Date, et.Details
+      FROM EventTable AS et
+      INNER JOIN FactTypeTable AS ftt ON ftt.FactTypeID = et.EventType
+      INNER JOIN CitationLinkTable AS clt ON clt.OwnerID = et.EventID AND clt.OwnerType = 2
+      WHERE et.OwnerID = ?
+        AND et.OwnerType = 0
+        AND clt.OwnerType = 2
+      GROUP BY et.EventID
+      HAVING COUNT() > 1
+     """
+
     cur = dbConnection.cursor()
     cur.execute( SqlStmt, (PersonID, ) )
     rows = cur.fetchall()
 
-    if len(rows) == 0:
-      PauseWithMessage("Either RIN does not exist or that person has no citations attached.")
-      return 1
-
-# ===========================================DIV50==
-  elif attacdhedTo in "F f":
-
-    FactTypeID = input("Enter the FactTypeID:\n")
+  else:
+    # Select EventID's of speciified type that have more than 1 citation attached
 
     SqlStmt = """
-     SELECT COUNT(), et.EventID
+     SELECT et.EventID, ftt.Name, et.Date, et.Details
       FROM EventTable AS et
+      INNER JOIN FactTypeTable AS ftt ON ftt.FactTypeID = et.EventType
+      INNER JOIN CitationLinkTable AS clt ON clt.OwnerID = et.EventID AND clt.OwnerType = 2
       WHERE et.OwnerID = ?
         AND et.OwnerType = 0
         AND et.EventType = ?
+      GROUP BY et.EventID
+      HAVING COUNT() > 1
      """
 
     cur = dbConnection.cursor()
     cur.execute( SqlStmt, (PersonID, FactTypeID) )
-    row = cur.fetchone()
-
-    numberOfEvents = row[0]
-    EventID = row[1]
-
-
-    if (numberOfEvents > 1):
-      PauseWithMessage('Found more than 1 event. Try again.')
-      return 1
-    if (numberOfEvents == 0):
-      PauseWithMessage('Event not found. Try again.')
-      return 1
-
-
-    SqlStmt = """
-     SELECT clt.SortOrder, clt.LinkID, st.Name, ct.CitationName
-      FROM CitationTable AS ct
-      JOIN CitationLinkTable AS clt ON clt.CitationID = ct.CitationID
-      JOIN SourceTable AS st ON ct.SourceID = st.SourceID
-      WHERE clt.OwnerID = ?
-        AND clt.OwnerType = 2
-     ORDER BY clt.SortOrder ASC
-    """
-    cur = dbConnection.cursor()
-    cur.execute( SqlStmt, (EventID, ) )
     rows = cur.fetchall()
 
-# ===========================================DIV50==
-  elif attacdhedTo in "N n":
 
-    SqlStmt = """
-     SELECT COUNT(), nt.NameID
-      FROM NameTable AS nt
-      WHERE nt.OwnerID = ?
-    """
-
-    cur = dbConnection.cursor()
-    cur.execute( SqlStmt, (PersonID, ) )
-    rows = cur.fetchall()
+  numberOfEvents = len(rows)
+  print(numberOfEvents)
+  if (numberOfEvents > 1):
+    EventID = SelectEventFromList(rows)
+  elif (numberOfEvents == 0):
+    raise Exception('No events with more than one citation found. Try again.')
+  elif (numberOfEvents == 1):
+    EventID = rows[0][0]
+    print("Found one event with more than one citation.\n" +
+          rows[0][1], rows[0][2], rows[0][3] )
     
-    print (rows)
-    numberOfNames = rows[0][0]
 
-    if (numberOfNames == 0):
-      PauseWithMessage('Either RIN does not exist or no names found. ')
-      return 1
-    elif (numberOfNames > 1):
-      PauseWithMessage('Found more than 1 name. Try again.')
-      return 1
-    elif (numberOfNames == 1):
-      PauseWithMessage('One name found.')
 
-    NameID = rows[0][1]
-    print (NameID)
+  SqlStmt = """
+   SELECT clt.SortOrder, clt.LinkID, st.Name, ct.CitationName
+    FROM CitationTable AS ct
+    JOIN CitationLinkTable AS clt ON clt.CitationID = ct.CitationID
+    JOIN SourceTable AS st ON ct.SourceID = st.SourceID
+    WHERE clt.OwnerID = ?
+      AND clt.OwnerType = 2
+   ORDER BY clt.SortOrder ASC
+  """
+  cur = dbConnection.cursor()
+  cur.execute( SqlStmt, (EventID, ) )
+  rows = cur.fetchall()
 
-    SqlStmt = """
-     SELECT clt.SortOrder, clt.LinkID, st.Name, ct.CitationName
-       FROM CitationTable AS ct
-       JOIN CitationLinkTable AS clt ON clt.CitationID = ct.CitationID
-       JOIN SourceTable AS st ON ct.SourceID = st.SourceID
-       WHERE clt.OwnerID = ?
-         AND clt.OwnerType = 7
-     ORDER BY clt.SortOrder ASC
-    """
-    cur = dbConnection.cursor()
-    cur.execute( SqlStmt, (NameID, ) )
-    rows = cur.fetchall()
+  return rows
 
 # ===========================================DIV50==
-  else:
-    PauseWithMessage("Cannot interpret response.")
-    return 1
+def AttachedToPerson( PersonID, dbConnection):
 
+  SqlStmt = """
+   SELECT clt.SortOrder, clt.LinkID, st.Name, ct.CitationName
+     FROM CitationTable AS ct
+     JOIN CitationLinkTable AS clt ON clt.CitationID = ct.CitationID
+     JOIN SourceTable AS st ON ct.SourceID = st.SourceID
+     WHERE clt.OwnerID = ?
+       AND clt.OwnerType = 0
+   ORDER BY clt.SortOrder ASC
+  """
+  cur = dbConnection.cursor()
+  cur.execute( SqlStmt, (PersonID, ) )
+  rows = cur.fetchall()
+  if len(rows) == 0:
+    raise Exception( "Person has no citations attached")
+  if len(rows) == 1:
+    raise Exception( "Person has only one citation attached")
+  return rows
 
-  rowDict = OrderTheLocalCitations( rows )
-  UpdateDatabase( rowDict, dbConnection )
-
-  # Close the connection so that it's not open when waiting at the Pause.
-  dbConnection.close()
-
-  PauseWithMessage()
-  return 0
 
 # ===========================================DIV50==
 def UpdateDatabase( rowDict, dbConnection ):
@@ -240,10 +325,13 @@ def OrderTheLocalCitations( rows):
   citNumberLimit = len(rowDict) +1
 
   print ( "\n" +
+          "------------------------------------------------------\n" +
           "To re-order citations, at each prompt, enter one of:\n"+
           "*  the number of the citation that should go into this slot\n" +
           "*  nothing- to accept current slot as correct\n" +
-          "*  s to accept current and following slots as correct\n")
+          "*  s to accept current and following slots as correct\n" +
+          "*  a to abort and make no chnages\n" +
+          "------------------------------------------------------\n" )
 
   Done = False
   while not Done:
@@ -255,12 +343,12 @@ def OrderTheLocalCitations( rows):
       response =  str(input( "\nWhat goes in slot # " + str(j) + " : "))
       if response == '': continue
       elif response in 'S s': break
+      elif response in 'A a': raise Exception("No changes made to database")
       else :
         try:
           swapVal = int(response)
         except ValueError:
-          print('Please enter an integer, blank or S or s')
-          return 1
+          raise Exception('Please enter an integer, blank,  or S or s or A or a')
       rowDict[swapVal], rowDict[j] = rowDict[j], rowDict[swapVal]
       print ("\n\n")
       for i in range( 1, citNumberLimit):
@@ -281,8 +369,7 @@ def OrderTheLocalCitations( rows):
     if respponse  in "Yy":
       Done = True
     elif respponse  in "Aa":
-      PauseWithMessage("No changes made to database")
-      return 1
+      raise Exception("No changes made to database")
     # assume No
     print ("\n\n")
     # End while Done
@@ -304,9 +391,7 @@ def create_DBconnection(db_file_path):
     try:
       dbConnection = sqlite3.connect(db_file_path)
     except Error as e:
-        print(e)
-        PauseWithMessage( "\n\nCannot open the RM database file. \n")
-        sys.exit()
+        raise Exception( "str(e)" + "\nCannot open the RM database file. \n")
     return dbConnection
 
 
