@@ -1,11 +1,12 @@
-
 from enum import Enum
 
 # ===================================================DIV60==
 def main():
 
     print ("===========================================DIV50==\n")
-
+    
+    Test("D.+19210011..+00000000..", "11 ??? 1921", Direction.FROM_RM )
+    Test("D-+19210008..+19210011..", "11 ??? 1921", Direction.FROM_RM )
     Test("D-+19210113..+99990000..", "13 Jan 1921-9999", Direction.FROM_RM )
     Test("D.-10000000..+00000000..", "1000 BC   [BC dates, for my Neanderthal cousins]", Direction.FROM_RM )
     Test("D.+00050000..+00000000..", "5  [date & sort date=5]", Direction.FROM_RM )
@@ -15,12 +16,12 @@ def main():
     Test("D.+03000000..+00000000..", "300     [date & sort date=300] number, too big for day of month", Direction.FROM_RM )
     Test("D.+15830101/.+00000000..", "1 Jan 1583/84 [double date]", Direction.FROM_RM )
     Test("Q.+15880212..+00000000..", "12da 2mo 1588   [quaker date format, neeeds further investigation]", Direction.FROM_RM )
-    Test("QR+15881112..+15881201..", "Bet 12da 11mo 1588 and 1da 12mo 1588 [quaker date format, not investigated] ", Direction.FROM_RM )
-    Test("Q.+15881112..+00000000..", "12da 11mo 1588  [quaker date]", Direction.FROM_RM )
-    Test("Q.+15880102/.+00000000..", "2da 1mo 1588/9   [quaker double-date]", Direction.FROM_RM )
-    Test("Q.+15881102/.+00000000..", "2da 11mo 1588/9  [quaker double-date]", Direction.FROM_RM )
-    Test("Q.+17511031..+00000000..", "31da 10mo 1751 [quaker date pre-1752]", Direction.FROM_RM )
-    Test("Q.+17520101..+00000000..", "1da 1mo 1752  [quaker date post-1751]", Direction.FROM_RM )
+#    Test("QR+15881112..+15881201..", "Bet 12da 11mo 1588 and 1da 12mo 1588 [quaker date format, not investigated] ", Direction.FROM_RM )
+#    Test("Q.+15881112..+00000000..", "12da 11mo 1588  [quaker date]", Direction.FROM_RM )
+#    Test("Q.+15880102/.+00000000..", "2da 1mo 1588/9   [quaker double-date]", Direction.FROM_RM )
+#    Test("Q.+15881102/.+00000000..", "2da 11mo 1588/9  [quaker double-date]", Direction.FROM_RM )
+#    Test("Q.+17511031..+00000000..", "31da 10mo 1751 [quaker date pre-1752]", Direction.FROM_RM )
+#    Test("Q.+17520101..+00000000..", "1da 1mo 1752  [quaker date post-1751]", Direction.FROM_RM )
     Test("D-+19210000..+00010000..", "1921-1   [ sort date=1921-1 ]", Direction.FROM_RM )
     Test("D-+19210000..+00020000..", "1921-2  [ sort date=1921-2 ]", Direction.FROM_RM )
     Test("D-+19210000..+00030000..", "1921-3   [ sort date=1921-3 ]", Direction.FROM_RM )
@@ -110,15 +111,36 @@ def main():
     PauseWithMessage()
     return
 
+
 # ===================================================DIV60==
-def ToRMDate(DateStr):
+def Test(In, Expected, whichWay):
+  try:
+    print( In , "     : " + Expected )
+
+    if whichWay == Direction.TO_RM:
+      print ( ToRMDate(In, Format.SHORT) )
+  
+    elif whichWay == Direction.FROM_RM:
+#      print ( "==" + FromRMDate(In, Format.SHORT) + "==" )
+      print ( "==" + FromRMDate(In, Format.LONG) + "==" )
+
+  except Exception as e:
+    print (e)
+
+  print("\n")
+
+
+# ===================================================DIV60==
+def ToRMDate(DateStr, form):
+  #form is Format.LONG, Format.SHORT
 
   raise Exception( "ToRMDate not yet implemented")
 
-  return RMDate
+  return ""
 
 # ===================================================DIV60==
-def FromRMDate(RMDate):
+def FromRMDate(RMDate, form):
+  #form is Format.LONG, Format.SHORT
 
   if RMDate[0:1] == 'T':
     return RMDate[1:]
@@ -131,7 +153,7 @@ def FromRMDate(RMDate):
   else:
     raise Exception( "Malformed RM Date: wrong start character")
 
-  # Handle D Dates
+  # Handle D type Dates
   if len(RMDate)  != 24:
     raise Exception( "Malformed RM Date: wrong length")
 
@@ -157,19 +179,11 @@ def FromRMDate(RMDate):
   else: raise Exception( "Malformed RM Date: AD-BC_1 indicator")
 
   try:
-    Year_1  = (RMDate[3:7]).lstrip("0")
-    Year_1  = Year_1.lstrip("0")
-    Month_1 = RMDate[7:9]
-    Month_1_i = int(Month_1)
-    if Month_1_i == 0: Month_1 = ''
-    if Month_1_i < 0 or Month_1_i >12 :raise Exception( "Invalid month 1 number")
-    Day_1   = RMDate[9:11] + ' '
-    Day_1_i = int(Day_1)
-    if Day_1_i == 0: Day_1 = ''
-    if Day_1_i < 0 or Day_1_i >31 : raise Exception( "Invalid day 1 number")
+    year_1    = (RMDate[3:7]).lstrip("0")
+    month_1_i = int(RMDate[7:9])
+    day_1     = RMDate[9:11].lstrip("0")
   except ValueError as ve:
-   raise Exception( "Invalid characters in YYYY MM DD of date 1")
-
+   raise Exception( "Malformed RM Date: Invalid characters in date 1")
 
   Char_11_12 = RMDate[11:12]
   DoubDate_1 = False
@@ -177,20 +191,20 @@ def FromRMDate(RMDate):
   elif Char_11_12 != '.': raise Exception( "Malformed RM Date: Double Date 1 indicator")
   
   Char_12_13 = RMDate[12:13]
-  Confidence_1 = None
-  if   Char_12_13 == '.': Confidence_1 = ConfidenceCode.NONE
-  elif Char_12_13 == 'A': Confidence_1 = ConfidenceCode.ABT
-  elif Char_12_13 == 'S': Confidence_1 = ConfidenceCode.SAY
-  elif Char_12_13 == 'C': Confidence_1 = ConfidenceCode.CIR
-  elif Char_12_13 == 'E': Confidence_1 = ConfidenceCode.EST
-  elif Char_12_13 == 'L': Confidence_1 = ConfidenceCode.CAL
-  elif Char_12_13 == '?': Confidence_1 = ConfidenceCode.MAY
-  elif Char_12_13 == '1': Confidence_1 = ConfidenceCode.PER
-  elif Char_12_13 == '2': Confidence_1 = ConfidenceCode.APAR
-  elif Char_12_13 == '3': Confidence_1 = ConfidenceCode.LKLY
-  elif Char_12_13 == '4': Confidence_1 = ConfidenceCode.POSS
-  elif Char_12_13 == '5': Confidence_1 = ConfidenceCode.PROB
-  elif Char_12_13 == '6': Confidence_1 = ConfidenceCode.CERT
+  ConfidenceE_1 = None
+  if   Char_12_13 == '.': ConfidenceE_1 = ConfidenceCode.NONE
+  elif Char_12_13 == 'A': ConfidenceE_1 = ConfidenceCode.ABT
+  elif Char_12_13 == 'S': ConfidenceE_1 = ConfidenceCode.SAY
+  elif Char_12_13 == 'C': ConfidenceE_1 = ConfidenceCode.CIR
+  elif Char_12_13 == 'E': ConfidenceE_1 = ConfidenceCode.EST
+  elif Char_12_13 == 'L': ConfidenceE_1 = ConfidenceCode.CAL
+  elif Char_12_13 == '?': ConfidenceE_1 = ConfidenceCode.MAY
+  elif Char_12_13 == '1': ConfidenceE_1 = ConfidenceCode.PER
+  elif Char_12_13 == '2': ConfidenceE_1 = ConfidenceCode.APAR
+  elif Char_12_13 == '3': ConfidenceE_1 = ConfidenceCode.LKLY
+  elif Char_12_13 == '4': ConfidenceE_1 = ConfidenceCode.POSS
+  elif Char_12_13 == '5': ConfidenceE_1 = ConfidenceCode.PROB
+  elif Char_12_13 == '6': ConfidenceE_1 = ConfidenceCode.CERT
   else: raise Exception( "Malformed RM Date: Confidence 1")
   
   Char_13_14 = RMDate[13:14]
@@ -200,21 +214,13 @@ def FromRMDate(RMDate):
   
   # must be all 0 if not date range Confidence
   try:
-    Year_2  = RMDate[14:18].lstrip("0")
-    Year_2  = Year_2.lstrip("0")
-    Month_2 = RMDate[18:20]
-    Month_2_i = int(Month_2)
-    if Month_2_i == 0: Month_2 = ''
-    if Month_2_i < 0 or Month_2_i >12 :raise Exception( "Invalid month 2 number")
-    Day_2   = RMDate[20:22] + ' '
-    Day_2_i = int(Day_2)
-    if Day_2_i == 0: Day_2 = ''
-    if Day_2_i < 0 or Day_2_i >31 : raise Exception( "Invalid day 2 number")
-  
+    year_2    = RMDate[14:18].lstrip("0")
+    month_2_i = int(RMDate[18:20])
+    day_2     = RMDate[20:22].lstrip("0")
   except ValueError as ve:
-   raise Exception( "Invalid characters in YYYY MM DD of date 2")
+   raise Exception( "Malformed RM Date: Invalid characters in date 1")
   
-   # complicated
+   # complicated TODO
   Char_22_23 = RMDate[22:23]
   DoubDate_2 = False
   if   Char_22_23 == '/': DoubDate_2 = True
@@ -222,45 +228,25 @@ def FromRMDate(RMDate):
 
   # only if 2nd date
   Char_23_24 = RMDate[23:24]
-  Confidence_2 = None
-  if   Char_23_24 == '.': Confidence_2 = ConfidenceCode.NONE
-  elif Char_23_24 == 'A': Confidence_2 = ConfidenceCode.ABT
-  elif Char_23_24 == 'S': Confidence_2 = ConfidenceCode.SAY
-  elif Char_23_24 == 'C': Confidence_2 = ConfidenceCode.CIR
-  elif Char_23_24 == 'E': Confidence_2 = ConfidenceCode.EST
-  elif Char_23_24 == 'L': Confidence_2 = ConfidenceCode.CAL
-  elif Char_23_24 == '?': Confidence_2 = ConfidenceCode.MAY
-  elif Char_23_24 == '1': Confidence_2 = ConfidenceCode.PER
-  elif Char_23_24 == '2': Confidence_2 = ConfidenceCode.APAR
-  elif Char_23_24 == '3': Confidence_2 = ConfidenceCode.LKLY
-  elif Char_23_24 == '4': Confidence_2 = ConfidenceCode.POSS
-  elif Char_23_24 == '5': Confidence_2 = ConfidenceCode.PROB
-  elif Char_23_24 == '6': Confidence_2 = ConfidenceCode.CERT
+  ConfidenceE_2 = None
+  if   Char_23_24 == '.': ConfidenceE_2 = ConfidenceCode.NONE
+  elif Char_23_24 == 'A': ConfidenceE_2 = ConfidenceCode.ABT
+  elif Char_23_24 == 'S': ConfidenceE_2 = ConfidenceCode.SAY
+  elif Char_23_24 == 'C': ConfidenceE_2 = ConfidenceCode.CIR
+  elif Char_23_24 == 'E': ConfidenceE_2 = ConfidenceCode.EST
+  elif Char_23_24 == 'L': ConfidenceE_2 = ConfidenceCode.CAL
+  elif Char_23_24 == '?': ConfidenceE_2 = ConfidenceCode.MAY
+  elif Char_23_24 == '1': ConfidenceE_2 = ConfidenceCode.PER
+  elif Char_23_24 == '2': ConfidenceE_2 = ConfidenceCode.APAR
+  elif Char_23_24 == '3': ConfidenceE_2 = ConfidenceCode.LKLY
+  elif Char_23_24 == '4': ConfidenceE_2 = ConfidenceCode.POSS
+  elif Char_23_24 == '5': ConfidenceE_2 = ConfidenceCode.PROB
+  elif Char_23_24 == '6': ConfidenceE_2 = ConfidenceCode.CERT
   else: raise Exception( "Malformed RM Date: Confidence 1")
 
-
-#  debug print
-#  print (  "StructCode: " + StructCodeE.name
-#         + "\nAdBc_1: " + AdBc_1
-#         + "\nYear_1: " + Year_1 
-#         + "\nMonth_1: " + Month_1 
-#         + "\nMonth_1_i: " + str(Month_1_i)
-#         + "\nDay_1: " + Day_1
-#         + "\nstr(DoubDate_1): " + str(DoubDate_1)
-#         + "\nConfidence_1: " + Confidence_1.name
-#         + "\nAdBc_2: " + AdBc_2
-#         + "\nYear_2: " + Year_2
-#         + "\nMonth_2: " + Month_2
-#         + "\nMonth_2_i: " + str(Month_2_i)
-#         + "\nDay_2: " + Day_2
-#         + "\nstr(DoubDate_2): " + str(DoubDate_2)
-#         + "\nConfidence_2: " + Confidence_2.name
-#         + "\n" )
-
   # Format the date
-
   ConfidenceData = {}
-  #                                      short    long
+  #                                       short          long
   ConfidenceData[ConfidenceCode.NONE] = ( "",            "")
   ConfidenceData[ConfidenceCode.ABT ] = ( "abt ",        "about ")
   ConfidenceData[ConfidenceCode.SAY ] = ( "say ",        "say ")
@@ -288,75 +274,64 @@ def FromRMDate(RMDate):
   FormatData[StructCode.OR]   =   (   2,      '',           '',            ' or ',      ' or ' )
   FormatData[StructCode.BTWN] =   (   2,      'bet ',       'between ',    ' and ',     ' and ')
   FormatData[StructCode.FRTO] =   (   2,      'from ',      'from ',       ' to ',      ' to ' )
-  FormatData[StructCode.DASH] =   (   2,      '',           '',           ' – ',       ' – '   )
+  FormatData[StructCode.DASH] =   (   2,      '',           '',            '–',         '–'   )
 
   SingleDate = False
-  if (Year_2 == '') and (Month_2_i == 0) and (Day_2_i == 0): SingleDate = True
+  if year_2 == '' and month_2_i == 0 and day_2 == '' and AdBc_2 == '': SingleDate = True
 
-  StructCodeNum=1
-  if (StructCodeE == StructCode.OR or StructCodeE == StructCode.BTWN
-                    or StructCodeE == StructCode.FRTO or StructCodeE == StructCode.DASH ): StructCodeNum=2
+  if SingleDate and FormatData[StructCodeE][0] == 2 :
+    raise Exception("Malformed date: conflict between struct code & second date empty")
 
-  if SingleDate and StructCodeNum == 2 :
-    raise Exception("Malformed date: conflict between struct code & # dates")
+  if year_1 != '' and day_1 != '' and month_1_i == 0: month_1_i = 13
+  if day_1 != '':
+    day_1 = day_1 + ' '
+  if year_1 == '' or (year_1 != '' and month_1_i == 0):
+    month_trsp_1 = ''
+  else: month_trsp_1 = ' '
 
-#  if Year_1 != '' and Month_1_i == 0: 
-#    Month_1_i = 13
 
-  fDate_1 = (FormatData[StructCodeE][1] + ConfidenceData[Confidence_1][0] 
-             + Day_1 + NumToMonthStr(Month_1_i, 1)  + Year_1 + AdBc_1)
+  if form ==Format.SHORT :
+    fDate_1 = (FormatData[StructCodeE][1] + ConfidenceData[ConfidenceE_1][0] 
+             + day_1 + NumToMonthStr(month_1_i, 0) + month_trsp_1 + year_1 + AdBc_1)
 
+  elif form ==Format.LONG :
+    fDate_1 = (FormatData[StructCodeE][2] + ConfidenceData[ConfidenceE_1][1] 
+             + day_1 + NumToMonthStr(month_1_i, 1) + month_trsp_1 + year_1 + AdBc_1)
+
+  else: raise Exception( "Format not supported")
 
 
   fDate = ''
   if SingleDate:
     fDate = fDate_1
   else:
-    #if Year_2 != '   ' and Month_2_i == 0: Month_2_i = 13
-    fDate_2 =  (FormatData[StructCodeE][3] + ConfidenceData[Confidence_2][0] 
-                + Day_2 + NumToMonthStr(Month_2_i, 1) + Year_2 + AdBc_2)
-    fDate = fDate_1 + fDate_2
+    if year_2 != '' and day_2 != '' and month_2_i == 0: month_2_i = 13
+    if day_2 != '': 
+      day_2 = day_2 + ' '
+    if year_2 == '' or (year_2 != '' and month_2_i == 0):
+      month_trsp_2 = ''
+    else: month_trsp_2 = ' '
 
+    if form ==Format.SHORT :
+      fDate_2= (FormatData[StructCodeE][3] + ConfidenceData[ConfidenceE_2][0] 
+               + day_2 + NumToMonthStr(month_2_i, 0) + month_trsp_2 + year_2 + AdBc_2)
+  
+    elif form ==Format.LONG :
+      fDate_2 = (FormatData[StructCodeE][4] + ConfidenceData[ConfidenceE_2][1] 
+               + day_2 + NumToMonthStr(month_2_i, 1) + month_trsp_2 + year_2 + AdBc_2)
+  
+    else: raise Exception( "Format not supported")
+
+    fDate = fDate_1 + fDate_2
 
   return fDate
 
-
-# if date has no month, need a place holder for month if day is 1-12   =  use ??? 
-
-# ===================================================DIV60==
-def Test(In, Expected, whichWay):
-  try:
-    print( In , "     : " + Expected )
-
-    if whichWay == Direction.TO_RM:
-      print ( ToRMDate(In) )
-  
-    elif whichWay == Direction.FROM_RM:
-      print ( FromRMDate(In) )
-
-  except Exception as e:
-    print (e)
-
-  print("\n")
-
-# ===================================================DIV60==
-#def Test(In, Expected, whichWay):
-#    print( In , "     : " + Expected )
-#
-#    if whichWay == Direction.TO_RM:
-#      print ( ToRMDate(In) )
-#  
-#    elif whichWay == Direction.FROM_RM:
-#      print ( FromRMDate(In) )
-#
-#
-#    print("\n")
 
 # ===================================================DIV60==
 def PauseWithMessage(message = None):
   if (message != None):
     print(message)
-  input("\nPress the <Enter> key to exit...")
+  input("\nPress the <Enter> key to continue...")
   return
 
 
@@ -367,30 +342,9 @@ class Direction(Enum):
 
 
 # ===================================================DIV60==
-class Weekday(Enum):
-  MONDAY = 1
-  TUESDAY = 2
-  WEDNESDAY = 3
-  THURSDAY = 4
-  FRIDAY = 5
-  SATURDAY = 6
-  SUNDAY = 7
-
-
-# ===================================================DIV60==
-class Month(Enum):
-  JAN = 1
-  FEB = 2
-  MAR = 3
-  APR = 4
-  MAY = 5
-  JUN = 6
-  JUL = 7
-  AUG = 8
-  SEP = 9
-  OCT = 10
-  NOV = 11
-  DEC = 12
+class Format(Enum):
+  SHORT = 1
+  LONG  = 2
 
 
 # ===================================================DIV60==
@@ -428,25 +382,26 @@ class ConfidenceCode(Enum):
 
 # ===================================================DIV60==
 def NumToMonthStr(MonthNum, style):
-  if style != 1 and style != 2: raise Exception ("style not supported")
+  if style != 0 and style != 1: raise Exception ("style not supported")
+  if MonthNum < 0 or MonthNum > 13: raise Exception ("Month number out of range")
 
+ # Items must appear in this order
   Months = (
-  (         0,    '',   ''),
-  ( Month.JAN, 'Jan ',  "January " ),
-  ( Month.FEB, 'Feb ',  "February " ),
-  ( Month.MAR, 'Mar ',  "March " ),
-  ( Month.APR, 'Apr ',  "April " ),
-  ( Month.MAY, 'May ',  "May " ),
-  ( Month.JUN, 'Jun ',  "June " ),
-  ( Month.JUL, 'Jul ',  "July " ),
-  ( Month.AUG, 'Aug ',  "August " ),
-  ( Month.SEP, 'Sep ',  "September " ),
-  ( Month.OCT, 'Oct ',  "October " ),
-  ( Month.NOV, 'Nov ',  "November " ),
-  ( Month.DEC, 'Dec ',  "December " )
-#  ( Month.PH, '??? ',  "??? " )
+  (    '',   ''),
+  ( 'Jan',  "January" ),
+  ( 'Feb',  "February" ),
+  ( 'Mar',  "March" ),
+  ( 'Apr',  "April" ),
+  ( 'May',  "May" ),
+  ( 'Jun',  "June" ),
+  ( 'Jul',  "July" ),
+  ( 'Aug',  "August" ),
+  ( 'Sep',  "September" ),
+  ( 'Oct',  "October" ),
+  ( 'Nov',  "November" ),
+  ( 'Dec',  "December" ),
+  ( '???',  "??????" )
   )
-
   return Months[ MonthNum ] [ style ]
 
 
