@@ -8,11 +8,15 @@ import configparser
 import xml.etree.ElementTree as ET
 import hashlib
 
+sys.path.append( r'..\RM -Dates and Sort Dates' )
+# OR have a copy in the same dir as this script
+import RMDate
+
 
 ##  Requirements: (see ReadMe.txt for details)
 ##   RootsMagic v8 or v9 database file
 ##   RM-Python-config.ini  ( Configuration ini text file to set options and parameters)
-##   Python v3.9 or greater
+##   Python v3.10 or greater
 
 #   Re-order citations attached to a particular fact.
 
@@ -80,6 +84,8 @@ def main():
     # Close the connection so that it's not open when waiting at the Pause.
     dbConnection.close()
 
+  except KeyboardInterrupt:
+    return 1
   except Exception as RunError:
     print( str(RunError))
 
@@ -113,6 +119,7 @@ def GetRINFromUser( dbConnection ):
 
   return PersonID
 
+
 # ===========================================DIV50==
 def AttachedToName( PersonID, dbConnection):
 
@@ -139,7 +146,6 @@ def AttachedToName( PersonID, dbConnection):
     PauseWithMessage('One name found.')
     #continue ...
 
-
   NameID = rows[0][0]
   print (NameID)
   SqlStmt = """
@@ -161,7 +167,7 @@ def AttachedToName( PersonID, dbConnection):
 # ===========================================DIV50==
 def SelectNameFromList( rows ):
 
-  # clt.SortOrder, clt.LinkID, st.Name, ct.CitationName
+  # .SortOrder, .LinkID, st.Name, .CitationName
 
   for i in range( 1, len(rows)+1):
     print (i, rows[i-1][1], rows[i-1][2], rows[i-1][3], rows[i-1][4] )
@@ -182,7 +188,8 @@ def SelectEventFromList( rows ):
   # et.EventID, ftt.Name, et.Date, et.Details
 
   for i in range( 1, len(rows)+1):
-    print (i, rows[i-1][1], rows[i-1][2], rows[i-1][3] )
+    #print (i, rows[i-1][1], rows[i-1][2], rows[i-1][3] )
+    print (i, rows[i-1][1] + ":    " + RMDate.FromRMDate(rows[i-1][2], RMDate.Format.SHORT), rows[i-1][3] )
 
   try:
     citNumber = int(input("Which event's citations shall be ordered? ") )
@@ -204,7 +211,6 @@ def AttachedToFact( PersonID, dbConnection):
 
   if FactTypeID == '':
   # Select all EventID's that have more than 1 citation attached
-
     SqlStmt = """
      SELECT et.EventID, ftt.Name, et.Date, et.Details
       FROM EventTable AS et
@@ -222,8 +228,7 @@ def AttachedToFact( PersonID, dbConnection):
     rows = cur.fetchall()
 
   else:
-    # Select EventID's of speciified type that have more than 1 citation attached
-
+    # Select EventID's of specified type that have more than 1 citation attached
     SqlStmt = """
      SELECT et.EventID, ftt.Name, et.Date, et.Details
       FROM EventTable AS et
@@ -250,9 +255,8 @@ def AttachedToFact( PersonID, dbConnection):
   elif (numberOfEvents == 1):
     EventID = rows[0][0]
     print("Found one event with more than one citation.\n" +
-          rows[0][1], rows[0][2], rows[0][3] )
-    
-
+          #rows[0][1], rows[0][2], rows[0][3] )
+          rows[0][1], ":    " + RMDate.FromRMDate(rows[0][2], RMDate.Format.SHORT) , rows[0][3] )
 
   SqlStmt = """
    SELECT clt.SortOrder, clt.LinkID, st.Name, ct.CitationName
@@ -348,7 +352,7 @@ def OrderTheLocalCitations( rows):
         try:
           swapVal = int(response)
         except ValueError:
-          raise Exception('Please enter an integer, blank,  or S or s or A or a')
+          raise Exception('Enter an integer, blank,  or S or s or A or a')
       rowDict[swapVal], rowDict[j] = rowDict[j], rowDict[swapVal]
       print ("\n\n")
       for i in range( 1, citNumberLimit):
@@ -361,7 +365,7 @@ def OrderTheLocalCitations( rows):
       print( i, rowDict[i][1] )
 
     respponse = input("\n\n" +
-                      "Are you satisfied with the citation order shown above?\n" +
+                      "Satisfied with the citation order shown above?\n" +
                       "Enter one of-\n" +
                       "*  Y/y to make the citation order change as shown above\n" +
                       "*  N/n to go back and do another round of re-ordering\n"+
