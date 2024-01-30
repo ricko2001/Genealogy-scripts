@@ -18,6 +18,9 @@ A utility to quickly update a RM group by running an SQL query.
 Makes changes to GroupTable and TagTable.
 Release are available as zip files.
 
+### RM -Citation Sort Order
+A utility to allow the user to re-order the listing of citations attached to Persons, Names, or Facts. Uses python module RMDate.py in RM -Dates and Sort Dates
+
 
 ## NOT RELEASED
 ### RM -SQL for creating useful groups
