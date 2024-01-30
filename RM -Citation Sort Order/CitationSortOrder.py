@@ -14,7 +14,7 @@ import RMDate
 
 
 ##  Requirements: (see ReadMe.txt for details)
-##   RootsMagic v8 or v9 database file
+##   RootsMagic v9 database file
 ##   RM-Python-config.ini  ( Configuration ini text file to set options and parameters)
 ##   Python v3.10 or greater
 
@@ -273,6 +273,7 @@ def AttachedToFact( PersonID, dbConnection):
 
   return rows
 
+
 # ===========================================DIV50==
 def AttachedToPerson( PersonID, dbConnection):
 
@@ -314,6 +315,7 @@ def UpdateDatabase( rowDict, dbConnection ):
     dbConnection.commit()
 
   return
+
 
 # ===========================================DIV50==
 def OrderTheLocalCitations( rows):
