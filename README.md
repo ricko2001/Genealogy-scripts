@@ -18,6 +18,12 @@ A utility to quickly update a RM group by running an SQL query.
 Makes changes to GroupTable and TagTable.
 Release are available as zip files.
 
+### RM -Change Source for a Citation
+A simple utility to fix a particular kind of data entry mistake. It moves a citation from one master source to another. It does lots of error checking to prevent further errors.
+
+The fix that this utility makes is trivial in SQL, but this app takes information that is available in the RootsMagic user interface and does all of the look ups for you. 
+
+
 ### RM -Citation Sort Order
 A utility to allow the user to re-order the listing of citations attached to Persons, Names, or Facts. Uses python module RMDate.py in RM -Dates and Sort Dates
 
