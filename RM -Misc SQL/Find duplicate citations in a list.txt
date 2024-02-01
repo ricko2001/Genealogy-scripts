@@ -55,8 +55,34 @@ AND mnt.IsPrimary=1;
 --  19	link to an association		FANTable.FanID
 
 
--- Now try deleting the duplicate citations
+-- Now try deleting all the duplicate citations
+
+DELETE FROM CitationLinkTable as clt
+ WHERE clt.LinkID NOT IN
+  (
+  SELECT MIN(clt.LinkID)
+  FROM CitationLinkTable AS clt
+  GROUP BY  clt.CitationID, clt.OwnerType, clt.OwnerID
+  )
+
+
+
+
+-- Now try deleting ONLY the duplicate citations
 -- in ChildParent facts FactTypeID=1065
 
-
-
+DELETE FROM CitationLinkTable as clt
+WHERE clt.LinkID IN 
+(
+ SELECT clt.LinkID
+   FROM CitationLinkTable as clt
+   INNER JOIN EventTable AS et ON clt.OwnerID = et.EventID
+   WHERE clt.LinkID NOT IN
+    (
+    SELECT MIN(clt.LinkID)
+    FROM CitationLinkTable AS clt
+    GROUP BY  clt.CitationID, clt.OwnerType, clt.OwnerID
+    )
+    AND et.EventType = 1065
+)
+ 
