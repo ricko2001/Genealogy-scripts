@@ -55,7 +55,28 @@ INNER JOIN NameTable AS fnt ON ft.FatherID = fnt.NameID
 INNER JOIN NameTable AS mnt ON ft.MotherID = mnt.NameID
 WHERE Dup.OwnerType = 1
 AND fnt.IsPrimary=1
-AND mnt.IsPrimary=1;
+AND mnt.IsPrimary=1
+
+UNION ALL
+
+SELECT 0 AS PersonID, 'TASK====   ' || tt.Name || '===  ' || ct.CitationName AS Description  
+FROM Dup
+INNER JOIN CitationTable AS ct ON Dup.CitationID = ct.CitationID
+INNER JOIN TaskTable AS tt ON Dup.OwnerID = tt.TaskID
+WHERE Dup.OwnerType = 6
+
+UNION ALL
+
+SELECT ft.ID1 AS PersonID, 'ASSOCIATION====    ' || '   ' || nt1.Given || '  ' || nt1.Surname  || '  &  ' || nt2.Given || '  ' || nt2.Surname  || '===  ' || ct.CitationName AS Description  
+FROM Dup
+INNER JOIN CitationTable AS ct ON Dup.CitationID = ct.CitationID
+INNER JOIN FANTable AS ft ON Dup.OwnerID = ft.FanID
+INNER JOIN NameTable AS nt1 ON nt1.OwnerID = ft.ID1
+INNER JOIN NameTable AS nt2 ON nt2.OwnerID = ft.ID2
+WHERE Dup.OwnerType = 19
+AND nt1.IsPrimary=1
+AND nt2.IsPrimary=1
+
 
 
 
