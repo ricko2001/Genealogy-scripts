@@ -1,0 +1,62 @@
+CREATE TEMP VIEW IF NOT EXISTS Dup AS 
+ SELECT CitationID, OwnerType, OwnerID
+ FROM CitationLinkTable AS clt
+ GROUP BY  CitationID, OwnerType, OwnerID
+ HAVING count() >1;
+ 
+SELECT Dup.OwnerID AS PersonID, 'PERSON===   ' || nt.Given || '  ' || nt.Surname || '===  ' || ct.CitationName AS Description
+FROM Dup
+INNER JOIN CitationTable AS ct ON Dup.CitationID = ct.CitationID
+INNER JOIN NameTable AS nt ON Dup.OwnerID = nt.OwnerID
+WHERE Dup.OwnerType = 0
+AND nt.IsPrimary=1
+
+UNION ALL
+
+SELECT et.OwnerID AS PersonID, 'FACT====   ' || ftt.Name || '   ' || nt.Given || '  ' || nt.Surname || '===  ' || ct.CitationName AS Description  
+FROM Dup
+INNER JOIN CitationTable AS ct ON Dup.CitationID = ct.CitationID
+INNER JOIN EventTable AS et ON Dup.OwnerID = et.EventID
+INNER JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
+INNER JOIN NameTable AS nt ON et.OwnerID = nt.OwnerID
+WHERE Dup.OwnerType = 2
+AND nt.IsPrimary=1
+
+UNION ALL
+
+SELECT nt.OwnerID AS PersonID, 'NAME====   ' || '   ' || nt.Given || '  ' || nt.Surname || '===  ' || ct.CitationName AS Description  
+FROM Dup
+INNER JOIN CitationTable AS ct ON Dup.CitationID = ct.CitationID
+INNER JOIN NameTable AS nt ON Dup.OwnerID = nt.NameID
+WHERE Dup.OwnerType = 7
+
+UNION ALL
+
+SELECT fnt.OwnerID AS PersonID, 'FAMILY====   ' || '   ' || fnt.Surname ||  '   ' || mnt.Surname ||'===  ' || ct.CitationName AS Description  
+FROM Dup
+INNER JOIN CitationTable AS ct ON Dup.CitationID = ct.CitationID
+INNER JOIN FamilyTable AS ft ON Dup.OwnerID = ft.FamilyID
+INNER JOIN NameTable AS fnt ON ft.FatherID = fnt.NameID
+INNER JOIN NameTable AS mnt ON ft.MotherID = mnt.NameID
+WHERE Dup.OwnerType = 1
+AND fnt.IsPrimary=1
+AND mnt.IsPrimary=1;
+
+
+
+
+
+--  OwnerType is one of 
+--  0	link to a person			PersonTable.PersonID
+--  1	link to a family			FamilyTable.FamilyID
+--  2	link to a fact/event		EventTable.EventID
+--  6	link to a task				TaskTable.TaskID
+--  7	link to a name				NameTable.NameID
+--  19	link to an association		FANTable.FanID
+
+
+-- Now try deleting the duplicate citations
+-- in ChildParent facts FactTypeID=1065
+
+
+
