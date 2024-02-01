@@ -13,7 +13,7 @@ AND nt.IsPrimary=1
 
 UNION ALL
 
-SELECT et.OwnerID AS PersonID, 'FACT====   ' || ftt.Name || '   ' || nt.Given || '  ' || nt.Surname || '===  ' || ct.CitationName AS Description  
+SELECT et.OwnerID AS PersonID, 'FACT-i====   ' || ftt.Name || '   ' || nt.Given || '  ' || nt.Surname || '===  ' || ct.CitationName AS Description  
 FROM Dup
 INNER JOIN CitationTable AS ct ON Dup.CitationID = ct.CitationID
 INNER JOIN EventTable AS et ON Dup.OwnerID = et.EventID
@@ -21,6 +21,21 @@ INNER JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
 INNER JOIN NameTable AS nt ON et.OwnerID = nt.OwnerID
 WHERE Dup.OwnerType = 2
 AND nt.IsPrimary=1
+
+UNION ALL
+
+SELECT ft.FatherID AS PersonID, 'FACT-f====   '|| ftt.Name || '   ' || fnt.Surname ||  '  &  ' || mnt.Surname ||'===  ' || ct.CitationName AS Description  
+FROM Dup
+INNER JOIN CitationTable AS ct ON Dup.CitationID = ct.CitationID
+INNER JOIN EventTable AS et ON Dup.OwnerID = et.EventID
+INNER JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
+INNER JOIN FamilyTable AS ft ON et.OwnerID = ft.FamilyID
+INNER JOIN NameTable AS fnt ON fnt.OwnerID = ft.FatherID
+INNER JOIN NameTable AS mnt ON mnt.OwnerID = ft.MotherID
+WHERE Dup.OwnerType = 2
+AND et.OwnerType = 1
+AND fnt.IsPrimary=1
+AND mnt.IsPrimary=1
 
 UNION ALL
 
