@@ -13,7 +13,7 @@ DELETE FROM CitationLinkTable as clt
 
 
 -- Delete ONLY the duplicate citations
--- in ChildParent facts FactTypeID=1065
+-- attached to a specific FactType (prompted by '?')
 
 DELETE FROM CitationLinkTable as clt
 WHERE clt.LinkID IN 
@@ -27,6 +27,6 @@ WHERE clt.LinkID IN
     FROM CitationLinkTable AS clt
     GROUP BY  clt.CitationID, clt.OwnerType, clt.OwnerID
     )
-    AND et.EventType = 1065
+    AND et.EventType = ?
 );
  
