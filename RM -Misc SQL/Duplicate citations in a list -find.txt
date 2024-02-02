@@ -1,10 +1,16 @@
+-- ===========================================DIV50==
+-- List instances of duplicated citations in each kind of attachment.
+-- The duplicates could have different quality settings on their link record, 
+-- examine before deleting the duplicate.
+
 CREATE TEMP VIEW IF NOT EXISTS Dup AS 
  SELECT CitationID, OwnerType, OwnerID
  FROM CitationLinkTable AS clt
- GROUP BY  CitationID, OwnerType, OwnerID
+ GROUP BY CitationID, OwnerType, OwnerID
  HAVING count() >1;
- 
-SELECT Dup.OwnerID AS PersonID, 'PERSON===   ' || nt.Given || '  ' || nt.Surname || '===  ' || ct.CitationName AS Description
+
+SELECT Dup.OwnerID AS PersonID, 'PERSON===   ' || nt.Given || '  ' || nt.Surname
+       || '===  ' || ct.CitationName AS Description
 FROM Dup
 INNER JOIN CitationTable AS ct ON Dup.CitationID = ct.CitationID
 INNER JOIN NameTable AS nt ON Dup.OwnerID = nt.OwnerID
@@ -13,7 +19,8 @@ AND nt.IsPrimary=1
 
 UNION ALL
 
-SELECT et.OwnerID AS PersonID, 'FACT-i====   ' || ftt.Name || '   ' || nt.Given || '  ' || nt.Surname || '===  ' || ct.CitationName AS Description  
+SELECT et.OwnerID AS PersonID, 'FACT-i====   ' || ftt.Name || '   ' || nt.Given
+        || '  ' || nt.Surname || '===  ' || ct.CitationName AS Description  
 FROM Dup
 INNER JOIN CitationTable AS ct ON Dup.CitationID = ct.CitationID
 INNER JOIN EventTable AS et ON Dup.OwnerID = et.EventID
@@ -24,7 +31,9 @@ AND nt.IsPrimary=1
 
 UNION ALL
 
-SELECT ft.FatherID AS PersonID, 'FACT-f====   '|| ftt.Name || '   ' || fnt.Surname ||  '  &  ' || mnt.Surname ||'===  ' || ct.CitationName AS Description  
+SELECT ft.FatherID AS PersonID, 'FACT-f====   ' || ftt.Name || '   '
+       || fnt.Surname ||  '  &  ' || mnt.Surname ||'===  ' 
+       || ct.CitationName AS Description  
 FROM Dup
 INNER JOIN CitationTable AS ct ON Dup.CitationID = ct.CitationID
 INNER JOIN EventTable AS et ON Dup.OwnerID = et.EventID
@@ -39,7 +48,8 @@ AND mnt.IsPrimary=1
 
 UNION ALL
 
-SELECT nt.OwnerID AS PersonID, 'NAME====   ' || '   ' || nt.Given || '  ' || nt.Surname || '===  ' || ct.CitationName AS Description  
+SELECT nt.OwnerID AS PersonID, 'NAME====   ' || '   ' || nt.Given || '  '
+       || nt.Surname || '===  ' || ct.CitationName AS Description  
 FROM Dup
 INNER JOIN CitationTable AS ct ON Dup.CitationID = ct.CitationID
 INNER JOIN NameTable AS nt ON Dup.OwnerID = nt.NameID
@@ -47,7 +57,8 @@ WHERE Dup.OwnerType = 7
 
 UNION ALL
 
-SELECT fnt.OwnerID AS PersonID, 'FAMILY====   ' || '   ' || fnt.Surname ||  '   ' || mnt.Surname ||'===  ' || ct.CitationName AS Description  
+SELECT fnt.OwnerID AS PersonID, 'FAMILY====   ' || '   ' || fnt.Surname
+       ||  '   ' || mnt.Surname ||'===  ' || ct.CitationName AS Description  
 FROM Dup
 INNER JOIN CitationTable AS ct ON Dup.CitationID = ct.CitationID
 INNER JOIN FamilyTable AS ft ON Dup.OwnerID = ft.FamilyID
@@ -59,7 +70,8 @@ AND mnt.IsPrimary=1
 
 UNION ALL
 
-SELECT 0 AS PersonID, 'TASK====   ' || tt.Name || '===  ' || ct.CitationName AS Description  
+SELECT 0 AS PersonID, 'TASK====   ' || tt.Name || '===  '
+       || ct.CitationName AS Description  
 FROM Dup
 INNER JOIN CitationTable AS ct ON Dup.CitationID = ct.CitationID
 INNER JOIN TaskTable AS tt ON Dup.OwnerID = tt.TaskID
@@ -67,24 +79,17 @@ WHERE Dup.OwnerType = 6
 
 UNION ALL
 
-SELECT ft.ID1 AS PersonID, 'ASSOCIATION====    ' || '   ' || nt1.Given || '  ' || nt1.Surname  || '  &  ' || nt2.Given || '  ' || nt2.Surname  || '===  ' || ct.CitationName AS Description  
+SELECT ft.ID1 AS PersonID, 'ASSOC====    ' || ftt.Name || '   ' || nt1.Given
+     || '  ' || nt1.Surname  || '  &  ' || nt2.Given || '  ' || nt2.Surname
+     || '===  ' || ct.CitationName AS Description  
 FROM Dup
 INNER JOIN CitationTable AS ct ON Dup.CitationID = ct.CitationID
 INNER JOIN FANTable AS ft ON Dup.OwnerID = ft.FanID
+INNER JOIN FANTypeTable AS ftt ON ft.FanTypeID = ftt.FANTypeID
 INNER JOIN NameTable AS nt1 ON nt1.OwnerID = ft.ID1
 INNER JOIN NameTable AS nt2 ON nt2.OwnerID = ft.ID2
 WHERE Dup.OwnerType = 19
 AND nt1.IsPrimary=1
 AND nt2.IsPrimary=1
 
-
-
-
---  OwnerType is one of 
---  0	link to a person			PersonTable.PersonID
---  1	link to a family			FamilyTable.FamilyID
---  2	link to a fact/event		EventTable.EventID
---  6	link to a task				TaskTable.TaskID
---  7	link to a name				NameTable.NameID
---  19	link to an association		FANTable.FanID
-
+-- ===========================================DIV50==
