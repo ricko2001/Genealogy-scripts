@@ -10,19 +10,24 @@ import hashlib
 
 
 ##  Requirements: (see ReadMe.txt for details)
-##   RootsMagic v7, v8 or v9 database file
+##   RootsMagic v8 or v9 database file
 ##   RM-Python-config.ini  ( Configuration ini text file to set options and parameters)
-##   Python v3.9 or greater
+##   Python v3.10 or greater
 
 #   Transfer a citation from old source to new source -only if sources use same template
 #   input citation name
-#   confirm there is only 1 match to like input%
+#   confirm there is only 1 match to like input
 #   display existing source name
 #   input new source name
-#   confirm there is only 1 match to like input%
+#   confirm there is only 1 match to like input
 #   confirm old and new source both use same template
-#   ask for confirm
+#   ask for confirmation
 #   change the owning source
+#   TODO  instead of quiting, allow second chance data entry
+#   TODO loop the entire process to make multiple runs easier
+#   TODO add new feature to allow multiple moves at once by entering
+#     a LIKE search criteria for Citation Name. Will probably want to
+#     limit search to the existing source citations.
 
 
 
