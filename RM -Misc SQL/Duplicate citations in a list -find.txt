@@ -27,6 +27,7 @@ INNER JOIN EventTable AS et ON Dup.OwnerID = et.EventID
 INNER JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
 INNER JOIN NameTable AS nt ON et.OwnerID = nt.OwnerID
 WHERE Dup.OwnerType = 2
+AND et.OwnerType=0
 AND nt.IsPrimary=1
 
 UNION ALL
