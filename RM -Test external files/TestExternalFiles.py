@@ -298,12 +298,27 @@ def ListMissingFilesFeature( config, dbConnection, reportF ):
   # get options
   ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
 
+  # First check database for empty paths or filenames
+  # easier to handle them now than later
+  cur = FindEntriesBlankPathOrFilename(dbConnection)
+  rows = cur.fetchall()
+  if len(rows) != 0:
+    reportF.write (str(len(rows)) + " entires with blank filename or path found:\n\n")
+    for row in rows:
+      # MediaPath, MediaFile, Caption, Description
+      reportF.write ( "Path       =" + str(row[0]) + '\nFile Name  =' +  str(row[1]) 
+                    + '\nCaption    =' + row[2] + "\nDescription=" + row[3]  + "\n\n")
+
+
   cur= GetDBFileList(dbConnection)
   # row[0] = path,   row[1] = fileName
 
   for row in cur:
     dirPathOrig = row[0]
-    dirPath = ExpandDirPath(row[0])
+    # print("==" + str(row[0]) + '==' +  str(row[1]) + '==' + str(len(str(row[0]) )))
+    if len(str(row[0]) ) == 0:
+      continue
+    dirPath = ExpandDirPath(dirPathOrig)
     filePath = dirPath / row[1]
     if not dirPath.exists():
       foundSomeMissingFiles=True
@@ -432,6 +447,19 @@ def GetDBFileList(dbConnection):
   SELECT  MediaPath, MediaFile
   FROM MultimediaTable
     ORDER BY MediaPath, MediaFile COLLATE NOCASE
+"""
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt)
+  return cur
+
+
+# ===================================================DIV60==
+def FindEntriesBlankPathOrFilename(dbConnection):
+  SqlStmt="""\
+  SELECT  MediaPath, MediaFile, Caption, Description
+  FROM MultimediaTable
+  WHERE MediaPath == ''
+     OR MediaFile == ''COLLATE NOCASE
 """
   cur = dbConnection.cursor()
   cur.execute(SqlStmt)
