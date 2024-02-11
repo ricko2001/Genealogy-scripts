@@ -2,16 +2,14 @@ TestExternalFiles
 Utility application for use with RootsMagic databases
 
 
-RootsMagic (RM) software uses a relational database as its main storage.
+RootsMagic (RM) software uses a relational database as its main data storage.
 The database includes links to external files called "media files".
 These files appear under the RM version 9 Media tab.
 
 As the number of linked files increases, user errors become more likely.
-* A file on disk may get renamed or moved, breaking the link
-    from the database.
+* A file on disk may get renamed or moved, breaking the link from the database.
     RM has tools to fix these, but it does not give a log of what it has done.
-    There is a report that can be run, but
-    with effort.
+    There is a report that can be run, but with effort.
 * A file may be added to the media folder on disk but then not attached to the
     desired database element. A common oversight when working quickly.
 * A file may be added to RM, but then detached from all source, facts etc,
@@ -24,6 +22,7 @@ As the number of linked files increases, user errors become more likely.
 This utility will identify these issues.
 It is recommended to run this script daily as part of your backup routine.
 
+A Hash file might be generated semiannually and archived with the full dataset.
 
 ======================================================================
 Overview
@@ -154,11 +153,22 @@ Use the py script file.  See section below, after the Notes section, entitled-
 ======================================================================
 NOTES
 
-*   If no report file is generated, look at the black command console window for
-    error messages that will help you fix the problem.
+*   Directory structure
+    My directory structure, which of course, I recommend 🙂 is-
 
-*   CHECK_FILES feature: file path case in the database or in the file system
-    path name is not significant.
+    Genealogy          (top level folder, mine is in my Home folder)
+      myRD-DB.rmtree   (my main database file)
+      Misc Databases   (folder for other databases I frequently use)
+      Exhibits         (folder containing all media files in a folder hierarchy)
+      SW               (folder containing my various utility scripts and the ini file)
+
+*   CHECK_FILES feature: file path letter case in the database or in the file
+    system path name is not significant.
+
+*   REPORT_FILE_DISPLAY_APP
+    Option to automatically open the report file in a display application.
+    The included ini sample file has this option deactivated by commenting the 
+    line with the leading # character.
 
 *   UNREF_FILES
     If there is a difference in capitalization of file name or directory
@@ -168,22 +178,42 @@ NOTES
 *   UNREF_FILES
     The folder specified in RM's preferences as the Media
     folder is not necessarily the same as the folder specified by the
-    SEARCH_ROOT_FLDR_PATH variable in the ini file, but it is
-    recommended that they be the same.
+    SEARCH_ROOT_FLDR_PATH variable in the ini file, but I'd
+    recommended that they, in fact, be the same.
 
 *   UNREF_FILES
-    To shorten the list of unreferenced items, the IGNORED_OBJECTS section can
-    be used to list items that are to be ignored by the utility.
-    The goal should be to produce a report with no unreferenced files found.
+    Your goal should be to produce a report with no unreferenced files found.
     That is an easy result to interpret. If a file is added to the media folder
     but not added to the RM database, it will show up here.
+
+    However, there may be files and folders of files that you want to store 
+    near your media files, but are not actually referred to by the database.
+
+    To shorten the list of unreferenced items, the IGNORED_OBJECTS section can
+    be used to list items that are to be ignored by the utility when listing 
+    unreferenced files within the SEARCH_ROOT_FLDR_PATH folder.
 
     If a file is in the media folder but is intentionally not referenced by
     RM, add it to the IGNORED_OBEJECTS section. That prevents it from showing
     up in the report and confusing interpretation.
 
-*   UNREF_FILES
-    Only file names and folder names may be added to the IGNORED_OBJECTS list.
+*   IGNORED_OBEJECTS
+
+    FILES
+    Add file names that should not be reported as being unreferenced. 
+    One name per line. Indented with at least one space character.
+    No paths, just file names. 
+    All files with this name are ignored no matter where they are within
+    the SEARCH_ROOT_FLDR_PATH folder
+
+    FOLDERS
+    Add folder names whose entire contents should not be reported as being 
+    unreferenced.
+    One name per line. Indented with at least one space character.
+    No paths, just folder names. 
+    All folders with this name have their contents ignored no matter where they 
+    are within the SEARCH_ROOT_FLDR_PATH folder
+
     I suggest that you organize your file and folders so that ignored folders
     all have the same name, even though there may be many of them in different
     locations in the media folder.
@@ -195,13 +225,13 @@ NOTES
 
 *   DUP_FILEPATHS
     Files with the same path and name may be duplicated in the media tab
-    intentionally as they might have different captions etc. )This may no
-    longer be an issue after RM8.)
+    intentionally as they might have different captions etc. This may no
+    longer be an issue post RM8.)
 
 *   DUP_FILENAMES
     Files listed have the same file names, ignoring case.
-    Duplicate file names are not a problem. This function is provided as a
-    troubleshooting tool. This feature does not check the file contents,
+    Duplicate file names are not a error. This function is provided as a
+    organizational tool. This feature does not check the file contents,
     only the names. Use the HASH_File feature to distinguish file contents.
 
 *   SHOW_ORIG_PATH (RM v8 & v9 only)
@@ -209,10 +239,10 @@ NOTES
     NO_TAG_FILES or DUP_FILES
     The option is turned on with the option SHOW_ORIG_PATH in the ini file.
     With this option on, the path for each file is shown twice,
-    - the path on disk, that is, after any RM8 token in the path has been expanded.
+    - the path on disk, that is, after any RM8-9 token in the path has been expanded.
     - the path as saved in the database with the token not expanded.
 
-*   General information: File paths pointing to external files
+*   Background information: File paths pointing to external files
     in RM 7:   all paths are absolute starting with a drive letter
     in RM 8&9: absolute file path starting with a drive letter
             or
@@ -224,19 +254,19 @@ NOTES
     *    RM main database file location
 
 *   RM-Python-config.ini  (the ini file)
-    If there are any non-ASCII characters in the ini file, perhaps in a database
-    path, or in ignored objects names, then the file must be saved in UTF-8
-    format, with no byte order mark (BOM). The included sample ini file has an
-    umlauted ä in a comment at the end to force it to be in the correct format.
-    File format is an option in the save dialog box in NotePad.
+    If there are any non-ASCII characters in the ini file then the file must be
+    saved in UTF-8 format, with no byte order mark (BOM). 
+    The included sample ini file has an accented ä in a comment at the end to 
+    force it to be in the correct format.
+    File format is an option in the "Save file" dialog box in NotePad.
 
 *   IGNORED_OBJECTS section of the ini file
     Due to how the ini file is parsed by the python library, files and folders
     whose names start with the # character are not added to the FILES or FOLDERS.
     Instead, they are considered comments. There is a way to overcome this 
     limitation but the explanation of how is not worth the confusion it would
-    create. Bottom line- change the name of the folder or file so it doesn't
-    start with a #.
+    create. Bottom line- if you want to add the name, change the name so it 
+    doesn't start with a #.
 
 *   Switching between RM 8 and RM 9
     This section probably applies to no-one. Please don't read it and get confused !
@@ -252,6 +282,17 @@ NOTES
     When run on a RM7 database, the Media Folder location is not needed so the
     XML file is not referenced, so switching  between ver 7 and ver 9 will not
     be an issue.
+
+*   A listing of "entires with blank filename or path found" is enerated when a 
+    media item in the database has a blank file path or file name. Items listed
+    should be fixed first. 
+
+*   Troubleshooting: If no report file is generated, look at the black command 
+    console window for error messages that will help you fix the problem.
+    If no report file is generated and the black command console window closes
+    before you can read it, try first opening a command line console and then 
+    running the exe or py file from the command line. The window will not close 
+    and you'll be able to read any error messages.
 
 
 ======================================================================
