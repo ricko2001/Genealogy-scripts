@@ -16,7 +16,7 @@ import hashlib
 ##  Requirements: (see ReadMe.txt for details)
 ##   RootsMagic v7, v8 or v9 installed
 ##   RootsMagic v7, v8 or v9 database file
-##   RM-Python-config.ini  ( Configuration ini text file to set options and parameters)
+##   RM-Python-config.ini  ( Configuration ini text file to set options )
 ##   Python v3.9 or greater
 
 
@@ -34,7 +34,7 @@ def main():
   # Configuration
   IniFileName = "RM-Python-config.ini"
 
-  try:  #errors go to console window
+  try:        #errors go to console window
     # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
     # see   https://docs.python.org/3/library/configparser.html
     IniFile = os.path.join(GetCurrentDirectory(), IniFileName)
@@ -67,7 +67,7 @@ def main():
   # Open the Report File.
 
   with open( report_Path,  mode='w', encoding='utf-8') as reportF:
-    try:  # errors go to the report file
+    try:        # errors go to the report file
 
       try:
         database_Path = config['FILE_PATHS']['DB_PATH']
@@ -78,6 +78,12 @@ def main():
         raise Exception('Path for database not found: ' + database_Path
                          +'\n\nAbsolute path checked:\n"' + os.path.abspath(database_Path) + '"')
 
+      try:
+        ReportDisplayApp = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
+      except:
+        ReportDisplayApp = None
+      if ReportDisplayApp != None and not os.path.exists(ReportDisplayApp):
+        raise Exception('Path for report file display app found: ' + ReportDisplayApp)
 
       # RM database file info
       FileModificationTime = datetime.fromtimestamp(os.path.getmtime(database_Path))
@@ -132,8 +138,9 @@ def main():
       reportF.write( str(e) )
       return 1
 
-  # report file is now closed
-  subprocess.run( r"C:\Program Files\NotePad++\NotePad++.exe " + report_Path )
+  # report file is now closed. Can be opened for display
+  if ReportDisplayApp != None:
+    subprocess.Popen( [ReportDisplayApp, report_Path] )
   return 0
 
 
@@ -414,7 +421,7 @@ def FileHashFeature(config, dbConnection, reportF):
 
 # ===================================================DIV60==
 def GetDBFolderList(dbConnection):
-  SqlStmt="""\
+  SqlStmt="""
   SELECT  DISTINCT MediaPath
   FROM MultimediaTable
     ORDER BY MediaPath
@@ -426,7 +433,7 @@ def GetDBFolderList(dbConnection):
 
 # ===================================================DIV60==
 def GetDBFileList(dbConnection):
-  SqlStmt="""\
+  SqlStmt="""
   SELECT  MediaPath, MediaFile
   FROM MultimediaTable
     ORDER BY MediaPath, MediaFile COLLATE NOCASE
@@ -440,7 +447,8 @@ def GetDBFileList(dbConnection):
 def ReportEmptyPaths(dbConnection, reportF):
   # First check database for empty paths or filenames
   # easier to handle them now than later
-  SqlStmt="""\
+
+  SqlStmt="""
     SELECT  MediaPath, MediaFile, Caption, Description
     FROM MultimediaTable
     WHERE MediaPath == ''
@@ -461,7 +469,7 @@ def ReportEmptyPaths(dbConnection, reportF):
 # ===================================================DIV60==
 def GetDBNoTagFileList(dbConnection):
 
-  SqlStmt="""\
+  SqlStmt="""
   SELECT MediaPath, MediaFile
   FROM MultimediaTable mmt
   LEFT JOIN MediaLinkTable mlt ON mlt.MediaID =  mmt.MediaID
@@ -476,7 +484,7 @@ def GetDBNoTagFileList(dbConnection):
 # ===================================================DIV60==
 def GetDuplicateFileNamesList(dbConnection):
   # see for examples https://database.guide/6-ways-to-select-duplicate-rows-in-sqlite/
-  SqlStmt="""\
+  SqlStmt="""
   SELECT p.MediaFile, COUNT(*) AS "Count"
   FROM MultimediaTable p
   GROUP BY MediaFile COLLATE NOCASE
@@ -491,7 +499,7 @@ def GetDuplicateFileNamesList(dbConnection):
 # ===================================================DIV60==
 def GetDuplicateFilePathsList(dbConnection):
   # see for examples https://database.guide/6-ways-to-select-duplicate-rows-in-sqlite/
-  SqlStmt="""\
+  SqlStmt="""
   SELECT p.MediaPath, p.MediaFile, COUNT(*) AS "Count"
   FROM MultimediaTable p
   GROUP BY MediaPath COLLATE NOCASE, MediaFile COLLATE NOCASE
@@ -506,7 +514,7 @@ def GetDuplicateFilePathsList(dbConnection):
 # ===================================================DIV60==
 def GetSQLiteLibraryVersion (dbConnection):
   # returns a string like 3.42.0
-  SqlStmt="""\
+  SqlStmt="""
   SELECT sqlite_version()
   """
   cur = dbConnection.cursor()
@@ -527,13 +535,13 @@ def GetCurrentDirectory():
 
 # ===================================================DIV60==
 def TimeStampNow(type=""):
-     # return a TimeStamp string
-     now = datetime.now()
-     if type == '':
-       dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
-     elif type == 'file':
-       dt_string = now.strftime("%Y-%m-%d_%H%M%S")
-     return dt_string
+  # return a TimeStamp string
+  now = datetime.now()
+  if type == '':
+    dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
+  elif type == 'file':
+    dt_string = now.strftime("%Y-%m-%d_%H%M%S")
+  return dt_string
 
 
 # ===================================================DIV60==
@@ -552,13 +560,13 @@ def Section (pos, name, reportF):
 
 # ===================================================DIV60==
 def create_DBconnection(db_file_path, reportF):
-    dbConnection = None
-    try:
-      dbConnection = sqlite3.connect(db_file_path)
-    except Error as e:
-      raise Exception(e, "\n\nCannot open the RM database file. \n")
+  dbConnection = None
+  try:
+    dbConnection = sqlite3.connect(db_file_path)
+  except Error as e:
+    raise Exception(e, "\n\nCannot open the RM database file. \n")
 
-    return dbConnection
+  return dbConnection
 
 
 # ===================================================DIV60==
@@ -654,7 +662,7 @@ def FolderContentsMinusIgnored(reportF, dirPath, config):
 # ===================================================DIV60==
 def PauseWithMessage(message = None):
   if (message != None):
-    print(message)
+    print(str(message))
   input("\nPress the <Enter> key to exit...")
   return
 
@@ -662,6 +670,6 @@ def PauseWithMessage(message = None):
 # ===================================================DIV60==
 # Call the "main" function
 if __name__ == '__main__':
-    main()
+  main()
 
 # ===================================================DIV60==

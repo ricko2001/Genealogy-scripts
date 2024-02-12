@@ -16,8 +16,8 @@ As the number of linked files increases, user errors become more likely.
     leaving it "un-tagged". No harm in leaving it, but de-cluttering may be
     desirable.
 * A file may be added to the database more than once.
-* A file may be renamed, or misplaced and the original file contents cannot
-    be verified.
+* A file may be renamed, or misplaced or its contents altered. One will not be
+  able to verify the original file's contents is in the current file.
 
 This utility will identify these issues.
 It is recommended to run this script daily as part of your backup routine.
@@ -67,6 +67,11 @@ UNREF_FILES
 NO_TAG_FILES
     Lists all files found in RM's Media tab that have zero tags.
 
+FOLDER_LIST
+    Lists all folders referenced in the RM database. A file in an unexpected
+    location may have been accidentally added to the database. This list will
+    make it obvious.
+
 DUP_FILEPATHS
     Lists files that have been added more than one time to the database. These
     will appear more than once in RM's Media tab.
@@ -74,11 +79,6 @@ DUP_FILEPATHS
 DUP_FILENAMES
     Lists files that have the same filename. This is not usually a problem, but
     being aware of the duplicate names may help your organizing efforts.
-
-FOLDER_LIST
-    Lists all folders referenced in the RM database. A file in an unexpected
-    location may have been accidentally added to the database. This list will
-    make it obvious.
 
 HASH_FILE
     Generates a text file containing a listing of each media file's name,
@@ -154,64 +154,60 @@ Use the py script file.  See section below, after the Notes section, entitled-
 NOTES
 
 *   Directory structure
-    My directory structure, which of course, I recommend 🙂 is-
+    My directory structure, which of course, I recommend 🙂, is-
 
     Genealogy          (top level folder, mine is in my Home folder)
       myRD-DB.rmtree   (my main database file)
       Misc Databases   (folder for other databases I frequently use)
       Exhibits         (folder containing all media files in a folder hierarchy)
-      SW               (folder containing my various utility scripts and the ini file)
+      SW               (folder containing my various utility apps and the ini file)
 
-*   CHECK_FILES feature: file path letter case in the database or in the file
-    system path name is not significant.
+*   CHECK_FILES feature: file path capitalization in the database or in the file
+    system path name is ignored.
 
 *   REPORT_FILE_DISPLAY_APP
     Option to automatically open the report file in a display application.
-    The included ini sample file has this option deactivated by commenting the 
-    line with the leading # character.
-
-*   UNREF_FILES
-    If there is a difference in capitalization of file name or directory
-    path in the database vs. the file system, the file will be listed as
-    un-referenced.  (Unix-like file system case sensitivity)
-
-*   UNREF_FILES
-    The folder specified in RM's preferences as the Media
-    folder is not necessarily the same as the folder specified by the
-    SEARCH_ROOT_FLDR_PATH variable in the ini file, but I'd
-    recommended that they, in fact, be the same.
+    The included ini sample file has this option deactivated by starting the
+    line with the # character.
 
 *   UNREF_FILES
     Your goal should be to produce a report with no unreferenced files found.
     That is an easy result to interpret. If a file is added to the media folder
     but not added to the RM database, it will show up here.
 
-    However, there may be files and folders of files that you want to store 
-    near your media files, but are not actually referred to by the database.
+    However, there may be files and folders of files that you want to store
+    near your media files, but are not actually referenced by the database.
 
     To shorten the list of unreferenced items, the IGNORED_OBJECTS section can
-    be used to list items that are to be ignored by the utility when listing 
-    unreferenced files within the SEARCH_ROOT_FLDR_PATH folder.
+    be used to tell the utility to not include certain files in the list of
+    unreferenced files. See below.
 
-    If a file is in the media folder but is intentionally not referenced by
-    RM, add it to the IGNORED_OBEJECTS section. That prevents it from showing
-    up in the report and confusing interpretation.
+*   UNREF_FILES
+    If there is a difference in capitalization of file name or directory
+    path in the database vs. the file system, the file will be listed as
+    unreferenced.  (Unix-like file system case sensitivity)
+
+*   UNREF_FILES
+    The folder specified in RM's preferences as the Media
+    folder is not necessarily the same as the folder specified by the
+    SEARCH_ROOT_FLDR_PATH variable in the ini file  (but I'd
+    recommended that they, in fact, be the same).
 
 *   IGNORED_OBEJECTS
 
     FILES
-    Add file names that should not be reported as being unreferenced. 
+    Add file names that should not be reported as being unreferenced.
     One name per line. Indented with at least one space character.
-    No paths, just file names. 
+    No paths, just file names.
     All files with this name are ignored no matter where they are within
     the SEARCH_ROOT_FLDR_PATH folder
 
     FOLDERS
-    Add folder names whose entire contents should not be reported as being 
+    Add folder names whose entire contents should not be reported as being
     unreferenced.
     One name per line. Indented with at least one space character.
-    No paths, just folder names. 
-    All folders with this name have their contents ignored no matter where they 
+    No paths, just folder names. (e.g. Folder1   and not  C:\Users\me\Folder1 )
+    All folders with this name have their contents ignored no matter where they
     are within the SEARCH_ROOT_FLDR_PATH folder
 
     I suggest that you organize your file and folders so that ignored folders
@@ -255,18 +251,18 @@ NOTES
 
 *   RM-Python-config.ini  (the ini file)
     If there are any non-ASCII characters in the ini file then the file must be
-    saved in UTF-8 format, with no byte order mark (BOM). 
-    The included sample ini file has an accented ä in a comment at the end to 
+    saved in UTF-8 format, with no byte order mark (BOM).
+    The included sample ini file has an accented ä in a comment at the end to
     force it to be in the correct format.
     File format is an option in the "Save file" dialog box in NotePad.
 
 *   IGNORED_OBJECTS section of the ini file
     Due to how the ini file is parsed by the python library, files and folders
-    whose names start with the # character are not added to the FILES or FOLDERS.
-    Instead, they are considered comments. There is a way to overcome this 
+    whose names start with the # character cannot be added to the FILES or FOLDERS.
+    Instead, they are considered comments. There is a way to overcome this
     limitation but the explanation of how is not worth the confusion it would
-    create. Bottom line- if you want to add the name, change the name so it 
-    doesn't start with a #.
+    create. Bottom line- if you really want to add the name, change the name 
+    so it doesn't start with a #.
 
 *   Switching between RM 8 and RM 9
     This section probably applies to no-one. Please don't read it and get confused !
@@ -283,15 +279,15 @@ NOTES
     XML file is not referenced, so switching  between ver 7 and ver 9 will not
     be an issue.
 
-*   A listing of "entires with blank filename or path found" is enerated when a 
-    media item in the database has a blank file path or file name. Items listed
-    should be fixed first. 
+*   A listing of "entires with blank filename or path found" is displayed when a
+    media item in the database has a blank file path or file name. These items 
+    should be fixed first.
 
-*   Troubleshooting: If no report file is generated, look at the black command 
+*   Troubleshooting: If no report file is generated, look at the black command
     console window for error messages that will help you fix the problem.
     If no report file is generated and the black command console window closes
-    before you can read it, try first opening a command line console and then 
-    running the exe or py file from the command line. The window will not close 
+    before you can read it, try first opening a command line console and then
+    running the exe or py file from the command line. The window will not close
     and you'll be able to read any error messages.
 
 
@@ -305,7 +301,7 @@ Using one does not preclude using the other.
 
 Pro's and Con's
 
-*   The .exe Executable File Version 
+*   The .exe Executable File Version
   Pro:
    The single exe file is all you need. No need to install Python.
   Con:
