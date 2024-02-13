@@ -2,23 +2,21 @@
 # ignore shortcut files
 *.lnk
 
-# ignore RootsMagic database file
-*.rmgc
-*.rmtree
-
+# ignore test data
 DB/
+Test Data/
+
+# ignore build output
 Release*/
-build/
-dist/
-*.spec
 
+# ignore app output
+Report_TestExternalFiles.txt
+MediaFiles_HASH_*
 
-HIDE_*
-
-ExternalFilesReport.txt
-test-RootsMagicUser.xml
-
+* ignore ini file versions
 DEV_RM-Python-config.ini
 DISTO_RM-Python-config.ini
 
+
+HIDE*
 

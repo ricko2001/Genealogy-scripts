@@ -8,6 +8,7 @@ import configparser
 import xml.etree.ElementTree as ET
 import subprocess
 import hashlib
+import traceback
 
 
 ## This script can only read a RootsMagic database file and cannot change it.
@@ -41,27 +42,31 @@ def main():
 
     # Check that ini file is at expected path and that it is readable & valid.
     if not os.path.exists(IniFile):
-        raise Exception("ERROR: The ini configuration file, " + IniFileName + " must be in the same directory as the .py or .exe file.\n\n" )
+        raise RMPyException("ERROR: The ini configuration file, " + IniFileName + " must be in the same directory as the .py or .exe file.\n\n" )
 
     config = configparser.ConfigParser(empty_lines_in_values=False, interpolation=None)
     try:
       config.read(IniFile, 'UTF-8')
     except:
-     raise Exception("ERROR: The " + IniFileName + " file contains a format error and cannot be parsed.\n\n" )
+     raise RMPyException("ERROR: The " + IniFileName + " file contains a format error and cannot be parsed.\n\n" )
 
     try:
       report_Path   = config['FILE_PATHS']['REPORT_FILE_PATH']
     except:
-      raise Exception('ERROR: REPORT_FILE_PATH must be defined in the ' + IniFileName + "\n\n")
+      raise RMPyException('ERROR: REPORT_FILE_PATH must be defined in the ' + IniFileName + "\n\n")
 
     try:
       # Use UTF-8 encoding for the report file. Test for write-ability
       open( report_Path,  mode='w', encoding='utf-8')
     except:
-      raise Exception('ERROR: Cannot create the report file ' + report_Path + "\n\n")
+      raise RMPyException('ERROR: Cannot create the report file ' + report_Path + "\n\n")
 
-  except Exception as e:
+  except RMPyException as e:
     PauseWithMessage( e );
+    return 1
+  except Exception as e:
+    traceback.print_exception(e, file=sys.stdout)
+    PauseWithMessage( "Application failed. Please report. " + str(e) );
     return 1
 
   # Open the Report File.
@@ -72,10 +77,10 @@ def main():
       try:
         database_Path = config['FILE_PATHS']['DB_PATH']
       except:
-        raise Exception('DB_PATH must be specified.')
+        raise RMPyException('DB_PATH must be specified.')
 
       if not os.path.exists(database_Path):
-        raise Exception('Path for database not found: ' + database_Path
+        raise RMPyException('Path for database not found: ' + database_Path
                          +'\n\nAbsolute path checked:\n"' + os.path.abspath(database_Path) + '"')
 
       try:
@@ -83,7 +88,7 @@ def main():
       except:
         ReportDisplayApp = None
       if ReportDisplayApp != None and not os.path.exists(ReportDisplayApp):
-        raise Exception('Path for report file display app found: ' + ReportDisplayApp)
+        raise RMPyException('Path for report file display app found: ' + ReportDisplayApp)
 
       # RM database file info
       FileModificationTime = datetime.fromtimestamp(os.path.getmtime(database_Path))
@@ -108,7 +113,7 @@ def main():
           config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
           config['OPTIONS'].getboolean('HASH_FILE')
         except:
-          raise Exception ("One of the OPTIONS values could not be parsed as boolean. \n")
+          raise RMPyException ("One of the OPTIONS values could not be parsed as boolean. \n")
 
         # Run the requested options. Usually multiple options.
         if config['OPTIONS'].getboolean('CHECK_FILES'):
@@ -134,9 +139,14 @@ def main():
 
       Section( "FINAL", "", reportF)
 
-    except Exception as e:
+    except RMPyException as e:
       reportF.write( str(e) )
       return 1
+    except Exception as e:
+      traceback.print_exception(e, file=reportF)
+      reportF.write( "\n\n Application failed. Please report this and send text. ")
+      return 1
+
 
   # report file is now closed. Can be opened for display
   if ReportDisplayApp != None:
@@ -199,13 +209,13 @@ def ListUnReferencedFilesFeature(config, dbConnection, reportF):
   try:
     ExtFilesFolderPath = config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH']
   except:
-    raise Exception ("ERROR: SEARCH_ROOT_FLDR_PATH must be specified for this option. \n")
+    raise RMPyException ("ERROR: SEARCH_ROOT_FLDR_PATH must be specified for this option. \n")
 
   # Validate the folder path
   if not Path(ExtFilesFolderPath).exists():
-    raise Exception ("ERROR: Directory path not found:" + G_QT + ExtFilesFolderPath + G_QT + "\n")
+    raise RMPyException ("ERROR: Directory path not found:" + G_QT + ExtFilesFolderPath + G_QT + "\n")
   if not Path(ExtFilesFolderPath).is_dir():
-    raise Exception ("ERROR: Path is not a directory:" + G_QT + ExtFilesFolderPath + G_QT + "\n")
+    raise RMPyException ("ERROR: Path is not a directory:" + G_QT + ExtFilesFolderPath + G_QT + "\n")
 
   # First check database for empty paths or filenames
   ReportEmptyPaths(dbConnection, reportF)
@@ -367,7 +377,7 @@ def FileHashFeature(config, dbConnection, reportF):
   try:
     hashFileFolder = config['FILE_PATHS']['HASH_FILE_FLDR_PATH']
   except:
-    raise Exception("ERROR: HASH_FILE_FLDR_PATH must be specified for this option. \n")
+    raise RMPyException("ERROR: HASH_FILE_FLDR_PATH must be specified for this option. \n")
 
   hashFilePath = os.path.join( hashFileFolder , "MediaFiles_HASH_" + TimeStampNow("file") +".txt" )
 
@@ -551,7 +561,7 @@ def Section (pos, name, reportF):
   elif pos == "END":  text = "\n=== End of \"" + name + "\" listing\n"
   elif pos == "FINAL":  text = "\n" + Divider + "\n=== End of Report\n"
   else:
-    raise Exception("INTERNAL ERROR: Section position not correctly defined")
+    raise RMPyException("INTERNAL ERROR: Section position not correctly defined")
 
   reportF.write (text)
   reportF.flush()
@@ -564,7 +574,7 @@ def create_DBconnection(db_file_path, reportF):
   try:
     dbConnection = sqlite3.connect(db_file_path)
   except Error as e:
-    raise Exception(e, "\n\nCannot open the RM database file. \n")
+    raise RMPyException(e, "\n\nCannot open the RM database file. \n")
 
   return dbConnection
 
@@ -666,6 +676,9 @@ def PauseWithMessage(message = None):
   input("\nPress the <Enter> key to exit...")
   return
 
+# ===================================================DIV60==
+class RMPyException(Exception):
+  '''Exceptions thrown for configuration/database issues'''
 
 # ===================================================DIV60==
 # Call the "main" function
