@@ -2,16 +2,18 @@ TestExternalFiles
 Utility application for use with RootsMagic databases
 
 
-RootsMagic (RM) software uses a relational database as its main data storage.
-The database includes links to external files called "media files".
+RootsMagic (RM) software uses a SQLite relational database as its data storage
+file. Having access to that file via third part tools is a major advantage
+to using RM.
+The database includes links to external files which RM calls "media files".
 These files appear under the RM version 9 Media tab.
 
 As the number of linked files increases, user errors become more likely.
 * A file on disk may get renamed or moved, breaking the link from the database.
     RM has tools to fix these, but it does not give a log of what it has done.
     There is a report that can be run, but with effort.
-* A file may be added to the media folder on disk but then not attached to the
-    desired database element. A common oversight when working quickly.
+* A file may be added to the media folder on disk but then not added to the
+    database. A common oversight when working quickly.
 * A file may be added to RM, but then detached from all source, facts etc,
     leaving it "un-tagged". No harm in leaving it, but de-cluttering may be
     desirable.
@@ -24,6 +26,7 @@ It is recommended to run this script daily as part of your backup routine.
 
 A Hash file might be generated semiannually and archived with the full dataset.
 
+
 ======================================================================
 Overview
 
@@ -32,7 +35,7 @@ This program is what is called a "command line utility".
 To use it:
 
 1:  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
-    referred to as the "ini file".)
+    referred to, simply, as the "ini file".)
     The utility needs to know where the RM database file is located, which
     functions to perform, and where to create the report file.
     Editing the ini file can be done using the Windows NotePad app.
@@ -41,20 +44,20 @@ To use it:
     black command console window and at the same time, generates the report
     text file.
 
-3:  Open the report text file in Notepad. (Just double click it.)
+3:  Examine the generated report text file that was opened in Notepad.
     The file will contain the analysis results.
 
 
 ======================================================================
 Capabilities
 
-The utility is can perform several functions, as configured in the
-ini file's Options section, either separately or in combination:
+The utility can perform several functions, as configured in the ini file's
+OPTIONS section, either separately or in combination:
 
 CHECK_FILES
     Checks that each file referenced in the RM database actually
-    exists on disk at the specified location. Any database file path link not
-    found on disk is listed.
+    exists on disk at the specified location. Any file path link found in
+    the database but not found on disk is listed.
 
 UNREF_FILES
     Lists all files found in the folder specified by SEARCH_ROOT_FLDR_PATH in
@@ -68,9 +71,9 @@ NO_TAG_FILES
     Lists all files found in RM's Media tab that have zero tags.
 
 FOLDER_LIST
-    Lists all folders referenced in the RM database. A file in an unexpected
-    location may have been accidentally added to the database. This list will
-    make it obvious.
+    Lists all folders referenced in the RM database.
+    A file in an unexpected location may have been accidentally added to the
+    database. This list will make it obvious.
 
 DUP_FILEPATHS
     Lists files that have been added more than one time to the database. These
@@ -83,10 +86,11 @@ DUP_FILENAMES
 HASH_FILE
     Generates a text file containing a listing of each media file's name,
     location and HASH value, currently set to use MD5.
+    https://en.wikipedia.org/wiki/MD5
     The HASH text file, when requested, is generated at the location
     specified in the ini file.
-    (MD5 is no longer considered secure for cryptography, but serves well for
-    this purpose.)
+    While MD5 is no longer considered secure for cryptography, it serves well
+    for this purpose.
 
 
 ======================================================================
@@ -116,7 +120,7 @@ Backups
 IMPORTANT: This utility ONLY reads the RM database file. This utility cannot
 change your RM file. However, until you trust that this statement is true,
 you should run this script on a copy of your database file or at least
-have a known-good backup.
+have several known-good backups.
 
 
 ======================================================================
@@ -131,9 +135,9 @@ To install and use the exe single file version:
       TestExternalFiles.exe
       RM-Python-config.ini
 
-*  Edit the ini file in the working folder to specify the location
-   of the RM file and the output report file.
-   Some utility functions may be turned on or off. The required edits should
+*  Edit the ini file in the working folder to specify the location of the RM
+   database file and the output report file.
+   Utility features may be turned on or off. The required edits should
    be obvious. The sample ini file is already configured with the most useful
    options turned on. (To edit, Open NotePad and drag the ini file onto the
    NotePad window.)
@@ -153,27 +157,20 @@ Use the py script file.  See section below, after the Notes section, entitled-
 ======================================================================
 NOTES
 
-*   Directory structure
-    My directory structure, which of course, I recommend 🙂, is-
-
-    Genealogy          (top level folder, mine is in my Home folder)
-      myRD-DB.rmtree   (my main database file)
-      Misc Databases   (folder for other databases I frequently use)
-      Exhibits         (folder containing all media files in a folder hierarchy)
-      SW               (folder containing my various utility apps and the ini file)
-
-*   CHECK_FILES feature: file path capitalization in the database or in the file
-    system path name is ignored.
-
 *   REPORT_FILE_DISPLAY_APP
     Option to automatically open the report file in a display application.
-    The included ini sample file has this option deactivated by starting the
-    line with the # character.
+    The included ini sample file has this option activated and set to use Windows
+    NotePad as the display app. It can be deactivated by inserting a # character
+    at the start of the line. Your favorite editor may be substituted.
+
+*   CHECK_FILES feature: file path capitalization in the database and in the
+    file system path name is ignored.
 
 *   UNREF_FILES
-    Your goal should be to produce a report with no unreferenced files found.
-    That is an easy result to interpret. If a file is added to the media folder
-    but not added to the RM database, it will show up here.
+    This option is designed so that your goal should be to produce a report
+    with no unreferenced files found. That is an easy result to interpret.
+    If a file is added to the media folder but not added to the RM database,
+    it will show up om this list.
 
     However, there may be files and folders of files that you want to store
     near your media files, but are not actually referenced by the database.
@@ -188,10 +185,9 @@ NOTES
     unreferenced.  (Unix-like file system case sensitivity)
 
 *   UNREF_FILES
-    The folder specified in RM's preferences as the Media
-    folder is not necessarily the same as the folder specified by the
-    SEARCH_ROOT_FLDR_PATH variable in the ini file  (but I'd
-    recommended that they, in fact, be the same).
+    The folder specified in RM's preferences as the Media folder is not 
+    necessarily the same as the folder specified by the SEARCH_ROOT_FLDR_PATH
+    variable in the ini file  (but I recommended that they be the same).
 
 *   IGNORED_OBEJECTS
 
@@ -221,8 +217,7 @@ NOTES
 
 *   DUP_FILEPATHS
     Files with the same path and name may be duplicated in the media tab
-    intentionally as they might have different captions etc. This may no
-    longer be an issue post RM8.)
+    intentionally as they might have different captions etc.
 
 *   DUP_FILENAMES
     Files listed have the same file names, ignoring case.
@@ -237,22 +232,12 @@ NOTES
     With this option on, the path for each file is shown twice,
     - the path on disk, that is, after any RM8-9 token in the path has been expanded.
     - the path as saved in the database with the token not expanded.
-
-*   Background information: File paths pointing to external files
-    in RM 7:   all paths are absolute starting with a drive letter
-    in RM 8&9: absolute file path starting with a drive letter
-            or
-            a path relative to another location.
-    RM 8&9 Relative path symbols
-    (these are expanded when found in the first position of the stored path)
-    ~    home directory  (%USERPROFILE%)
-    ?    media folder as set in RM preferences
-    *    RM main database file location
+    See the note below "Background information" regarding relative paths in RM.
 
 *   RM-Python-config.ini  (the ini file)
     If there are any non-ASCII characters in the ini file then the file must be
     saved in UTF-8 format, with no byte order mark (BOM).
-    The included sample ini file has an accented ä in a comment at the end to
+    The included sample ini file has an accented ä in the first line comment to
     force it to be in the correct format.
     File format is an option in the "Save file" dialog box in NotePad.
 
@@ -261,8 +246,32 @@ NOTES
     whose names start with the # character cannot be added to the FILES or FOLDERS.
     Instead, they are considered comments. There is a way to overcome this
     limitation but the explanation of how is not worth the confusion it would
-    create. Bottom line- if you really want to add the name, change the name 
+    create. Bottom line- if you really want to add the name, change the name
     so it doesn't start with a #.
+
+*   A listing of "entires with blank filename or path found" is displayed when a
+    media item in the database has a blank file path or file name. These items
+    should be fixed first.
+
+*   Directory structure (optional)
+    My directory structure, which of course, I recommend 🙂, is-
+
+    Genealogy          (top level folder, mine is in my Home folder)
+      myRD-DB.rmtree   (my main database file)
+      Misc Databases   (folder for other databases I frequently use)
+      Exhibits         (folder containing all media files in a folder hierarchy)
+      SW               (folder containing various utility apps and the ini file)
+
+*   Background information: File paths pointing to external files
+    in RM 7:   all paths are absolute starting with a drive letter
+    in RM 8&9: absolute file path starting with a drive letter
+            or
+            a path relative to another location.
+    RM 8&9 Relative path symbols
+    (these are expanded when found in the first position of the stored path)
+    ?    media folder as set in RM preferences
+    ~    home directory  (%USERPROFILE%)
+    *    RM main database file location
 
 *   Switching between RM 8 and RM 9
     This section probably applies to no-one. Please don't read it and get confused !
@@ -279,17 +288,50 @@ NOTES
     XML file is not referenced, so switching  between ver 7 and ver 9 will not
     be an issue.
 
-*   A listing of "entires with blank filename or path found" is displayed when a
-    media item in the database has a blank file path or file name. These items 
-    should be fixed first.
-
-*   Troubleshooting: If no report file is generated, look at the black command
+*   Troubleshooting:
+    If no report file is generated, look at the black command
     console window for error messages that will help you fix the problem.
     If no report file is generated and the black command console window closes
     before you can read it, try first opening a command line console and then
     running the exe or py file from the command line. The window will not close
     and you'll be able to read any error messages.
 
+*   Troubleshooting:
+    Error message- ... RM-Python-config.ini file contains a format error ...
+    The problem is as stated, the solution may be harder to determine.
+    You may want to look at- https://en.wikipedia.org/wiki/INI_file
+    Probably the trickiest part of the ini file is the IGNORED_OBJECTS section.
+    The FOLDERS and FILENAMES keys can have multiple values. Each value should be
+    on a separate line indented with at least one blank. An empty line between
+    values is an error.
+
+     examples-
+correct format-
+
+[IGNORED_OBJECTS]
+FOLDERS =
+  Folder1
+  Folder2
+  Folder3
+
+
+incorrect format (empty line)
+
+[IGNORED_OBJECTS]
+FOLDERS =
+  Folder1
+
+  Folder2
+  Folder3
+
+
+incorrect format (not indented)
+
+[IGNORED_OBJECTS]
+FOLDERS =
+  Folder1
+Folder2
+  Folder3
 
 ======================================================================
 ======================================================================
@@ -309,6 +351,7 @@ Pro's and Con's
    A certain amount of trust is required to run a program not distributed
    by a major software publisher. Unknown software from an untrusted source
    could contain mal-ware. Rely on reviews by other users to establish trust.
+   Only use the exe file that you downloaded from GitHub.com yourself.
 
 --- OR ---
 
@@ -366,8 +409,8 @@ Find the link near bottom left side of the page, in the "Stable Releases"
 section, labeled "Download Windows installer (64-bit)"
 Click it and save the installer.
 
-Direct link to recent (2023-07) version installer-
-https://www.python.org/ftp/python/3.11.4/python-3.11.4-amd64.exe
+Direct link to recent (2024-02) version installer-
+https://www.python.org/ftp/python/3.12.2/python-3.12.2-amd64.exe
 
 The Python installation requires about 100 Mbytes.
 It is easily and cleanly removed using the standard method found in
@@ -381,6 +424,7 @@ TODO
 *  Add code to find duplicate files represented by different relative paths
    in database.
 *  ?? what would you find useful?
+
 
 ======================================================================
 Feedback
@@ -404,6 +448,5 @@ Distribution
 Everyone is free to use this utility. However, instead of
 distributing it yourself, please instead distribute the URL
 of my website where I describe it- https://RichardOtter.github.io
-This is especially true of the exe file version.
 
 ======================================================================
