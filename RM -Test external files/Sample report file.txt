@@ -20,12 +20,13 @@ File path not found:
 .\Sources\Birth\Hauer, Theodore Joseph -b1912 -Birth Certificate.jpg
 .\Sources\Birth\Scamihorn, Samuel Jay -b1942 -Birth Certificate.jpg
 
+Files in processed folder not referenced by the database: 2
 
     Folder processed: "C:\Users\me\Documents\Genealogy\GeneDB\Exhibits"
-    Files in processed folder not referenced by the database: 2
-    Processed folder contains 4972 files (not counting ignored items)
-    Database file links: 4972
+    Number of files 6189  (exclusive of ignored items)
+    Number of database file links: 6189
     # DB links minus # non-ignored files: 0
+
 
 === End of "Unreferenced Files" listing
 

@@ -240,6 +240,7 @@ NOTES
     The included sample ini file has an accented ä in the first line comment to
     force it to be in the correct format.
     File format is an option in the "Save file" dialog box in NotePad.
+    The [END] section is entirely optional.
 
 *   IGNORED_OBJECTS section of the ini file
     Due to how the ini file is parsed by the python library, files and folders
@@ -301,9 +302,10 @@ NOTES
     The problem is as stated, the solution may be harder to determine.
     You may want to look at- https://en.wikipedia.org/wiki/INI_file
     Probably the trickiest part of the ini file is the IGNORED_OBJECTS section.
-    The FOLDERS and FILENAMES keys can have multiple values. Each value should be
-    on a separate line indented with at least one blank. An empty line between
-    values is an error.
+    The FOLDERS and FILENAMES keys can have multiple values. 
+    Each value should be on a separate line indented with at least one blank.
+    An empty line generates an error.
+    Multi line values may not contain comment lines (lines starting with a #).
 
      examples-
 correct format-
@@ -331,6 +333,24 @@ incorrect format (not indented)
 FOLDERS =
   Folder1
 Folder2
+  Folder3
+
+
+incorrect format (no comments)
+
+[IGNORED_OBJECTS]
+FOLDERS =
+  Folder1
+# Folder2
+  Folder3
+
+incorrect format (no empty lines)
+
+[IGNORED_OBJECTS]
+FOLDERS =
+
+  Folder1
+  Folder2
   Folder3
 
 ======================================================================

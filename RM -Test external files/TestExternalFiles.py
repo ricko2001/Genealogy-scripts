@@ -1,15 +1,12 @@
-import os
-import sys
-import time
+import os, sys
 import sqlite3
-from pathlib  import Path
+from pathlib import Path
 from datetime import datetime
 import configparser
 import xml.etree.ElementTree as ET
-import subprocess
 import hashlib
+import subprocess
 import traceback
-
 
 ## This script can only read a RootsMagic database file and cannot change it.
 ## However, until trust is established, make a backup before use.
@@ -18,7 +15,7 @@ import traceback
 ##   RootsMagic v7, v8 or v9 installed
 ##   RootsMagic v7, v8 or v9 database file
 ##   RM-Python-config.ini  ( Configuration ini text file to set options )
-##   Python v3.9 or greater
+##   Python v3.11 or greater
 
 
 # ===================================================DIV60==
@@ -42,24 +39,29 @@ def main():
 
     # Check that ini file is at expected path and that it is readable & valid.
     if not os.path.exists(IniFile):
-        raise RMPyException("ERROR: The ini configuration file, " + IniFileName + " must be in the same directory as the .py or .exe file.\n\n" )
+        raise RMPyException("ERROR: The ini configuration file, " + IniFileName
+              + " must be in the same directory as the .py or .exe file.\n\n" )
 
-    config = configparser.ConfigParser(empty_lines_in_values=False, interpolation=None)
+    config = configparser.ConfigParser(empty_lines_in_values=False,
+                                       interpolation=None)
     try:
       config.read(IniFile, 'UTF-8')
     except:
-     raise RMPyException("ERROR: The " + IniFileName + " file contains a format error and cannot be parsed.\n\n" )
+     raise RMPyException("ERROR: The " + IniFileName
+           + " file contains a format error and cannot be parsed.\n\n" )
 
     try:
       report_Path   = config['FILE_PATHS']['REPORT_FILE_PATH']
     except:
-      raise RMPyException('ERROR: REPORT_FILE_PATH must be defined in the ' + IniFileName + "\n\n")
+      raise RMPyException('ERROR: REPORT_FILE_PATH must be defined in the '
+            + IniFileName + "\n\n")
 
     try:
       # Use UTF-8 encoding for the report file. Test for write-ability
       open( report_Path,  mode='w', encoding='utf-8')
     except:
-      raise RMPyException('ERROR: Cannot create the report file ' + report_Path + "\n\n")
+      raise RMPyException('ERROR: Cannot create the report file '
+            + report_Path + "\n\n")
 
   except RMPyException as e:
     PauseWithMessage( e );
@@ -81,14 +83,16 @@ def main():
 
       if not os.path.exists(database_Path):
         raise RMPyException('Path for database not found: ' + database_Path
-                         +'\n\nAbsolute path checked:\n"' + os.path.abspath(database_Path) + '"')
+                           +'\n\nAbsolute path checked:\n"'
+                           + os.path.abspath(database_Path) + '"')
 
       try:
         ReportDisplayApp = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
       except:
         ReportDisplayApp = None
       if ReportDisplayApp != None and not os.path.exists(ReportDisplayApp):
-        raise RMPyException('Path for report file display app found: ' + ReportDisplayApp)
+        raise RMPyException('Path for report file display app not found: '
+                           + ReportDisplayApp)
 
       # RM database file info
       FileModificationTime = datetime.fromtimestamp(os.path.getmtime(database_Path))
@@ -96,10 +100,12 @@ def main():
 
       # write header to report file
       with create_DBconnection(database_Path, reportF) as dbConnection:
-        reportF.write ("Report generated at      = " + TimeStampNow() + "\n")
-        reportF.write ("Database processed       = " + os.path.abspath(database_Path) + "\n")
-        reportF.write ("Database last changed on = " + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n")
-        reportF.write ("SQLite library version   = " + GetSQLiteLibraryVersion (dbConnection) + "\n\n")
+        reportF.write ("Report generated at      = " + TimeStampNow()
+                       + "\nDatabase processed       = " + os.path.abspath(database_Path)
+                       + "\nDatabase last changed on = "
+                       + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S")
+                       + "\nSQLite library version   = "
+                       + GetSQLiteLibraryVersion (dbConnection) + "\n\n")
 
         # test option values conversion to boolean
         # if missing, treated as false
@@ -144,7 +150,7 @@ def main():
       return 1
     except Exception as e:
       traceback.print_exception(e, file=reportF)
-      reportF.write( "\n\n Application failed. Please report this and send text. ")
+      reportF.write( "\n\n Application failed. Please send text to author. ")
       return 1
 
 
@@ -180,20 +186,26 @@ def ListMissingFilesFeature( config, dbConnection, reportF ):
     if not os.path.exists(dirPath):
       foundSomeMissingFiles=True
       reportF.write ("Directory path not found:\n"
-            + G_QT + str(dirPath) + G_QT + " for file: " + G_QT + row[1] + G_QT + "\n")
-      if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+                    + G_QT + str(dirPath) + G_QT + " for file: "
+                    + G_QT + row[1] + G_QT + "\n")
+      if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig)
+                                     + G_QT + "\n")
 
     else:
       if filePath.exists():
         if not filePath.is_file():
           foundSomeMissingFiles=True
-          reportF.write ("File path is not a file: \n" + G_QT + str(filePath) + G_QT + "\n")
-          if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+          reportF.write ("File path is not a file: \n" + G_QT
+                        + str(filePath) + G_QT + "\n")
+          if ShowOrigPath: reportF.write (Label_OrigPath + G_QT
+                                         + str(dirPathOrig) + G_QT + "\n")
 
       else:
         foundSomeMissingFiles=True
-        reportF.write ("File path not found: \n" + G_QT + str(filePath) + G_QT + "\n")
-        if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+        reportF.write ("File path not found: \n" + G_QT
+                      + str(filePath) + G_QT + "\n")
+        if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig)
+                                       + G_QT + "\n")
 
   if not foundSomeMissingFiles: reportF.write ("\n    No files were found missing.\n")
   Section( "END", FeatureName, reportF)
@@ -213,9 +225,11 @@ def ListUnReferencedFilesFeature(config, dbConnection, reportF):
 
   # Validate the folder path
   if not Path(ExtFilesFolderPath).exists():
-    raise RMPyException ("ERROR: Directory path not found:" + G_QT + ExtFilesFolderPath + G_QT + "\n")
+    raise RMPyException ("ERROR: Directory path not found:"
+                        + G_QT + ExtFilesFolderPath + G_QT + "\n")
   if not Path(ExtFilesFolderPath).is_dir():
-    raise RMPyException ("ERROR: Path is not a directory:" + G_QT + ExtFilesFolderPath + G_QT + "\n")
+    raise RMPyException ("ERROR: Path is not a directory:"
+                        + G_QT + ExtFilesFolderPath + G_QT + "\n")
 
   # First check database for empty paths or filenames
   ReportEmptyPaths(dbConnection, reportF)
@@ -253,11 +267,12 @@ def ListUnReferencedFilesFeature(config, dbConnection, reportF):
          + str(len(unRefFiles))  + "\n")
   else: reportF.write ("\n    No unreferenced files were found.\n\n")
 
-  reportF.write("    Folder processed: " + G_QT + ExtFilesFolderPath + G_QT + "\n")
-  reportF.write("    Contains " + str(len(mediaFileList))
-       + " files (exclusive of ignored items)\n")
-  reportF.write("    Database file links: " + str(len(dbFileList)) + "\n")
-  reportF.write("    # DB links minus # non-ignored files: " + str( len(dbFileList) - len(mediaFileList) ) + "\n")
+  reportF.write("\n    Folder processed: " + G_QT + ExtFilesFolderPath + G_QT
+               + "\n    Number of files " + str(len(mediaFileList))
+               + "  (exclusive of ignored items)"
+               + "\n    Number of database file links: " + str(len(dbFileList))
+               + "\n    # DB links minus # non-ignored files: "
+               + str( len(dbFileList) - len(mediaFileList) ) + "\n" )
 
   Section( "END", FeatureName, reportF)
   return
@@ -282,7 +297,8 @@ def FilesWithNoTagsFeature(config, dbConnection, reportF):
     dirPath = ExpandDirPath(row[0])
     filePath = Path(os.path.join( dirPath, row[1]))
     reportF.write ( G_QT + str(filePath) + G_QT + "\n")
-    if ShowOrigPath: reportF.write (Label_OrigPath + G_QT + str(dirPathOrig) + G_QT + "\n")
+    if ShowOrigPath: reportF.write (Label_OrigPath
+                                   + G_QT + str(dirPathOrig) + G_QT + "\n")
 
   if not FoundNoTagFiles: reportF.write ("\n    No files with no tags were found.\n")
 
@@ -313,7 +329,8 @@ def ListFoldersFeature(config, dbConnection, reportF):
     reportF.write(str(ExpandDirPath(row[0])) + "\n")
     if ShowOrigPath: reportF.write(Label_OrigPath + row[0] + "\n")
 
-  if foundSomeFolders: reportF.write ("\nFolders referenced in database:  " + str(len(rows)) +  "\n")
+  if foundSomeFolders: reportF.write ("\nFolders referenced in database:  "
+                                     + str(len(rows)) +  "\n")
 
   if not foundSomeFolders: reportF.write ("\n    No folders found in database.\n")
   Section( "END", FeatureName, reportF)
@@ -379,12 +396,14 @@ def FileHashFeature(config, dbConnection, reportF):
   except:
     raise RMPyException("ERROR: HASH_FILE_FLDR_PATH must be specified for this option. \n")
 
-  hashFilePath = os.path.join( hashFileFolder , "MediaFiles_HASH_" + TimeStampNow("file") +".txt" )
+  hashFilePath = os.path.join( hashFileFolder , "MediaFiles_HASH_"
+                             + TimeStampNow("file") +".txt" )
 
   try:
     hashFile = open( hashFilePath,  mode='w', encoding='utf-8')
   except:
-    raise Ecxeption('ERROR: Cannot create the hash file ' + hashFilePath + "\n\n")
+    raise RMPyException('ERROR: Cannot create the hash file '
+          + hashFilePath + "\n\n")
 
   reportF.write( "MD5 hash of files saved in file:\n" + str(hashFilePath) + "\n\n")
   cur= GetDBFileList(dbConnection)
@@ -399,15 +418,17 @@ def FileHashFeature(config, dbConnection, reportF):
     if not dirPath.exists():
       foundSomeMissingFiles=True
       reportF.write ("Directory path not found:\n"
-            + G_QT + str(dirPath) + G_QT + " for file: " + G_QT + row[1] + G_QT + "\n")
+                    + G_QT + str(dirPath) + G_QT + " for file: "
+                    + G_QT + row[1] + G_QT + "\n")
 
     else:
       if filePath.exists():
         if not filePath.is_file():
           foundSomeMissingFiles=True
-          reportF.write ("File path is not a file: \n" + G_QT + str(filePath) + G_QT + "\n")
+          reportF.write ("File path is not a file: \n"
+                        + G_QT + str(filePath) + G_QT + "\n")
         # take hash
-        BUF_SIZE = 65536  # reads in 64kb chunks!
+        BUF_SIZE = 65536  # reads in 64kb chunks
 
         md5 = hashlib.md5()
         # or sha1 = hashlib.sha1()
@@ -421,7 +442,8 @@ def FileHashFeature(config, dbConnection, reportF):
         hashFile.write( str(filePath) + "\n" + md5.hexdigest() + "\n\n" )
       else:
         foundSomeMissingFiles=True
-        reportF.write ("File path not found: \n" + G_QT + str(filePath) + G_QT + "\n")
+        reportF.write ("File path not found: \n"
+                      + G_QT + str(filePath) + G_QT + "\n")
 
   if not foundSomeMissingFiles: reportF.write ("\n    All files were processed.\n")
   Section( "END", FeatureName, reportF)
@@ -472,8 +494,9 @@ def ReportEmptyPaths(dbConnection, reportF):
     reportF.write (str(len(rows)) + " entires with blank filename or path found:\n\n")
     for row in rows:
       # MediaPath, MediaFile, Caption, Description
-      reportF.write ( "Path       =" + str(row[0]) + '\nFile Name  =' +  str(row[1])
-                    + '\nCaption    =' + row[2] + "\nDescription=" + row[3]  + "\n\n")
+      reportF.write ("Path       =" + str(row[0]) + '\nFile Name  ='
+                    +  str(row[1]) + '\nCaption    ='
+                    + row[2] + "\nDescription=" + row[3]  + "\n\n")
 
 
 # ===================================================DIV60==
@@ -493,7 +516,8 @@ def GetDBNoTagFileList(dbConnection):
 
 # ===================================================DIV60==
 def GetDuplicateFileNamesList(dbConnection):
-  # see for examples https://database.guide/6-ways-to-select-duplicate-rows-in-sqlite/
+  # see for examples
+  # https://database.guide/6-ways-to-select-duplicate-rows-in-sqlite/
   SqlStmt="""
   SELECT p.MediaFile, COUNT(*) AS "Count"
   FROM MultimediaTable p
@@ -508,7 +532,6 @@ def GetDuplicateFileNamesList(dbConnection):
 
 # ===================================================DIV60==
 def GetDuplicateFilePathsList(dbConnection):
-  # see for examples https://database.guide/6-ways-to-select-duplicate-rows-in-sqlite/
   SqlStmt="""
   SELECT p.MediaPath, p.MediaFile, COUNT(*) AS "Count"
   FROM MultimediaTable p
@@ -557,9 +580,12 @@ def TimeStampNow(type=""):
 # ===================================================DIV60==
 def Section (pos, name, reportF):
   Divider = "="*60 + "===DIV70==\n"
-  if   pos == "START":  text = "\n" + Divider + "\n=== Start of \"" + name + "\" listing\n\n"
-  elif pos == "END":  text = "\n=== End of \"" + name + "\" listing\n"
-  elif pos == "FINAL":  text = "\n" + Divider + "\n=== End of Report\n"
+  if   pos == "START":
+    text = "\n" + Divider + "\n=== Start of \"" + name + "\" listing\n\n"
+  elif pos == "END":
+    text = "\n=== End of \"" + name + "\" listing\n"
+  elif pos == "FINAL":
+    text = "\n" + Divider + "\n=== End of Report\n"
   else:
     raise RMPyException("INTERNAL ERROR: Section position not correctly defined")
 
