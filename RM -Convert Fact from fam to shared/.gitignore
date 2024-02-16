@@ -3,10 +3,6 @@
 *.lnk
 
 # ignore RootsMagic database file
-*.rmgc
-
-# ignore test DB folder
-test DB-convert fam /
+DB/
 
 
-log of facts converted.txt
