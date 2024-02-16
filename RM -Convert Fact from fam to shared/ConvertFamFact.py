@@ -11,6 +11,10 @@ import traceback
 # Convert Fam type facts to individual facts
 # not intended for Marriage, Divorce etc or Number of children facts
 
+
+#  where can FactType NAMES be found- not abbrev
+
+
 ## Tested with RootsMagic v9.1.3
 ##             Python for Windows v3.11.0
 ##             unifuzz64.dll (ver not set, MD5=06a1f485b0fae62caa80850a8c7fd7c2)
@@ -22,6 +26,13 @@ def main():
 
 #  PauseWithMessage("Always have a known-good database backup before running this script\n"
 #                      "You will likely want to fix problems in the first run");
+
+
+# consider whether the util should be more general say convert any fact tinto any other?
+
+# the first person in fam fact will retain the new indiv fact, the second person will be shared fact.
+
+# All of the roles used in the old fact must also appear in the new fact
 
 
     # Facts to convert				 new fact to create
@@ -130,9 +141,13 @@ def main():
                        + "\nSQLite library version   = "
                        + GetSQLiteLibraryVersion (dbConnection) + "\n\n")
 
-        reportF.write( fact_current + fact_new + role)
 
-        convert_fact( fact_current, fact_new, role, dbConnection)
+        reportF.write ('Original FactType: "' + fact_current + '"\nNew FactType: "'
+                      + fact_new + '"\nrole: "' + role + '"\n\n\n')
+
+        lookup_validate (fact_current, fact_new, role, dbConnection, reportF)
+
+        convert_fact (fact_current, fact_new, role, dbConnection, reportF)
 
 
 
@@ -141,8 +156,8 @@ def main():
       return 1
     except Exception as e:
       traceback.print_exception(e, file=reportF)
-      reportF.write( "\n\n Application failed. Please send text to author. ")
-      return 1
+      reportF.write( "\n\n Application failed. Please email report file to author. ")
+      return 2
 
 
   # report file is now closed. Can be opened for display
@@ -151,91 +166,104 @@ def main():
   return 0
 
 
-# get from ini file values for
-#  FACT_FAMILY
-#  FACT_INDIV
-#  ROLE  for the spouse
+# ===================================================DIV60==
+def lookup_validate( fact_current_name, fact_new_name, role_name, dbConnection, reportF):
+  # confirm fact_current_name is unique
+  SqlStmt = """
+  SELECT FactTypeID, OwnerType
+    FROM FactTypeTable ftt
+  WHERE  ftt.Name = ?
+  """
 
-# do one set of conversions at a time.
+  with dbConnection:
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, (fact_current_name,))
+    rows = cur.fetchall()
+  if len(rows) == 0:
+    raise RMPyException ( "The entered current fact type name could not be found.\n")
+  if len(rows) > 1:
+    raise RMPyException ( "The entered current fact type name is not unique. Fix this.\n")
+  if rows[0][1] == 1:
+    reportF.write( "The entered current fact type name is a FAMILY type.\n")
+  FactTypeID_current = rows[0][0] 
 
-# first use integers
-# then switvh to names
+  with dbConnection:
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, (fact_new_name,))
+    rows = cur.fetchall()
+  if len(rows) == 0:
+    raise RMPyException ( "The entered new fact type name could not be found.\n")
+  if len(rows) > 1:
+    raise RMPyException ( "The entered new fact type name is not unique. Fix this.\n")
+  if rows[0][1] == 1:
+    reportF.write( "The entered new fact type name is a FAMILY type.\n")
+  FactTypeID_new = rows[0][0] 
 
-# confirm CURRENT_FACT is a family fact and new is indiv fact type
-# consider whether the util should be more general say convert any fact tinto any other?
 
-# the first person in fam fact will retain the new indiv fact, the second person will be shared fact.
+  SqlStmt = """
+  SELECT RoleID, EventType
+    FROM RoleTable rt
+  WHERE  rt.RoleName = ?
+     AND rt.EventType = ?
+  """
+
+  with dbConnection:
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, (role_name, FactTypeID_new))
+    rows = cur.fetchall()
+  if len(rows) == 0:
+    raise RMPyException ( "The entered Role type name could not be found associated with the new fact type.\n")
+  if len(rows) > 1:
+    raise RMPyException ( "The entered Role type name is not unique for the new fact type. Fix this.\n")
+  RoleTypeID = rows[0][0] 
+
+# All of the roles used in the old fact must also appear in the new fact
+  SqlStmt = """
+  SELECT RoleID, EventType
+    FROM RoleTable rt
+  WHERE  rt.RoleName = ?
+     AND rt.EventType = ?
+  """
+
+  with dbConnection:
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, (role_name, FactTypeID_new))
+    rows = cur.fetchall()
+
+
+  return ( FactTypeID_current, FactTypeID_new, RoleTypeID)
 
 
 
-#    frFactToFactRole = [
-#     (  311,   18, 420 ),
-#     (  310,   29, 417 ),
-#     ( 1071, 1001, 421 ),
-#     ( 1066, 1026, 416 ) ] 
-#
-#
-#
-#
-#    for FactSet in frFactToFactRole:
-#      FactTypeID    = FactSet[0]
-#      newFactTypeID = FactSet[1]
-#      roleID        = FactSet[2]
-#
-#      print ( "Original FactTypeID: ", FactTypeID, "New FactTypeID: ", newFactTypeID, "roleID:" , roleID )
-#
-#      listOfFactIDs = getListOfEventsToConvert(FactTypeID, dbConn)
-#
-#      print (len(listOfFactIDs), "Facts of this type to be converted \n\n")
-#
-#      for  FactToConevert in listOfFactIDs:
-#        print (FactToConevert)
-#
-#        FamID = getFamilyIDfromEvent(FactToConevert, dbConn)
-#        FatherMother = getFatherMotherIDs(FamID, dbConn)
-#
-#        FatherID = FatherMother[0]
-#        MotherID = FatherMother[1]
-#        print ("  Father ID: ",  FatherID, "    MotherID: ",  MotherID)
-#
-#        changeTheEvent(FactToConevert, FatherID, newFactTypeID, dbConn)
-#        addWitness( FactToConevert, MotherID, roleID, dbConn)
-#
-#  except Error as e:
-#    print( "Encountered an error", e )
-#  return 0
-
-def convert_fact ( FactTypeID, newFactTypeID, roleID, dbConnection):
-  print ( "Original FactTypeID: ", FactTypeID, "New FactTypeID: ", newFactTypeID, "roleID:" , roleID )
+# ===================================================DIV60==
+def convert_fact ( FactTypeID, newFactTypeID, roleID, dbConnection, reportF):
 
   listOfFactIDs = getListOfEventsToConvert(FactTypeID, dbConnection)
 
-  print (len(listOfFactIDs), "Facts of this type to be converted \n\n")
+  # PauseWithMessage (str(len(listOfFactIDs)) + "  Facts will be converted \n\n")
 
   for  FactToConevert in listOfFactIDs:
-    print (FactToConevert)
+    reportF.write (str(FactToConevert))
 
     FamID = getFamilyIDfromEvent(FactToConevert, dbConnection)
     FatherMother = getFatherMotherIDs(FamID, dbConnection)
 
     FatherID = FatherMother[0]
     MotherID = FatherMother[1]
-    print ("  Father ID: ",  FatherID, "    MotherID: ",  MotherID)
+    reportF.write ("  Father ID: " +  str(FatherID) + "    MotherID: " + str(MotherID))
 
     changeTheEvent(FactToConevert, FatherID, newFactTypeID, dbConnection)
     addWitness( FactToConevert, MotherID, roleID, dbConnection)
 
 
-
 # ===================================================DIV60==
 def getFamilyIDfromEvent(ID, dbConn):
 
-  SqlStmt = """\
-    SELECT OwnerID
-      FROM EventTable et
-    WHERE
-      et.EventID = ?
-"""
+  SqlStmt = """
+  SELECT OwnerID
+    FROM EventTable et
+  WHERE  et.EventID = ?
+  """
 
   with dbConn:
     cur = dbConn.cursor()
@@ -243,7 +271,7 @@ def getFamilyIDfromEvent(ID, dbConn):
     rows = cur.fetchall()
 
     if (len(rows) != 1):
-      print ("more than one owner ID found")
+      reportF.write ("more than one owner ID found")
       raise Error
 
   return rows[0][0]
@@ -253,14 +281,12 @@ def getFamilyIDfromEvent(ID, dbConn):
 # ===================================================DIV60==
 def getListOfEventsToConvert(ID, dbConn):
 
-  SqlStmt = """\
-    SELECT EventID
-      FROM EventTable et
-      WHERE
-        et.EventType = ?
-        AND
-        et.OwnerType = 1
-"""
+  SqlStmt = """
+  SELECT EventID
+    FROM EventTable et
+   WHERE et.EventType = ?
+     AND et.OwnerType = 1
+  """
 
   with dbConn:
     cur = dbConn.cursor()
@@ -277,12 +303,11 @@ def getListOfEventsToConvert(ID, dbConn):
 # ===================================================DIV60==
 def getFatherMotherIDs(ID, dbConn):
 
-  SqlStmt = """\
-    SELECT FatherID, MotherID
-    from FamilyTable ft
-    WHERE
-    ft.FamilyID = ?
-"""
+  SqlStmt = """
+  SELECT FatherID, MotherID
+    FROM FamilyTable ft
+   WHERE ft.FamilyID = ?
+  """
 
   with dbConn:
     cur = dbConn.cursor()
@@ -290,7 +315,7 @@ def getFatherMotherIDs(ID, dbConn):
     rows = cur.fetchall()
 
     if (len(rows) != 1):
-      print ("more than one row returned getting family id")
+      reportF.write ("more than one row returned getting family id")
       raise Error
 
   return [ rows [0][0], rows [0][1] ]
@@ -299,14 +324,13 @@ def getFatherMotherIDs(ID, dbConn):
 # ===================================================DIV60==
 def changeTheEvent(EventID, OwnerID, newEventTypeID, dbConn):
 
-  SqlStmt = """\
-    UPDATE EventTable
-      SET OwnerType = 0,
-          EventType= ?,
-          OwnerID = ?
-    WHERE
-          EventID = ?
-"""
+  SqlStmt = """
+  UPDATE EventTable
+     SET OwnerType = 0,
+         EventType= ?,
+         OwnerID = ?
+   WHERE EventID = ?
+  """
 
   with dbConn:
     cur = dbConn.cursor()
@@ -316,11 +340,11 @@ def changeTheEvent(EventID, OwnerID, newEventTypeID, dbConn):
 # ===================================================DIV60==
 def addWitness( EventID, OwnerID, RoleID, dbConn):
 
-  SqlStmt = """\
-     INSERT INTO WitnessTable
-        ( EventID, PersonID, Role)
-      VALUES ( ?, ?, ? )
-"""
+  SqlStmt = """
+  INSERT INTO WitnessTable
+    ( EventID, PersonID, Role)
+    VALUES ( ?, ?, ? )
+  """
   with dbConn:
     cur = dbConn.cursor()
     cur.execute(SqlStmt, ( EventID, OwnerID, RoleID ))
