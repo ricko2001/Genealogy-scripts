@@ -23,6 +23,15 @@ def main():
 #  PauseWithMessage("Always have a known-good database backup before running this script\n"
 #                      "You will likely want to fix problems in the first run");
 
+
+    # Facts to convert				 new fact to create
+    #  FTID	name				FTID	name			2nd person		RoleID
+    #  311	Census fam			18		Census			spouse			420 
+    #  310	Residence fam		29		Residence		spouse			417 
+    # 1071	Psgr List fam 		1001	Psgr List		Principal2		421
+    # 1066	Note fam			1026	Note			Principal2		416 
+
+
   try:        #errors go to console window
     # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
     # see   https://docs.python.org/3/library/configparser.html
@@ -121,6 +130,12 @@ def main():
                        + "\nSQLite library version   = "
                        + GetSQLiteLibraryVersion (dbConnection) + "\n\n")
 
+        reportF.write( fact_current + fact_new + role)
+
+        convert_fact( fact_current, fact_new, role, dbConnection)
+
+
+
     except RMPyException as e:
       reportF.write( str(e) )
       return 1
@@ -144,7 +159,7 @@ def main():
 # do one set of conversions at a time.
 
 # first use integers
-# then switvh to names in quotes
+# then switvh to names
 
 # confirm CURRENT_FACT is a family fact and new is indiv fact type
 # consider whether the util should be more general say convert any fact tinto any other?
@@ -152,12 +167,6 @@ def main():
 # the first person in fam fact will retain the new indiv fact, the second person will be shared fact.
 
 
-    # Facts to convert				 new fact to create
-    #  FTID	name				FTID	name			2nd person		RoleID
-    #  311	Census fam			18		Census			spouse			420 
-    #  310	Residence fam		29		Residence		spouse			417 
-    # 1071	Psgr List fam 		1001	Psgr List		Principal2		421
-    # 1066	Note fam			1026	Note			Principal2		416 
 
 #    frFactToFactRole = [
 #     (  311,   18, 420 ),
@@ -167,7 +176,6 @@ def main():
 #
 #
 #
-#    dbConn = create_connection(database_path, RMNOCASE_path)
 #
 #    for FactSet in frFactToFactRole:
 #      FactTypeID    = FactSet[0]
@@ -197,6 +205,25 @@ def main():
 #    print( "Encountered an error", e )
 #  return 0
 
+def convert_fact ( FactTypeID, newFactTypeID, roleID, dbConnection):
+  print ( "Original FactTypeID: ", FactTypeID, "New FactTypeID: ", newFactTypeID, "roleID:" , roleID )
+
+  listOfFactIDs = getListOfEventsToConvert(FactTypeID, dbConnection)
+
+  print (len(listOfFactIDs), "Facts of this type to be converted \n\n")
+
+  for  FactToConevert in listOfFactIDs:
+    print (FactToConevert)
+
+    FamID = getFamilyIDfromEvent(FactToConevert, dbConnection)
+    FatherMother = getFatherMotherIDs(FamID, dbConnection)
+
+    FatherID = FatherMother[0]
+    MotherID = FatherMother[1]
+    print ("  Father ID: ",  FatherID, "    MotherID: ",  MotherID)
+
+    changeTheEvent(FactToConevert, FatherID, newFactTypeID, dbConnection)
+    addWitness( FactToConevert, MotherID, roleID, dbConnection)
 
 
 
@@ -309,7 +336,7 @@ def create_DBconnection(db_file_path, db_extension):
     dbConnection.enable_load_extension(True)
     dbConnection.load_extension(db_extension)
   except Exception as e:
-    raise RMPyException(e, "\n\nCannot open the RM database file. \n")
+    raise RMPyException(e, "\n\n" "Cannot open the RM database file." "\n")
 
   return dbConnection
 
@@ -317,7 +344,7 @@ def create_DBconnection(db_file_path, db_extension):
 def PauseWithMessage(message = None):
   if (message != None):
     print(str(message))
-  input("\nPress the <Enter> key to continue...")
+  input("\n" "Press the <Enter> key to continue...")
   return
 
 
