@@ -5,4 +5,9 @@
 # ignore RootsMagic database file
 DB/
 
+DEV_*
+DISTRO_*
+HIDE_*
+
+Report_*
 
