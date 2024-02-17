@@ -1,0 +1,37 @@
+--Which roles are in use for a give FactType
+
+SELECT DISTINCT RoleID, RoleName
+      FROM RoleTable AS rt
+ LEFT JOIN WitnessTable AS wt ON wt.Role = rt.RoleID
+ LEFT JOIN EventTable   AS et ON et.EventID = wt.EventID
+ LEFT JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
+ WHERE ftt.FactTypeID = 311  --FactType
+ORDER BY RoleName
+
+
+
+-- If a fact type is changed for an event, roles used in conjunction with the  old event need
+--  to be mapped into roles for the new event. Can base this solely on Role Name
+
+SELECT RoleID, RoleName
+  FROM RoleTable rt
+ WHERE EventType = 311  -- OldFactType
+   AND RoleName NOT IN (
+     SELECT RoleName
+       FROM RoleTable rt
+      WHERE EventType = 18 )  -- NewFactType
+
+
+
+--List of roles actually in use by old fact type that are not in the new fact based on Role Name
+
+SELECT DISTINCT RoleID, RoleName
+      FROM RoleTable AS rt
+ LEFT JOIN WitnessTable AS wt ON wt.Role = rt.RoleID
+ LEFT JOIN EventTable   AS et ON et.EventID = wt.EventID
+ LEFT JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
+     WHERE ftt.FactTypeID = 311  --OldFactType
+       AND RoleName NOT IN (
+            SELECT RoleName
+              FROM RoleTable rt
+             WHERE EventType = 18 )  -- NewFactType
