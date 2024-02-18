@@ -12,26 +12,12 @@ import traceback
 # not intended for Marriage, Divorce etc or Number of children facts
 
 
-#  where can FactType NAMES be found- not abbrev
-
-
 ## Tested with RootsMagic v9.1.3
-##             Python for Windows v3.11.0
-##             unifuzz64.dll (ver not set, MD5=06a1f485b0fae62caa80850a8c7fd7c2)
+##             Python for Windows v3.12.2
 
-    # Facts to convert				 new fact to create
-    #  FTID	name				FTID	name			2nd person		RoleID
-    #  311	Census fam			18		Census			spouse			420 
-    #  310	Residence fam		29		Residence		spouse			417 
-    # 1071	Psgr List fam 		1001	Psgr List		Principal2		421
-    # 1066	Note fam			1026	Note			Principal2		416 
+# Util uses RMNOCASE extension, but makes no changes to columns that use that collation.
+# Rebuild index in RM should not be necessary.
 
-
-# consider whether the util should be more general say convert any fact tinto any other?
-
-# the first person in fam fact will retain the new indiv fact, the second person will be shared fact.
-
-# All of the roles used in the old fact must also appear in the new fact
 
 # ===================================================DIV60==
 def main():
@@ -77,7 +63,7 @@ def main():
     return 1
   except Exception as e:
     traceback.print_exception(e, file=sys.stdout)
-    PauseWithMessage( "Application failed. Please report. " + str(e) );
+    PauseWithMessage( "ERROR: Application failed. Please report. " + str(e) );
     return 1
 
   # Open the Report File.

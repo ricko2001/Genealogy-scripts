@@ -10,6 +10,36 @@ file. Having access to that file via third party tools is a major advantage
 to using RM.
 
 
+
+# Convert Fam type facts to individual facts
+# not intended for Marriage, Divorce etc or Number of children facts
+
+
+#  where can FactType NAMES be found- not abbrev
+
+
+## Tested with RootsMagic v9.1.3
+##             Python for Windows v3.11.0
+##             unifuzz64.dll (ver not set, MD5=06a1f485b0fae62caa80850a8c7fd7c2)
+
+    # Facts to convert				 new fact to create
+    #  FTID	name				FTID	name			2nd person		RoleID
+    #  311	Census fam			18		Census			spouse			420 
+    #  310	Residence fam		29		Residence		spouse			417 
+    # 1071	Psgr List fam 		1001	Psgr List		Principal2		421
+    # 1066	Note fam			1026	Note			Principal2		416 
+
+
+# consider whether the util should be more general say convert any fact tinto any other?
+
+# the first person in fam fact will retain the new indiv fact, the second person will be shared fact.
+
+# All of the roles used in the old fact must also appear in the new fact
+
+
+
+
+
 ======================================================================
 Overview
 
@@ -41,13 +71,14 @@ fact type to chnage to must be individual fact type.
 
 ======================================================================
 Compatibility
-Works with RootsMagic v7, v8, and v9
+
+Tested with RootsMagic v9
 
 .exe file version
        Windows 64bit only. Tested with Window 11.
 
 .py file version
-       Python for Windows v3.12   64bit
+       Tested with Python for Windows v3.12   64bit
        The py file has not been tested on MacOS.
        The script could probably be modified to work on MacOS with Python
        version 3 installed.
