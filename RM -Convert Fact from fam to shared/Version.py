@@ -7,6 +7,7 @@ VSVersionInfo(
 # filevers and prodvers should be always a tuple with four items: (1, 2, 3, 4)
 # Set not needed items to zero 0.
 
+
 filevers=(1, 0, 0, 0),
 
 
@@ -35,12 +36,16 @@ StringFileInfo(
     [StringStruct(u'CompanyName', u'RJOtter SW'),
     StringStruct(u'FileDescription', u'Utility to work with RootsMagic database files'),
 
+# ver
     StringStruct(u'FileVersion', u'1.0.0.0'),
+#
 
     StringStruct(u'InternalName', u''),
     StringStruct(u'LegalCopyright', u'Open Source'),
 
-    StringStruct(u'OriginalFilename', u'ConvertFamFact.exe'),
+#  name
+    StringStruct(u'OriginalFilename', u'ConvertFact.exe'),
+#
 
     StringStruct(u'ProductName', u'RM utilities'),
     StringStruct(u'ProductVersion', u'1.0')])
@@ -50,8 +55,8 @@ VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
 )
 
 #  edit lines-
-# 10    filevers=(0, 1, 0, 0),
-# 38    StringStruct(u'FileVersion', u'0.1.1.0'),
-# 43    StringStruct(u'OriginalFilename', u'Name.exe'),
+# 11    filevers=,
+# 40    StringStruct(u''),
+# 47    StringStruct(u''),
 
 

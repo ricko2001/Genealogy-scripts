@@ -1,8 +1,8 @@
 @ECHO OFF
 
-SET APPNAME=TestExternalFiles
+SET APPNAME=ConvertFact
 
-SET VERSION_NUMBER=1.6.0
+SET VERSION_NUMBER=1.0.0
 
 
 ECHO Update all files in local git - make sure main branch is correct.
@@ -22,8 +22,6 @@ SET DIST_FLDR_NAME=%APPNAME% v%VERSION_NUMBER%
 
 SET REL_FLDR=Release %APPNAME% v%VERSION_NUMBER%
 
-ECHO Is the Version.py updated in both places ?
-pause
 
 MKDIR ".\%REL_FLDR%"
 
@@ -37,7 +35,6 @@ xcopy ReadMe.txt                ".\%REL_FLDR%\%DIST_FLDR_NAME%"
 xcopy RM-Python-config.ini      ".\%REL_FLDR%\%DIST_FLDR_NAME%"
 xcopy %APPNAME%.py              ".\%REL_FLDR%\%DIST_FLDR_NAME%"
 xcopy Version.py                ".\%REL_FLDR%\%DIST_FLDR_NAME%"
-xcopy "Sample report file.txt"  ".\%REL_FLDR%\%DIST_FLDR_NAME%"
 
 cd ".\%REL_FLDR%\%DIST_FLDR_NAME%"
 
