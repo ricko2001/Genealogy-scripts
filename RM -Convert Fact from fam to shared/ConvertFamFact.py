@@ -170,10 +170,9 @@ def lookup_validate( fact_current_name, fact_new_name, role_name, dbConnection, 
   WHERE  ftt.Name = ?
   """
 
-  with dbConnection:
-    cur = dbConnection.cursor()
-    cur.execute(SqlStmt, (fact_current_name,))
-    rows = cur.fetchall()
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt, (fact_current_name,))
+  rows = cur.fetchall()
   if len(rows) == 0:
     raise RMPyException ( "ERROR: The entered Current FactType name could not be found.\n")
   if len(rows) > 1:
@@ -183,10 +182,9 @@ def lookup_validate( fact_current_name, fact_new_name, role_name, dbConnection, 
     reportF.write( "'Current FactType' is of type 'FAMILY'.\n\n\n")
   FactTypeID_current = rows[0][0] 
 
-  with dbConnection:
-    cur = dbConnection.cursor()
-    cur.execute(SqlStmt, (fact_new_name,))
-    rows = cur.fetchall()
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt, (fact_new_name,))
+  rows = cur.fetchall()
   if len(rows) == 0:
     raise RMPyException ( "ERROR: The entered New FactType name could not be found.\n")
   if len(rows) > 1:
@@ -203,10 +201,9 @@ def lookup_validate( fact_current_name, fact_new_name, role_name, dbConnection, 
      AND rt.EventType = ?
   """
 
-  with dbConnection:
-    cur = dbConnection.cursor()
-    cur.execute(SqlStmt, (role_name, FactTypeID_new))
-    rows = cur.fetchall()
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt, (role_name, FactTypeID_new))
+  rows = cur.fetchall()
   if len(rows) == 0:
     raise RMPyException ( "The entered Role name could not be found associated with the new fact type.\n")
   if len(rows) > 1:
@@ -228,10 +225,9 @@ def lookup_validate( fact_current_name, fact_new_name, role_name, dbConnection, 
                WHERE EventType = :new_FTid )  -- NewFactType
   """
 
-  with dbConnection:
-    cur = dbConnection.cursor()
-    cur.execute(SqlStmt, {"curr_FTid" : FactTypeID_current, "new_FTid" : FactTypeID_new})
-    rows = cur.fetchall()
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt, {"curr_FTid" : FactTypeID_current, "new_FTid" : FactTypeID_new})
+  rows = cur.fetchall()
   if len(rows) != 0:
     reportF.write( "The following Roles are in use by the Current Fact Type,\n"
                    + "but do not exist for the New Fact Type.\n"
@@ -267,14 +263,59 @@ def convert_fact(IDtuple , dbConnection, reportF):
     reportF.write ("  Father ID: " +  str(FatherID) + "    MotherID: " + str(MotherID))
 
     changeTheEvent(FactToConvert, FatherID, newFactTypeID, dbConnection)
-    mapExistingWitnesses(FactToConvert, newFactTypeID)
+    updateRoleInExistingWitnesses(FactTypeID, newFactTypeID, dbConnection)
     addNewWitness(FactToConvert, MotherID, roleID, dbConnection)
 
   return
 
 
 # ===================================================DIV60==
-def mapExistingWitnesses( FactToConvert, newFactTypeID):
+def updateRoleInExistingWitnesses( FactTypeID_current, FactTypeID_new, dbConnection):
+# could be optimized by iterating over the new roles and 
+# then changing them all in an update. But fast enough for now.
+
+  # List of all WitnessID that need their role updated
+  SqlStmt = """
+  SELECT wt.WitnessID, rt.RoleName
+  FROM WitnessTable AS wt
+  LEFT JOIN EventTable AS et ON et.EventID = wt.EventID
+  LEFT JOIN RoleTable AS rt ON rt.RoleID = wt.Role
+  WHERE et.EventType = :curr_FTid
+  ORDER BY rt.RoleName
+  """
+
+  cur = dbConnection.cursor()
+  cur.execute(SqlStmt, {"curr_FTid" : FactTypeID_current, "new_FTid" : FactTypeID_new})
+  rows = cur.fetchall()
+
+  for row in rows:
+
+    WitnessToUpdate = row[0]
+    RolNameToUse = row[1]
+
+    SqlStmt = """
+    SELECT RoleID
+    FROM RoleTable
+    WHERE EventType = :new_FTid
+    AND RoleName = :RoleName
+    """
+
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, {"new_FTid" : FactTypeID_new, "RollName" : RolNameToUse})
+    row = cur.fetchone()
+    newRoleID = row[0]
+
+
+    SqlStmt = """
+    UPDATE WitnessTable
+    SET Role = :RoleID
+    WHERE WitnessID = :WitnessID
+    """
+
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, {"new_FTid" : FactTypeID_new, "RollID" : newRoleID})
+    row = cur.fetchone()
+
   return
 
 
@@ -287,14 +328,13 @@ def getFamilyIDfromEvent(ID, dbConn):
   WHERE  et.EventID = ?
   """
 
-  with dbConn:
-    cur = dbConn.cursor()
-    cur.execute(SqlStmt, (ID,))
-    rows = cur.fetchall()
+  cur = dbConn.cursor()
+  cur.execute(SqlStmt, (ID,))
+  rows = cur.fetchall()
 
-    if (len(rows) != 1):
-      reportF.write ("more than one owner ID found")
-      raise Error
+  if (len(rows) != 1):
+    reportF.write ("more than one owner ID found")
+    raise Error
 
   return rows[0][0]
 
@@ -309,14 +349,13 @@ def getListOfEventsToConvert(ID, dbConn):
      AND et.OwnerType = 1
   """
 
-  with dbConn:
-    cur = dbConn.cursor()
-    cur.execute(SqlStmt, (ID,))
-    rows = cur.fetchall()
+  cur = dbConn.cursor()
+  cur.execute(SqlStmt, (ID,))
+  rows = cur.fetchall()
 
-    listOfFactIDs = []
-    for x in range( len(rows) ):
-      listOfFactIDs.append( rows [x] [0] )
+  listOfFactIDs = []
+  for x in range( len(rows) ):
+    listOfFactIDs.append( rows [x] [0] )
 
   return listOfFactIDs
 
@@ -330,14 +369,13 @@ def getFatherMotherIDs(ID, dbConn):
    WHERE ft.FamilyID = ?
   """
 
-  with dbConn:
-    cur = dbConn.cursor()
-    cur.execute(SqlStmt, (ID,))
-    rows = cur.fetchall()
+  cur = dbConn.cursor()
+  cur.execute(SqlStmt, (ID,))
+  rows = cur.fetchall()
 
-    if (len(rows) != 1):
-      reportF.write ("more than one row returned getting family id")
-      raise Error
+  if (len(rows) != 1):
+    reportF.write ("more than one row returned getting family id")
+    raise Error
 
   return [ rows [0][0], rows [0][1] ]
 
@@ -353,9 +391,8 @@ def changeTheEvent(EventID, OwnerID, newEventTypeID, dbConn):
    WHERE EventID = ?
   """
 
-  with dbConn:
-    cur = dbConn.cursor()
-    cur.execute(SqlStmt, (newEventTypeID, OwnerID, EventID) )
+  cur = dbConn.cursor()
+  cur.execute(SqlStmt, (newEventTypeID, OwnerID, EventID) )
 
 
 # ===================================================DIV60==
@@ -366,9 +403,8 @@ def addNewWitness( EventID, OwnerID, RoleID, dbConn):
     ( EventID, PersonID, Role)
     VALUES ( ?, ?, ? )
   """
-  with dbConn:
-    cur = dbConn.cursor()
-    cur.execute(SqlStmt, ( EventID, OwnerID, RoleID ))
+  cur = dbConn.cursor()
+  cur.execute(SqlStmt, ( EventID, OwnerID, RoleID ))
 
 
 # ===================================================DIV60==
