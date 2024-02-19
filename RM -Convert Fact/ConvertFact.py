@@ -127,13 +127,12 @@ def main():
                       + "\n" "SQLite library version   = "
                       + GetSQLiteLibraryVersion (dbConnection) + "\n\n\n")
 
-        reportF.write('Original FactType: "' + fact_current
-                  + '"\n     New FactType: "' + fact_new
-                  + '"\n             Role: "' + role + '"\n\n\n')
+        reportF.write('Current FactType: "' + fact_current
+                + '"\n     New FactType: "' + fact_new
+                + '"\n             Role: "' + role + '"\n\n\n')
 
         IDtuple = lookup_validate(fact_current, fact_new, role, dbConnection, reportF)
         convert_fact(IDtuple, dbConnection, reportF)
-       # Commit(dbConnection)
 
     except RMPyException as e:
       reportF.write( str(e) )
@@ -142,6 +141,9 @@ def main():
       traceback.print_exception(e, file=reportF)
       reportF.write( "\n\n" "ERROR: Application failed. Please email report file to author. ")
       return 1
+    finally:
+      if ReportDisplayApp != None:
+        subprocess.Popen( [ReportDisplayApp, report_Path] )
 
   # report file is now closed. Can be opened for display
   if ReportDisplayApp != None:
@@ -244,9 +246,11 @@ def convert_fact(IDtuple , dbConnection, reportF):
   FamilyTypeFact = IDtuple[3]
 
   listOfFactIDs = getListOfEventsToConvert(FactTypeID, FamilyTypeFact, dbConnection)
+  if len(listOfFactIDs) == 0:
+    raise RMPyException ( "Nothing to convert !\n\n")
 
   if FamilyTypeFact:
-    reportF.write ("Fact attached to Family:\n  Father ID:   Mother ID: ")
+    reportF.write ("Facts attached to these families were converted:\n  Father ID:   Mother ID: ")
     for  FactToConvert in listOfFactIDs:
       FamID = getFamilyIDfromEvent(FactToConvert, dbConnection)
       FatherMother = getFatherMotherIDs(FamID, dbConnection)
@@ -259,7 +263,7 @@ def convert_fact(IDtuple , dbConnection, reportF):
       updateRoleInExistingWitnesses(FactToConvert, newFactTypeID, dbConnection)
       addNewWitness(FactToConvert, MotherID, roleID, dbConnection)
   else:
-    reportF.write ("Fact attached to Person with ID:")
+    reportF.write ("Facts attached to these Persons (ID) were converted:")
     for FactToConvert in listOfFactIDs:
       PersonID = getPersonIDfromEventID(FactToConvert, dbConnection)
       reportF.write( "\n  "+ str(PersonID) )
@@ -304,7 +308,8 @@ def updateRoleInExistingWitnesses( FactToConvert, FactTypeID_new, dbConnection):
 
     SqlStmt = """
     UPDATE WitnessTable
-       SET Role = :RoleID
+       SET Role = :RoleID,
+           UTCModDate = julianday('now') - 2415018.5
      WHERE WitnessID = :WitnessID
     """
     cur = dbConnection.cursor()
@@ -357,6 +362,7 @@ def getListOfEventsToConvert(ID, FamilyType, dbConn):
     FROM EventTable et
    WHERE et.EventType = ?
      AND et.OwnerType = ?
+   ORDER BY OwnerID
   """
   cur = dbConn.cursor()
   cur.execute(SqlStmt, (ID, OwnerType))
@@ -404,22 +410,11 @@ def addNewWitness( EventID, OwnerID, RoleID, dbConn):
 
   SqlStmt = """
   INSERT INTO WitnessTable
-    ( EventID, PersonID, Role)
-    VALUES ( ?, ?, ? )
+    ( EventID, PersonID, Role, UTCModDate)
+    VALUES ( ?, ?, ?, julianday('now') - 2415018.5 )
   """
   cur = dbConn.cursor()
-  cur.execute(SqlStmt, ( EventID, OwnerID, RoleID ))
-  return
-
-
-# ===================================================DIV60==
-def Commit( dbConn):
-
-  SqlStmt = """
-  COMMIT
-  """
-  cur = dbConn.cursor()
-  cur.execute(SqlStmt)
+  cur.execute(SqlStmt, ( EventID, OwnerID, RoleID  ))
   return
 
 

@@ -152,6 +152,9 @@ def main():
       traceback.print_exception(e, file=reportF)
       reportF.write( "\n\n Application failed. Please send text to author. ")
       return 1
+    finally:
+      if ReportDisplayApp != None:
+        subprocess.Popen( [ReportDisplayApp, report_Path] )
 
 
   # report file is now closed. Can be opened for display
