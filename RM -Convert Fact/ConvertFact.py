@@ -256,7 +256,7 @@ def convert_fact(IDtuple , dbConnection, reportF):
       reportF.write ("\n    " +  str(FatherID) + "           " + str(MotherID))
 
       changeTheEvent(FactToConvert, FatherID, newFactTypeID, dbConnection)
-      updateRoleInExistingWitnesses(FactTypeID, newFactTypeID, dbConnection)
+      updateRoleInExistingWitnesses(FactToConvert, newFactTypeID, dbConnection)
       addNewWitness(FactToConvert, MotherID, roleID, dbConnection)
   else:
     reportF.write ("Fact attached to Person with ID:")
@@ -264,30 +264,28 @@ def convert_fact(IDtuple , dbConnection, reportF):
       PersonID = getPersonIDfromEventID(FactToConvert, dbConnection)
       reportF.write( "\n  "+ str(PersonID) )
       changeTheEvent(FactToConvert, PersonID, newFactTypeID, dbConnection)
-      updateRoleInExistingWitnesses(FactTypeID, newFactTypeID, dbConnection)
+      updateRoleInExistingWitnesses(FactToConvert, newFactTypeID, dbConnection)
 
   return
 
 
 # ===================================================DIV60==
-def updateRoleInExistingWitnesses( FactTypeID_current, FactTypeID_new, dbConnection):
+def updateRoleInExistingWitnesses( FactToConvert, FactTypeID_new, dbConnection):
 
-  # could be optimized by iterating over the new roles and
-  # then changing them all in an update. But fast enough for now.
-
-  # List of all WitnessID that need their role updated
+  # List of all Witness records that need their role updated
   SqlStmt = """
   SELECT wt.WitnessID, rt.RoleName
     FROM WitnessTable AS wt
-  INNER JOIN EventTable AS et ON et.EventID = wt.EventID
   INNER JOIN RoleTable AS rt ON rt.RoleID = wt.Role
-       WHERE et.EventType = :curr_FTid
+       WHERE wt.EventID = :FactId
     ORDER BY rt.RoleName
   """
+
   cur = dbConnection.cursor()
-  cur.execute(SqlStmt, {"curr_FTid" : FactTypeID_current, "new_FTid" : FactTypeID_new})
+  cur.execute(SqlStmt, {"FactId" : FactToConvert})
   rows = cur.fetchall()
 
+  # each row is a witness record
   for row in rows:
 
     WitnessToUpdate = row[0]
