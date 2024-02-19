@@ -8,19 +8,21 @@ import hashlib
 import subprocess
 import traceback
 
-# Convert Fam type facts to individual facts
-# not intended for Marriage, Divorce etc or Number of children facts
+# Convert all Facts of one fact type to another fact type
+# A family event type, may be converted to an individual fact type. 
+# An individual type fact may *not* be converted to a family type.
 
 
-## Tested with RootsMagic v9.1.3
-##             Python for Windows v3.12.2
+## Tested with: RootsMagic v9.1.3
+##              Python for Windows v3.12.2
 
-# Util uses RMNOCASE extension, but makes no changes to columns that use that collation.
+# Utility uses RMNOCASE extension, but makes no changes to columns that use that collation.
 # Rebuild index in RM should not be necessary.
 
 
 # ===================================================DIV60==
 def main():
+
   # Configuration
   IniFileName = "RM-Python-config.ini"
 
@@ -78,13 +80,13 @@ def main():
         raise RMPyException('ERROR: Path for database not found: ' + database_path
                            +'\n\n' 'Absolute path checked:\n"'
                            + os.path.abspath(database_path) + '"')
-  
+
       try:
         RMNOCAE_path = config['FILE_PATHS']['RMNOCASE_PATH']
       except:
-        raise RMPyException('ERROR: RMNOCASE_PATH must be specified.') 
+        raise RMPyException('ERROR: RMNOCASE_PATH must be specified.')
       if not os.path.exists(RMNOCAE_path):
-        raise RMPyException('ERROR: Path for database extension unifuzz64.dll not found: ' 
+        raise RMPyException('ERROR: Path for database extension unifuzz64.dll not found: '
                            + RMNOCAE_path
                            +'\n\n' 'Absolute path checked:\n"'
                            + os.path.abspath(RMNOCAE_path) + '"')
@@ -101,12 +103,12 @@ def main():
         fact_current = config['MAPPING']['FACT_CURRENT']
       except:
         raise RMPyException('ERROR: FACT_CURRENT must be specified.')
-  
+
       try:
         fact_new = config['MAPPING']['FACT_NEW']
       except:
         raise RMPyException('ERROR: FACT_NEW must be specified.')
-  
+
       try:
         role = config['MAPPING']['ROLE']
       except:
@@ -125,12 +127,13 @@ def main():
                       + "\n" "SQLite library version   = "
                       + GetSQLiteLibraryVersion (dbConnection) + "\n\n\n")
 
-        reportF.write('Original FactType: "' + fact_current 
+        reportF.write('Original FactType: "' + fact_current
                   + '"\n     New FactType: "' + fact_new
                   + '"\n             Role: "' + role + '"\n\n\n')
 
         IDtuple = lookup_validate(fact_current, fact_new, role, dbConnection, reportF)
         convert_fact(IDtuple, dbConnection, reportF)
+       # Commit(dbConnection)
 
     except RMPyException as e:
       reportF.write( str(e) )
@@ -153,9 +156,8 @@ def lookup_validate( fact_current_name, fact_new_name, role_name, dbConnection, 
   SqlStmt = """
   SELECT FactTypeID, OwnerType
     FROM FactTypeTable ftt
-  WHERE  ftt.Name = ?
+   WHERE ftt.Name = ?
   """
-
   cur = dbConnection.cursor()
   cur.execute(SqlStmt, (fact_current_name,))
   rows = cur.fetchall()
@@ -164,9 +166,11 @@ def lookup_validate( fact_current_name, fact_new_name, role_name, dbConnection, 
   if len(rows) > 1:
     raise RMPyException ( "ERROR: The entered Current FactType name is not unique. Fix this.\n")
 
+  FamilyTypeFact = False
   if rows[0][1] == 1:
+    FamilyTypeFact = True
     reportF.write( "'Current FactType' is of type 'FAMILY'.\n\n\n")
-  FactTypeID_current = rows[0][0] 
+  FactTypeID_current = rows[0][0]
 
   cur = dbConnection.cursor()
   cur.execute(SqlStmt, (fact_new_name,))
@@ -177,40 +181,40 @@ def lookup_validate( fact_current_name, fact_new_name, role_name, dbConnection, 
     raise RMPyException ( "ERROR: The entered New FactType name is not unique. Fix this.\n")
   if rows[0][1] == 1:
     reportF.write( "The entered New FactType name is a FAMILY type.\n")
-  FactTypeID_new = rows[0][0] 
+  FactTypeID_new = rows[0][0]
 
+  RoleTypeID = 0
 
-  SqlStmt = """
-  SELECT RoleID, EventType
-    FROM RoleTable rt
-  WHERE  rt.RoleName = ?
-     AND rt.EventType = ?
-  """
-
-  cur = dbConnection.cursor()
-  cur.execute(SqlStmt, (role_name, FactTypeID_new))
-  rows = cur.fetchall()
-  if len(rows) == 0:
-    raise RMPyException ( "The entered Role name could not be found associated with the new fact type.\n")
-  if len(rows) > 1:
-    raise RMPyException ( "The entered Role name is not unique for the new fact type. Fix this.\n")
-  RoleTypeID = rows[0][0] 
+  if FamilyTypeFact:
+    SqlStmt = """
+    SELECT RoleID, EventType
+      FROM RoleTable rt
+     WHERE rt.RoleName = ?
+       AND rt.EventType = ?
+    """
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, (role_name, FactTypeID_new))
+    rows = cur.fetchall()
+    if len(rows) == 0:
+      raise RMPyException ( "The entered Role name could not be found associated with the new fact type.\n")
+    if len(rows) > 1:
+      raise RMPyException ( "The entered Role name is not unique for the new fact type. Fix this.\n")
+    RoleTypeID = rows[0][0]
 
 # All of the roles used by the old fact must also appear in the new fact
 # List Roles that user needs to create for the new Fact Type
   SqlStmt = """
   SELECT DISTINCT RoleID, RoleName
         FROM RoleTable AS rt
-   LEFT JOIN WitnessTable AS wt ON wt.Role = rt.RoleID
-   LEFT JOIN EventTable   AS et ON et.EventID = wt.EventID
-   LEFT JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
+  INNER JOIN WitnessTable AS wt ON wt.Role = rt.RoleID
+  INNER JOIN EventTable   AS et ON et.EventID = wt.EventID
+  INNER JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
        WHERE ftt.FactTypeID = :curr_FTid  --OldFactType
          AND RoleName NOT IN (
               SELECT RoleName
                 FROM RoleTable rt
                WHERE EventType = :new_FTid )  -- NewFactType
   """
-
   cur = dbConnection.cursor()
   cur.execute(SqlStmt, {"curr_FTid" : FactTypeID_current, "new_FTid" : FactTypeID_new})
   rows = cur.fetchall()
@@ -228,7 +232,7 @@ def lookup_validate( fact_current_name, fact_new_name, role_name, dbConnection, 
     reportF.write( "\n\n\n" )
     raise RMPyException ( "ERROR: Roles need to be coordinated between the Old and New Fact Types.\n")
 
-  return ( FactTypeID_current, FactTypeID_new, RoleTypeID)
+  return ( FactTypeID_current, FactTypeID_new, RoleTypeID, FamilyTypeFact)
 
 
 # ===================================================DIV60==
@@ -237,39 +241,49 @@ def convert_fact(IDtuple , dbConnection, reportF):
   FactTypeID = IDtuple[0]
   newFactTypeID = IDtuple[1]
   roleID = IDtuple[2]
+  FamilyTypeFact = IDtuple[3]
 
-  listOfFactIDs = getListOfEventsToConvert(FactTypeID, dbConnection)
+  listOfFactIDs = getListOfEventsToConvert(FactTypeID, FamilyTypeFact, dbConnection)
 
-  for  FactToConvert in listOfFactIDs:
-    FamID = getFamilyIDfromEvent(FactToConvert, dbConnection)
-    FatherMother = getFatherMotherIDs(FamID, dbConnection)
+  if FamilyTypeFact:
+    reportF.write ("Fact attached to Family:\n  Father ID:   Mother ID: ")
+    for  FactToConvert in listOfFactIDs:
+      FamID = getFamilyIDfromEvent(FactToConvert, dbConnection)
+      FatherMother = getFatherMotherIDs(FamID, dbConnection)
+  
+      FatherID = FatherMother[0]
+      MotherID = FatherMother[1]
+      reportF.write ("\n    " +  str(FatherID) + "           " + str(MotherID))
 
-    FatherID = FatherMother[0]
-    MotherID = FatherMother[1]
-    reportF.write ("  Father ID: " +  str(FatherID) + "    MotherID: " + str(MotherID))
-
-    changeTheEvent(FactToConvert, FatherID, newFactTypeID, dbConnection)
-    updateRoleInExistingWitnesses(FactTypeID, newFactTypeID, dbConnection)
-    addNewWitness(FactToConvert, MotherID, roleID, dbConnection)
+      changeTheEvent(FactToConvert, FatherID, newFactTypeID, dbConnection)
+      updateRoleInExistingWitnesses(FactTypeID, newFactTypeID, dbConnection)
+      addNewWitness(FactToConvert, MotherID, roleID, dbConnection)
+  else:
+    reportF.write ("Fact attached to Person with ID:")
+    for FactToConvert in listOfFactIDs:
+      PersonID = getPersonIDfromEventID(FactToConvert, dbConnection)
+      reportF.write( "\n  "+ str(PersonID) )
+      changeTheEvent(FactToConvert, PersonID, newFactTypeID, dbConnection)
+      updateRoleInExistingWitnesses(FactTypeID, newFactTypeID, dbConnection)
 
   return
 
 
 # ===================================================DIV60==
 def updateRoleInExistingWitnesses( FactTypeID_current, FactTypeID_new, dbConnection):
-# could be optimized by iterating over the new roles and 
-# then changing them all in an update. But fast enough for now.
+
+  # could be optimized by iterating over the new roles and
+  # then changing them all in an update. But fast enough for now.
 
   # List of all WitnessID that need their role updated
   SqlStmt = """
   SELECT wt.WitnessID, rt.RoleName
-  FROM WitnessTable AS wt
-  LEFT JOIN EventTable AS et ON et.EventID = wt.EventID
-  LEFT JOIN RoleTable AS rt ON rt.RoleID = wt.Role
-  WHERE et.EventType = :curr_FTid
-  ORDER BY rt.RoleName
+    FROM WitnessTable AS wt
+  INNER JOIN EventTable AS et ON et.EventID = wt.EventID
+  INNER JOIN RoleTable AS rt ON rt.RoleID = wt.Role
+       WHERE et.EventType = :curr_FTid
+    ORDER BY rt.RoleName
   """
-
   cur = dbConnection.cursor()
   cur.execute(SqlStmt, {"curr_FTid" : FactTypeID_current, "new_FTid" : FactTypeID_new})
   rows = cur.fetchall()
@@ -281,28 +295,39 @@ def updateRoleInExistingWitnesses( FactTypeID_current, FactTypeID_new, dbConnect
 
     SqlStmt = """
     SELECT RoleID
-    FROM RoleTable
-    WHERE EventType = :new_FTid
-    AND RoleName = :RoleName
+      FROM RoleTable
+     WHERE EventType = :new_FTid
+       AND RoleName = :RoleName
     """
-
     cur = dbConnection.cursor()
-    cur.execute(SqlStmt, {"new_FTid" : FactTypeID_new, "RollName" : RolNameToUse})
+    cur.execute(SqlStmt, {"new_FTid" : FactTypeID_new, "RoleName" : RolNameToUse})
     row = cur.fetchone()
     newRoleID = row[0]
 
-
     SqlStmt = """
     UPDATE WitnessTable
-    SET Role = :RoleID
-    WHERE WitnessID = :WitnessID
+       SET Role = :RoleID
+     WHERE WitnessID = :WitnessID
     """
-
     cur = dbConnection.cursor()
-    cur.execute(SqlStmt, {"new_FTid" : FactTypeID_new, "RollID" : newRoleID})
+    cur.execute(SqlStmt, {"WitnessID" : WitnessToUpdate, "RoleID" : newRoleID})
     row = cur.fetchone()
-
   return
+
+
+# ===================================================DIV60==
+def getPersonIDfromEventID(ID, dbConn):
+
+  SqlStmt = """
+  SELECT OwnerID
+    FROM EventTable
+   WHERE EventID = ?
+  """
+  cur = dbConn.cursor()
+  cur.execute(SqlStmt, (ID,))
+  row = cur.fetchone()
+
+  return row [0]
 
 
 # ===================================================DIV60==
@@ -313,7 +338,6 @@ def getFamilyIDfromEvent(ID, dbConn):
     FROM EventTable et
   WHERE  et.EventID = ?
   """
-
   cur = dbConn.cursor()
   cur.execute(SqlStmt, (ID,))
   rows = cur.fetchall()
@@ -321,28 +345,28 @@ def getFamilyIDfromEvent(ID, dbConn):
   if (len(rows) != 1):
     reportF.write ("more than one owner ID found")
     raise Error
-
   return rows[0][0]
 
 
 # ===================================================DIV60==
-def getListOfEventsToConvert(ID, dbConn):
+def getListOfEventsToConvert(ID, FamilyType, dbConn):
+
+  OwnerType = 0
+  if FamilyType: OwnerType = 1
 
   SqlStmt = """
   SELECT EventID
     FROM EventTable et
    WHERE et.EventType = ?
-     AND et.OwnerType = 1
+     AND et.OwnerType = ?
   """
-
   cur = dbConn.cursor()
-  cur.execute(SqlStmt, (ID,))
+  cur.execute(SqlStmt, (ID, OwnerType))
   rows = cur.fetchall()
 
   listOfFactIDs = []
   for x in range( len(rows) ):
     listOfFactIDs.append( rows [x] [0] )
-
   return listOfFactIDs
 
 
@@ -354,7 +378,6 @@ def getFatherMotherIDs(ID, dbConn):
     FROM FamilyTable ft
    WHERE ft.FamilyID = ?
   """
-
   cur = dbConn.cursor()
   cur.execute(SqlStmt, (ID,))
   rows = cur.fetchall()
@@ -362,9 +385,7 @@ def getFatherMotherIDs(ID, dbConn):
   if (len(rows) != 1):
     reportF.write ("more than one row returned getting family id")
     raise Error
-
   return [ rows [0][0], rows [0][1] ]
-
 
 # ===================================================DIV60==
 def changeTheEvent(EventID, OwnerID, newEventTypeID, dbConn):
@@ -376,10 +397,9 @@ def changeTheEvent(EventID, OwnerID, newEventTypeID, dbConn):
          OwnerID = ?
    WHERE EventID = ?
   """
-
   cur = dbConn.cursor()
   cur.execute(SqlStmt, (newEventTypeID, OwnerID, EventID) )
-
+  return
 
 # ===================================================DIV60==
 def addNewWitness( EventID, OwnerID, RoleID, dbConn):
@@ -391,25 +411,37 @@ def addNewWitness( EventID, OwnerID, RoleID, dbConn):
   """
   cur = dbConn.cursor()
   cur.execute(SqlStmt, ( EventID, OwnerID, RoleID ))
+  return
+
+
+# ===================================================DIV60==
+def Commit( dbConn):
+
+  SqlStmt = """
+  COMMIT
+  """
+  cur = dbConn.cursor()
+  cur.execute(SqlStmt)
+  return
 
 
 # ===================================================DIV60==
 def create_DBconnection(db_file_path, db_extension):
+
   dbConnection = None
   try:
     dbConnection = sqlite3.connect(db_file_path)
-
     # load SQLite extension
     dbConnection.enable_load_extension(True)
     dbConnection.load_extension(db_extension)
   except Exception as e:
     raise RMPyException(e, "\n\n" "Cannot open the RM database file." "\n")
-
   return dbConnection
 
 
 # ===================================================DIV60==
 def PauseWithMessage(message = None):
+
   if (message != None):
     print(str(message))
   input("\n" "Press the <Enter> key to continue...")
@@ -418,6 +450,7 @@ def PauseWithMessage(message = None):
 
 # ===================================================DIV60==
 def TimeStampNow(type=""):
+
   # return a TimeStamp string
   now = datetime.now()
   if type == '':
@@ -429,6 +462,7 @@ def TimeStampNow(type=""):
 
 # ===================================================DIV60==
 def GetSQLiteLibraryVersion (dbConnection):
+
   # returns a string like 3.42.0
   SqlStmt="""
   SELECT sqlite_version()
@@ -440,6 +474,7 @@ def GetSQLiteLibraryVersion (dbConnection):
 
 # ===================================================DIV60==
 def get_current_directory():
+
   # Determine if application is a script file or frozen exe and get its directory
   # see   https://pyinstaller.org/en/stable/runtime-information.html
   if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
@@ -451,6 +486,7 @@ def get_current_directory():
 
 # ===================================================DIV60==
 class RMPyException(Exception):
+
   '''Exceptions thrown for configuration/database issues'''
 
 
