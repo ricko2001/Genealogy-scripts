@@ -1,21 +1,33 @@
 ConvertFact
 Utility application for use with RootsMagic databases
 
-Convert all Facts/Events of a certain type to Facts/Events of a different type. 
-Current limitation - The current fact type must be of the FAMILY type, the
-resultant fact must be of INDIVIDUAL type.
-
 RootsMagic (RM) software uses a SQLite relational database as its data storage
 file. Having access to that file via third party tools is a major advantage
 to using RM.
 
+Convert all Facts/Events of a certain type to Facts/Events of a different type. 
+
+Allowed conversions:
+Personal => Personal
+Family => Personal
+Family => Family
+
+Not allowed:
+Personal => Family
+
+Simply changing the Fact Type is trivial for a set of facts. 
+Complications arise when the fact has witnesses or when a family fact is converted to a personal fact.
+
+Any conversion of a fact that already has a witness involves assigning a new role to that witness. 
+That's because each fact type has a different, independent set of possible roles. The role's main task, besides naming the role itsef, is to control which sentence is used for the witness in a narrative report
+
+Family => Personal  fact conversion requires that the first person in the family (database name: Father) be assigned a new personal fact and the second person in the family (database name: Mother) be added as a witness with a particular role. That role is specified in the ini file as an input parameter.
 
 
-# Convert Fam type facts to individual facts
-# not intended for Marriage, Divorce etc or Number of children facts
+FactTypes are listed in the "Fact type list" feature found in several places in the user interface- In the Edit Person windows upon clicking the + add fact button, in the three dot menu or in th command pallet. 
+The input of fact types in the ini files uses the full fact type name, not the abbreviation. The full name is shown in the Edit Person window.
 
 
-#  where can FactType NAMES be found- not abbrev
 
 
 ## Tested with RootsMagic v9.1.3
@@ -66,7 +78,7 @@ Capabilities
 
 Sole function is to change all facts of a certain fact typ to a different fact tye.
 Current limitation- the current fact must be a family type, the 
-fact type to chnage to must be individual fact type.
+fact type to chnage to must be Personal fact type.
 
 
 ======================================================================

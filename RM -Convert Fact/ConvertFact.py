@@ -23,7 +23,7 @@ import traceback
 def main():
 
     # Configuration
-    IniFileName = "RM-Python-config.ini"
+    ini_file_name = "RM-Python-config.ini"
 
 #  PauseWithMessage("Always have a known-good database backup before running this script\n"
 #                      "You will likely want to fix problems in the first run");
@@ -31,35 +31,35 @@ def main():
     try:  # errors go to console window
         # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
         # see   https://docs.python.org/3/library/configparser.html
-        IniFile = os.path.join(get_current_directory(), IniFileName)
+        ini_file = os.path.join(get_current_directory(), ini_file_name)
 
         # Check that ini file is at expected path and that it is readable & valid.
-        if not os.path.exists(IniFile):
-            raise RMPyException("ERROR: The ini configuration file, " + IniFileName
-                                + " must be in the same directory as the .py or .exe file.\n\n")
+        if not os.path.exists(ini_file):
+            raise RMPyExcep("ERROR: The ini configuration file, " + ini_file_name
+                            + " must be in the same directory as the .py or .exe file.\n\n")
 
         config = configparser.ConfigParser(empty_lines_in_values=False,
                                            interpolation=None)
         try:
-            config.read(IniFile, 'UTF-8')
+            config.read(ini_file, 'UTF-8')
         except:
-            raise RMPyException("ERROR: The " + IniFileName
-                                + " file contains a format error and cannot be parsed.\n\n")
+            raise RMPyExcep("ERROR: The " + ini_file_name
+                            + " file contains a format error and cannot be parsed.\n\n")
 
         try:
-            report_Path = config['FILE_PATHS']['REPORT_FILE_PATH']
+            report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
         except:
-            raise RMPyException('ERROR: REPORT_FILE_PATH must be defined in the '
-                                + IniFileName + "\n\n")
+            raise RMPyExcep('ERROR: REPORT_FILE_PATH must be defined in the '
+                            + ini_file_name + "\n\n")
 
         try:
             # Use UTF-8 encoding for the report file. Test for write-ability
-            open(report_Path,  mode='w', encoding='utf-8')
+            open(report_path,  mode='w', encoding='utf-8')
         except:
-            raise RMPyException('ERROR: Cannot create the report file '
-                                + report_Path + "\n\n")
+            raise RMPyExcep('ERROR: Cannot create the report file '
+                            + report_path + "\n\n")
 
-    except RMPyException as e:
+    except RMPyExcep as e:
         PauseWithMessage(e)
         return 1
     except Exception as e:
@@ -68,149 +68,151 @@ def main():
         return 1
 
     # Open the Report File.
-    with open(report_Path,  mode='w', encoding='utf-8') as reportF:
+    report_file = open(report_path,  mode='w', encoding='utf-8')
 
-        try:        # errors go to the report file
-            try:
-                database_path = config['FILE_PATHS']['DB_PATH']
-            except:
-                raise RMPyException('ERROR: DB_PATH must be specified.')
-            if not os.path.exists(database_path):
-                raise RMPyException('ERROR: Path for database not found: ' + database_path
-                                    + '\n\n' 'Absolute path checked:\n"'
-                                    + os.path.abspath(database_path) + '"')
+    try:        # errors go to the report file
+        try:
+            database_path = config['FILE_PATHS']['DB_PATH']
+        except:
+            raise RMPyExcep('ERROR: DB_PATH must be specified.')
+        if not os.path.exists(database_path):
+            raise RMPyExcep('ERROR: Path for database not found: ' + database_path
+                            + '\n\n' 'Absolute path checked:\n"'
+                            + os.path.abspath(database_path) + '"')
 
-            try:
-                RMNOCASE_path = config['FILE_PATHS']['RMNOCASE_PATH']
-            except:
-                raise RMPyException('ERROR: RMNOCASE_PATH must be specified.')
-            if not os.path.exists(RMNOCASE_path):
-                raise RMPyException('ERROR: Path for database extension unifuzz64.dll not found: '
-                                    + RMNOCASE_path
-                                    + '\n\n' 'Absolute path checked:\n"'
-                                    + os.path.abspath(RMNOCASE_path) + '"')
+        try:
+            rmnocase_path = config['FILE_PATHS']['RMNOCASE_PATH']
+        except:
+            raise RMPyExcep('ERROR: RMNOCASE_PATH must be specified.')
+        if not os.path.exists(rmnocase_path):
+            raise RMPyExcep('ERROR: Path for database extension unifuzz64.dll not found: '
+                            + rmnocase_path
+                            + '\n\n' 'Absolute path checked:\n"'
+                            + os.path.abspath(rmnocase_path) + '"')
 
-            try:
-                ReportDisplayApp = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
-            except:
-                ReportDisplayApp = None
-            if ReportDisplayApp != None and not os.path.exists(ReportDisplayApp):
-                raise RMPyException('ERROR: Path for report file display app not found: '
-                                    + ReportDisplayApp)
+        try:
+            report_display_app = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
+        except:
+            report_display_app = None
+        if report_display_app != None and not os.path.exists(report_display_app):
+            raise RMPyExcep('ERROR: Path for report file display app not found: '
+                            + report_display_app)
 
-            try:
-                fact_current = config['MAPPING']['FACT_CURRENT']
-            except:
-                raise RMPyException('ERROR: FACT_CURRENT must be specified.')
+        try:
+            facttype_current_name = config['MAPPING']['FACT_CURRENT']
+        except:
+            raise RMPyExcep('ERROR: FACT_CURRENT must be specified.')
 
-            try:
-                fact_new = config['MAPPING']['FACT_NEW']
-            except:
-                raise RMPyException('ERROR: FACT_NEW must be specified.')
+        try:
+            facttype_new_name = config['MAPPING']['FACT_NEW']
+        except:
+            raise RMPyExcep('ERROR: FACT_NEW must be specified.')
 
-            try:
-                role = config['MAPPING']['ROLE']
-            except:
-                raise RMPyException('ERROR: ROLE must be specified.')
+        try:
+            role_name = config['MAPPING']['ROLE']
+        except:
+            raise RMPyExcep('ERROR: ROLE must be specified.')
 
-            # RM database file info
-            FileModificationTime = datetime.fromtimestamp(
-                os.path.getmtime(database_path))
-            G_DbFileFolderPath = Path(database_path).parent
+        # RM database file info
+        FileModificationTime = datetime.fromtimestamp(
+            os.path.getmtime(database_path))
 
-            # write header to report file
-            with create_DBconnection(database_path, RMNOCASE_path) as dbConnection:
-                reportF.write("Report generated at      = " + TimeStampNow()
-                              + "\n" "Database processed       = " +
-                              os.path.abspath(database_path)
-                              + "\n" "Database last changed on = "
-                              + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S")
-                              + "\n" "SQLite library version   = "
-                              + GetSQLiteLibraryVersion(dbConnection) + "\n\n\n")
+        db_connection = create_db_connection(database_path, rmnocase_path)
 
-                reportF.write('Current FactType: "' + fact_current
-                              + '"\n     New FactType: "' + fact_new
-                              + '"\n             Role: "' + role + '"\n\n\n')
+        # write header to report file
+        report_file.write("Report generated at      = " + TimeStampNow()
+                      + "\n" "Database processed       = "
+                      + os.path.abspath(database_path)
+                      + "\n" "Database last changed on = "
+                      + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S")
+                      + "\n" "SQLite library version   = "
+                      + GetSQLiteLibraryVersion(db_connection) + "\n\n\n")
 
-                IDtuple = lookup_validate(
-                    fact_current, fact_new, role, dbConnection, reportF)
-                convert_fact(IDtuple, dbConnection, reportF)
+        report_file.write('Current FactType: "' + facttype_current_name
+                     + '"\n     New FactType: "' + facttype_new_name
+                     + '"\n             Role: "' + role_name + '"\n\n\n')
 
-        except RMPyException as e:
-            reportF.write(str(e))
-            return 1
-        except Exception as e:
-            traceback.print_exception(e, file=reportF)
-            reportF.write(
-                "\n\n" "ERROR: Application failed. Please email report file to author. ")
-            return 1
-        finally:
-            if ReportDisplayApp != None:
-                subprocess.Popen([ReportDisplayApp, report_Path])
+        out_tuple = lookup_validate(
+            facttype_current_name, facttype_new_name, role_name, db_connection, report_file)
 
-    # report file is now closed. Can be opened for display
-    if ReportDisplayApp != None:
-        subprocess.Popen([ReportDisplayApp, report_Path])
+        convert_fact(out_tuple, db_connection, report_file)
+
+    except RMPyExcep as e:
+        report_file.write(str(e))
+        return 1
+    except Exception as e:
+        traceback.print_exception(e, file=report_file)
+        report_file.write("\n\n" 
+                      "ERROR: Application failed. Please email report file to author. ")
+        return 1
+    finally:
+        db_connection.close()
+        report_file.close()
+        if report_display_app != None:
+            subprocess.Popen([report_display_app, report_path])
     return 0
 
 
 # ===================================================DIV60==
-def lookup_validate(fact_current_name, fact_new_name, role_name, dbConnection, reportF):
+def lookup_validate(facttype_curr_name, facttype_new_name, role_name, dbConnection, reportF):
 
-    # confirm fact_current_name is unique
+    # confirm fact type names are unique and of correct type
     SqlStmt = """
-  SELECT FactTypeID, OwnerType
-    FROM FactTypeTable ftt
-   WHERE ftt.Name = ?
-  """
+SELECT FactTypeID, OwnerType
+  FROM FactTypeTable ftt
+ WHERE ftt.Name = ?
+"""
     cur = dbConnection.cursor()
-    cur.execute(SqlStmt, (fact_current_name,))
+    cur.execute(SqlStmt, (facttype_curr_name,))
     rows = cur.fetchall()
     if len(rows) == 0:
-        raise RMPyException(
+        raise RMPyExcep(
             "ERROR: The entered Current FactType name could not be found.\n")
     if len(rows) > 1:
-        raise RMPyException(
+        raise RMPyExcep(
             "ERROR: The entered Current FactType name is not unique. Fix this.\n")
-
-    FamilyTypeFact = False
+    facttype_curr_id = rows[0][0]
+    facttype_is_family_curr = False
     if rows[0][1] == 1:
-        FamilyTypeFact = True
+        facttype_is_family_curr = True
         reportF.write("'Current FactType' is of type 'FAMILY'.\n\n\n")
-    FactTypeID_current = rows[0][0]
+
 
     cur = dbConnection.cursor()
-    cur.execute(SqlStmt, (fact_new_name,))
+    cur.execute(SqlStmt, (facttype_new_name,))
     rows = cur.fetchall()
     if len(rows) == 0:
-        raise RMPyException(
+        raise RMPyExcep(
             "ERROR: The entered New FactType name could not be found.\n")
     if len(rows) > 1:
-        raise RMPyException(
+        raise RMPyExcep(
             "ERROR: The entered New FactType name is not unique. Fix this.\n")
+    facttype_new_id = rows[0][0]
+    facttype_is_family_new = False
     if rows[0][1] == 1:
-        reportF.write("The entered New FactType name is a FAMILY type.\n")
-    FactTypeID_new = rows[0][0]
+        facttype_is_family_new = True
+        reportF.write("New FactType name is of type FAMILY.\n\n\n")
 
-    RoleTypeID = 0
-
-    if FamilyTypeFact:
+    role_id = 0
+    if facttype_is_family_curr and not facttype_is_family_new:
+        # need to use role name for the new witness
         SqlStmt = """
-  SELECT RoleID, EventType
-    FROM RoleTable rt
-    WHERE rt.RoleName = ?
-      AND rt.EventType = ?
-  """
+SELECT RoleID, EventType
+  FROM RoleTable rt
+ WHERE rt.RoleName = ?
+   AND rt.EventType = ?
+"""
         cur = dbConnection.cursor()
-        cur.execute(SqlStmt, (role_name, FactTypeID_new))
+        cur.execute(SqlStmt, (role_name, facttype_new_id))
         rows = cur.fetchall()
         if len(rows) == 0:
-            raise RMPyException(
+            raise RMPyExcep(
                 "The entered Role name could not be found associated with the new fact type.\n")
         if len(rows) > 1:
-            raise RMPyException(
+            raise RMPyExcep(
                 "The entered Role name is not unique for the new fact type. Fix this.\n")
-        RoleTypeID = rows[0][0]
+        role_id = rows[0][0]
+
 
 # All of the roles used by the old fact must also appear in the new fact
 # List Roles that user needs to create for the new Fact Type
@@ -227,74 +229,92 @@ INNER JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
               WHERE EventType = :new_FTid )  -- NewFactType
 """
     cur = dbConnection.cursor()
-    cur.execute(SqlStmt, {"curr_FTid": FactTypeID_current,
-                "new_FTid": FactTypeID_new})
+    cur.execute(SqlStmt, {"curr_FTid": facttype_curr_id,
+                "new_FTid": facttype_new_id})
     rows = cur.fetchall()
     if len(rows) != 0:
         reportF.write("The following Roles are in use by the Current Fact Type,\n"
                       + "but do not exist for the New Fact Type.\n"
                       + "They will either need to be defined for the new Fact Type\n"
-                      + "or eliminated from use by the Old Fact type.\n"
+                      + "or eliminated from use by the Current Fact type.\n"
                       + "Coordinating the roles may be accomplished by altering the\n"
                       + "Role Names. This must be done before Fact conversion\n"
-                      + "can be performed.\n\n"
+                      + "can be performed.\n\n\n"
                       + "--Missing Roles:--\n")
         for row in rows:
             reportF.write(str(row[1]) + "\n")
         reportF.write("\n\n\n")
-        raise RMPyException(
-            "ERROR: Roles need to be coordinated between the Old and New Fact Types.\n")
+        raise RMPyExcep(
+            "ERROR: Roles need to be coordinated between the Current and New Fact Types.\n")
 
-    return (FactTypeID_current, FactTypeID_new, RoleTypeID, FamilyTypeFact)
+    return (facttype_curr_id, facttype_new_id, role_id, facttype_is_family_curr, facttype_is_family_new)
 
 
 # ===================================================DIV60==
-def convert_fact(IDtuple, dbConnection, reportF):
+def convert_fact(input_tuple, db_connection, report_file):
 
-    FactTypeID = IDtuple[0]
-    newFactTypeID = IDtuple[1]
-    roleID = IDtuple[2]
-    FamilyTypeFact = IDtuple[3]
+    facttype_cur_id = input_tuple[0]
+    facttype_new_id = input_tuple[1]
+    roleID = input_tuple[2]
+    facttype_is_fam_cur = input_tuple[3]
+    facttype_is_fam_new = input_tuple[4]
 
-    listOfFactIDs = getListOfEventsToConvert(
-        FactTypeID, FamilyTypeFact, dbConnection)
-    if len(listOfFactIDs) == 0:
-        raise RMPyException("Nothing to convert !\n\n")
+    list_of_fact_id = getListOfEventsToConvert(
+        facttype_cur_id, facttype_is_fam_cur, db_connection)
+    if len(list_of_fact_id) == 0:
+        raise RMPyExcep("Nothing to convert !\n\n")
 
-    if FamilyTypeFact:
-        reportF.write(
+    if facttype_is_fam_cur and not facttype_is_fam_new:
+        report_file.write(
             "Facts attached to these families were converted:\n  Father ID:   Mother ID: ")
-        for FactToConvert in listOfFactIDs:
-            FamID = getFamilyIDfromEvent(FactToConvert, dbConnection)
-            FatherMother = getFatherMotherIDs(FamID, dbConnection)
+        for fact_to_convert in list_of_fact_id:
+            FamID = getFamilyIDfromEvent(fact_to_convert, db_connection)
+            FatherMother = getFatherMotherIDs(FamID, db_connection)
 
             FatherID = FatherMother[0]
             MotherID = FatherMother[1]
-            reportF.write("\n    " + str(FatherID) +
+            report_file.write("\n    " + str(FatherID) +
                           "           " + str(MotherID))
 
-            changeTheEvent(FactToConvert, FatherID,
-                           newFactTypeID, dbConnection)
+            changeTheEvent(fact_to_convert, FatherID,
+                           facttype_new_id, db_connection)
             updateRoleInExistingWitnesses(
-                FactToConvert, newFactTypeID, dbConnection)
-            addNewWitness(FactToConvert, MotherID, roleID, dbConnection)
-    else:
-        reportF.write("Facts attached to these Persons (ID) were converted:")
-        for FactToConvert in listOfFactIDs:
-            PersonID = getPersonIDfromEventID(FactToConvert, dbConnection)
-            reportF.write("\n  " + str(PersonID))
-            changeTheEvent(FactToConvert, PersonID,
-                           newFactTypeID, dbConnection)
-            updateRoleInExistingWitnesses(
-                FactToConvert, newFactTypeID, dbConnection)
+                fact_to_convert, facttype_new_id, db_connection)
+            addNewWitness(fact_to_convert, MotherID, roleID, db_connection)
+    elif facttype_is_fam_cur and facttype_is_fam_new:
+        report_file.write(
+            "Facts attached to these families were converted:\n  Father ID:   Mother ID: ")
+        for fact_to_convert in list_of_fact_id:
+            FamID = getFamilyIDfromEvent(fact_to_convert, db_connection)
+            FatherMother = getFatherMotherIDs(FamID, db_connection)
 
+            FatherID = FatherMother[0]
+            MotherID = FatherMother[1]
+            report_file.write("\n    " + str(FatherID) +
+                          "           " + str(MotherID))
+
+            changeTheEvent(fact_to_convert, FatherID,
+                           facttype_new_id, db_connection)
+            updateRoleInExistingWitnesses(
+                fact_to_convert, facttype_new_id, db_connection)
+    elif not facttype_is_fam_cur and not facttype_is_fam_new:
+        report_file.write("Facts attached to these Persons (ID) were converted:")
+        for fact_to_convert in list_of_fact_id:
+            person_id = getPersonIDfromEventID(fact_to_convert, db_connection)
+            report_file.write("\n  " + str(person_id))
+            changeTheEvent(fact_to_convert, person_id,
+                           facttype_new_id, db_connection)
+            updateRoleInExistingWitnesses(
+                fact_to_convert, facttype_new_id, db_connection)
+    else:
+        raise RMPyExcep("ERROR:internal. Fact type combo not supported.")
     return
 
 
 # ===================================================DIV60==
 def updateRoleInExistingWitnesses(FactToConvert, FactTypeID_new, dbConnection):
 
-    # List of all Witness records that need their role updated
+    # List of all Witness records    that need their role updated
     SqlStmt = """
 SELECT wt.WitnessID, rt.RoleName
   FROM WitnessTable AS wt
@@ -366,7 +386,7 @@ WHERE  et.EventID = ?
     rows = cur.fetchall()
 
     if (len(rows) != 1):
-        raise RMPyException("more than one owner ID found")
+        raise RMPyExcep("more than one owner ID found")
     return rows[0][0]
 
 
@@ -407,7 +427,7 @@ SELECT FatherID, MotherID
     rows = cur.fetchall()
 
     if (len(rows) != 1):
-        raise RMPyException("more than one row returned getting family id")
+        raise RMPyExcep("more than one row returned getting family id")
     return [rows[0][0], rows[0][1]]
 
 # ===================================================DIV60==
@@ -442,7 +462,7 @@ INSERT INTO WitnessTable
 
 
 # ===================================================DIV60==
-def create_DBconnection(db_file_path, db_extension):
+def create_db_connection(db_file_path, db_extension):
 
     dbConnection = None
     try:
@@ -451,7 +471,7 @@ def create_DBconnection(db_file_path, db_extension):
         dbConnection.enable_load_extension(True)
         dbConnection.load_extension(db_extension)
     except Exception as e:
-        raise RMPyException(e, "\n\n" "Cannot open the RM database file." "\n")
+        raise RMPyExcep(e, "\n\n" "Cannot open the RM database file." "\n")
     return dbConnection
 
 
@@ -501,7 +521,7 @@ def get_current_directory():
 
 
 # ===================================================DIV60==
-class RMPyException(Exception):
+class RMPyExcep(Exception):
 
     '''Exceptions thrown for configuration/database issues'''
 
