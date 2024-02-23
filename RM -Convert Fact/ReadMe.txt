@@ -5,7 +5,17 @@ RootsMagic (RM) software uses a SQLite relational database as its data storage
 file. Having access to that file via third party tools is a major advantage
 to using RM.
 
-Convert all Facts/Events of a certain type to Facts/Events of a different type. 
+This utility can convert all facts(also called events) of a certain type to 
+facts of a different type. 
+Facts in RM come in two styles: Personal and Family. Personal Facts are
+attached to a single person while Family Facts are attached to a database
+family.
+A database family consists either 1 or 2 people, labeled internally as
+Father and Mother. Either the father or mother may be "unknown"
+and thus set to 0 in the database. Database families do not include any
+offspring.
+The utility will not create a new personal fact for a father ID=0 or add a 
+mother ID=0 as a witness.
 
 Allowed conversions:
 Personal => Personal
@@ -15,8 +25,8 @@ Family => Family
 Not allowed:
 Personal => Family
 
-Simply changing the Fact Type is trivial for a set of facts. 
-Complications arise when the fact has witnesses or when a family fact is converted to a personal fact.
+Simply changing the fact type for an existing fact is trivial. Complications arise
+when the fact has witnesses or when a family fact is converted to a personal fact.
 
 Any conversion of a fact that already has a witness involves assigning a new role to that witness. 
 That's because each fact type has a different, independent set of possible roles. The role's main task, besides naming the role itsef, is to control which sentence is used for the witness in a narrative report

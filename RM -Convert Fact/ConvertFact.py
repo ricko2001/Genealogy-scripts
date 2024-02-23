@@ -129,8 +129,8 @@ def main():
                       + GetSQLiteLibraryVersion(db_connection) + "\n\n\n")
 
         report_file.write('Current FactType: "' + facttype_current_name
-                     + '"\n     New FactType: "' + facttype_new_name
-                     + '"\n             Role: "' + role_name + '"\n\n\n')
+                     + '"\n    New FactType: "' + facttype_new_name
+                     + '"\n            Role: "' + role_name + '"\n\n\n')
 
         out_tuple = lookup_validate(
             facttype_current_name, facttype_new_name, role_name, db_connection, report_file)
@@ -270,29 +270,32 @@ def convert_fact(input_tuple, db_connection, report_file):
         for fact_to_convert in list_of_fact_id:
             FamID = getFamilyIDfromEvent(fact_to_convert, db_connection)
             FatherMother = getFatherMotherIDs(FamID, db_connection)
-
             FatherID = FatherMother[0]
             MotherID = FatherMother[1]
             report_file.write("\n    " + str(FatherID) +
                           "           " + str(MotherID))
-
-            changeTheEvent(fact_to_convert, FatherID,
-                           facttype_new_id, db_connection)
+            if FatherID != 0:
+                changeTheEvent(fact_to_convert, FatherID,
+                               facttype_new_id, db_connection)
+            elif FatherID == 0 and MotherID != 0:
+                changeTheEvent(fact_to_convert, MotherID,
+                               facttype_new_id, db_connection)
+            else: 
+                raise RMPyExcep("ERROR: Internal, found a 0,0 family")
             updateRoleInExistingWitnesses(
                 fact_to_convert, facttype_new_id, db_connection)
-            addNewWitness(fact_to_convert, MotherID, roleID, db_connection)
+            if MotherID != 0:
+                addNewWitness(fact_to_convert, MotherID, roleID, db_connection)
     elif facttype_is_fam_cur and facttype_is_fam_new:
         report_file.write(
             "Facts attached to these families were converted:\n  Father ID:   Mother ID: ")
         for fact_to_convert in list_of_fact_id:
             FamID = getFamilyIDfromEvent(fact_to_convert, db_connection)
             FatherMother = getFatherMotherIDs(FamID, db_connection)
-
             FatherID = FatherMother[0]
             MotherID = FatherMother[1]
             report_file.write("\n    " + str(FatherID) +
                           "           " + str(MotherID))
-
             changeTheEvent(fact_to_convert, FatherID,
                            facttype_new_id, db_connection)
             updateRoleInExistingWitnesses(
@@ -307,14 +310,14 @@ def convert_fact(input_tuple, db_connection, report_file):
             updateRoleInExistingWitnesses(
                 fact_to_convert, facttype_new_id, db_connection)
     else:
-        raise RMPyExcep("ERROR:internal. Fact type combo not supported.")
+        raise RMPyExcep("ERROR: Internal. Fact P-F type combo not supported.")
     return
 
 
 # ===================================================DIV60==
 def updateRoleInExistingWitnesses(FactToConvert, FactTypeID_new, dbConnection):
 
-    # List of all Witness records    that need their role updated
+    # List of all Witness records that need their role updated
     SqlStmt = """
 SELECT wt.WitnessID, rt.RoleName
   FROM WitnessTable AS wt
@@ -336,8 +339,8 @@ INNER JOIN RoleTable AS rt ON rt.RoleID = wt.Role
         SqlStmt = """
   SELECT RoleID
     FROM RoleTable
-    WHERE EventType = :new_FTid
-      AND RoleName = :RoleName
+   WHERE EventType = :new_FTid
+     AND RoleName = :RoleName
   """
         cur = dbConnection.cursor()
         cur.execute(SqlStmt, {"new_FTid": FactTypeID_new,
@@ -347,9 +350,9 @@ INNER JOIN RoleTable AS rt ON rt.RoleID = wt.Role
 
         SqlStmt = """
   UPDATE WitnessTable
-      SET Role = :RoleID,
-          UTCModDate = julianday('now') - 2415018.5
-    WHERE WitnessID = :WitnessID
+     SET Role = :RoleID,
+         UTCModDate = julianday('now') - 2415018.5
+   WHERE WitnessID = :WitnessID
   """
         cur = dbConnection.cursor()
         cur.execute(
@@ -364,7 +367,7 @@ def getPersonIDfromEventID(ID, dbConn):
     SqlStmt = """
 SELECT OwnerID
   FROM EventTable
-  WHERE EventID = ?
+ WHERE EventID = ?
 """
     cur = dbConn.cursor()
     cur.execute(SqlStmt, (ID,))
@@ -400,9 +403,9 @@ def getListOfEventsToConvert(ID, FamilyType, dbConn):
     SqlStmt = """
 SELECT EventID
   FROM EventTable et
-  WHERE et.EventType = ?
-    AND et.OwnerType = ?
-  ORDER BY OwnerID
+ WHERE et.EventType = ?
+   AND et.OwnerType = ?
+ ORDER BY OwnerID
 """
     cur = dbConn.cursor()
     cur.execute(SqlStmt, (ID, OwnerType))
@@ -420,7 +423,7 @@ def getFatherMotherIDs(ID, dbConn):
     SqlStmt = """
 SELECT FatherID, MotherID
   FROM FamilyTable ft
-  WHERE ft.FamilyID = ?
+ WHERE ft.FamilyID = ?
 """
     cur = dbConn.cursor()
     cur.execute(SqlStmt, (ID,))
@@ -428,27 +431,25 @@ SELECT FatherID, MotherID
 
     if (len(rows) != 1):
         raise RMPyExcep("more than one row returned getting family id")
-    return [rows[0][0], rows[0][1]]
+    return rows[0]
+
 
 # ===================================================DIV60==
-
-
 def changeTheEvent(EventID, OwnerID, newEventTypeID, dbConn):
 
     SqlStmt = """
 UPDATE EventTable
-    SET OwnerType = 0,
-        EventType= ?,
-        OwnerID = ?
-  WHERE EventID = ?
+   SET OwnerType = 0,
+       EventType= ?,
+       OwnerID = ?
+ WHERE EventID = ?
 """
     cur = dbConn.cursor()
     cur.execute(SqlStmt, (newEventTypeID, OwnerID, EventID))
     return
 
+
 # ===================================================DIV60==
-
-
 def addNewWitness(EventID, OwnerID, RoleID, dbConn):
 
     SqlStmt = """
@@ -500,9 +501,7 @@ def TimeStampNow(type=""):
 def GetSQLiteLibraryVersion(dbConnection):
 
     # returns a string like 3.42.0
-    SqlStmt = """
-SELECT sqlite_version()
-"""
+    SqlStmt = "SELECT sqlite_version()"
     cur = dbConnection.cursor()
     cur.execute(SqlStmt)
     return cur.fetchone()[0]
