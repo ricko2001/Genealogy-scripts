@@ -161,6 +161,7 @@ def main():
                           "ERROR: Application failed. Please email report file to author. ")
         return 1
     finally:
+        db_connection.commit()
         db_connection.close()
         report_file.close()
         if report_display_app != None:
