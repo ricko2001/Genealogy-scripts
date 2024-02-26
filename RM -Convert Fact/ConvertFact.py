@@ -14,9 +14,6 @@ import traceback
 # Tested with: RootsMagic v9.1.3
 #              Python for Windows v3.12.2
 
-# Utility uses RMNOCASE extension, but makes no changes to columns that use that collation.
-# Rebuild index in RM should not be necessary.
-
 
 # ===================================================DIV60==
 def main():
@@ -75,16 +72,6 @@ def main():
             raise RMPyExcep('ERROR: Path for database not found: ' + database_path
                             + '\n\n' 'Absolute path checked:\n"'
                             + os.path.abspath(database_path) + '"')
-
-#        try:
-#            rmnocase_path = config['FILE_PATHS']['RMNOCASE_PATH']
-#        except:
-#            raise RMPyExcep('ERROR: RMNOCASE_PATH must be specified.')
-#        if not os.path.exists(rmnocase_path):
-#            raise RMPyExcep('ERROR: Path for database extension unifuzz64.dll not found: '
-#                            + rmnocase_path
-#                            + '\n\n' 'Absolute path checked:\n"'
-#                            + os.path.abspath(rmnocase_path) + '"')
 
         try:
             report_display_app = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
