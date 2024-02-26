@@ -5,62 +5,21 @@ RootsMagic (RM) software uses a SQLite relational database as its data storage
 file. Having access to that file via third party tools is a major advantage
 to using RM.
 
-This utility can convert all facts(also called events) of a certain type to 
-facts of a different type. 
-Facts in RM come in two styles: Personal and Family. Personal Facts are
-attached to a single person while Family Facts are attached to a database
-family.
-A database family consists either 1 or 2 people, labeled internally as
-Father and Mother. Either the father or mother may be "unknown"
-and thus set to 0 in the database. Database families do not include any
-offspring.
-The utility will not create a new personal fact for a father ID=0 or add a 
-mother ID=0 as a witness.
+This utility can convert facts of one fact type to facts of a different fact type. 
+e.g.  "Residence (fam)" to "Residence", or "Census" to "Census 1950". 
 
-Allowed conversions:
-Personal => Personal
-Family => Personal
-Family => Family
+Simply changing the fact type for an existing fact is trivial using SQL.
+Complications arise when a family fact is converted to a personal fact or when
+the fact to be changed has witnesses.
+ConvertFact will test all of these cases and guide you.
 
-Not allowed:
-Personal => Family
+ConvertFact will not create new fact types or roles. That can't be helpfully 
+automated and remains a task to be done by the user.
 
-Simply changing the fact type for an existing fact is trivial. Complications arise
-when the fact has witnesses or when a family fact is converted to a personal fact.
+ConvertFact can be configured to convert only a subset of the facts of a certain
+fact type based on the date of the fact and/or the description of the fact.
 
-Any conversion of a fact that already has a witness involves assigning a new role to that witness. 
-That's because each fact type has a different, independent set of possible roles. The role's main task, besides naming the role itsef, is to control which sentence is used for the witness in a narrative report
-
-Family => Personal  fact conversion requires that the first person in the family (database name: Father) be assigned a new personal fact and the second person in the family (database name: Mother) be added as a witness with a particular role. That role is specified in the ini file as an input parameter.
-
-
-FactTypes are listed in the "Fact type list" feature found in several places in the user interface- In the Edit Person windows upon clicking the + add fact button, in the three dot menu or in th command pallet. 
-The input of fact types in the ini files uses the full fact type name, not the abbreviation. The full name is shown in the Edit Person window.
-
-
-
-
-## Tested with RootsMagic v9.1.3
-##             Python for Windows v3.11.0
-##             unifuzz64.dll (ver not set, MD5=06a1f485b0fae62caa80850a8c7fd7c2)
-
-    # Facts to convert				 new fact to create
-    #  FTID	name				FTID	name			2nd person		RoleID
-    #  311	Census fam			18		Census			spouse			420 
-    #  310	Residence fam		29		Residence		spouse			417 
-    # 1071	Psgr List fam 		1001	Psgr List		Principal2		421
-    # 1066	Note fam			1026	Note			Principal2		416 
-
-
-# consider whether the util should be more general say convert any fact tinto any other?
-
-# the first person in fam fact will retain the new indiv fact, the second person will be shared fact.
-
-# All of the roles used in the old fact must also appear in the new fact
-
-
-
-
+See Notes section for further details.
 
 ======================================================================
 Overview
@@ -72,10 +31,10 @@ To use it:
 1:  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
     referred to, simply, as the "ini file".)
     The utility needs to know where the RM database file is located, which
-    fact type to change, and where to create the report file.
+    fact type to change, and where to create the report file etc..
     Editing the ini file can be done using the Windows NotePad app.
 
-2:  Double click the ConvertFact file. This momentarily displays the
+2:  Double click the ConvertFact program file. This momentarily displays the
     black command console window and at the same time, generates the report
     text file.
 
@@ -84,11 +43,19 @@ To use it:
 
 
 ======================================================================
-Capabilities
+Backups
 
-Sole function is to change all facts of a certain fact typ to a different fact tye.
-Current limitation- the current fact must be a family type, the 
-fact type to chnage to must be Personal fact type.
+VERY IMPORTANT
+This utility makes changes to the RM database file. It can change a
+large number of data items in a single run.
+You must run this script on a copy of your database file or at least
+have several known-good backups.
+You will likely not be satisfied with your first run of the utility and will
+want to try again, perhaps several times.
+Once you are satisfied, don't hurry to use the resulting file. Wait a week and
+then run the utility on a copy of your then-current database and then use the
+modified database as your normal work file. The week delay will give you time
+to think about the process.
 
 
 ======================================================================
@@ -105,19 +72,6 @@ Tested with RootsMagic v9
        The script could probably be modified to work on MacOS with Python
        version 3 installed.
 
-
-======================================================================
-Backups
-
-IMPORTANT: This utility makes changes to the RM database file.
-You must run this script on a copy of your database file or at least
-have several known-good backups.
-You will likely not be satisfied with the first run of the utility and will
-want to try again.
-Once you are satisfied, wait a week and the run it on a copy of your current database and
-then use the modified database as your normal work file.
-
-
 ======================================================================
 Getting Started
 
@@ -130,17 +84,14 @@ To install and use the exe single file version:
       ConvertFact.exe
       RM-Python-config.ini
 
-*  Download the SQLite extension: unifuzz64.dll   -see below
-
-*  Move the unifuzz64.dll file to the working folder
-
 *  Edit the ini file in the working folder to specify the locations of the RM
-   database file, the unifuzz64.dll file, and the output report file.
+   database file and the output report file. The ini file also specifies the
+   input parameters for the fact conversion. See Notes section below.
 
 *  Double click the ConvertFact.exe file to run the utility and
    generate the report file.
 
-*  Examine the report output file.
+*  Examine the report output file and confirm the changes using the RootsMagic app.
 
 
 --- OR ---
@@ -150,54 +101,177 @@ Use the py script file.
 See section below, after the Notes section, entitled-
    "Which to use? Standalone .exe file or .py file"
 
+
 ======================================================================
 NOTES
 
-*   The ini file must be dited to indicate the work that should be done.
-    The task is specified by the three values-
-        FACT_CURRENT  = Census (family)
-        FACT_NEW      = Census
-        ROLE          = Spouse
+===========================================DIV50==
+The ini file must be edited to indicate the conversion that should be done.
+The task is specified by the key value pairs-
+    FACTTYEP_CURRENT  =
+    FACTTYPE_NEW      =
+    ROLE              =
+    DESC              =
+    DATE              =
 
-    Note that the name can have embedded spaces.
-    Space characters between the = and the name are ignored.
+for example-
+    FACTTYEP_CURRENT  = Census (family)
+    FACTTYPE_NEW      = Census
+    ROLE              = Spouse
+    DESC              = %Federal%
+    DATE              = 1930
+
+Note that the value can have embedded spaces.
+Space characters between the = and the value are ignored.
+
+===========================================DIV50==
+Fact Type name lists
+
+Fact Type full names are listed in RM by the "Fact types" list feature found in 
+several places in the RM user interface-
+  In the Edit Person window upon clicking the + button (Add fact button or Alt+A)
+  In the three dot menu in the Person tab.
+  In the command pallet. (type in "fact")
+
+This window also displays, in the right side panel -
+* Whether the fact type is Personal or Family.
+* The full fact type name and its assigned abbreviation.
+The specification of fact types in the ini file uses the full fact type name, not the abbreviation.
+
+===========================================DIV50==
+Fact types in RM come in two styles: Personal and Family. 
+
+Facts of the personal type are linked to a single person while facts of the 
+family type are linked to a database family.
+An RM database family consists either 2 or 1 persons, labeled internally as
+Father and Mother. Either the father or mother may be "unknown"
+(and thus set to 0 in the database). Database families, by design, never include
+any offspring.
+
+===========================================DIV50==
+Supported fact type conversions:
+Personal => Personal
+Family => Personal
+Family => Family
+
+Not allowed:
+Personal => Family
 
 
-*   REPORT_FILE_DISPLAY_APP
-    Option to automatically open the report file in a display application.
-    The included ini sample file has this option activated and set to use Windows
-    NotePad as the display app. It can be deactivated by inserting a # character
-    at the start of the line. Your favorite editor may be substituted.
+Configuration items in ini file required for each type conversion:
 
-*   RM-Python-config.ini  (the ini file)
-    If there are any non-ASCII characters in the ini file then the file must be
-    saved in UTF-8 format, with no byte order mark (BOM).
-    The included sample ini file has an accented ä in the first line comment to
-    force it to be in the correct format.
-    File format is an option in the "Save file" dialog box in NotePad.
-    The [END] section is entirely optional.
+* Personal => Personal
+FACTTYPE_CURRENT (full name of the fact type of the facts that that should be converted)
+FACTTYPE_NEW (full name of the fact type that existing facts should be converted to)
+(ROLE is ignored)
+DESC and DATE are optionally used to limit which facts are to be converted
 
-*   Directory structure (optional)
-    My directory structure, which of course, I recommend 🙂, is-
+* Family => Personal
+FACTTYPE_CURRENT
+FACTTYPE_NEW
+ROLE (name of an existing role for the FACTTYPE_NEW)
+DESC and DATE are optionally used to limit which facts are to be converted
 
-    Genealogy          (top level folder, mine is in my Home folder)
-      myRD-DB.rmtree   (my main database file)
-      Misc Databases   (folder for other databases I frequently use)
-      Exhibits         (folder containing all media files in a folder hierarchy)
-      SW               (folder containing various utility apps and the ini file)
+* Family => Family
+FACTTYPE_CURRENT
+FACTTYPE_NEW
+(ROLE is ignored)
+DESC and DATE are optionally used to limit which facts are to be converted
 
-*   Troubleshooting:
-    If no report file is generated, look at the black command
-    console window for error messages that will help you fix the problem.
-    If no report file is generated and the black command console window closes
-    before you can read it, try first opening a command line console and then
-    running the exe or py file from the command line. The window will not close
-    and you'll be able to read any error messages.
 
-*   Troubleshooting:
-    Error message- ... RM-Python-config.ini file contains a format error ...
-    The problem is as stated, the solution may be harder to determine.
-    You may want to look at- https://en.wikipedia.org/wiki/INI_file
+===========================================DIV50==
+The first complication comes with converting a Family fact to a personal fact.
+
+A family fact is linked to a father-mother couple. If the father is know, then 
+the new personal fact will be linked to the father. If the mother is also known,
+the mother will be added as a witness to the new personal fact. Her role is
+specified in the ini file as "ROLE =".
+
+If the father is not known then the new personal fact will be linked to the
+mother. There is no new witness added, so the ROLE ini file item is ignored.
+
+
+The second complication arises when the facts of FACTTYPE_CURRENT have witnesses.
+
+Background: Every witness is assigned a role in RM when the fact is shared.
+Each fact type has its own set of roles. Many of the roles have the same name, 
+for instance "Witness" however they are still separate and the sentence assigned
+to each of the roles are probably different.
+
+If the original fact type, say Census (fam) had a role named "Spouse", and that
+fact type is to be converted to "Census", then the fact of type census will
+have the former witness transfered to it maintaining the former role, in this
+case "Spouse". If "Census" does not have already have a role named Spouse,
+the utility will complain and request that you create such a role for "Census"
+before the conversion can be completed.
+You don't have to recreate all of the roles that exist for the FACTTYPE_CURRENT,
+only the ones that are in use. ConvertFact will tell you which ones.
+
+===========================================DIV50==
+The ini file values for DESC and DATE are optionally used to limit which 
+facts are to be converted.
+
+Some examples-
+if you want to convert only facts whose descriptions start with the 
+words "New York", then enter-
+DESC = New York%
+notice the trailing percent sign.
+If the fact descriptions should only contain "New York" somewhere in the text, 
+enter-
+DESC = %New York%
+
+The percent sign % wildcard matches any sequence of zero or more characters.
+The underscore _ wildcard matches any single character.
+
+To limit the facts converted by their Date, use the DATE value.
+The DATE value is always a four digit year.
+For example-
+DATE = 1930
+
+If DESC or DATE is not used, just remove the text on the right of the = sign, 
+or comment out the line.
+The DESC and DATE may be used in any combination.
+
+===========================================DIV50==
+REPORT_FILE_DISPLAY_APP
+Option to automatically open the report file in a display application.
+The included ini sample file has this option activated and set to use Windows
+NotePad as the display app. It can be deactivated by inserting a # character
+at the start of the line. Your favorite editor may be substituted.
+
+===========================================DIV50==
+RM-Python-config.ini  (the ini file)
+If there are any non-ASCII characters in the ini file then the file must be
+saved in UTF-8 format, with no byte order mark (BOM).
+The included sample ini file has an accented ä in the first line comment to
+force it to be in the correct format.
+File format is an option in the "Save file" dialog box in NotePad.
+The [END] section is entirely optional.
+
+===========================================DIV50==
+Directory structure (optional)
+My directory structure, which of course, I recommend 🙂, is-
+
+Genealogy          (top level folder, mine is in my Home folder)
+  myRD-DB.rmtree   (my main database file)
+  Misc Databases   (folder for other databases I frequently use)
+  Exhibits         (folder containing all media files in a folder hierarchy)
+  SW               (folder containing various utility apps and the ini file)
+
+===========================================DIV50==
+Troubleshooting:
+If no report file is generated, look at the black command
+console window for error messages that will help you fix the problem.
+If no report file is generated and the black command console window closes
+before you can read it, try first opening a command line console and then
+running the exe or py file from the command line. The window will not close
+and you'll be able to read any error messages.
+
+===========================================DIV50==
+Troubleshooting:
+Error message- ... RM-Python-config.ini file contains a format error ...
+The problem is as stated, the solution may be harder to determine.
+You may want to look at- https://en.wikipedia.org/wiki/INI_file
 
 
 ======================================================================
@@ -242,34 +316,13 @@ To install and use the script file version:
 *  Copy these files from downloaded zip file to the working folder-
       ConvertFact.py
       RM-Python-config.ini
-*  Download the SQLite extension: unifuzz64.dll   -see below
-*  Move the unifuzz64.dll file to the working folder
-*  Edit the ini file in the working folder to specify the location
-   of the RM file and the output report file.
-   Some utility functions may be turned on or off. The required edits should
-   be obvious. The sample ini file is already configured with the most useful
-   options turned on. (To edit, Open NotePad and drag the ini file onto the NotePad
-   window.)
+*  Edit the ini file in the working folder to specify the locations of the RM
+   database file and the output report file. The ini file also specifies the
+   input parameters for the fact conversion. See Notes section below.
    The same ini file may be used with either the .exe or .py version of the utility.
-*  Double click the TestExternalFiles.py file to run the utility and
-   generate the report file.
+*  Double click the ConvertFact.py file to run the utility and generate the 
+   report file.
 *  Examine the report output file.
-
-======================================================================
-unifuzz64.dll download-
-
-Direct download link-
-https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2018/05/unifuzz64.dll
-
-above link found in this context-
-https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlite-expert-command-line-shell-et-al/
-
-The SQLiteToolsforRootsMagic website has been around for years and
-is run by a trusted RM user. Many posts to public RootsMagic user forums
-mention use of unifuzz64.dll from the SQLiteToolsforRootsMagic website.
-
-MD5( unifuzz64.dll ) = 06a1f485b0fae62caa80850a8c7fd7c2
-size( unifuzz64.dll ) = 256,406 bytes
 
 
 ======================================================================

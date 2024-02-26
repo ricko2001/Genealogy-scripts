@@ -4,6 +4,7 @@
 
 # ignore RootsMagic database file
 DB/
+Release*/
 
 DEV_*
 DISTRO_*

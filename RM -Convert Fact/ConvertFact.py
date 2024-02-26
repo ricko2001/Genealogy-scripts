@@ -76,15 +76,15 @@ def main():
                             + '\n\n' 'Absolute path checked:\n"'
                             + os.path.abspath(database_path) + '"')
 
-        try:
-            rmnocase_path = config['FILE_PATHS']['RMNOCASE_PATH']
-        except:
-            raise RMPyExcep('ERROR: RMNOCASE_PATH must be specified.')
-        if not os.path.exists(rmnocase_path):
-            raise RMPyExcep('ERROR: Path for database extension unifuzz64.dll not found: '
-                            + rmnocase_path
-                            + '\n\n' 'Absolute path checked:\n"'
-                            + os.path.abspath(rmnocase_path) + '"')
+#        try:
+#            rmnocase_path = config['FILE_PATHS']['RMNOCASE_PATH']
+#        except:
+#            raise RMPyExcep('ERROR: RMNOCASE_PATH must be specified.')
+#        if not os.path.exists(rmnocase_path):
+#            raise RMPyExcep('ERROR: Path for database extension unifuzz64.dll not found: '
+#                            + rmnocase_path
+#                            + '\n\n' 'Absolute path checked:\n"'
+#                            + os.path.abspath(rmnocase_path) + '"')
 
         try:
             report_display_app = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
@@ -125,7 +125,8 @@ def main():
         FileModificationTime = datetime.fromtimestamp(
             os.path.getmtime(database_path))
 
-        db_connection = create_db_connection(database_path, rmnocase_path)
+#        db_connection = create_db_connection(database_path, rmnocase_path)
+        db_connection = create_db_connection(database_path, None)
 
         # write header to report file
         report_file.write("Report generated at      = " + TimeStampNow()
@@ -176,7 +177,7 @@ def lookup_validate(facttype_curr_name, facttype_new_name, role_name, dbConnecti
     SqlStmt = """
 SELECT FactTypeID, OwnerType
   FROM FactTypeTable ftt
- WHERE ftt.Name = ?
+ WHERE ftt.Name = ? COLLATE NOCASE
 """
     cur = dbConnection.cursor()
     cur.execute(SqlStmt, (facttype_curr_name,))
@@ -214,7 +215,7 @@ SELECT FactTypeID, OwnerType
         SqlStmt = """
 SELECT RoleID, EventType
   FROM RoleTable rt
- WHERE rt.RoleName = ?
+ WHERE rt.RoleName = ? COLLATE NOCASE
    AND rt.EventType = ?
 """
         cur = dbConnection.cursor()
@@ -232,13 +233,13 @@ SELECT RoleID, EventType
     # All of the roles used by the old fact must also appear in the new fact
     # List Roles that user needs to create for the new Fact Type
     SqlStmt = """
-SELECT DISTINCT RoleID, RoleName
+SELECT DISTINCT RoleID, RoleName  COLLATE NOCASE
       FROM RoleTable AS rt
 INNER JOIN WitnessTable AS wt ON wt.Role = rt.RoleID
 INNER JOIN EventTable   AS et ON et.EventID = wt.EventID
 INNER JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
       WHERE ftt.FactTypeID = :curr_FTid  --OldFactType
-        AND RoleName NOT IN (
+        AND RoleName  COLLATE NOCASE NOT IN (
             SELECT RoleName
               FROM RoleTable rt
               WHERE EventType = :new_FTid )  -- NewFactType
@@ -341,7 +342,7 @@ SELECT wt.WitnessID, rt.RoleName
   FROM WitnessTable AS wt
 INNER JOIN RoleTable AS rt ON rt.RoleID = wt.Role
       WHERE wt.EventID = :FactId
-  ORDER BY rt.RoleName
+  ORDER BY rt.RoleName  COLLATE NOCASE
 """
     cur = dbConnection.cursor()
     cur.execute(SqlStmt, {"FactId": FactToConvert})
@@ -356,11 +357,11 @@ INNER JOIN RoleTable AS rt ON rt.RoleID = wt.Role
   SELECT RoleID
     FROM RoleTable
    WHERE EventType = :new_FTid
-     AND RoleName = :RoleName
+     AND RoleName = :RoleName COLLATE NOCASE
   """
         cur = dbConnection.cursor()
         cur.execute(SqlStmt, {"new_FTid": FactTypeID_new,
-                    "RoleName": RolNameToUse})
+                              "RoleName": RolNameToUse})
         row = cur.fetchone()
         newRoleID = row[0]
 
@@ -372,7 +373,8 @@ INNER JOIN RoleTable AS rt ON rt.RoleID = wt.Role
   """
         cur = dbConnection.cursor()
         cur.execute(
-            SqlStmt, {"WitnessID": WitnessToUpdate, "RoleID": newRoleID})
+            SqlStmt, {"WitnessID": WitnessToUpdate, 
+                         "RoleID": newRoleID})
         row = cur.fetchone()
     return
 
@@ -520,9 +522,10 @@ def create_db_connection(db_file_path, db_extension):
     dbConnection = None
     try:
         dbConnection = sqlite3.connect(db_file_path)
-        # load SQLite extension
-        dbConnection.enable_load_extension(True)
-        dbConnection.load_extension(db_extension)
+        if db_extension is not None:
+            # load SQLite extension
+            dbConnection.enable_load_extension(True)
+            dbConnection.load_extension(db_extension)
     except Exception as e:
         raise RMPyExcep(e, "\n\n" "Cannot open the RM database file." "\n")
     return dbConnection

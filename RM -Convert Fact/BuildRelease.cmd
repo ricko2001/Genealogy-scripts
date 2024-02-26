@@ -9,7 +9,7 @@ ECHO Update all files in local git - make sure main branch is correct.
 ECHO Test script.py, version.py, readme.txt
 ECHO push code to github main
 
-ECHO This script is to be run from the "RM -fldr name" folder, where the py file is.
+ECHO This script is to be run from the "RM -<fldr name>" folder, where the py file is.
 ECHO It will create a subfolder -  Release %APPNAME% v%VERSION_NUMBER%   where all building is done.
 ECHO That subfolder should be moved to the upper level Releases folder when done.
 
@@ -28,6 +28,10 @@ MKDIR ".\%REL_FLDR%"
 type nul > "%REL_FLDR%\Build_Log.txt"
 REM create empty build log file to be filled in by user
 
+IF EXIST ".\%REL_FLDR%\%DIST_FLDR_NAME%" (
+  ECHO Folder already exists
+  pause
+  exit /B )
 MKDIR ".\%REL_FLDR%\%DIST_FLDR_NAME%"
 REM These are files that will be distributed in the zip
 
