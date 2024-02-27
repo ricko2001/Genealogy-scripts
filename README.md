@@ -1,15 +1,18 @@
 # Genealogy-scripts and utilities
 
-These are scripts I've written to help with my work with RootsMagic genealogy software. They directly access the SQLite database used by RootsMagic (RM) to store its data.
+updated: 2024-02-27
 
-These are currently all Python, tested only on Windows 11 x64 OS with Python 3x.
+These are scripts I've written to help my work with RootsMagic genealogy software. They directly access the SQLite database used by RootsMagic (RM) to store its data.
+
+These are currently all written in Python, tested only on Windows 11 x64 OS with Python 3x. Most have been tested only with RM v9 databases.
+I don't have a MacOS computer to test with, but I'd guess that most could easily be ported. Let me know if you have any results.
 
 
 "Released" means that-
-* I've included an .exe file version of the Python script so no Python installation is needed. 
+* I've included an .exe file version of the Python script so Python installation is not required. 
 * The ReadMe file is user friendly.
 * All configuration is done through an ini file so the python code does not need to be changed.
-* Ive done significant amounts of testing.
+* I've done significant amounts of testing.
 
 The Release zip file packages are found in the Releases page, here on Github (https://github.com/ricko2001/Genealogy-scripts/releases)
 
@@ -75,6 +78,6 @@ This is close to release.
 I started in TMG as splitting all sources. Now in RM, I am lumping the sources that make sense to me. So far, Find_a_Grave, Census and Social Security SSDI, and all Ancestry collections. These scripts do that. They will most likely  need modification for your circumstances.
 
 
-NOTE-
+## NOTE-
 I have a Github web site where I have links to these utilities and other RootsMagic related information.
 https://RichardOtter.github.io
