@@ -20,6 +20,9 @@ def main():
 
     # Configuration
     ini_file_name = "RM-Python-config.ini"
+    db_connection = None
+    report_display_app = ''
+
 
     try:  # errors go to console window
         # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
@@ -76,10 +79,12 @@ def main():
         try:
             report_display_app = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
         except:
-            report_display_app = None
-        if report_display_app != None and not os.path.exists(report_display_app):
+            pass
+        if report_display_app != '' and not os.path.exists(report_display_app):
+            input_string = report_display_app
+            report_display_app = ''
             raise RMPyExcep('ERROR: Path for report file display app not found: '
-                            + report_display_app)
+                            + input_string)
 
         try:
             facttype_current_name = config['MAPPING']['FACTTYPE_CURRENT']
@@ -91,10 +96,11 @@ def main():
         except:
             raise RMPyExcep('ERROR: FACTTYPE_NEW must be specified.')
 
+        role_name = ''
         try:
             role_name = config['MAPPING']['ROLE']
         except:
-            raise RMPyExcep('ERROR: ROLE must be specified.')
+            pass
 
         desc_sel = ''
         try:
@@ -132,7 +138,7 @@ def main():
             report_file.write('            DESC: "' + desc_sel + '"\n')
         if date_sel != '':
             report_file.write('            DATE: "' + date_sel + '"\n')
-        report_file.write('\n\n\n')
+        report_file.write('\n')
 
         out_tuple = lookup_validate(
             facttype_current_name, facttype_new_name,
@@ -149,10 +155,11 @@ def main():
                           "ERROR: Application failed. Please email report file to author. ")
         return 1
     finally:
-        db_connection.commit()
-        db_connection.close()
+        if db_connection is not None:
+            db_connection.commit()
+            db_connection.close()
         report_file.close()
-        if report_display_app != None:
+        if report_display_app != '':
             subprocess.Popen([report_display_app, report_path])
     return 0
 
@@ -176,29 +183,37 @@ SELECT FactTypeID, OwnerType
         raise RMPyExcep(
             "ERROR: The entered Current FactType name is not unique. Fix this.\n")
     facttype_curr_id = rows[0][0]
-    facttype_is_family_curr = False
     if rows[0][1] == 1:
         facttype_is_family_curr = True
-        reportF.write("'Current FactType' is of type 'FAMILY'.\n\n\n")
+        reportF.write("FACTTYPE_CURRENT kind is 'FAMILY'.\n")
+    else:
+        facttype_is_family_curr = False
+        reportF.write("FACTTYPE_CURRENT kind is 'PERSONAL'.\n")
 
     cur = dbConnection.cursor()
     cur.execute(SqlStmt, (facttype_new_name,))
     rows = cur.fetchall()
     if len(rows) == 0:
         raise RMPyExcep(
-            "ERROR: The entered New FactType name could not be found.\n")
+            "ERROR: The entered New Fact Type name could not be found.\n")
     if len(rows) > 1:
         raise RMPyExcep(
-            "ERROR: The entered New FactType name is not unique. Fix this.\n")
+            "The entered New Fact Type name is not unique. Fix this.\n")
     facttype_new_id = rows[0][0]
     facttype_is_family_new = False
     if rows[0][1] == 1:
         facttype_is_family_new = True
-        reportF.write("New FactType name is of type FAMILY.\n\n\n")
+        reportF.write("FACTTYPE_NEW kind is 'FAMILY'.\n\n\n")
+    else:
+        facttype_is_family_new = False
+        reportF.write("FACTTYPE_NEW kind is 'PERSONAL'.\n\n\n")
 
     role_id = 0
     if facttype_is_family_curr and not facttype_is_family_new:
         # need to use role name for the new witness
+        if role_name == '':
+            raise RMPyExcep('ERROR: ROLE must be specified'
+                            ' for this conversion.')
         SqlStmt = """
 SELECT RoleID, EventType
   FROM RoleTable rt
@@ -210,14 +225,17 @@ SELECT RoleID, EventType
         rows = cur.fetchall()
         if len(rows) == 0:
             raise RMPyExcep(
-                "The entered Role name could not be found associated with the new fact type.\n")
+                "ERROR: The entered Role name could not be found"
+                 " associated with the new fact type.\n")
         if len(rows) > 1:
             raise RMPyExcep(
-                "The entered Role name is not unique for the new fact type. Fix this.\n")
+                "The entered Role name is not unique for the new"
+                " fact type. Fix this.\n")
         role_id = rows[0][0]
 
 
-    # All of the roles used by the old fact must also appear in the new fact
+    # All of the roles used by the old facts must also appear in the
+    # new fact type.
     # List Roles that user needs to create for the new Fact Type
     SqlStmt = """
 SELECT DISTINCT RoleID, RoleName  COLLATE NOCASE
@@ -236,13 +254,16 @@ INNER JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
                 "new_FTid": facttype_new_id})
     rows = cur.fetchall()
     if len(rows) != 0:
-        reportF.write("The following Roles are in use by the Current Fact Type,\n"
+        reportF.write("The following Roles are in use by the Current"
+                        " Fact Type,\n"
                       + "but do not exist for the New Fact Type.\n"
-                      + "They will either need to be defined for the new Fact Type\n"
+                      + "They will either need to be defined for"
+                        " the new Fact Type\n"
                       + "or eliminated from use by the Current Fact type.\n"
-                      + "Coordinating the roles may be accomplished by altering the\n"
-                      + "Role Names. This must be done before Fact conversion\n"
-                      + "can be performed.\n\n\n"
+                      + "Coordinating the roles may be accomplished"
+                         " by altering the\n"
+                      + "Role Names. This must be done before fact type\n"
+                      + "conversion can be performed.\n\n\n"
                       + "--Missing Roles:--\n")
         for row in rows:
             reportF.write(str(row[1]) + "\n")
@@ -271,7 +292,8 @@ def convert_fact(input_tuple,  desc_sel, date_sel, db_connection, report_file):
                       + str(len(list_of_fact_id)) + '\n\n')
     if facttype_is_fam_cur and not facttype_is_fam_new:
         report_file.write(
-            "Facts attached to these families were converted:\n  Father ID:   Mother ID: ")
+            "Facts attached to these families were converted:\n"
+            "  Father ID:   Mother ID: ")
         for fact_to_convert in list_of_fact_id:
             FamID = getFamilyIDfromEvent(fact_to_convert, db_connection)
             FatherMother = getFatherMotherIDs(FamID, db_connection)
@@ -281,19 +303,22 @@ def convert_fact(input_tuple,  desc_sel, date_sel, db_connection, report_file):
                               "           " + str(MotherID))
             if FatherID != 0:
                 changeTheEvent(fact_to_convert, FatherID,
-                               facttype_new_id, db_connection)
+                               facttype_new_id, facttype_is_fam_new,
+                               db_connection)
             elif FatherID == 0 and MotherID != 0:
                 changeTheEvent(fact_to_convert, MotherID,
-                               facttype_new_id, db_connection)
+                               facttype_new_id, facttype_is_fam_new,
+                               db_connection)
             else:
-                raise RMPyExcep("ERROR: Internal, found a 0,0 family")
+                raise RMPyExcep("ERROR: Internal, found a empty 0,0 family")
             updateRoleInExistingWitnesses(
                 fact_to_convert, facttype_new_id, db_connection)
             if MotherID != 0:
                 addNewWitness(fact_to_convert, MotherID, roleID, db_connection)
     elif facttype_is_fam_cur and facttype_is_fam_new:
         report_file.write(
-            "Facts attached to these families were converted:\n  Father ID:   Mother ID: ")
+            "Facts attached to these families were converted:\n"
+            "  Father ID:   Mother ID: ")
         for fact_to_convert in list_of_fact_id:
             FamID = getFamilyIDfromEvent(fact_to_convert, db_connection)
             FatherMother = getFatherMotherIDs(FamID, db_connection)
@@ -302,7 +327,8 @@ def convert_fact(input_tuple,  desc_sel, date_sel, db_connection, report_file):
             report_file.write("\n    " + str(FatherID) +
                               "           " + str(MotherID))
             changeTheEvent(fact_to_convert, FatherID,
-                           facttype_new_id, db_connection)
+                           facttype_new_id, facttype_is_fam_new,
+                           db_connection)
             updateRoleInExistingWitnesses(
                 fact_to_convert, facttype_new_id, db_connection)
     elif not facttype_is_fam_cur and not facttype_is_fam_new:
@@ -312,11 +338,12 @@ def convert_fact(input_tuple,  desc_sel, date_sel, db_connection, report_file):
             person_id = getPersonIDfromEventID(fact_to_convert, db_connection)
             report_file.write("\n  " + str(person_id))
             changeTheEvent(fact_to_convert, person_id,
-                           facttype_new_id, db_connection)
+                           facttype_new_id, facttype_is_fam_new,
+                           db_connection)
             updateRoleInExistingWitnesses(
                 fact_to_convert, facttype_new_id, db_connection)
     else:
-        raise RMPyExcep("ERROR: Internal. Fact P-F type combo not supported.")
+        raise RMPyExcep("ERROR: Internal. Fact P>F type combo not supported.")
     return
 
 
@@ -360,7 +387,7 @@ INNER JOIN RoleTable AS rt ON rt.RoleID = wt.Role
   """
         cur = dbConnection.cursor()
         cur.execute(
-            SqlStmt, {"WitnessID": WitnessToUpdate, 
+            SqlStmt, {"WitnessID": WitnessToUpdate,
                          "RoleID": newRoleID})
         row = cur.fetchone()
     return
@@ -471,22 +498,28 @@ SELECT FatherID, MotherID
     rows = cur.fetchall()
 
     if (len(rows) != 1):
-        raise RMPyExcep("More than one row returned getting family id")
+        raise RMPyExcep("ERROR INTERNAL More than one row returned getting family id")
     return rows[0]
 
 
 # ===================================================DIV60==
-def changeTheEvent(EventID, OwnerID, newEventTypeID, dbConn):
+def changeTheEvent(EventID, OwnerID, newEventTypeID,
+                   facttype_is_fam_new, dbConn):
+
+    if facttype_is_fam_new:
+        OwnerType = 1
+    else:
+        OwnerType = 0
 
     SqlStmt = """
 UPDATE EventTable
-   SET OwnerType = 0,
+   SET OwnerType = ?,
        EventType= ?,
        OwnerID = ?
  WHERE EventID = ?
 """
     cur = dbConn.cursor()
-    cur.execute(SqlStmt, (newEventTypeID, OwnerID, EventID))
+    cur.execute(SqlStmt, (OwnerType, newEventTypeID, OwnerID, EventID))
     return
 
 
