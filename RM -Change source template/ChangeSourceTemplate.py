@@ -156,6 +156,7 @@ def main():
 
 # ===================================================DIV60==
 def CheckTemplateNamesFeature(config, reportF, dbConnection):
+
     try:
         oldTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
         newTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
@@ -170,6 +171,7 @@ def CheckTemplateNamesFeature(config, reportF, dbConnection):
 
 # ===================================================DIV60==
 def ListTemplateDetailsFeature(config, reportF, dbConnection):
+
     try:
         oldTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
         newTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
@@ -193,6 +195,7 @@ def ListTemplateDetailsFeature(config, reportF, dbConnection):
 
 # ===================================================DIV60==
 def ListSourcesFeature(config, reportF, dbConnection):
+
     try:
         oldTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
         srcNamesLike = config['SOURCES']['SOURCE_NAME_LIKE']
@@ -212,6 +215,7 @@ def ListSourcesFeature(config, reportF, dbConnection):
 
 # ===================================================DIV60==
 def MakeChangesFeature(config, reportF, dbConnection):
+
     try:
         oldTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
         newTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
@@ -240,6 +244,7 @@ def MakeChangesFeature(config, reportF, dbConnection):
 
 # ===================================================DIV60==
 def ConvertSource(reportF, dbConnection, srcID, newTemplateID, fieldMapping):
+
     # Get the SourceTable.Fields BLOB from the srcID to extract its data
     SqlStmt_src_r = """
 SELECT Fields
@@ -318,6 +323,7 @@ UPDATE SourceTable
 
 # ===================================================DIV60==
 def ConvertCitation(dbConnection, citationID, fieldMapping):
+
     # Get the CitationTable.Fields BLOB from the citation to extract its data
     SqlStmt_cit_r = """
 SELECT Fields
@@ -389,6 +395,7 @@ UPDATE CitationTable
 
 # ===================================================DIV60==
 def getCitationsForSrc(dbConnection, oldSourceID):
+
     # get citations for oldSourceID
     SqlStmt = """
 SELECT CitationID, CitationName
@@ -401,42 +408,8 @@ SELECT CitationID, CitationName
 
 
 # ===================================================DIV60==
-def create_db_connection(db_file_path, db_extension):
-
-    dbConnection = None
-    try:
-        dbConnection = sqlite3.connect(db_file_path)
-        if db_extension is not None:
-            # load SQLite extension
-            dbConnection.enable_load_extension(True)
-            dbConnection.load_extension(db_extension)
-    except Exception as e:
-        raise RMPyExcep(e, "\n\n" "Cannot open the RM database file." "\n")
-    return dbConnection
-
-
-# ===================================================DIV60==
-def PauseWithMessage(message=None):
-
-    if (message != None):
-        print(str(message))
-    input("\n" "Press the <Enter> key to continue...")
-    return
-
-
-# ===================================================DIV60==
-def GetSQLiteLibraryVersion(dbConnection):
-    # returns a string like 3.42.0
-    SqlStmt = """
-SELECT sqlite_version()
-"""
-    cur = dbConnection.cursor()
-    cur.execute(SqlStmt)
-    return cur.fetchone()[0]
-
-
-# ===================================================DIV60==
 def parseFieldMapping(text):
+
     # convert string to list of 2-tuple strings
     text = text.strip()
     list = text.split('\n')
@@ -448,6 +421,7 @@ def parseFieldMapping(text):
 
 # ===================================================DIV60==
 def GetListOfRows(dbConnection, SqlStmt):
+
     # SqlStmt should return a set of single values
     cur = dbConnection.cursor()
     cur.execute(SqlStmt)
@@ -460,32 +434,8 @@ def GetListOfRows(dbConnection, SqlStmt):
 
 
 # ===================================================DIV60==
-class RMPyExcep(Exception):
-
-    '''Exceptions thrown for configuration/database issues'''
-
-
-# ===================================================DIV60==
-def GetCurrentDirectory():
-    # Determine if application is a script file or frozen exe and get its directory
-    # see   https://pyinstaller.org/en/stable/runtime-information.html
-    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        application_path = os.path.dirname(sys.executable)
-    else:
-        application_path = os.path.dirname(__file__)
-    return application_path
-
-
-# ===================================================DIV60==
-def TimeStampNow():
-    # return a TimeStamp string
-    now = datetime.now()
-    dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
-    return dt_string
-
-
-# ===================================================DIV60==
 def CheckSourceTemplates(reportF, dbConnection, oldTemplateName, newTemplateName):
+
     if newTemplateName == oldTemplateName:
         reportF.write("The old and new template names must be different.")
         return
@@ -572,6 +522,72 @@ SELECT st.SourceID, st.Name
         reportF.write("No sources found with specified search criteria.\n")
         return
     return srcTuples
+
+
+# ===================================================DIV60==
+def GetCurrentDirectory():
+
+    # Determine if application is a script file or frozen exe and get its directory
+    # see   https://pyinstaller.org/en/stable/runtime-information.html
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        application_path = os.path.dirname(sys.executable)
+    else:
+        application_path = os.path.dirname(__file__)
+    return application_path
+
+
+# ===================================================DIV60==
+def TimeStampNow(type=""):
+
+    # return a TimeStamp string
+    now = datetime.now()
+    if type == '':
+        dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
+    elif type == 'file':
+        dt_string = now.strftime("%Y-%m-%d_%H%M%S")
+    return dt_string
+
+
+# ===================================================DIV60==
+def PauseWithMessage(message=None):
+
+    if (message != None):
+        print(str(message))
+    input("\n" "Press the <Enter> key to continue...")
+    return
+
+
+# ===================================================DIV60==
+def create_db_connection(db_file_path, db_extension):
+
+    dbConnection = None
+    try:
+        dbConnection = sqlite3.connect(db_file_path)
+        if db_extension is not None:
+            # load SQLite extension
+            dbConnection.enable_load_extension(True)
+            dbConnection.load_extension(db_extension)
+    except Exception as e:
+        raise RMPyExcep(e, "\n\n" "Cannot open the RM database file." "\n")
+    return dbConnection
+
+
+# ===================================================DIV60==
+def GetSQLiteLibraryVersion(dbConnection):
+
+    # returns a string like 3.42.0
+    SqlStmt = """
+SELECT sqlite_version()
+"""
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt)
+    return cur.fetchone()[0]
+
+
+# ===================================================DIV60==
+class RMPyExcep(Exception):
+
+    '''Exceptions thrown for configuration/database issues'''
 
 
 # ===================================================DIV60==
