@@ -67,11 +67,11 @@ def main():
                 'ERROR: Cannot create the report file ' + report_path + "\n\n")
 
     except RMPyExcep as e:
-        PauseWithMessage(e)
+        pause_console_with_message(e)
         return 1
     except Exception as e:
         traceback.print_exception(e, file=sys.stdout)
-        PauseWithMessage(
+        pause_console_with_message(
             "ERROR: Application failed. Please report.\n\n " + str(e))
         return 1
 
@@ -83,7 +83,7 @@ def main():
 
         report_file = open(report_path,  mode='w', encoding='utf-8-sig')
         report_file.write("\nReport generated at      = " +
-                          TimeStampNow() + "\n")
+                          time_stamp_now() + "\n")
 
         try:
             database_Path = config['FILE_PATHS']['DB_PATH']
@@ -105,12 +105,12 @@ def main():
         # Process the database for requested output
         dbConnection = create_db_connection(database_Path, RMNOCASE_Path)
         report_file.write("Report generated at      = " +
-                          TimeStampNow() + "\n")
+                          time_stamp_now() + "\n")
         report_file.write("Database processed       = " + database_Path + "\n")
         report_file.write("Database last changed on = " +
                           FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n")
         report_file.write("SQLite library version   = " +
-                          GetSQLiteLibraryVersion(dbConnection) + "\n\n")
+                          get_SQLite_library_version(dbConnection) + "\n\n")
 
         # test option values conversion to boolean
         try:
@@ -125,16 +125,16 @@ def main():
 
         # run active options
         if config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES'):
-            CheckTemplateNamesFeature(config, report_file, dbConnection)
+            check_template_names_feature(config, report_file, dbConnection)
 
         elif config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS'):
-            ListTemplateDetailsFeature(config, report_file, dbConnection)
+            list_template_details_feature(config, report_file, dbConnection)
 
         elif config['OPTIONS'].getboolean('LIST_SOURCES'):
-            ListSourcesFeature(config, report_file, dbConnection)
+            list_sources_feature(config, report_file, dbConnection)
 
         elif config['OPTIONS'].getboolean('MAKE_CHANGES'):
-            MakeChangesFeature(config, report_file, dbConnection)
+            make_changes_feature(config, report_file, dbConnection)
 
     except RMPyExcep as e:
         report_file.write(str(e))
@@ -155,7 +155,7 @@ def main():
 
 
 # ===================================================DIV60==
-def CheckTemplateNamesFeature(config, reportF, dbConnection):
+def check_template_names_feature(config, reportF, dbConnection):
 
     try:
         oldTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
@@ -164,13 +164,13 @@ def CheckTemplateNamesFeature(config, reportF, dbConnection):
         reportF.write(
             "ERROR: CHECK_TEMPLATE_NAMES option requires specification of both TEMPLATE_OLD and TEMPLATE_NEW.")
         return
-    CheckSourceTemplates(reportF, dbConnection,
+    check_source_templates(reportF, dbConnection,
                          oldTemplateName, newTemplateName)
     return
 
 
 # ===================================================DIV60==
-def ListTemplateDetailsFeature(config, reportF, dbConnection):
+def list_template_details_feature(config, reportF, dbConnection):
 
     try:
         oldTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
@@ -183,8 +183,8 @@ def ListTemplateDetailsFeature(config, reportF, dbConnection):
 
     oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
     newTemplateID = GetSrcTempID(dbConnection, newTemplateName)[0][0]
-    DumpSrcTemplateFields(reportF, dbConnection, oldTemplateID)
-    DumpSrcTemplateFields(reportF, dbConnection, newTemplateID)
+    dump_src_template_fields(reportF, dbConnection, oldTemplateID)
+    dump_src_template_fields(reportF, dbConnection, newTemplateID)
     reportF.write(
         "\nThe field mappings, as entered in the configuration file: \n")
     for each in mapping:
@@ -194,7 +194,7 @@ def ListTemplateDetailsFeature(config, reportF, dbConnection):
 
 
 # ===================================================DIV60==
-def ListSourcesFeature(config, reportF, dbConnection):
+def list_sources_feature(config, reportF, dbConnection):
 
     try:
         oldTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
@@ -214,7 +214,7 @@ def ListSourcesFeature(config, reportF, dbConnection):
 
 
 # ===================================================DIV60==
-def MakeChangesFeature(config, reportF, dbConnection):
+def make_changes_feature(config, reportF, dbConnection):
 
     try:
         oldTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
@@ -229,7 +229,7 @@ def MakeChangesFeature(config, reportF, dbConnection):
     oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
     newTemplateID = GetSrcTempID(dbConnection, newTemplateName)[0][0]
 
-    mapping = parseFieldMapping(fieldMapping)
+    mapping = parse_field_mapping(fieldMapping)
 
     srcTuples = GetSelectedSources(
         reportF, dbConnection, oldTemplateID, srcNamesLike)
@@ -237,13 +237,13 @@ def MakeChangesFeature(config, reportF, dbConnection):
         reportF.write(
             "=====================================================\n")
         reportF.write(str(srcTuple[0]) + "    " + srcTuple[1] + "\n")
-        ConvertSource(reportF, dbConnection,
+        convert_source(reportF, dbConnection,
                       srcTuple[0], newTemplateID, mapping)
     return
 
 
 # ===================================================DIV60==
-def ConvertSource(reportF, dbConnection, srcID, newTemplateID, fieldMapping):
+def convert_source(reportF, dbConnection, srcID, newTemplateID, fieldMapping):
 
     # Get the SourceTable.Fields BLOB from the srcID to extract its data
     SqlStmt_src_r = """
@@ -311,10 +311,10 @@ UPDATE SourceTable
     dbConnection.execute(SqlStmt_src_w, (newSrcFields, newTemplateID, srcID))
 
     # deal with this source's citations
-    for citationTuple in getCitationsForSrc(dbConnection, srcID):
+    for citationTuple in get_citations_for_source(dbConnection, srcID):
         reportF.write(
             "   " + str(citationTuple[0]) + "    " + citationTuple[1][:70] + "\n")
-        ConvertCitation(dbConnection, citationTuple[0], fieldMapping)
+        convert_citation(dbConnection, citationTuple[0], fieldMapping)
         # end loop for citations
 
     dbConnection.commit()
@@ -322,7 +322,7 @@ UPDATE SourceTable
 
 
 # ===================================================DIV60==
-def ConvertCitation(dbConnection, citationID, fieldMapping):
+def convert_citation(dbConnection, citationID, fieldMapping):
 
     # Get the CitationTable.Fields BLOB from the citation to extract its data
     SqlStmt_cit_r = """
@@ -394,7 +394,7 @@ UPDATE CitationTable
 
 
 # ===================================================DIV60==
-def getCitationsForSrc(dbConnection, oldSourceID):
+def get_citations_for_source(dbConnection, oldSourceID):
 
     # get citations for oldSourceID
     SqlStmt = """
@@ -408,7 +408,7 @@ SELECT CitationID, CitationName
 
 
 # ===================================================DIV60==
-def parseFieldMapping(text):
+def parse_field_mapping(text):
 
     # convert string to list of 2-tuple strings
     text = text.strip()
@@ -420,7 +420,7 @@ def parseFieldMapping(text):
 
 
 # ===================================================DIV60==
-def GetListOfRows(dbConnection, SqlStmt):
+def get_list_of_rows(dbConnection, SqlStmt):
 
     # SqlStmt should return a set of single values
     cur = dbConnection.cursor()
@@ -434,7 +434,7 @@ def GetListOfRows(dbConnection, SqlStmt):
 
 
 # ===================================================DIV60==
-def CheckSourceTemplates(reportF, dbConnection, oldTemplateName, newTemplateName):
+def check_source_templates(reportF, dbConnection, oldTemplateName, newTemplateName):
 
     if newTemplateName == oldTemplateName:
         reportF.write("The old and new template names must be different.")
@@ -467,7 +467,7 @@ def CheckSourceTemplates(reportF, dbConnection, oldTemplateName, newTemplateName
 
 
 # ===================================================DIV60==
-def GetSrcTempID(dbConnection, TemplateName):
+def get_src_template_ID(dbConnection, TemplateName):
     SqlStmt = """
 SELECT TemplateID
   FROM SourceTemplateTable
@@ -480,7 +480,7 @@ SELECT TemplateID
 
 
 # ===================================================DIV60==
-def DumpSrcTemplateFields(reportF, dbConnection, TemplateID):
+def dump_src_template_fields(reportF, dbConnection, TemplateID):
     # dump fields in Templates
     SqlStmt = """
 SELECT FieldDefs, Name
@@ -508,7 +508,7 @@ SELECT FieldDefs, Name
 
 
 # ===================================================DIV60==
-def GetSelectedSources(reportF, dbConnection, oldTemplateID, SourceNamesLike):
+def get_selected_sources(reportF, dbConnection, oldTemplateID, SourceNamesLike):
     SqlStmt = """
 SELECT st.SourceID, st.Name
   FROM SourceTable st
@@ -525,7 +525,7 @@ SELECT st.SourceID, st.Name
 
 
 # ===================================================DIV60==
-def GetCurrentDirectory():
+def get_current_directory():
 
     # Determine if application is a script file or frozen exe and get its directory
     # see   https://pyinstaller.org/en/stable/runtime-information.html
@@ -537,7 +537,7 @@ def GetCurrentDirectory():
 
 
 # ===================================================DIV60==
-def TimeStampNow(type=""):
+def time_stamp_now(type=""):
 
     # return a TimeStamp string
     now = datetime.now()
@@ -549,7 +549,7 @@ def TimeStampNow(type=""):
 
 
 # ===================================================DIV60==
-def PauseWithMessage(message=None):
+def pause_console_with_message(message=None):
 
     if (message != None):
         print(str(message))
@@ -573,7 +573,7 @@ def create_db_connection(db_file_path, db_extension):
 
 
 # ===================================================DIV60==
-def GetSQLiteLibraryVersion(dbConnection):
+def get_SQLite_library_version(dbConnection):
 
     # returns a string like 3.42.0
     SqlStmt = """
