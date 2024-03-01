@@ -13,6 +13,7 @@ Position 1:
 . = NULL Date [data following Position 1 will be NULL, which won't be further addressed for Position 2+, below],
 D = Standard/Recognized Non-Quaker Date,
 Q = Quaker Date,
+R = Quarter Date,
 T = Text Date [data following Position 1 will consist of a text string of variable length, which won't be further addressed for Position 2+, below]
 
 
@@ -42,14 +43,22 @@ yyyy, otherwise
 
 
 Positions 8 - 9:
+if D date
 00, if Partial Date, but without month specified [1900, 1 ??? 1900, etc.];
 mm, otherwise
+if R date
+01 Q1
+02 Q2
+03 Q3
+04 Q4
 
 
 Positions 10 - 11:
+if D date
 00, if Partial Date, but without day specified [Jan 1900, 1900, Jan, etc.];
 dd, otherwise
-
+if R date
+always 00
 
 Position 12:
 /, if Double Date;
@@ -129,3 +138,17 @@ what validation is done for double dates
 there are 2 flags inRM date formate for double date- why not just one?
 
 
+===========================================DIV50==
+add quarter dates
+enter- Q1 2014
+displays- March Quarter 2014   (long format, what about other formats?)
+sort      January 2014
+      Q1 - 2014,  Q2 - June, Q3 - September, Q4 - December 
+
+March Quarter 2014   long format
+Mar Q 2014           short format
+
+sort date is as if it was standard 
+Q1 2014 => sort date Jan 2014 same sort date as entering Jan 2014 in date
+
+===========================================DIV50==

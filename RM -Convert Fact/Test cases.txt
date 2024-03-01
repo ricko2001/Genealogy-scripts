@@ -1,0 +1,72 @@
+can find ini file
+can read ini file
+can find REPORT_FILE_PATH
+can create report
+
+can find DB_PATH
+DB_PATH exists
+
+find or not- REPORT_FILE_DISPLAY_APP 
+REPORT_FILE_DISPLAY_APP is left blank
+if not blank REPORT_FILE_DISPLAY_APP exists
+
+fact type- both not found
+fact type- both are unique
+
+fam->pers convert
+new role name not found
+new role name not unique
+
+DATE and DEC limit the facts to convert
+If not given, all facts converted.
+
+missing roles in new FT
+
+Only roles in use are a problem and listed.
+
+Test the 4 kinds of conversion
+
+Test new fact's owner type for all 4 conversions.
+
+
+
+
+
+TEST RUN
+OK	can find ini file
+OK	can read ini file
+OK	can find REPORT_FILE_PATH	tested  path
+OK	can create report  tested  filename
+
+OK	can find DB_PATH
+OK	DB_PATH does not exist
+
+OK	find or not- REPORT_FILE_DISPLAY_APP 
+OK	REPORT_FILE_DISPLAY_APP is left blank
+if not blank REPORT_FILE_DISPLAY_APP exists
+
+OK	fact type- both not found
+OK	old fact type-  unique
+OK	new fact type-  unique
+
+fam->pers convert
+OK	need ROLE defined
+OK	new role name not found
+OK	new role name not unique
+
+OK	DATE=  and DESC=  do not limit results
+OK	DATE limit the facts to convert
+OK	DESC limit the facts to convert
+OK	If not given, all facts converted.
+
+OK	missing roles in new FT
+
+OK	Only roles in use are a problem and listed.
+
+Test the 4 kinds of conversion
+OK	fam=>pers
+OK	fam=fam
+OK	pers=>pers
+
+Test new fact's owner type for all 4 conversions.
+
