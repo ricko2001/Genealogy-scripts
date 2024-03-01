@@ -4,7 +4,7 @@ import time
 import sqlite3
 from pathlib import Path
 from datetime import datetime
-import configparser
+import configparser  # https://docs.python.org/3/library/configparser.html
 import xml.etree.ElementTree as ET
 import subprocess
 import traceback
@@ -28,106 +28,129 @@ def main():
 
     # Configuration
     IniFileName = "RM-Python-config.ini"
+    db_connection = None
+    report_display_app = ''
 
-    # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
-    # see   https://docs.python.org/3/library/configparser.html
-    IniFile = os.path.join(GetCurrentDirectory(), IniFileName)
-
-    # Check that ini file is at expected path and that it is readable & valid.
-    if not os.path.exists(IniFile):
-        print("ERROR: The ini configuration file, " + IniFileName +
-              " must be in the same directory as the .py or .exe file.\n\n")
-        input("Press the <Enter> key to exit...")
-        return
-
-    #  Need interpolation=None because Like wildcard is %
-    config = configparser.ConfigParser(
-        interpolation=None, empty_lines_in_values=False)
-    try:
-        config.read(IniFile, 'UTF-8')
-    except:
-        print("ERROR: The " + IniFileName +
-              " file contains a format error and cannot be parsed.\n\n")
-        input("Press the <Enter> key to exit...")
-        return
-
-    # Read file paths from ini file
-    #  https://docs.python.org/3/library/configparser.html
+    # ===========================================DIV50==
+    # Error go to console window
+    # ===========================================DIV50==
 
     try:
-        # First check report file. If OK, all user messages will go there.
-        report_Path = config['FILE_PATHS']['REPORT_FILE_PATH']
-    except:
-        print('ERROR: REPORT_FILE_PATH must be defined in the ' +
-              IniFileName + "\n\n")
-        input("Press the <Enter> key to exit...")
-        return
+        # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
+        # see   https://docs.python.org/3/library/configparser.html
+        IniFile = os.path.join(GetCurrentDirectory(), IniFileName)
+
+        # Check that ini file is at expected path and that it is readable & valid.
+        if not os.path.exists(IniFile):
+            raise RMPyExcep("ERROR: The ini configuration file, " + IniFileName +
+                            " must be in the same directory as the .py or .exe file.\n\n")
+
+        config = configparser.ConfigParser(empty_lines_in_values=False,
+                                           interpolation=None)
+        try:
+            config.read(IniFile, 'UTF-8')
+        except:
+            raise RMPyExcep("ERROR: The " + IniFileName +
+                            " file contains a format error and cannot be parsed.\n\n")
+
+        try:
+            report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
+        except:
+            raise RMPyExcep('ERROR: REPORT_FILE_PATH must be defined in the ' +
+                            IniFileName + "\n\n")
+
+        try:
+            # test open the report file
+            open(report_path,  mode='w', encoding='utf-8')
+        except:
+            raise RMPyExcep(
+                'ERROR: Cannot create the report file ' + report_path + "\n\n")
+
+    except RMPyExcep as e:
+        PauseWithMessage(e)
+        return 1
+    except Exception as e:
+        traceback.print_exception(e, file=sys.stdout)
+        PauseWithMessage(
+            "ERROR: Application failed. Please report.\n\n " + str(e))
+        return 1
+
+    # ===========================================DIV50==
+    # Error go to Report File
+    # ===========================================DIV50==
 
     try:
-        open(report_Path,  mode='w', encoding='utf-8-sig')
-    except:
-        print('ERROR: Cannot create the report file ' + report_Path + "\n\n")
-        input("Press the <Enter> key to exit...")
-        return
 
-    with open(report_Path,  mode='w', encoding='utf-8-sig') as reportF:
-        reportF.write("\nReport generated at      = " + TimeStampNow() + "\n")
+        report_file = open(report_path,  mode='w', encoding='utf-8-sig')
+        report_file.write("\nReport generated at      = " +
+                          TimeStampNow() + "\n")
 
         try:
             database_Path = config['FILE_PATHS']['DB_PATH']
             RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
         except:
-            reportF.write(
+            raise RMPyExcep(
                 'ERROR: Both DB_PATH and RMNOCASE_PATH must be specified.')
-            return
 
         if not os.path.exists(database_Path):
-            reportF.write(
+            raise RMPyExcep(
                 'ERROR: Path for database path not found: ' + database_Path)
-            return
         if not os.path.exists(RMNOCASE_Path):
-            reportF.write('ERROR: dll file not found at: ' + RMNOCASE_Path)
-            return
+            raise RMPyExcep('ERROR: dll file not found at: ' + RMNOCASE_Path)
 
         # RM database file specific
         FileModificationTime = datetime.fromtimestamp(
             os.path.getmtime(database_Path))
 
         # Process the database for requested output
-        with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
-            reportF.write("Report generated at      = " +
+        dbConnection = create_db_connection(database_Path, RMNOCASE_Path)
+        report_file.write("Report generated at      = " +
                           TimeStampNow() + "\n")
-            reportF.write("Database processed       = " + database_Path + "\n")
-            reportF.write("Database last changed on = " +
+        report_file.write("Database processed       = " + database_Path + "\n")
+        report_file.write("Database last changed on = " +
                           FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n")
-            reportF.write("SQLite library version   = " +
+        report_file.write("SQLite library version   = " +
                           GetSQLiteLibraryVersion(dbConnection) + "\n\n")
 
-            # test option values conversion to boolean
-            try:
-                config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES')
-                config['OPTIONS'].getboolean('LIST_SOURCES')
-                config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS')
-                config['OPTIONS'].getboolean('MAKE_CHANGES')
-            except:
-                reportF.write(
-                    "ERROR: One of the OPTIONS values could not be parsed as boolean. \n")
-                sys.exit()
+        # test option values conversion to boolean
+        try:
+            config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES')
+            config['OPTIONS'].getboolean('LIST_SOURCES')
+            config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS')
+            config['OPTIONS'].getboolean('MAKE_CHANGES')
+        except:
+            raise RMPyExcep(
+                "ERROR: One of the OPTIONS values could not be parsed as boolean. \n")
+            sys.exit()
 
-            # run active options
+        # run active options
+        if config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES'):
+            CheckTemplateNamesFeature(config, report_file, dbConnection)
 
-            if config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES'):
-                CheckTemplateNamesFeature(config, reportF, dbConnection)
+        elif config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS'):
+            ListTemplateDetailsFeature(config, report_file, dbConnection)
 
-            elif config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS'):
-                ListTemplateDetailsFeature(config, reportF, dbConnection)
+        elif config['OPTIONS'].getboolean('LIST_SOURCES'):
+            ListSourcesFeature(config, report_file, dbConnection)
 
-            elif config['OPTIONS'].getboolean('LIST_SOURCES'):
-                ListSourcesFeature(config, reportF, dbConnection)
+        elif config['OPTIONS'].getboolean('MAKE_CHANGES'):
+            MakeChangesFeature(config, report_file, dbConnection)
 
-            elif config['OPTIONS'].getboolean('MAKE_CHANGES'):
-                MakeChangesFeature(config, reportF, dbConnection)
-
+    except RMPyExcep as e:
+        report_file.write(str(e))
+        return 1
+    except Exception as e:
+        traceback.print_exception(e, file=report_file)
+        report_file.write("\n\n"
+                          "ERROR: Application failed. Please email report file to author. ")
+        return 1
+    finally:
+        if db_connection is not None:
+            db_connection.commit()
+            db_connection.close()
+        report_file.close()
+        if report_display_app != '':
+            subprocess.Popen([report_display_app, report_path])
     return 0
 
 
@@ -219,10 +242,10 @@ def MakeChangesFeature(config, reportF, dbConnection):
 def ConvertSource(reportF, dbConnection, srcID, newTemplateID, fieldMapping):
     # Get the SourceTable.Fields BLOB from the srcID to extract its data
     SqlStmt_src_r = """
-  SELECT Fields
-    FROM SourceTable
-    WHERE SourceID = ?
-    """
+SELECT Fields
+  FROM SourceTable
+ WHERE SourceID = ?
+"""
     cur = dbConnection.cursor()
     cur.execute(SqlStmt_src_r, (srcID,))
     srcField = cur.fetchone()[0].decode()
@@ -276,10 +299,10 @@ def ConvertSource(reportF, dbConnection, srcID, newTemplateID, fieldMapping):
     # Update the source with new XML and new templateID
     newSrcFields = ET.tostring(srcRoot, encoding="unicode")
     SqlStmt_src_w = """
-  UPDATE SourceTable
-    SET Fields = ?, TemplateID = ?
-    WHERE SourceID = ?
-    """
+UPDATE SourceTable
+   SET Fields = ?, TemplateID = ?
+ WHERE SourceID = ?
+"""
     dbConnection.execute(SqlStmt_src_w, (newSrcFields, newTemplateID, srcID))
 
     # deal with this source's citations
@@ -297,10 +320,10 @@ def ConvertSource(reportF, dbConnection, srcID, newTemplateID, fieldMapping):
 def ConvertCitation(dbConnection, citationID, fieldMapping):
     # Get the CitationTable.Fields BLOB from the citation to extract its data
     SqlStmt_cit_r = """
-  SELECT Fields
-    FROM CitationTable
-    WHERE citationID = ?
-    """
+SELECT Fields
+  FROM CitationTable
+ WHERE citationID = ?
+"""
     cur = dbConnection.cursor()
     cur.execute(SqlStmt_cit_r, (citationID,))
     citFields = cur.fetchone()[0].decode()
@@ -356,10 +379,10 @@ def ConvertCitation(dbConnection, citationID, fieldMapping):
     newCitFileds = ET.tostring(citRoot, encoding="unicode")
     # Update the citation with new XML and new templateID
     SqlStmt_cit_w = """
-  UPDATE CitationTable
-    SET Fields = ?
-    WHERE CitationID = ? 
-    """
+UPDATE CitationTable
+   SET Fields = ?
+ WHERE CitationID = ? 
+"""
     dbConnection.execute(SqlStmt_cit_w, (newCitFileds, citationID))
     return
 
@@ -368,34 +391,45 @@ def ConvertCitation(dbConnection, citationID, fieldMapping):
 def getCitationsForSrc(dbConnection, oldSourceID):
     # get citations for oldSourceID
     SqlStmt = """
-    SELECT CitationID, CitationName
-      FROM CitationTable
-      WHERE SourceID = ?
-      """
+SELECT CitationID, CitationName
+  FROM CitationTable
+ WHERE SourceID = ?
+"""
     cur = dbConnection.cursor()
     cur.execute(SqlStmt, (oldSourceID,))
     return cur.fetchall()
 
 
 # ===================================================DIV60==
-def create_DBconnection(db_file_path, RMNOCASE_Path):
-    conn = None
+def create_db_connection(db_file_path, db_extension):
+
+    dbConnection = None
     try:
-        conn = sqlite3.connect(db_file_path)
-        conn.enable_load_extension(True)
-        conn.load_extension(RMNOCASE_Path)
-    except Error as e:
-        reportF.write(e)
-        reportF.write("Cannot open the RM database file. \n")
-    return conn
+        dbConnection = sqlite3.connect(db_file_path)
+        if db_extension is not None:
+            # load SQLite extension
+            dbConnection.enable_load_extension(True)
+            dbConnection.load_extension(db_extension)
+    except Exception as e:
+        raise RMPyExcep(e, "\n\n" "Cannot open the RM database file." "\n")
+    return dbConnection
+
+
+# ===================================================DIV60==
+def PauseWithMessage(message=None):
+
+    if (message != None):
+        print(str(message))
+    input("\n" "Press the <Enter> key to continue...")
+    return
 
 
 # ===================================================DIV60==
 def GetSQLiteLibraryVersion(dbConnection):
     # returns a string like 3.42.0
-    SqlStmt = """\
-  SELECT sqlite_version()
-  """
+    SqlStmt = """
+SELECT sqlite_version()
+"""
     cur = dbConnection.cursor()
     cur.execute(SqlStmt)
     return cur.fetchone()[0]
@@ -423,6 +457,12 @@ def GetListOfRows(dbConnection, SqlStmt):
         for x in t:
             result.append(x)
     return result
+
+
+# ===================================================DIV60==
+class RMPyExcep(Exception):
+
+    '''Exceptions thrown for configuration/database issues'''
 
 
 # ===================================================DIV60==
@@ -479,10 +519,10 @@ def CheckSourceTemplates(reportF, dbConnection, oldTemplateName, newTemplateName
 # ===================================================DIV60==
 def GetSrcTempID(dbConnection, TemplateName):
     SqlStmt = """
-  SELECT TemplateID
-   FROM SourceTemplateTable
-   WHERE Name = ?
-    """
+SELECT TemplateID
+  FROM SourceTemplateTable
+ WHERE Name = ?
+"""
     cur = dbConnection.execute(SqlStmt, (TemplateName,))
     rows = []
     rows = cur.fetchall()
@@ -493,10 +533,10 @@ def GetSrcTempID(dbConnection, TemplateName):
 def DumpSrcTemplateFields(reportF, dbConnection, TemplateID):
     # dump fields in Templates
     SqlStmt = """
-  SELECT FieldDefs, Name
-    FROM SourceTemplateTable
-    WHERE TemplateID = ?
-    """
+SELECT FieldDefs, Name
+  FROM SourceTemplateTable
+ WHERE TemplateID = ?
+"""
     cur = dbConnection.cursor()
     cur.execute(SqlStmt, (TemplateID,))
     # text = cur.fetchone()[0].decode()
@@ -520,11 +560,11 @@ def DumpSrcTemplateFields(reportF, dbConnection, TemplateID):
 # ===================================================DIV60==
 def GetSelectedSources(reportF, dbConnection, oldTemplateID, SourceNamesLike):
     SqlStmt = """
-  SELECT  ST.SourceID, ST.Name
-    FROM SourceTable ST
-    JOIN SourceTemplateTable STT ON ST.TemplateID = STT.TemplateID
-    WHERE ST.TemplateID = ? AND ST.Name LIKE ?
-    """
+SELECT st.SourceID, st.Name
+  FROM SourceTable st
+  JOIN SourceTemplateTable stt ON st.TemplateID = stt.TemplateID
+ WHERE st.TemplateID = ? AND st.Name LIKE ?
+"""
     cur = dbConnection.cursor()
     cur.execute(SqlStmt, (oldTemplateID, SourceNamesLike))
     srcTuples = cur.fetchall()
