@@ -38,7 +38,7 @@ def main():
     try:
         # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
         # see   https://docs.python.org/3/library/configparser.html
-        IniFile = os.path.join(GetCurrentDirectory(), IniFileName)
+        IniFile = os.path.join(get_current_directory(), IniFileName)
 
         # Check that ini file is at expected path and that it is readable & valid.
         if not os.path.exists(IniFile):
@@ -82,31 +82,29 @@ def main():
     try:
 
         report_file = open(report_path,  mode='w', encoding='utf-8-sig')
-        report_file.write("\nReport generated at      = " +
-                          time_stamp_now() + "\n")
 
         try:
-            database_Path = config['FILE_PATHS']['DB_PATH']
+            database_path = config['FILE_PATHS']['DB_PATH']
             RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
         except:
             raise RMPyExcep(
                 'ERROR: Both DB_PATH and RMNOCASE_PATH must be specified.')
 
-        if not os.path.exists(database_Path):
+        if not os.path.exists(database_path):
             raise RMPyExcep(
-                'ERROR: Path for database path not found: ' + database_Path)
+                'ERROR: Path for database path not found: ' + database_path)
         if not os.path.exists(RMNOCASE_Path):
             raise RMPyExcep('ERROR: dll file not found at: ' + RMNOCASE_Path)
 
         # RM database file specific
         FileModificationTime = datetime.fromtimestamp(
-            os.path.getmtime(database_Path))
+            os.path.getmtime(database_path))
 
         # Process the database for requested output
-        dbConnection = create_db_connection(database_Path, RMNOCASE_Path)
+        dbConnection = create_db_connection(database_path, RMNOCASE_Path)
         report_file.write("Report generated at      = " +
                           time_stamp_now() + "\n")
-        report_file.write("Database processed       = " + database_Path + "\n")
+        report_file.write("Database processed       = " + database_path + "\n")
         report_file.write("Database last changed on = " +
                           FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n")
         report_file.write("SQLite library version   = " +
@@ -121,7 +119,6 @@ def main():
         except:
             raise RMPyExcep(
                 "ERROR: One of the OPTIONS values could not be parsed as boolean. \n")
-            sys.exit()
 
         # run active options
         if config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES'):
@@ -155,17 +152,17 @@ def main():
 
 
 # ===================================================DIV60==
-def check_template_names_feature(config, reportF, dbConnection):
+def check_template_names_feature(config, report_file, dbConnection):
 
     try:
-        oldTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-        newTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
+        old_template_name = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
+        new_template_name = config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
     except:
-        reportF.write(
-            "ERROR: CHECK_TEMPLATE_NAMES option requires specification of both TEMPLATE_OLD and TEMPLATE_NEW.")
-        return
-    check_source_templates(reportF, dbConnection,
-                         oldTemplateName, newTemplateName)
+        raise RMPyExcep(
+            "ERROR: CHECK_TEMPLATE_NAMES option requires specification" 
+            " of both TEMPLATE_OLD and TEMPLATE_NEW.")
+    check_source_templates(report_file, dbConnection,
+                         old_template_name, new_template_name)
     return
 
 
@@ -177,12 +174,12 @@ def list_template_details_feature(config, reportF, dbConnection):
         newTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
         mapping = config['SOURCE_TEMPLATES']['MAPPING']
     except:
-        reportF.write(
-            "ERROR: LIST_TEMPLATE_DETAILS option requires specification of TEMPLATE_OLD and TEMPLATE_NEW and MAPPING.")
-        return
+        raise RMPyExcep(
+            "ERROR: LIST_TEMPLATE_DETAILS option requires specification"
+             " of TEMPLATE_OLD and TEMPLATE_NEW and MAPPING.")
 
-    oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
-    newTemplateID = GetSrcTempID(dbConnection, newTemplateName)[0][0]
+    oldTemplateID = get_src_template_ID(dbConnection, oldTemplateName)[0][0]
+    newTemplateID = get_src_template_ID(dbConnection, newTemplateName)[0][0]
     dump_src_template_fields(reportF, dbConnection, oldTemplateID)
     dump_src_template_fields(reportF, dbConnection, newTemplateID)
     reportF.write(
@@ -197,17 +194,19 @@ def list_template_details_feature(config, reportF, dbConnection):
 def list_sources_feature(config, reportF, dbConnection):
 
     try:
-        oldTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-        srcNamesLike = config['SOURCES']['SOURCE_NAME_LIKE']
+        old_template_name = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
+        source_names_like = config['SOURCES']['SOURCE_NAME_LIKE']
     except:
-        reportF.write(
-            "ERROR: LIST_SOURCES option requires specification of both TEMPLATE_OLD and SOURCE_NAME_LIKE.")
-        return
-    oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
-    reportF.write("\nSources with template name:\n" + oldTemplateName +
-                  "\nand source name like:\n" + srcNamesLike + "\n\nSource #      Source Name\n\n")
-    srcTuples = GetSelectedSources(
-        reportF, dbConnection, oldTemplateID, srcNamesLike)
+        raise RMPyExcep(
+            "ERROR: LIST_SOURCES option requires specification of"
+            " both TEMPLATE_OLD and SOURCE_NAME_LIKE.")
+
+    oldTemplateID = get_src_template_ID(dbConnection, old_template_name)[0][0]
+    reportF.write("\nSources with template name:\n" + old_template_name
+                  + "\nand source name like:\n" + source_names_like 
+                  + "\n\nSource #      Source Name\n\n")
+    srcTuples = get_selected_sources(
+        reportF, dbConnection, oldTemplateID, source_names_like)
     for src in srcTuples:
         reportF.write(str(src[0]) + "    " + src[1] + "\n")
     return
@@ -217,22 +216,22 @@ def list_sources_feature(config, reportF, dbConnection):
 def make_changes_feature(config, reportF, dbConnection):
 
     try:
-        oldTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-        newTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
-        srcNamesLike = config['SOURCES']['SOURCE_NAME_LIKE']
-        fieldMapping = config['SOURCE_TEMPLATES']['MAPPING']
+        old_template_name = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
+        new_template_name = config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
+        source_names_like = config['SOURCES']['SOURCE_NAME_LIKE']
+        field_mapping = config['SOURCE_TEMPLATES']['MAPPING']
     except:
         reportF.write(
             "ERROR: MAKE_CHANGES option requires specification of TEMPLATE_OLD and TEMPLATE_NEW and SOURCE_NAME_LIKE and MAPPING.")
         return
 
-    oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
-    newTemplateID = GetSrcTempID(dbConnection, newTemplateName)[0][0]
+    oldTemplateID = get_src_template_ID(dbConnection, old_template_name)[0][0]
+    newTemplateID = get_src_template_ID(dbConnection, new_template_name)[0][0]
 
-    mapping = parse_field_mapping(fieldMapping)
+    mapping = parse_field_mapping(field_mapping)
 
-    srcTuples = GetSelectedSources(
-        reportF, dbConnection, oldTemplateID, srcNamesLike)
+    srcTuples = get_selected_sources(
+        reportF, dbConnection, oldTemplateID, source_names_like)
     for srcTuple in srcTuples:
         reportF.write(
             "=====================================================\n")
@@ -441,7 +440,7 @@ def check_source_templates(reportF, dbConnection, oldTemplateName, newTemplateNa
         return
 
     IDs = []
-    IDs = GetSrcTempID(dbConnection, oldTemplateName)
+    IDs = get_src_template_ID(dbConnection, oldTemplateName)
     if len(IDs) == 0:
         reportF.write(
             "Could not find a SourceTemplate named: " + oldTemplateName)
@@ -452,7 +451,7 @@ def check_source_templates(reportF, dbConnection, oldTemplateName, newTemplateNa
         return
     reportF.write(G_QT + oldTemplateName + G_QT + " checks out OK\n")
 
-    IDs = GetSrcTempID(dbConnection, newTemplateName)
+    IDs = get_src_template_ID(dbConnection, newTemplateName)
     if len(IDs) == 0:
         reportF.write(
             "Could not find a SourceTemplate named: " + newTemplateName)

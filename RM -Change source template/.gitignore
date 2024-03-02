@@ -4,24 +4,14 @@
 # ignore browser url files
 *.url
 
-# ignore visual studio stuff
-.vs/
-*.pyproj
-*.sln
 
 # ignore test database stuff
 DB/
 
+Report_*
 
 DEV_RM-Python-config.ini
 DISTRO_RM-Python-config.ini
 HIDE_*
-
-
-ReportFile.txt
-
-
-# ignore past run data
-logs of past runs/
 
 
