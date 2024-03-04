@@ -232,28 +232,28 @@ def check_mapping_feature(config, report_file, dbConnection):
     old_src_fields=[]
     for each in old_st_fields:
         if each[1]=="source":
-            old_src_fields.append(each[3])
+            old_src_fields.append(each[3].strip())
     old_src_fields.append('NULL')
    
     old_cit_fields=[]
     for each in old_st_fields:
         if each[1]=="citation":
-            old_cit_fields.append(each[3])
+            old_cit_fields.append(each[3].strip())
     old_cit_fields.append('NULL')
 
     new_src_fields=[]
     for each in new_st_fields:
         if each[1]=="source":
-            new_src_fields.append(each[3])
+            new_src_fields.append(each[3].strip())
     new_src_fields.append('NULL')
 
     new_cit_fields=[]
     for each in new_st_fields:
         if each[1]=="citation":
-            new_cit_fields.append(each[3])
+            new_cit_fields.append(each[3].strip())
     new_cit_fields.append('NULL')
 
-    # Confirm theat the entered mapping uses correct fields
+    # Confirm that the entered mapping uses correct fields
     first_field_error = False
     for each in mapping:
         if each[0] == 'source':
@@ -273,6 +273,12 @@ def check_mapping_feature(config, report_file, dbConnection):
         else:
          raise RMPyExcep('ERROR: at least one field mapping'
                              ' does not start with source or citation')
+
+    for each in mapping:
+        if each[1] == 'NULL' and each[2] == 'NULL':
+             raise RMPyExcep('ERROR: A NULL NULL field mapping is not allowed.')
+
+        
 
     report_file.write("\n\n" "No problems detected in the specified mapping." "\n\n")
     return
@@ -574,11 +580,17 @@ SELECT TemplateID
 # ===================================================DIV60==
 def dump_src_template_fields(reportF, dbConnection, TemplateID):
 
-    filed_list=get_list_src_template_fields(TemplateID, dbConnection )
-    reportF.write(filed_list[0][0] + "\n")
-    for item in filed_list:
-        reportF.write(item[1] + "   " + item[2] + "    " + item[3] + "\n")
+    field_list=get_list_src_template_fields(TemplateID, dbConnection )
+    reportF.write(field_list[0][0] + "\n")
+    for item in field_list:
+        reportF.write(item[1] + '   ' + item[2] + '     "' + item[3] + '"\n')
     reportF.write("\n\n")
+
+    for item in field_list:
+        if item[3] != item[3].strip():
+            reportF.write("NOTE: At least one field name above has leading or trailing whitespace !!")
+            reportF.write("\n\n")
+            break
     return
 
 
@@ -605,7 +617,9 @@ SELECT FieldDefs, Name
             fieldLoc = "source"
         # field names may end with a whitespace 
         field_list.append(
-            (st_name, fieldLoc, item.find("Type").text, item.find("FieldName").text.strip())
+            # don't strip here
+            # (st_name, fieldLoc, item.find("Type").text, item.find("FieldName").text.strip())
+            (st_name, fieldLoc, item.find("Type").text, item.find("FieldName").text)
             )
 
     return field_list
