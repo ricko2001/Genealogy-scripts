@@ -168,8 +168,8 @@ def main():
 def check_template_names_feature(config, report_file, dbConnection):
 
     try:
-        old_template_name = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-        new_template_name = config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
+        old_template_name = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        new_template_name = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
     except:
         raise RMPyExcep(
             "ERROR: CHECK_TEMPLATE_NAMES option requires specification" 
@@ -183,8 +183,8 @@ def check_template_names_feature(config, report_file, dbConnection):
 def list_template_details_feature(config, reportF, dbConnection):
 
     try:
-        oldTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-        newTemplateName = config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
+        oldTemplateName = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        newTemplateName = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
         mapping = config['SOURCE_TEMPLATES']['MAPPING']
     except:
         raise RMPyExcep(
@@ -212,8 +212,8 @@ def check_mapping_feature(config, report_file, dbConnection):
     list_template_details_feature(config, report_file, dbConnection)
 
     try:
-        old_template_name = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-        new_template_name = config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
+        old_template_name = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        new_template_name = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
         field_mapping   = config['SOURCE_TEMPLATES']['MAPPING']
     except:
         raise RMPyExcep(
@@ -232,25 +232,25 @@ def check_mapping_feature(config, report_file, dbConnection):
     old_src_fields=[]
     for each in old_st_fields:
         if each[1]=="source":
-            old_src_fields.append(each[3].strip())
+            old_src_fields.append(each[3])
     old_src_fields.append('NULL')
    
     old_cit_fields=[]
     for each in old_st_fields:
         if each[1]=="citation":
-            old_cit_fields.append(each[3].strip())
+            old_cit_fields.append(each[3])
     old_cit_fields.append('NULL')
 
     new_src_fields=[]
     for each in new_st_fields:
         if each[1]=="source":
-            new_src_fields.append(each[3].strip())
+            new_src_fields.append(each[3])
     new_src_fields.append('NULL')
 
     new_cit_fields=[]
     for each in new_st_fields:
         if each[1]=="citation":
-            new_cit_fields.append(each[3].strip())
+            new_cit_fields.append(each[3])
     new_cit_fields.append('NULL')
 
     # Confirm that the entered mapping uses correct fields
@@ -288,8 +288,8 @@ def check_mapping_feature(config, report_file, dbConnection):
 def list_sources_feature(config, reportF, dbConnection):
 
     try:
-        old_template_name = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-        source_names_like = config['SOURCES']['SOURCE_NAME_LIKE']
+        old_template_name = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        source_names_like = unquote_config_string(config['SOURCES']['SOURCE_NAME_LIKE'])
     except:
         raise RMPyExcep(
             "ERROR: LIST_SOURCES option requires specification of"
@@ -310,9 +310,9 @@ def list_sources_feature(config, reportF, dbConnection):
 def make_changes_feature(config, reportF, dbConnection):
 
     try:
-        old_template_name = config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-        new_template_name = config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
-        source_names_like = config['SOURCES']['SOURCE_NAME_LIKE']
+        old_template_name = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        new_template_name = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
+        source_names_like = unquote_config_string(config['SOURCES']['SOURCE_NAME_LIKE'])
         field_mapping = config['SOURCE_TEMPLATES']['MAPPING']
     except:
         raise RMPyExcep(
@@ -365,26 +365,23 @@ SELECT Fields
     # print("source XML OLD END ==============================")
 
     # change fields in source as per mapping:
-    # field name might end in whitespace
     for transform in fieldMapping:
         if transform[0] == "citation":
             continue
 
         if transform[1] == "NULL":
             # create a name and empty value pair.
-            # uses name in mapping to create XML Name text (won't end in whitespace)
             newPair = ET.SubElement(newField, "Field")
             ET.SubElement(newPair, "Name").text = transform[2]
             ET.SubElement(newPair, "Value")
             continue
 
         for eachField in srcRoot.findall('.//Field'):
-            if eachField.find('Name').text.stip() == transform[1]:
+            if eachField.find('Name').text == transform[1]:
                 if transform[2] == "NULL":
                     # delete the unused field
                     srcRoot.find(".//Fields").remove(eachField)
                     break
-                # uses name in mapping to create XML Name text (won't end in whitespace)
                 eachField.find('Name').text = transform[2]
                 break
             # end of for eachField loop
@@ -448,11 +445,9 @@ SELECT Fields
     # sys.exit()
 
     # change fields in citation as per mapping:
-    # field name might end in whitespace
     for transform in fieldMapping:
         if transform[0] == "source":
             continue
-
         if transform[1] == "NULL":
             # create a name and value pair.
             newField = citRoot.find(".//Fields")
@@ -462,12 +457,11 @@ SELECT Fields
             continue
 
         for eachField in citRoot.findall('.//Field'):
-            if eachField.find('Name').text.strip() == transform[1]:
+            if eachField.find('Name').text == transform[1]:
                 if transform[2] == "NULL":
                     # delete the unused field
                     citRoot.find(".//Fields").remove(eachField)
                     break
-            # uses name in mapping to create XML Name text (won't end in whitespace)
             eachField.find('Name').text = transform[2]
             break
         # end of for eachField loop
@@ -505,7 +499,7 @@ SELECT CitationID, CitationName
 
 
 # ===================================================DIV60==
-def parse_field_mapping(text):
+def OLD_parse_field_mapping(text):
 
     # convert string to list of 3-tuple strings
     text = text.strip()
@@ -515,6 +509,40 @@ def parse_field_mapping(text):
         newList.append(tuple(each.split()))
     return newList
 
+# ===================================================DIV60==
+def parse_field_mapping( instr):
+    text = instr.strip()
+    list = text.split('\n')
+    newList = []
+    for each in list:
+        if each.count('"') == 0:
+             newList.append(tuple(each.split()))
+        else:
+            if each.count('"') != 6:
+                raise RMPyExcep("ERROR: mapping line hmust have 0 or 6 quote chars.")
+            new_line_list =[]
+            for sub in each.split('"'):
+                if sub.strip() != '':
+                    new_line_list.append(sub)
+            if len(new_line_list) != 3:
+               raise RMPyExcep("ERROR: failed to parse map line with quotes.")
+            newList.append(tuple(new_line_list))
+    return newList
+
+
+# ===================================================DIV60==
+def unquote_config_string(instr):
+    # deals with names with leading and/or trailing space or quote characters
+    # name must be enclosed in quotes.
+    # can't deal with names containing both kinds of quotes and spaces !!
+    if instr.count('"') == 0 and instr.count("'") == 0:
+        return instr
+    else:
+        if instr[0] == '"':
+            return instr.replace('"', '')
+        elif instr[0] == "'":
+            return instr.replace("'", '')
+  
 
 # ===================================================DIV60==
 def get_list_of_rows(dbConnection, SqlStmt):
@@ -587,8 +615,9 @@ def dump_src_template_fields(reportF, dbConnection, TemplateID):
     reportF.write("\n\n")
 
     for item in field_list:
-        if item[3] != item[3].strip():
-            reportF.write("NOTE: At least one field name above has leading or trailing whitespace !!")
+        if item[3].count(" ") != 0:
+            reportF.write("NOTE: At least one field name above has leading, trailing"
+                          " or embedded whitespace !! See ReadMe file for help.")
             reportF.write("\n\n")
             break
     return
@@ -615,10 +644,7 @@ SELECT FieldDefs, Name
             fieldLoc = "citation"
         else:
             fieldLoc = "source"
-        # field names may end with a whitespace 
         field_list.append(
-            # don't strip here
-            # (st_name, fieldLoc, item.find("Type").text, item.find("FieldName").text.strip())
             (st_name, fieldLoc, item.find("Type").text, item.find("FieldName").text)
             )
 
@@ -711,3 +737,5 @@ class RMPyExcep(Exception):
 # Call the "main" function
 if __name__ == '__main__':
     main()
+
+# ===================================================DIV60==
