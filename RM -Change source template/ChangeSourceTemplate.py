@@ -1,6 +1,5 @@
 import os
 import sys
-import time
 import sqlite3
 from pathlib import Path
 from datetime import datetime
@@ -14,14 +13,13 @@ import traceback
 # Requirements: (see ReadMe.txt for details)
 # RootsMagic v9 database file
 # RM-Python-config.ini  ( Configuration ini file to set options and parameters)
-# unifuzz64.dll
-# Python v3.9 or greater
+# Python v3.11 or greater
 
 
 # ===================================================DIV60==
 #  Global Variables
 G_QT = "\""
-
+G_DEBUG = False
 
 # ===================================================DIV60==
 def main():
@@ -74,7 +72,7 @@ def main():
         pause_console_with_message(
             "ERROR: Application failed.\n\n"
             + str(e)
-            + "Please email console text & ini file to author.\n\n" )
+            + "Please email console text & ini file to author.\n\n")
         return 1
 
     # ===========================================DIV50==
@@ -87,16 +85,13 @@ def main():
 
         try:
             database_path = config['FILE_PATHS']['DB_PATH']
-            RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
         except:
             raise RMPyExcep(
-                'ERROR: Both DB_PATH and RMNOCASE_PATH must be specified.')
+                'ERROR: DB_PATHmust be specified.')
 
         if not os.path.exists(database_path):
             raise RMPyExcep(
                 'ERROR: Path for database path not found: ' + database_path)
-        if not os.path.exists(RMNOCASE_Path):
-            raise RMPyExcep('ERROR: dll file not found at: ' + RMNOCASE_Path)
 
         try:
             report_display_app = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
@@ -113,7 +108,7 @@ def main():
             os.path.getmtime(database_path))
 
         # Process the database for requested output
-        dbConnection = create_db_connection(database_path, RMNOCASE_Path)
+        dbConnection = create_db_connection(database_path, None)
         report_file.write("Report generated at      = " +
                           time_stamp_now() + "\n")
         report_file.write("Database processed       = " + database_path + "\n")
@@ -124,29 +119,29 @@ def main():
 
         # test option values conversion to boolean
         try:
+            config['OPTIONS'].getboolean('LIST_SOURCES')
             config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES')
             config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS')
             config['OPTIONS'].getboolean('CHECK_MAPPING_DETAILS')
-            config['OPTIONS'].getboolean('LIST_SOURCES')
             config['OPTIONS'].getboolean('MAKE_CHANGES')
         except:
             raise RMPyExcep(
                 "ERROR: One of the OPTIONS values could not be parsed as boolean. \n")
 
         # run active options
-        if config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES'):
+        if config['OPTIONS'].getboolean('LIST_SOURCES'):
+            list_sources_feature(config, report_file, dbConnection)
+        elif config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES'):
             check_template_names_feature(config, report_file, dbConnection)
         elif config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS'):
             list_template_details_feature(config, report_file, dbConnection)
         elif config['OPTIONS'].getboolean('CHECK_MAPPING_DETAILS'):
             check_mapping_feature(config, report_file, dbConnection)
-        elif config['OPTIONS'].getboolean('LIST_SOURCES'):
-            list_sources_feature(config, report_file, dbConnection)
         elif config['OPTIONS'].getboolean('MAKE_CHANGES'):
             make_changes_feature(config, report_file, dbConnection)
 
     except RMPyExcep as e:
-        report_file.write( "\n\n" + str(e) + "\n\n")
+        report_file.write("\n\n" + str(e) + "\n\n")
         return 1
     except Exception as e:
         traceback.print_exception(e, file=report_file)
@@ -168,14 +163,16 @@ def main():
 def check_template_names_feature(config, report_file, dbConnection):
 
     try:
-        old_template_name = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
-        new_template_name = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
+        old_template_name = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        new_template_name = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
     except:
         raise RMPyExcep(
-            "ERROR: CHECK_TEMPLATE_NAMES option requires specification" 
+            "ERROR: CHECK_TEMPLATE_NAMES option requires specification"
             " of both TEMPLATE_OLD and TEMPLATE_NEW.")
     check_source_templates(report_file, dbConnection,
-                         old_template_name, new_template_name)
+                           old_template_name, new_template_name)
     return
 
 
@@ -183,13 +180,15 @@ def check_template_names_feature(config, report_file, dbConnection):
 def list_template_details_feature(config, reportF, dbConnection):
 
     try:
-        oldTemplateName = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
-        newTemplateName = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
+        oldTemplateName = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        newTemplateName = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
         mapping = config['SOURCE_TEMPLATES']['MAPPING']
     except:
         raise RMPyExcep(
             "ERROR: LIST_TEMPLATE_DETAILS option requires specification"
-             " of TEMPLATE_OLD and TEMPLATE_NEW and MAPPING.")
+            " of TEMPLATE_OLD and TEMPLATE_NEW and MAPPING.")
 
     oldTemplateID = get_src_template_ID(dbConnection, oldTemplateName)[0][0]
     newTemplateID = get_src_template_ID(dbConnection, newTemplateName)[0][0]
@@ -212,44 +211,48 @@ def check_mapping_feature(config, report_file, dbConnection):
     list_template_details_feature(config, report_file, dbConnection)
 
     try:
-        old_template_name = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
-        new_template_name = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
-        field_mapping   = config['SOURCE_TEMPLATES']['MAPPING']
+        old_template_name = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        new_template_name = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
+        field_mapping = config['SOURCE_TEMPLATES']['MAPPING']
     except:
         raise RMPyExcep(
             "ERROR: LIST_TEMPLATE_DETAILS option requires specification"
-             " of TEMPLATE_OLD and TEMPLATE_NEW and MAPPING.")
-    
+            " of TEMPLATE_OLD and TEMPLATE_NEW and MAPPING.")
+
     mapping = parse_field_mapping(field_mapping)
 
-    old_template_ID = get_src_template_ID(dbConnection, old_template_name)[0][0]
-    new_template_ID = get_src_template_ID(dbConnection, new_template_name)[0][0]
+    old_template_ID = get_src_template_ID(
+        dbConnection, old_template_name)[0][0]
+    new_template_ID = get_src_template_ID(
+        dbConnection, new_template_name)[0][0]
 
-    new_st_fields = get_list_src_template_fields(new_template_ID,dbConnection)
-    old_st_fields = get_list_src_template_fields(old_template_ID,dbConnection)
+    new_st_fields = get_list_src_template_fields(new_template_ID, dbConnection)
+    old_st_fields = get_list_src_template_fields(old_template_ID, dbConnection)
 
-    #make lists of the 4 types of source template fields
-    old_src_fields=[]
+    # make lists of the 4 types of source template fields
+    old_src_fields = []
     for each in old_st_fields:
-        if each[1]=="source":
+        if each[1] == "source":
             old_src_fields.append(each[3])
     old_src_fields.append('NULL')
-   
-    old_cit_fields=[]
+
+    old_cit_fields = []
     for each in old_st_fields:
-        if each[1]=="citation":
+        if each[1] == "citation":
             old_cit_fields.append(each[3])
     old_cit_fields.append('NULL')
 
-    new_src_fields=[]
+    new_src_fields = []
     for each in new_st_fields:
-        if each[1]=="source":
+        if each[1] == "source":
             new_src_fields.append(each[3])
     new_src_fields.append('NULL')
 
-    new_cit_fields=[]
+    new_cit_fields = []
     for each in new_st_fields:
-        if each[1]=="citation":
+        if each[1] == "citation":
             new_cit_fields.append(each[3])
     new_cit_fields.append('NULL')
 
@@ -259,28 +262,27 @@ def check_mapping_feature(config, report_file, dbConnection):
         if each[0] == 'source':
             if each[1] not in old_src_fields:
                 raise RMPyExcep(each[1]
-                                + " is not among the source fields in the existing source template." )
+                                + " is not among the source fields in the existing source template.")
             if each[2] not in new_src_fields:
                 raise RMPyExcep(each[2]
-                                + " is not among the citation fields in the new source template." )
+                                + " is not among the citation fields in the new source template.")
         elif each[0] == 'citation':
             if each[1] not in old_cit_fields:
                 raise RMPyExcep(each[1]
-                                + " is not among the source fields in the existing source template." )
+                                + " is not among the source fields in the existing source template.")
             if each[2] not in new_cit_fields:
                 raise RMPyExcep(each[2]
-                                + " is not among the citation fields in the new source template." )
+                                + " is not among the citation fields in the new source template.")
         else:
-         raise RMPyExcep('ERROR: at least one field mapping'
-                             ' does not start with source or citation')
+            raise RMPyExcep('ERROR: at least one field mapping'
+                            ' does not start with source or citation')
 
     for each in mapping:
         if each[1] == 'NULL' and each[2] == 'NULL':
-             raise RMPyExcep('ERROR: A NULL NULL field mapping is not allowed.')
+            raise RMPyExcep('ERROR: A NULL NULL field mapping is not allowed.')
 
-        
-
-    report_file.write("\n\n" "No problems detected in the specified mapping." "\n\n")
+    report_file.write(
+        "\n\n" "No problems detected in the specified mapping." "\n\n")
     return
 
 
@@ -288,17 +290,19 @@ def check_mapping_feature(config, report_file, dbConnection):
 def list_sources_feature(config, reportF, dbConnection):
 
     try:
-        old_template_name = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
-        source_names_like = unquote_config_string(config['SOURCES']['SOURCE_NAME_LIKE'])
+        old_template_name = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        source_names_like = unquote_config_string(
+            config['SOURCES']['SOURCE_NAME_LIKE'])
     except:
         raise RMPyExcep(
             "ERROR: LIST_SOURCES option requires specification of"
             " both TEMPLATE_OLD and SOURCE_NAME_LIKE.")
 
     oldTemplateID = get_src_template_ID(dbConnection, old_template_name)[0][0]
-    reportF.write("\nSources with template name:\n" + old_template_name
-                  + "\nand source name like:\n" + source_names_like 
-                  + "\n\nSource #      Source Name\n\n")
+    reportF.write('\nSources with template name: "' + old_template_name + '"\n'
+                  + 'and source name like: "' + source_names_like + '"\n\n'
+                  + "Source #      Source Name\n\n")
     srcTuples = get_selected_sources(
         reportF, dbConnection, oldTemplateID, source_names_like)
     for src in srcTuples:
@@ -310,9 +314,12 @@ def list_sources_feature(config, reportF, dbConnection):
 def make_changes_feature(config, reportF, dbConnection):
 
     try:
-        old_template_name = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
-        new_template_name = unquote_config_string(config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
-        source_names_like = unquote_config_string(config['SOURCES']['SOURCE_NAME_LIKE'])
+        old_template_name = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        new_template_name = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
+        source_names_like = unquote_config_string(
+            config['SOURCES']['SOURCE_NAME_LIKE'])
         field_mapping = config['SOURCE_TEMPLATES']['MAPPING']
     except:
         raise RMPyExcep(
@@ -330,7 +337,7 @@ def make_changes_feature(config, reportF, dbConnection):
             "=====================================================\n")
         reportF.write(str(srcTuple[0]) + "    " + srcTuple[1] + "\n")
         convert_source(reportF, dbConnection,
-                      srcTuple[0], newTemplateID, mapping)
+                       srcTuple[0], newTemplateID, mapping)
     return
 
 
@@ -359,10 +366,11 @@ SELECT Fields
     if newField == None:
         ET.SubElement(srcRoot, "Fields")
 
-    # print("source XML OLD START ============================")
-    # ET.indent(srcRoot)
-    # ET.dump(srcRoot)
-    # print("source XML OLD END ==============================")
+    if G_DEBUG:
+        print("source XML OLD START ============================")
+        ET.indent(srcRoot)
+        ET.dump(srcRoot)
+        print("source XML OLD END ==============================")
 
     # change fields in source as per mapping:
     for transform in fieldMapping:
@@ -387,11 +395,11 @@ SELECT Fields
             # end of for eachField loop
         # end of for each transform loop
 
-    # print("source XML NEW START ============================")
-    # ET.indent(srcRoot)
-    # ET.dump(srcRoot)
-    # print("source XML NEW END ==============================")
-    # sys.exit()
+    if G_DEBUG:
+        print("source XML NEW START ============================")
+        ET.indent(srcRoot)
+        ET.dump(srcRoot)
+        print("source XML NEW END ==============================")
 
     # Update the source with new XML and new templateID
     newSrcFields = ET.tostring(srcRoot, encoding="unicode")
@@ -438,11 +446,11 @@ SELECT Fields
     if newField == None:
         ET.SubElement(citRoot, "Fields")
 
-    # print("citation XML OLD START ============================")
-    # ET.indent(srcRoot)
-    # ET.dump(srcRoot)
-    # print("citation XML OLD END ==============================")
-    # sys.exit()
+    if G_DEBUG:
+        print("citation XML OLD START ============================")
+        ET.indent(citRoot)
+        ET.dump(citRoot)
+        print("citation XML OLD END ==============================")
 
     # change fields in citation as per mapping:
     for transform in fieldMapping:
@@ -462,16 +470,16 @@ SELECT Fields
                     # delete the unused field
                     citRoot.find(".//Fields").remove(eachField)
                     break
-            eachField.find('Name').text = transform[2]
-            break
+                eachField.find('Name').text = transform[2]
+                break
         # end of for eachField loop
     # end of for each transform loop
 
-    # print("citation XML NEW START ============================")
-    # ET.indent(srcRoot)
-    # ET.dump(srcRoot)
-    # print("citation XML NEW END ==============================")
-    # sys.exit()
+    if G_DEBUG:
+        print("citation XML NEW START ============================")
+        ET.indent(citRoot)
+        ET.dump(citRoot)
+        print("citation XML NEW END ==============================")
 
     newCitFileds = ET.tostring(citRoot, encoding="unicode")
     # Update the citation with new XML and new templateID
@@ -510,28 +518,31 @@ def OLD_parse_field_mapping(text):
     return newList
 
 # ===================================================DIV60==
-def parse_field_mapping( instr):
+def parse_field_mapping(instr):
+
     text = instr.strip()
     list = text.split('\n')
     newList = []
     for each in list:
         if each.count('"') == 0:
-             newList.append(tuple(each.split()))
+            newList.append(tuple(each.split()))
         else:
             if each.count('"') != 6:
-                raise RMPyExcep("ERROR: mapping line hmust have 0 or 6 quote chars.")
-            new_line_list =[]
+                raise RMPyExcep(
+                    "ERROR: mapping line hmust have 0 or 6 quote chars.")
+            new_line_list = []
             for sub in each.split('"'):
                 if sub.strip() != '':
                     new_line_list.append(sub)
             if len(new_line_list) != 3:
-               raise RMPyExcep("ERROR: failed to parse map line with quotes.")
+                raise RMPyExcep("ERROR: failed to parse map line with quotes.")
             newList.append(tuple(new_line_list))
     return newList
 
 
 # ===================================================DIV60==
 def unquote_config_string(instr):
+    
     # deals with names with leading and/or trailing space or quote characters
     # name must be enclosed in quotes.
     # can't deal with names containing both kinds of quotes and spaces !!
@@ -542,7 +553,7 @@ def unquote_config_string(instr):
             return instr.replace('"', '')
         elif instr[0] == "'":
             return instr.replace("'", '')
-  
+
 
 # ===================================================DIV60==
 def get_list_of_rows(dbConnection, SqlStmt):
@@ -597,7 +608,7 @@ def get_src_template_ID(dbConnection, TemplateName):
     SqlStmt = """
 SELECT TemplateID
   FROM SourceTemplateTable
- WHERE Name = ?
+ WHERE Name = ? COLLATE NOCASE
 """
     cur = dbConnection.execute(SqlStmt, (TemplateName,))
     rows = []
@@ -608,7 +619,7 @@ SELECT TemplateID
 # ===================================================DIV60==
 def dump_src_template_fields(reportF, dbConnection, TemplateID):
 
-    field_list=get_list_src_template_fields(TemplateID, dbConnection )
+    field_list = get_list_src_template_fields(TemplateID, dbConnection)
     reportF.write(field_list[0][0] + "\n")
     for item in field_list:
         reportF.write(item[1] + '   ' + item[2] + '     "' + item[3] + '"\n')
@@ -624,7 +635,7 @@ def dump_src_template_fields(reportF, dbConnection, TemplateID):
 
 
 # ===================================================DIV60==
-def get_list_src_template_fields(TemplateID, dbConnection ):
+def get_list_src_template_fields(TemplateID, dbConnection):
 
     SqlStmt = """
 SELECT FieldDefs, Name
@@ -636,7 +647,7 @@ SELECT FieldDefs, Name
     textTuple = cur.fetchone()
     newRoot = ET.fromstring(textTuple[0].decode())
     st_name = textTuple[1]
-    field_list=[]
+    field_list = []
 
     fieldItr = newRoot.findall(".Fields/Field")
     for item in fieldItr:
@@ -646,7 +657,7 @@ SELECT FieldDefs, Name
             fieldLoc = "source"
         field_list.append(
             (st_name, fieldLoc, item.find("Type").text, item.find("FieldName").text)
-            )
+        )
 
     return field_list
 
@@ -657,7 +668,7 @@ def get_selected_sources(reportF, dbConnection, oldTemplateID, SourceNamesLike):
 SELECT st.SourceID, st.Name
   FROM SourceTable st
   JOIN SourceTemplateTable stt ON st.TemplateID = stt.TemplateID
- WHERE st.TemplateID = ? AND st.Name LIKE ?
+ WHERE st.TemplateID = ? AND st.Name LIKE ?   COLLATE NOCASE
 """
     cur = dbConnection.cursor()
     cur.execute(SqlStmt, (oldTemplateID, SourceNamesLike))
@@ -719,9 +730,7 @@ def create_db_connection(db_file_path, db_extension):
 def get_SQLite_library_version(dbConnection):
 
     # returns a string like 3.42.0
-    SqlStmt = """
-SELECT sqlite_version()
-"""
+    SqlStmt = "SELECT sqlite_version()"
     cur = dbConnection.cursor()
     cur.execute(SqlStmt)
     return cur.fetchone()[0]
