@@ -119,8 +119,8 @@ def main():
 
         # test option values conversion to boolean
         try:
-            config['OPTIONS'].getboolean('LIST_SOURCES')
             config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES')
+            config['OPTIONS'].getboolean('LIST_SOURCES')
             config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS')
             config['OPTIONS'].getboolean('CHECK_MAPPING_DETAILS')
             config['OPTIONS'].getboolean('MAKE_CHANGES')
@@ -129,10 +129,10 @@ def main():
                 "ERROR: One of the OPTIONS values could not be parsed as boolean. \n")
 
         # run active options
-        if config['OPTIONS'].getboolean('LIST_SOURCES'):
-            list_sources_feature(config, report_file, dbConnection)
-        elif config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES'):
+        if config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES'):
             check_template_names_feature(config, report_file, dbConnection)
+        elif config['OPTIONS'].getboolean('LIST_SOURCES'):
+            list_sources_feature(config, report_file, dbConnection)
         elif config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS'):
             list_template_details_feature(config, report_file, dbConnection)
         elif config['OPTIONS'].getboolean('CHECK_MAPPING_DETAILS'):
@@ -202,6 +202,30 @@ def list_template_details_feature(config, reportF, dbConnection):
     reportF.write(str(parse_field_mapping(mapping)))
     reportF.write("\n\n")
 
+    return
+
+
+# ===================================================DIV60==
+def list_sources_feature(config, reportF, dbConnection):
+
+    try:
+        old_template_name = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        source_names_like = unquote_config_string(
+            config['SOURCES']['SOURCE_NAME_LIKE'])
+    except:
+        raise RMPyExcep(
+            "ERROR: LIST_SOURCES option requires specification of"
+            " both TEMPLATE_OLD and SOURCE_NAME_LIKE.")
+
+    oldTemplateID = get_src_template_ID(dbConnection, old_template_name)[0][0]
+    reportF.write('\nSources with template name: "' + old_template_name + '"\n'
+                  + 'and source name like: "' + source_names_like + '"\n\n'
+                  + "Source #      Source Name\n\n")
+    srcTuples = get_selected_sources(
+        reportF, dbConnection, oldTemplateID, source_names_like)
+    for src in srcTuples:
+        reportF.write(str(src[0]) + "    " + src[1] + "\n")
     return
 
 
@@ -287,30 +311,6 @@ def check_mapping_feature(config, report_file, dbConnection):
 
 
 # ===================================================DIV60==
-def list_sources_feature(config, reportF, dbConnection):
-
-    try:
-        old_template_name = unquote_config_string(
-            config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
-        source_names_like = unquote_config_string(
-            config['SOURCES']['SOURCE_NAME_LIKE'])
-    except:
-        raise RMPyExcep(
-            "ERROR: LIST_SOURCES option requires specification of"
-            " both TEMPLATE_OLD and SOURCE_NAME_LIKE.")
-
-    oldTemplateID = get_src_template_ID(dbConnection, old_template_name)[0][0]
-    reportF.write('\nSources with template name: "' + old_template_name + '"\n'
-                  + 'and source name like: "' + source_names_like + '"\n\n'
-                  + "Source #      Source Name\n\n")
-    srcTuples = get_selected_sources(
-        reportF, dbConnection, oldTemplateID, source_names_like)
-    for src in srcTuples:
-        reportF.write(str(src[0]) + "    " + src[1] + "\n")
-    return
-
-
-# ===================================================DIV60==
 def make_changes_feature(config, reportF, dbConnection):
 
     try:
@@ -323,7 +323,8 @@ def make_changes_feature(config, reportF, dbConnection):
         field_mapping = config['SOURCE_TEMPLATES']['MAPPING']
     except:
         raise RMPyExcep(
-            "ERROR: MAKE_CHANGES option requires specification of TEMPLATE_OLD and TEMPLATE_NEW and SOURCE_NAME_LIKE and MAPPING.")
+            "ERROR: MAKE_CHANGES option requires specification of TEMPLATE_OLD"
+             " and TEMPLATE_NEW and SOURCE_NAME_LIKE and MAPPING.")
 
     oldTemplateID = get_src_template_ID(dbConnection, old_template_name)[0][0]
     newTemplateID = get_src_template_ID(dbConnection, new_template_name)[0][0]
