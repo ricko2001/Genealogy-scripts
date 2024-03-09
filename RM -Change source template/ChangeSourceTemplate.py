@@ -87,7 +87,7 @@ def main():
             database_path = config['FILE_PATHS']['DB_PATH']
         except:
             raise RMPyExcep(
-                'ERROR: DB_PATHmust be specified.')
+                'ERROR: DB_PATH must be specified.')
 
         if not os.path.exists(database_path):
             raise RMPyExcep(
@@ -100,7 +100,7 @@ def main():
         if report_display_app != '' and not os.path.exists(report_display_app):
             input_string = report_display_app
             report_display_app = ''
-            raise RMPyExcep('ERROR: Path for report file display app not found: '
+            raise RMPyExcep('ERROR: Path for report-file display app not found: '
                             + input_string)
 
         # RM database file specific
