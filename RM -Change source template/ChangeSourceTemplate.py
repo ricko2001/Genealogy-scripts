@@ -80,8 +80,7 @@ def main():
     # ===========================================DIV50==
 
     try:
-
-        report_file = open(report_path,  mode='w', encoding='utf-8-sig')
+        report_file = open(report_path,  mode='w', encoding='utf-8')
 
         try:
             database_path = config['FILE_PATHS']['DB_PATH']
@@ -198,7 +197,7 @@ def list_template_details_feature(config, reportF, dbConnection):
         "\nThe field mappings, as entered in the configuration file: \n")
     for each in mapping:
         reportF.write(each)
-    reportF.write("\n\n" "Mapping after parsing." "\n\n")
+    reportF.write("\n\n\n\nTroubleshooting info.- Not needed by user \n\n\n" "Mapping after parsing." "\n\n")
     reportF.write(str(parse_field_mapping(mapping)))
     reportF.write("\n\n")
 
@@ -623,7 +622,7 @@ def dump_src_template_fields(reportF, dbConnection, TemplateID):
     field_list = get_list_src_template_fields(TemplateID, dbConnection)
     reportF.write(field_list[0][0] + "\n")
     for item in field_list:
-        reportF.write(item[1] + '   ' + item[2] + '     "' + item[3] + '"\n')
+        reportF.write('"' + item[1] + '"   ' + item[2] + '     "' + item[3] + '"\n')
     reportF.write("\n\n")
 
     for item in field_list:
