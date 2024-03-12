@@ -1,58 +1,60 @@
 ChangeSourceTemplate
+
 Utility application for use with RootsMagic databases
 
-RootsMagic (RM) software uses a SQLite relational database as its data storage 
+RootsMagic (RM) software uses a SQLite relational database as its data storage
 file. Having access to that file via third party tools is a major advantage
 to using RM.
 
 Purpose
-This utility works with structured sources and citations as well as the source 
-templates that define them. "Structured" meaning having defined data fields 
+This utility works with structured sources and citations as well as the source
+templates that define them. "Structured" meaning having defined data fields
 used to create footnotes using the sentence language, as opposed to free form.
 
-RM users can create their own source templates. Those users often find that an 
-initial source template design needs updating after using it for a time and 
-gaining more experience. Changes to the source template are desired, but RM does 
-not provide a mechanism to propagate changes to a source template back to 
-sources and citations already created from it. That's where this utility comes 
+RM users can create their own source templates. Those users often find that an
+initial source template design needs updating after using it for a time and
+gaining more experience. Changes to the source template are desired, but RM does
+not provide a mechanism to propagate changes to a source template back to
+sources and citations already created from it. That's where this utility comes
 in.
 
 A common use case is to add to or rename the fields of a source template that's
 already in use. The work flow using this utility, involves :
-* copy the in-use source template (using the "Copy" button in the source 
+* copy the in-use source template (using the "Copy" button in the RM source
   templates list window)
 * Rename and edit the copy to have the desired fields
 * Uses this utility to switch the sources that used the old template
   to instead use the newly created template.
 
-See "All possible Source Template changes" in the Notes section before 
+See "All possible Source Template changes" in the Notes section before
 proceeding.
 
 This utility does not modify any source template. It modifies sources and
 citations.
-This utility does not move data BETWEEN source and citation fields.
+This utility does not move data BETWEEN source and citation fields. Other
+utilities can do that.
 
 
-======================================================================
+=========================================================================DIV80==
 Backups
 
 VERY IMPORTANT
 This utility makes changes to the RM database file. It can change a
 large number of data items in a single run.
-You will likely not be satisfied with your first run of the utility and will
+You will likely not be satisfied with your first run of the utility and you will
 want to try again, perhaps several times, each time making changes to your
 ini configuration file. You must run this script on a copy of your database file
 and have at least several known-good backups.
 
-Once you are satisfied, don't hurry to use the resulting file. Wait a week or so 
-and to allow further consideration. Then run the utility with your perfected 
+Once you are satisfied, don't hurry to use the resulting file. Wait a week or so
+and to allow further consideration. Then run the utility with your perfected
 ini file on a copy of your now-current database and then use the modified
 database as your normal work file. The week delay will give you time to think
 about it. If you start using the newly modified database immediately, you'll
 lose work if you miss a problem and have to revert to a backup.
 
 
-======================================================================
+=========================================================================DIV80==
 Compatibility
 
 Tested with RootsMagic v9
@@ -65,7 +67,7 @@ Tested with RootsMagic v9
        The py file has not been tested on MacOS could probably be easily
        modified to work on MacOS with Python version 3 installed.
 
-======================================================================
+=========================================================================DIV80==
 Overview
 
 This program is what is called a "command line utility". To install and use
@@ -73,14 +75,12 @@ the exe single file version:
 
 *  Create a working folder on your disk.
 
-*  With RM closed, make a cop of your main database and put it into the 
-   working folder. Never run the utility on you main database directly.
+*  With RM closed, make a cop of your main database, rename it, and put it into
+   the working folder. Never run the utility directly on you main database file.
 
 *  Copy these files from the downloaded zip file to the working folder-
       ChangeSourceTemplate.exe
       RM-Python-config.ini
-
-*  Make a copy your main RM database file and move it to the working folder-
 
 *  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
    referred to, simply, as the "ini file".) The utility needs to know where
@@ -91,39 +91,45 @@ the exe single file version:
 *  Double click the ChangeSourceTemplate.exe file to run the utility and
    generate the report file.
 
-*  Examine the report output file and then, based on the output, go to the 
+*  Examine the report output file and then, based on the output, go to the
    next step by editing the ini file and re-running the utility. Repeat.
-   A series of validation runs is completed first and then a final run in
+   A series of validation runs is completed first and then a final run is
    initiated with "MAKE_CHANAGES = on" to actually change the database.
 
    Details follow below.
 
 --- OR ---
 
-Use the py script file.  
+Use the py script file.
 
 See section below, after the Notes section, entitled-
    "Which to use? Standalone .exe file or .py file"
 
 
-======================================================================
+=========================================================================DIV80==
 Running the utility in detail
 
-Create a working folder on your computer that you will not confuse with other folders.
+=============DIV20==
+Create a folder on your computer that you will not confuse with other
+folders. It will be referred to as the "working folder" below.
 
+=============DIV20==
 Copy these two required files from the downloaded zip file to the working folder-
       ChangeSourceTemplate.exe
       RM-Python-config.ini
 
+=============DIV20==
 Close RM if it's open (did you make a backup?) and make a copy of your main
-database file using file manager. 
-Rename the database copy file so that there will not be any chance of confusion. 
+database file using file manager.
+Rename the database copy file so that there will not be any chance of confusion.
 Suggestion: name it "TEST.rmtree"
 
+=============DIV20==
 Move the copy into the working folder that you created above.
 
-Edit the RM-config.ini file in the working folder by opening NotePad and thrn
-dragging the RM-config.ini file onto the opened NotePad application window.
+=============DIV20==
+Edit the RM-Python-config.ini file in the working folder by opening NotePad and then
+dragging the RM-Python-config.ini file onto the opened NotePad application window.
 
 Look for the section at the top-
 [FILE_PATHS]
@@ -131,10 +137,9 @@ DB_PATH                  = TEST.rmtree
 REPORT_FILE_PATH         = Report_ChangeSourceTemplate.txt
 
 Change the name of the roots magic database file in the line starting with
-DB_PATH to that of the file you placed in the working folder. 
+DB_PATH to that of the file you placed in the working folder.
 If you named it TEST, you're done.
 The other line should be OK as is.
-
 
 Look at the section of the ini file containing options:
 [OPTIONS]
@@ -146,17 +151,17 @@ MAKE_CHANGES           = off
 
 Confirm all 5 options are set to off.
 The first four options tell the utility to execute validation runs. Only the last
-option, when "on" will make changes to your database. Either 0 or 1 of the 5 
-options may be "on" at a time.
+option, when "on" will make changes to your database. Either 0 or 1 of the five
+options may be "on" at one time in a run of the utility.
 Save the ini file, and leave the file open in the editor.
 
-===========================================DIV50==
-Option All = off
+=============DIV20==
+Option    All options = off
 
 Double click the SwitchSourceTemplate.exe file to run it. A black console window
 should momentarily open and then close.
 A new file, Report_ChangeSourceTemplate.txt, should appear in the working folder
-and then automatically open in NotePad. 
+and then automatically open in NotePad.
 Check that there are no error messages listed in the Report file.
 If the database file couldn't be found, fix the ini file, save it and re-run
 the utility until you get it right.
@@ -164,7 +169,7 @@ the utility until you get it right.
 If the report file did not open in NotePad, read the troubleshooting
 section in the NOTES below.
 
-===========================================DIV50==
+=============DIV20==
 Option CHECK_TEMPLATE_NAMES = on
 
 Now you know what to expect when running the utility and how to configure the
@@ -173,7 +178,7 @@ to be accomplished and tell the utility.
 
 There is a source template in the RM file that is not quite right. You've used
 it to create sources, and, because of the template, they're not quite right either.
-Check your database and determine the exact name of the not-quite-right template. 
+Check your database and determine the exact name of the not-quite-right template.
 
 Look at the ini file, still open in NotePad and find the section :
 
@@ -197,12 +202,12 @@ TEMPLATE_NEW    = new and improved template name
 
 Now look back at the OPTIONS section of the ini file, and change the line-
 CHECK_TEMPLATE_NAMES   = off
-to 
+to
 CHECK_TEMPLATE_NAMES   = on
 
 Save the file, leave it open in Notepad, double click the utility exe file to
 run it. A black console window should momentarily open and then close.
-The Report_ChangeSourceTemplate.txt file should automatically open in NotePad. 
+The Report_ChangeSourceTemplate.txt file should automatically open in NotePad.
 
 Check that there are no error messages listed in the Report file.
 If a source template name couldn't be found, fix the ini file, save it and re-run
@@ -210,7 +215,7 @@ the utility until you get it right.
 A common issue is that template names may an embedded space, a leading or
 trailing space.  See NOTES section for details on how to use quote characters to fix.
 
-===========================================DIV50==
+=============DIV20==
 Option LIST_SOURCES = on
 
 Now comes the question of which sources should have their SourceTemplate switched.
@@ -235,7 +240,7 @@ LIST_SOURCES           = on
 
 Save the file, leave it open in Notepad, double click the utility exe file to
 run it, etc. The Report_ChangeSourceTemplate.txt file should automatically
-open in NotePad. 
+open in NotePad.
 
 Check that there are no error messages listed in the Report file. Yous should
 see a list of all sources that were created using the Old Template.
@@ -252,12 +257,12 @@ can be used in a search.
 ( for additional help, see, for instance:  https://www.sqlitetutorial.net/sqlite-like/ )
 
 
-===========================================DIV50==
+=============DIV20==
 Option LIST_TEMPLATE_DETAILS = on
 
 Now the utility has to be told how the old template relates to the new one.
 This is done with the MAPPING key in the ini file.
-Remember, many changes can be made to source templates that do not require this utility. 
+Remember, many changes can be made to source templates that do not require this utility.
 See the Notes section starting with "All possible Source Template changes".
 
 The mapping will only describe field renaming, field addition and field deletion.
@@ -271,9 +276,9 @@ LIST_TEMPLATE_DETAILS  = on
 
 Save the file, leave it open in Notepad, double click the utility exe file to
 run it, etc. The Report_ChangeSourceTemplate.txt file should automatically
-open in NotePad. 
+open in NotePad.
 
-Check that there are no error messages listed in the Report file. 
+Check that there are no error messages listed in the Report file.
 You should see a list of all the fields in the old and new templates.
 
 
@@ -285,84 +290,87 @@ We'll create the mapping from the information in the report file just created.
 Using the built-in source template "Birth Registration, state level" as an example-
 The report files lists this-
 
-"source"   Text     "Repository"
-"source"   Place     "RepositoryLoc"
-"citation"   Text     "Name"
-"source"   Text     "Jurisdiction"
-"citation"   Text     "Form"
-"citation"   Text     "CertificateNo"
-"citation"   Date     "Date"
+source   Text     "Repository"
+source   Place     "RepositoryLoc"
+citation   Text     "Name"
+source   Text     "Jurisdiction"
+citation   Text     "Form"
+citation   Text     "CertificateNo"
+citation   Date     "Date"
 
 I have created a new template that has some field changes. It's info is-
 
-"source"   Text     "RepositoryName"
-"source"   Place     "RepositoryLoc"
-"citation"   Text     "PersonName"
-"citation"   Text     "Form"
-"citation"   Text     "CertificateNo"
-"citation"   Date     "Date"
-"citation"   Text     "ID-number"
+source   Text     "RepositoryName"
+source   Place     "RepositoryLoc"
+citation   Text     "PersonName"
+source   Text     "Jurisdiction"
+citation   Text     "Form"
+citation   Text     "CertificateNo"
+citation   Date     "Date"
+citation   Text     "ID-number"
+
+The quotation marks are optional for most names. However names with spaces- either embedded, leading or trailing, must be enclosed in double quotes as shown.
 
 First, I'll take the old template and copy it here, eliminating the type column
 
-"source"        "Repository"
-"source"        "RepositoryLoc"
-"citation"      "Name"
-"source"        "Jurisdiction"
-"citation"      "Form"
-"citation"      "CertificateNo"
-"citation"      "Date"
+source        "Repository"
+source        "RepositoryLoc"
+citation       "Name"
+source        "Jurisdiction"
+citation      "Form"
+citation      "CertificateNo"
+citation      "Date"
 
 Now, I'll move sort the source fields from the citation fields. (This is optional)
 
-"source"        "Repository"
-"source"        "RepositoryLoc"
-"source"        "Jurisdiction"
-"citation"      "Name"
-"citation"      "Form"
-"citation"      "CertificateNo"
-"citation"      "Date"
+source         "Repository"
+source         "RepositoryLoc"
+source         "Jurisdiction"
+citation       "Name"
+citation       "Form"
+citation       "CertificateNo"
+citation       "Date"
 
 Now I'll take the field name column from the New template listing and place it to the right of the old field.
 
 
-"source"        "Repository"     "RepositoryName"
-"source"        "RepositoryLoc"   "RepositoryLoc"
-"source"        "Jurisdiction"
-"citation"      "Name"             "PersonName"
-"citation"      "Form"             "Form"
-"citation"      "CertificateNo"     "CertificateNo"
-"citation"      "Date"               "Date"
-"citation"                          "ID-number"
+source        "Repository"     "RepositoryName"
+source        "RepositoryLoc"   "RepositoryLoc"
+source        "Jurisdiction"
+citation      "Name"             "PersonName"
+citation      "Form"             "Form"
+citation      "CertificateNo"    "CertificateNo"
+citation      "Date"              "Date"
+citation                          "ID-number"
 
 Notice that 2 fields have been renamed, a new citation field "ID-number" has been added, and 1 source field "Jurisdiction" has been deleted.
-Complete the Mapping by adding the word "NULL" to the middle column for  "ID-number" since there was no such column in the old template and add "NULL"
+Complete the Mapping by adding the word NULL to the middle column for  "ID-number" since there was no such column in the old template and add NULL
 to the right and column for "Jurisdiction" since that field is to be deleted.
 
-"source"        "Repository"     "RepositoryName"
-"source"        "RepositoryLoc"  "RepositoryLoc"
-"source"        "Jurisdiction"   "NULL"
-"citation"      "Name"           "PersonName"
-"citation"      "Form"           "Form"
-"citation"      "CertificateNo"  "CertificateNo"
-"citation"      "Date"           "Date"
-"citation"      "NULL"           "ID-number"
+source        "Repository"     "RepositoryName"
+source        "RepositoryLoc"  "RepositoryLoc"
+source        "Jurisdiction"   NULL
+citation      "Name"           "PersonName"
+citation      "Form"           "Form"
+citation      "CertificateNo"  "CertificateNo"
+citation      "Date"           "Date"
+citation      NULL           "ID-number"
 
 
 Edit the mapping value in the ini file so that is has this value.
 The ini file rows must be indented with at least 1 space.
 
-Mapping = 
-  "source"        "Repository"     "RepositoryName"
-  "source"        "RepositoryLoc"  "RepositoryLoc"
-  "source"        "Jurisdiction"   "NULL"
-  "citation"      "Name"           "PersonName"
-  "citation"      "Form"           "Form"
-  "citation"      "CertificateNo"  "CertificateNo"
-  "citation"      "Date"           "Date"
-  "citation"      "NULL"           "ID-number"
+Mapping =
+  source        "Repository"     "RepositoryName"
+  source        "RepositoryLoc"  "RepositoryLoc"
+  source        "Jurisdiction"   NULL
+  citation      "Name"           "PersonName"
+  citation      "Form"           "Form"
+  citation      "CertificateNo"  "CertificateNo"
+  citation      "Date"           "Date"
+  citation      NULL             "ID-number"
 
-===========================================DIV50==
+=============DIV20==
 Option CHECK_MAPPING_DETAILS = on
 
 Look at the OPTIONS section of the ini file still open in NotePad, edit these
@@ -372,9 +380,9 @@ CHECK_MAPPING_DETAILS  = on
 
 Save the file, leave it open in Notepad, double click the utility exe file to
 run it, etc. The Report_ChangeSourceTemplate.txt file should automatically
-open in NotePad. 
+open in NotePad.
 
-Check that there are no error messages listed in the Report file. 
+Check that there are no error messages listed in the Report file.
 If the mapping checks out as valid, you will see the message:
 No problems detected in the specified mapping.
 
@@ -383,7 +391,7 @@ If so, make the fix in the Mapping and rerun.
 
 If everything checks out, you're ready to make the chnages.
 
-===========================================DIV50==
+=============DIV20==
 Option MAKE_CHANGES = on
 
 Look at the OPTIONS section of the ini file still open in NotePad, edit these
@@ -393,239 +401,129 @@ MAKE_CHANGES  = on
 
 Save the file, leave it open in Notepad, double click the utility exe file to
 run it, etc. The Report_ChangeSourceTemplate.txt file should automatically
-open in NotePad. 
+open in NotePad.
 
-Check that there are no error messages listed in the Report file. 
+Check that there are no error messages listed in the Report file.
 
 Open the database in RootsMagic and confirm that the desired changes have been made.
 
 If there are changes that you did not want, make another copy of yor main database file and copy it to the working folder and try again.
 
 
-======================================================================
-======================================================================
+=========================================================================DIV80==
+=========================================================================DIV80==
 NOTES
 
-All possible Source Template changes 
-for source templates that are in use by Sources and Citations
+===========================================DIV50==
+All possible Source Template changes for source templates 
+that are already in use by Sources and Citations
 
 These alterations:
-    change source template name
-    change field type
-    change display name of a field
-    change brief hint for a field
-    change long hint for a field
-    change footnote template
-    change short footnote template
-    change bibliography template
-    change order of source fields
-may be made at anytime. No bad consequence. The changes will be immediately seen
-in all new and existing source and citations. This utility is not needed.
+*    change source template name
+*    change field type
+*    change display name of a field
+*    change brief hint for a field
+*    change long hint for a field
+*    change footnote template
+*    change short footnote template
+*    change bibliography template
+*    change order of source fields
+May be made at anytime. No negative consequence. The changes will be immediately
+seen in all new and existing source and citations. This utility is not needed.
+Converting a field type from say, "name" type to "date" would not make much
+sense if the field's existing data actually has name data in it. But it can be
+done at any time.
+
 
 This alteration:
-    change order of citation fields
-may be made at any time, but existing citations whose citation names were
+*    change order of citation fields
+May be made at any time, but existing citations whose citation names were
 automatically generated will not be updated with what would be the new
 auto generated name using the new order of citation fields.
 If this is objectionable, one could open each citation, delete the existing
 citation name and let it be auto generated using the new template information.
 (Possible task for a new utility app?)
 
-These alterations
-    change field name
-    add new fields
-    delete fields
 
-The following change implies movement of data from a source to a citation 
-or vice versa. This could be called "Lumoing" or "Spliting" source info. 
-Do not use this utility. (See my site for Lumping utilities) 
-
-Checkbox "This is a source detail field"
+This alteration:
+*    change state of check-box "This is a source detail field"
+This change implies movement of data from a source to a citation
+or vice versa. This could be called "Lumping" or "Splitting" source info.
+Do not use this utility. (See my site for Lumping utilities.)
 
 
-If custom templates are defined that use fields that are renamed, those custom template must be updated to match the new names.
+These alterations:
+*    change field name
+*    add new fields
+*    delete fields
+Use this utility to update existing source and citations to the new template 
+structure. 
+
+If the utility is not used and these changes are made:
+*    change field name
+Data is be invisible when accessed with the new name. The old date remains, but
+hidden.
+*    add new fields
+New fields will not be correctly initialized, sentence language will not see the
+new field as empty when tested by <> in the sentence language.
+*    delete fields
+Old data not removed, but is only hidden.This is not really a problem, but
+it's not tidy.
 
 
+===========================================DIV50==
+Selecting source to be changed
 
-Converting a field from say, "name" type to "date" would not make much sense if the field's
-existing data actually has name data in it.
-If the utility is not used and these changes are made-
-Additional fields-- New fields will not be correctly initialized, sentence language will not see the new field as empty when.
-Deleted fields-- Old data not removed, but is only hidden.
+If the SOURCE_NAME_LIKE variable does not give you the set you need, you can
+run the utility multiple times with different values of SOURCE_NAME_LIKE. 
 
-
-One could work with just one source at a time by giving the full source name and not including a wild card, say
+Or, one could work with just one source at a time by giving the full source name
+and not including a wild card, say
 SOURCE_NAME_LIKE = BIRTH Helen Sauer
-The list would include only the one source. After that source is successfully converted, a different source could
-be converted in a new  MAKE_CHANGES run. The error checking runs can be skipped since the other parameters are already confirmed as accurate.
-If all of the desired Sources can't be found with one value of SOURCE_NAME_LIKE, you can run the utility multiple times with different values of SOURCE_NAME_LIKE. Or, you may consider renaming your source so they fit an easy to find pattern.
+The list would include only the one source. After that source is successfully
+converted, a different source could be converted in a new  MAKE_CHANGES run. 
+The error checking runs can be skipped since the other parameters are already
+confirmed as accurate.
 
-
-
-===========================================DIV50==
-Source fields go to source fields and citation fields go to citation fields.  
-New fields in the new source template should be initialized in existing source by doing 
-a NULL => field map.
-Existing fields that are no longer needed can be deleted by doing a Field => Null mapping.
-
-===========================================DIV50==
-For better or for worse SourceTemplate, template field and Fact names in RM can start, end or contain  1 or more blank characters.
-
-If you have this, the map line that contains the odd field name should be entered with each of the three words/names in double quotes, like
-  "source"   "field1 "    "field4"
-
-
-spaces- embedded, leading training and quotes
-field names, LIKE string
-
-so this also goes for speciying Sourcetemplate Names in the ini file-
-need to use quotes to include spaces.
-
-for names-
-TEMPLATE_OLD
-TEMPLATE_NEW
-SOURCE_NAME_LIKE
-
-can use " for leading and trailing spaces
-
-fields are just renamed
-what if removal- rename is wrong?
-
-should really create a new XML and copy data
-need to test NULL => field
-and
-field => NULL
-
+Or, you may consider renaming your sources so they fit an easy to find pattern.
 
 
 ===========================================DIV50==
-Don't run MAKE_CHHANGES with the same mapping on a source more than once, unless you have given it some thought
-????
+Source Template Names and Field Names
+
+For better or for worse source names, source template names, template field names
+in RM are not required to be unique and can start with, end with or contain space characters.
+
+If you specify a name in the ini file that is not unique, the report file will show the problem. Simply rename the item to make the name unique.
+If you have duplicate field names that are of the same type (source vs citation), I don't know what to say. You will find odd behavior. Good luck.
+
+If the template name, field name or SOURCE_NAME_LIKE variable contains a space character at the start or the end it will generally be invisible when displayed. In any case you can quotation marks e.g. "Name ", or " Name" or "My Name".
 
 
 ===========================================DIV50==
-RM does not prevent creation of entries with identical names.
-Important for this utility, this includes Sources, Citations, Source Templates and Source Template fields.
-If your database has duplicate names for items this utility will operate on, the safest course is to change the name so it's no longer an exact duplicate of another item of the same type.
-
-if there are duplicates in the SourceTemplate names, the utility will complain and make you change the name before it will run.
-If you have duplicate field names that are of the same type (source vs citation), I don;t know what to say. You will find odd behavior. Good luck.
-
-Field names
-RM allows the names and the field names to contain any character at any position.
-
-SourceTemplate names
-RM allows the names to contain any character at any position.
-
-One can say this allows great flexibility, but it also cause complication when one want to, say look up a particular name by typing it in.
-If the Name desired happens to end with a space, it will generally be invisible when displayed. So when you type Name as a exact match search term, you may really need to type "Name ".
-
-Note that the value can have embedded spaces.
-Space characters between the = and the value are ignored.
-If a name contains a leading or trailing space, then enclose the value with
-double quotes, as in-
-    TEMPLATE_OLD = "MyOdd name "
-
-Leading or trailing spaces in a name is a bad practice. Fix them as you fix
-other aspects of your source templates.
+Running the utility with MAKE_CHHANGES = off does not make any changes to your
+database. You can run it as many times as you need. However, once you have run
+the utility with MAKE_CHHANGES = on, the database is no longer the way it was.
+Running the utility again with MAKE_CHHANGES = on using the same mapping may
+give unexpected results unless you take into account the new status of your data.
 
 
 ===========================================DIV50==
+Mapping rules processing
 
-The ini file must be edited to indicate the conversion that should be done.
+The mapping is processed in the order that they are listed.
 
-The task is specified by key value pairs. Here are three Keys-
-    TEMPLATE_OLD      =
-    TEMPLATE_NEW      =
-    SOURCENAME_LIKE   =
+NULL on left side means that the field on right side will be empty but correctly
+initialized. Must be used when adding a new field but without moving old data
+to it.
 
-Here are examples of three Key-Value pairs-
-    TEMPLATE_OLD      = MyOldSorceTemplateName
-    TEMPLATE_NEW      = NewTemplate Name
-    SOURCENAME_LIKE   = DeathRecord US,NY %
-
-
-
-
-===========================================DIV50==
-The default citation name is the concatenation of the contents of the citation fields, separated by semicolons. The order is set by the order of the fields in the Source template.
-If field contents are reordered by the mapping in the utility, the default Citation Name will also change, but existing names in existing citations will not be updated. 
-
-
-===========================================DIV50==
-mapping rules
-processed in order of the mapping value.
-
-all fields in old and new src templates must be listed, all old on left, all new on right
-old source fields can go to new source fields
-NULL on left side means that the field on right side will be empty but correctly initialized. Must be used when adding a new field but without moving old data to it.
-
-NULL on right side means the data on left side field will not be used and the old data is deleted.
-
-not all old src fields have to be used. Can map to NULL, in which case data is not carried over.
-
-
-Check if source names need to be unique	    dups are not prevented, even with same src template
-Check if source template names need to be unique	dups are not prevented
-Check if field names in Source template need to be unique.	dups are not prevented
-
-check why the first column of mapping is needed.
-could determine at runtime that a field is a citation (Source details) field.
-
-The xml for sources is updated
-Existing xml read into DOM and manipulated, then saved back
-
-In mapping- can a s-field in old template be mapped to a c-field in new? NO
-In mapping- can a c-field in old template be mapped to a s-field in new? NO
-
-in processing, for each source selected in set,
-its template is changed and data from previous fields is copied to the new template as mapped. 
-Don't have access to any citation fields at this point. Even if had access, which copy of the citation field would be used? 
-So cannot "map a c-field in old template to a s-field in new"
-
-
-!!!!!!!!!!!!!
-no need to liste the unchanged fields unless the order is changed-
-wait cant't reorder firlds only names that would screw up data
-
+NULL on right side means the data on left side field will not be used and the
+old data is deleted.
 
 RULE each line describes how a field in the old template will be renamed in the new template
 RULE data in a source field can't be renamed so as to make it a citation field (and vice versa)
 RULE if the exact same name appears on the 2nd and 3rd column of a row, that row will have no effect.
-RULE if the 2nd colum
-The kind of template changes that are handled by this utility are covered in the Notes section below.
-You are presumably using this utility becase the old and new template differ in their fields.
 
-The template currently in use and the one that will be used will presumably have different fields
-If one only changes a source's template in the database, the source will have the fields and data corresponding to the template it was created with the MAPPING key. Note that the MAPPING key is set to a multi line value. The format is three items per line, 
-the first being either source or citation. The second is a field name in the Old template and the third is a feild name in the new template
-
-MAPPING = 
-  source       Title           NULL
-  source       Date            EventDate
-  citation     Person          CoupleNames
-  citation     BDate           CD
-  citation     CD              SrcInfo
-  citation     CitationDate    AccessDate
-  citation     NULL            NewField
-
-This works as long as the second and remaining lines are indented at least 1 space
-and there are no empty lines
-
-What it means
-
-We assume that we want to rename fields to those used in the new template.
-We may want to add new empty fields if they exist in the new template
-We may want to delete old fields if there is no point to rename them to a field used in new template.
-
-Fields may be in either source or citation. In RM UI, citation fields have a y in column.
-All fields are saved as plain text. Their type info is used for display and input.
-
-
-
-old is the existing SourceTemplateID specified by the source
-SourceNamesLike is the search criteria fed to the SQL LIKE function.
-Looks like leading or trailing spaces won't work in search.
 
 The selection by SourceTemplateID is easy, the name Like selection may be an issue.
 The script prints out the selected sources (ID and name) to the console.
@@ -635,30 +533,6 @@ Now double check that a new source template exists and has the properties desire
 run the script with
 
 
-
-to list fields of old and new template.
-Copy from window and paste into the RM-Python-config.ini.
-
-Organize into a table with whitespace separating columns (tabs, or blanks)
-Important- "mapping" is at left margin, subsequent lines are indented all the same amount.
-
-
-
-first column specified whether the mapping is for source (no) or citation (y)
-second col specifies the field name as it currently exists.
-third is the name to use in renaming the first column. 
-NULL is a special name. 
-in first column, it means add a field with the name specified in the third column.
-in the third column, it means delete the field specified in the second column.
-
-This mapping should correspond to the templates being used.
-Don't add fields that aren't specified in the new template,
-add a fields for all templates specified in the new template.
-
-all three tables have XML data-
-SourceTemplateTable		FieldDefs
-SourceTable				Fields
-CitationTable			Fields
 
 ===========================================DIV50==
 REPORT_FILE_DISPLAY_APP
@@ -679,6 +553,11 @@ The [END] section is entirely optional.
 
 ini file path names may be absolute or relative to the current directory.
 
+The MAPPING key takes a multi-line value.
+Each line must be indented with at least one space character.
+Each line must have 3 entries- type, old field, new field
+
+
 ===========================================DIV50==
 Directory structure (optional)
 My directory structure, which of course, I recommend 🙂, is-
@@ -688,6 +567,7 @@ Genealogy          (top level folder, mine is in my Home folder)
   Misc Databases   (folder for other databases I frequently use)
   Exhibits         (folder containing all media files in a folder hierarchy)
   SW               (folder containing various utility apps and the ini file)
+
 
 ===========================================DIV50==
 Troubleshooting:
@@ -710,15 +590,22 @@ running the exe or py file from the command line. The window will not close
 and you'll be able to read any error messages.
 
 
-======================================================================
+=========================================================================DIV80==
 Development Notes   (not needed to use utility)
-======================================================================
-======================================================================
+=========================================================================DIV80==
+=========================================================================DIV80==
 
-The XML fields in the source and citation record are just a collection of fieldName-value pairs. 
+The XML fields in the source and citation record are just a collection of 
+FieldName-Value pairs.
 The order of these pairs in the XML is not significant.
 The Template determines the order of the values in the default citation name.
 There is no point to reordering the data in the source and citation XML.
+
+the three tables having source type XML data-
+SourceTemplateTable		FieldDefs
+SourceTable				Fields
+CitationTable			Fields
+
 
 ===========================================DIV50==
 
@@ -761,6 +648,15 @@ Caused by same fields value of <Root />
 When looking to remove processing instruction element found in old data, was
 looking for start of XML by searching for <Root>, but it wasn't found in this case. So look for "<Root"
 
+
+===========================================DIV50==
+Possible changes
+Should a separate variable be used for source and citation fields, Would no
+longer need col 1.
+MAPPING_SOURCE
+MAPPING_CITATION
+
+
 ===========================================DIV50==
 LIKE note from SQLite doc-
 The LIKE operator does a pattern matching comparison. The operand to the right of the LIKE operator contains the pattern and the left hand operand contains the string to match against the pattern. A percent symbol ("%") in the LIKE pattern matches any sequence of zero or more characters in the string. An underscore ("_") in the LIKE pattern matches any single character in the string. Any other character matches itself or its lower/upper case equivalent (i.e. case-insensitive matching). Important Note: SQLite only understands upper/lower case for ASCII characters by default. The LIKE operator is case sensitive by default for unicode characters that are beyond the ASCII range. For example, the expression 'a' LIKE 'A' is TRUE but 'æ' LIKE 'Æ' is FALSE. The ICU extension to SQLite includes an enhanced version of the LIKE operator that does case folding across all unicode characters.
@@ -768,9 +664,9 @@ The LIKE operator does a pattern matching comparison. The operand to the right o
 If the optional ESCAPE clause is present, then the expression following the ESCAPE keyword must evaluate to a string consisting of a single character. This character may be used in the LIKE pattern to include literal percent or underscore characters. The escape character followed by a percent symbol (%), underscore (_), or a second instance of the escape character itself matches a literal percent symbol, underscore, or a single escape character, respectively.
 
 
-======================================================================
-======================================================================
-======================================================================
+=========================================================================DIV80==
+=========================================================================DIV80==
+=========================================================================DIV80==
 Which to use? Standalone .exe file or .py file
 
 Decide whether you wish to use the script file (.py) or the executable
@@ -801,7 +697,7 @@ Pro's and Con's
    This is a 100 MB investment in disk space. (Not big for modern day hard disks)
 
 
-======================================================================
+=========================================================================DIV80==
 To use the py script version of the app
 
 To install and use the script file version:
@@ -815,12 +711,12 @@ To install and use the script file version:
    database file and the output report file. The ini file also specifies the
    input parameters for the fact conversion. See Notes section below.
    The same ini file may be used with either the .exe or .py version of the utility.
-*  Double click the ChangeSourceTemplate.py file to run the utility and generate the 
+*  Double click the ChangeSourceTemplate.py file to run the utility and generate the
    report file.
 *  Examine the report output file.
 
 
-======================================================================
+=========================================================================DIV80==
 Python install-
 Install Python from the Microsoft Store
 or download and install from Python.org web site
@@ -852,12 +748,12 @@ Windows=>Settings
 Run the Python installer selecting all default options.
 
 
-======================================================================
+=========================================================================DIV80==
 TODO
 *  ?? what would you find useful?
 
 
-======================================================================
+=========================================================================DIV80==
 Feedback
 The author appreciates comments and suggestions regarding this software.
 Richard.J.Otter@gmail.com
@@ -874,10 +770,10 @@ My Linked-In profile at-
 https://www.linkedin.com/in/richardotter/
 
 
-======================================================================
+=========================================================================DIV80==
 Distribution
 Everyone is free to use this utility. However, instead of
 distributing it yourself, please instead distribute the URL
 of my website where I describe it- https://RichardOtter.github.io
 
-======================================================================
+=========================================================================DIV80==

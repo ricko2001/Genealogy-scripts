@@ -507,37 +507,17 @@ SELECT CitationID, CitationName
 
 
 # ===================================================DIV60==
-def OLD_parse_field_mapping(text):
+def parse_field_mapping(in_str):
 
-    # convert string to list of 3-tuple strings
-    text = text.strip()
-    list = text.split('\n')
-    newList = []
-    for each in list:
-        newList.append(tuple(each.split()))
-    return newList
-
-# ===================================================DIV60==
-def parse_field_mapping(instr):
-
-    text = instr.strip()
-    list = text.split('\n')
-    newList = []
-    for each in list:
-        if each.count('"') == 0:
-            newList.append(tuple(each.split()))
-        else:
-            if each.count('"') != 6:
-                raise RMPyExcep(
-                    "ERROR: mapping line hmust have 0 or 6 quote chars.")
-            new_line_list = []
-            for sub in each.split('"'):
-                if sub.strip() != '':
-                    new_line_list.append(sub)
-            if len(new_line_list) != 3:
-                raise RMPyExcep("ERROR: failed to parse map line with quotes.")
-            newList.append(tuple(new_line_list))
-    return newList
+    # convert string to list of lists (of 3 strings)
+    in_str = in_str.strip()
+    list_of_lines = in_str.splitlines()
+    list_of_lists = []
+    for each_line in list_of_lines:
+        item_set = list(each_line.split())
+        item_set = [x.strip('"') for x in item_set]
+        list_of_lists.append(item_set)
+    return list_of_lists
 
 
 # ===================================================DIV60==
@@ -622,7 +602,7 @@ def dump_src_template_fields(reportF, dbConnection, TemplateID):
     field_list = get_list_src_template_fields(TemplateID, dbConnection)
     reportF.write(field_list[0][0] + "\n")
     for item in field_list:
-        reportF.write('"' + item[1] + '"   ' + item[2] + '     "' + item[3] + '"\n')
+        reportF.write( item[1] + '   ' + item[2] + '     "' + item[3] + '"\n')
     reportF.write("\n\n")
 
     for item in field_list:
