@@ -52,14 +52,14 @@ def main():
             report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
         except:
             raise RMPyExcep('ERROR: REPORT_FILE_PATH must be defined in the ' +
-                            IniFileName + "\n\n")
+                            IniFileName + '\n\n')
 
         try:
             # test open the report file
             open(report_path,  mode='w', encoding='utf-8')
         except:
             raise RMPyExcep(
-                'ERROR: Cannot create the report file: ' + q_str(report_path) + "\n\n")
+                'ERROR: Cannot create the report file: ' + q_str(report_path) + '\n\n')
 
     except RMPyExcep as e:
         pause_console_with_message(e)
@@ -67,9 +67,9 @@ def main():
     except Exception as e:
         traceback.print_exception(e, file=sys.stdout)
         pause_console_with_message(
-            "ERROR: Application failed.\n\n"
+            'ERROR: Application failed.\n\n'
             + str(e)
-            + "Please email console text & ini file to author.\n\n")
+            + 'Please email console text & ini file to author.\n\n')
         return 1
 
     # ===========================================DIV50==
@@ -102,12 +102,12 @@ def main():
         # Process the database for requested output
         dbConnection = create_db_connection(database_path, None)
         report_file.write("Report generated at      = " +
-                          time_stamp_now() + "\n")
-        report_file.write("Database processed       = " + database_path + "\n")
+                          time_stamp_now() + '\n')
+        report_file.write("Database processed       = " + database_path + '\n')
         report_file.write("Database last changed on = " +
-                          FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n")
+                          FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + '\n')
         report_file.write("SQLite library version   = " +
-                          get_SQLite_library_version(dbConnection) + "\n\n")
+                          get_SQLite_library_version(dbConnection) + '\n\n')
 
         # test option values conversion to boolean
         try:
@@ -118,7 +118,7 @@ def main():
             config['OPTIONS'].getboolean('MAKE_CHANGES')
         except:
             raise RMPyExcep(
-                "ERROR: One of the OPTIONS values could not be parsed as boolean. \n")
+                'ERROR: One of the OPTIONS values could not be parsed as boolean. \n')
 
         # run active options
         if config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES'):
@@ -126,18 +126,19 @@ def main():
         elif config['OPTIONS'].getboolean('LIST_SOURCES'):
             list_sources_feature(config, report_file, dbConnection)
         elif config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS'):
-            list_template_details_feature(config, report_file, dbConnection)
+            list_template_details_feature(
+                config, report_file, dbConnection, False)
         elif config['OPTIONS'].getboolean('CHECK_MAPPING_DETAILS'):
             check_mapping_feature(config, report_file, dbConnection)
         elif config['OPTIONS'].getboolean('MAKE_CHANGES'):
             make_changes_feature(config, report_file, dbConnection)
     except RMPyExcep as e:
-        report_file.write("\n\n" + str(e) + "\n\n")
+        report_file.write('\n\n' + str(e) + '\n\n')
         return 1
     except Exception as e:
         traceback.print_exception(e, file=report_file)
-        report_file.write("\n\n" "ERROR: Application failed. Please email "
-                          "report & ini file to author." "\n\n")
+        report_file.write('n\n' 'ERROR: Application failed. Please email '
+                          'report & ini file to author.' '\n\n')
         return 1
     finally:
         if db_connection is not None:
@@ -167,7 +168,7 @@ def check_template_names_feature(config, report_file, dbConnection):
 
 
 # ===================================================DIV60==
-def list_template_details_feature(config, reportF, dbConnection):
+def list_template_details_feature(config, reportF, dbConnection, include_mapping):
 
     try:
         oldTemplateName = unquote_config_string(
@@ -188,21 +189,22 @@ def list_template_details_feature(config, reportF, dbConnection):
     dump_src_template_fields(reportF, dbConnection, old_template_ID)
     dump_src_template_fields(reportF, dbConnection, new_template_ID)
 
-    reportF.write(
-        "\nThe field mappings, as entered in the configuration file:\n\n")
+    if include_mapping:
+        reportF.write(
+            '\nThe field mappings, as entered in the configuration file:\n\n')
+        reportF.write('Source mapping:\n')
 
-    reportF.write("Source mapping:\n")
-    for each in mapping_source:
-        reportF.write(each)
-    reportF.write("\n\nCitation mapping:\n")
-    for each in mapping_citation:
-        reportF.write(each)
-    reportF.write("\n\n")
+        for each in mapping_source:
+            reportF.write(each)
+        reportF.write('\n\nCitation mapping:\n')
+        for each in mapping_citation:
+            reportF.write(each)
+        reportF.write('\n\n')
 
     if G_DEBUG:
-        reportF.write("\n\nSource fields:\n")
+        reportF.write('\n\nSource fields:\n')
         reportF.write(str(parse_field_mapping(mapping_source)))
-        reportF.write("Source fields:\n")
+        reportF.write('Source fields:\n')
         reportF.write(str(parse_field_mapping(mapping_citation)))
 
     return
@@ -229,7 +231,7 @@ def list_sources_feature(config, reportF, dbConnection):
     srcTuples = get_selected_sources(
         reportF, dbConnection, oldTemplateID, source_names_like)
     for src in srcTuples:
-        reportF.write(str(src[0]) + "    " + src[1] + "\n")
+        reportF.write(str(src[0]) + '     ' + src[1] + '\n')
     return
 
 
@@ -238,7 +240,7 @@ def check_mapping_feature(config, report_file, dbConnection):
 
     # confirms each fielsd in mapping appears in the corresponding
     # template description
-    list_template_details_feature(config, report_file, dbConnection)
+    list_template_details_feature(config, report_file, dbConnection, True)
 
     try:
         old_template_name = unquote_config_string(
@@ -315,7 +317,7 @@ def check_mapping_feature(config, report_file, dbConnection):
             raise RMPyExcep('ERROR: A NULL NULL field mapping is not allowed.')
 
     report_file.write(
-        "\n\n" "No problems detected in the specified mapping." "\n\n")
+        "\n\n" "No problems detected in the specified mapping." '\n\n')
     return
 
 
@@ -346,8 +348,8 @@ def make_changes_feature(config, reportF, dbConnection):
         reportF, dbConnection, oldTemplateID, source_names_like)
     for srcTuple in srcTuples:
         reportF.write(
-            "=====================================================\n")
-        reportF.write(str(srcTuple[0]) + "    " + srcTuple[1] + "\n")
+            '=====================================================\n')
+        reportF.write(str(srcTuple[0]) + "    " + srcTuple[1] + '\n')
         convert_source(reportF, dbConnection, srcTuple[0],
                        newTemplateID, field_mapping_source, field_mapping_citation)
     return
@@ -361,20 +363,31 @@ def convert_source(reportF, dbConnection, srcID, newTemplateID,
     fields_element = root_element.find(".//Fields")
    # change fields in source as per mapping:
     for transform in field_mapping_source:
-        if transform[0] == "NULL":
-            # create a name and empty value pair.
-            newPair = ET.SubElement(fields_element, "Field")
-            ET.SubElement(newPair, "Name").text = transform[1]
-            ET.SubElement(newPair, "Value")
+        if transform[0] == transform[1]:
             continue
-
+        if transform[0] == "NULL":
+            # check whether field transform[1] exists as a Name
+            if root_element.find("Fields/Field[Name='" + transform[1] + "']") == None:
+                # if it does not exist, create it
+                # create a name and empty value pair.
+                newPair = ET.SubElement(fields_element, "Field")
+                ET.SubElement(newPair, "Name").text = transform[1]
+                ET.SubElement(newPair, "Value")
+            else:
+                raise RMPyExcep(
+                    "Tried to create duplicate Name in source XML.NULL on left")
+            continue
         for eachField in fields_element.findall('.//Field'):
             if eachField.find('Name').text == transform[0]:
                 if transform[1] == "NULL":
                     # delete the unused field
                     fields_element.remove(eachField)
                     break
-                eachField.find('Name').text = transform[1]
+                if root_element.find("Fields/Field[Name='" + transform[1] + "']") == None:
+                    eachField.find('Name').text = transform[1]
+                else:
+                    raise RMPyExcep(
+                        "Tried to create duplicate Name in source XML.")
                 break
             # end of for eachField loop
         # end of for each transform loop
@@ -397,7 +410,7 @@ UPDATE SourceTable
     # deal with this source's citations
     for citationTuple in get_citations_of_source(dbConnection, srcID):
         reportF.write(
-            "   " + q_str(str(citationTuple[0])) + "    " + citationTuple[1][:70] + "\n")
+            "   " + q_str(str(citationTuple[0])) + "    " + citationTuple[1][:70] + '\n')
         convert_citation(
             dbConnection, citationTuple[0], field_mapping_citation)
         # end loop for citations
@@ -420,7 +433,20 @@ def convert_citation(dbConnection, citation_ID, field_mapping_citation):
 
     # change fields in citation as per mapping:
     for transform in field_mapping_citation:
+        if transform[0] == transform[1]:
+            continue
         if transform[0] == "NULL":
+            # check whether field transform[1] exists as a Name
+            if root_element.find("Fields/Field[Name='" + transform[1] + "']") == None:
+                # if it does not exist, create it
+                # create a name and empty value pair.
+                newPair = ET.SubElement(fields_element, "Field")
+                ET.SubElement(newPair, "Name").text = transform[1]
+                ET.SubElement(newPair, "Value")
+            else:
+                raise RMPyExcep(
+                    "Tried to create duplicate Name in citation XML. NULL on left")
+            continue
             # create a name and value pair.
             newPair = ET.SubElement(fields_element, "Field")
             ET.SubElement(newPair, "Name").text = transform[1]
@@ -433,7 +459,11 @@ def convert_citation(dbConnection, citation_ID, field_mapping_citation):
                     # delete the unused field
                     root_element.find(".//Fields").remove(eachField)
                     break
-                eachField.find('Name').text = transform[1]
+                if root_element.find("Fields/Field[Name='" + transform[1] + "']") == None:
+                    eachField.find('Name').text = transform[1]
+                else:
+                    raise RMPyExcep(
+                        "Tried to create duplicate Name in citation XML.")
                 break
         # end of for eachField loop
     # end of for each transform loop
@@ -578,7 +608,7 @@ def check_source_templates(reportF, dbConnection, oldTemplateName, newTemplateNa
         reportF.write(q_str(oldTemplateName) +
                       " is not a unique name. Edit the name in RM and try again")
         return
-    reportF.write(G_QT + oldTemplateName + G_QT + " checks out OK\n")
+    reportF.write(q_str(oldTemplateName) + " checks out OK\n")
 
     IDs = get_src_template_ID(dbConnection, newTemplateName)
     if len(IDs) == 0:
@@ -612,17 +642,17 @@ SELECT TemplateID
 def dump_src_template_fields(reportF, dbConnection, TemplateID):
 
     field_list = get_list_src_template_fields(TemplateID, dbConnection)
-    reportF.write(field_list[0][0] + "\n")
+    reportF.write(field_list[0][0] + '\n')
     for item in field_list:
         reportF.write(item[1] + '   ' + item[2] +
                       '     ' + q_str(item[3]) + '\n')
-    reportF.write("\n\n")
+    reportF.write('\n\n')
 
     for item in field_list:
         if item[3].count(" ") != 0:
             reportF.write("NOTE: At least one field name above has leading, trailing"
                           " or embedded whitespace !! See ReadMe file for help.")
-            reportF.write("\n\n")
+            reportF.write('\n\n')
             break
     return
 
@@ -657,6 +687,7 @@ SELECT FieldDefs, Name
 
 # ===================================================DIV60==
 def get_selected_sources(reportF, dbConnection, oldTemplateID, SourceNamesLike):
+
     SqlStmt = """
 SELECT st.SourceID, st.Name
   FROM SourceTable st
@@ -700,7 +731,7 @@ def pause_console_with_message(message=None):
 
     if (message != None):
         print(str(message))
-    input("\n" "Press the <Enter> key to continue...")
+    input('\n' "Press the <Enter> key to continue...")
     return
 
 
@@ -715,7 +746,7 @@ def create_db_connection(db_file_path, db_extension):
             dbConnection.enable_load_extension(True)
             dbConnection.load_extension(db_extension)
     except Exception as e:
-        raise RMPyExcep(e, "\n\n" "Cannot open the RM database file." "\n")
+        raise RMPyExcep(e, '\n\n' "Cannot open the RM database file." '\n')
     return dbConnection
 
 

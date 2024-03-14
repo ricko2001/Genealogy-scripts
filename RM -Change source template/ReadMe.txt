@@ -156,7 +156,7 @@ options may be "on" at one time in a run of the utility.
 Save the ini file, and leave the file open in the editor.
 
 =============DIV20==
-Option    All options = off
+STEP 0		Option    All options = off
 
 Double click the SwitchSourceTemplate.exe file to run it. A black console window
 should momentarily open and then close.
@@ -170,7 +170,7 @@ If the report file did not open in NotePad, read the troubleshooting
 section in the NOTES below.
 
 =============DIV20==
-Option CHECK_TEMPLATE_NAMES = on
+STEP 1		Option CHECK_TEMPLATE_NAMES = on
 
 Now you know what to expect when running the utility and how to configure the
 ini file. You're ready to start, but first, you need to figure out what needs
@@ -216,7 +216,7 @@ A common issue is that template names may an embedded space, a leading or
 trailing space.  See NOTES section for details on how to use quote characters to fix.
 
 =============DIV20==
-Option LIST_SOURCES = on
+STEP 2		Option LIST_SOURCES = on
 
 Now comes the question of which sources should have their SourceTemplate switched.
 The usual case will require that all of the sources using the old template should
@@ -224,7 +224,7 @@ be switched over to use the new template. Other situations are also possible in
 which only a subset of all sources using the old template should be switched over
 to the new template.
 
-In the ini files, look for the line:
+In the ini file, look for the line:
 SOURCE_NAME_LIKE = %
 
 This line specifies the matching pattern that determines the sources to be
@@ -258,7 +258,7 @@ can be used in a search.
 
 
 =============DIV20==
-Option LIST_TEMPLATE_DETAILS = on
+STEP 3		Option LIST_TEMPLATE_DETAILS = on
 
 Now the utility has to be told how the old template relates to the new one.
 This is done with the MAPPING key in the ini file.
@@ -290,20 +290,20 @@ We'll create the mapping from the information in the report file just created.
 Using the built-in source template "Birth Registration, state level" as an example-
 The report files lists this-
 
-source   Text     "Repository"
-source   Place     "RepositoryLoc"
+source     Text     "Repository"
+source     Place    "RepositoryLoc"
 citation   Text     "Name"
-source   Text     "Jurisdiction"
+source     Text     "Jurisdiction"
 citation   Text     "Form"
 citation   Text     "CertificateNo"
 citation   Date     "Date"
 
-I have created a new template that has some field changes. It's info is-
+I have created a new template that has some field changes. Its info is-
 
-source   Text     "RepositoryName"
-source   Place     "RepositoryLoc"
+source     Text     "RepositoryName"
+source     Place    "RepositoryLoc"
 citation   Text     "PersonName"
-source   Text     "Jurisdiction"
+source     Text     "Jurisdiction"
 citation   Text     "Form"
 citation   Text     "CertificateNo"
 citation   Date     "Date"
@@ -321,7 +321,7 @@ citation      "Form"
 citation      "CertificateNo"
 citation      "Date"
 
-Now, I'll move sort the source fields from the citation fields. (This is optional)
+Now, I'll move the source fields to the top and the citation fields to the bottom.
 
 source         "Repository"
 source         "RepositoryLoc"
@@ -331,7 +331,8 @@ citation       "Form"
 citation       "CertificateNo"
 citation       "Date"
 
-Now I'll take the field name column from the New template listing and place it to the right of the old field.
+Now I'll take the field names from the New template listing and place them
+on the corresponding line to the right of the old field.
 
 
 source        "Repository"     "RepositoryName"
@@ -357,21 +358,44 @@ citation      "Date"           "Date"
 citation      NULL           "ID-number"
 
 
-Edit the mapping value in the ini file so that is has this value.
-The ini file rows must be indented with at least 1 space.
+Add the KEY names above each catagory of field names
 
-Mapping =
-  source        "Repository"     "RepositoryName"
-  source        "RepositoryLoc"  "RepositoryLoc"
-  source        "Jurisdiction"   NULL
-  citation      "Name"           "PersonName"
-  citation      "Form"           "Form"
-  citation      "CertificateNo"  "CertificateNo"
-  citation      "Date"           "Date"
-  citation      NULL             "ID-number"
+MAPPING_SOURCE =
+source        "Repository"     "RepositoryName"
+source        "RepositoryLoc"  "RepositoryLoc"
+source        "Jurisdiction"   NULL
+
+MAPPING_CITATION =
+citation      "Name"           "PersonName"
+citation      "Form"           "Form"
+citation      "CertificateNo"  "CertificateNo"
+citation      "Date"           "Date"
+citation      NULL             "ID-number"
+
+Remove the words source at citation at the start of each line.
+The rows with the field names must be indented with at least 1 space.
+All the rows in a value must have the same indentation.
+The space between the columns is flexible.
+There is one or more blank lines at the end of a value separating it
+from the next item.
+
+MAPPING_SOURCE =
+  "Repository"     "RepositoryName"
+  "RepositoryLoc"  "RepositoryLoc"
+  "Jurisdiction"    NULL
+
+
+MAPPING_CITATION =
+  "Name"           "PersonName"
+  "Form"           "Form"
+  "CertificateNo"  "CertificateNo"
+  "Date"           "Date"
+  NULL             "ID-number"
+
+This is the text that has to go into the ini file.
 
 =============DIV20==
-Option CHECK_MAPPING_DETAILS = on
+STEP 4		Option CHECK_MAPPING_DETAILS = on
 
 Look at the OPTIONS section of the ini file still open in NotePad, edit these
 two lines so they are as shown:
@@ -389,10 +413,10 @@ No problems detected in the specified mapping.
 You may get a message saying that one of the fields could not be located.
 If so, make the fix in the Mapping and rerun.
 
-If everything checks out, you're ready to make the chnages.
+If everything checks out, you're ready to make the changes.
 
 =============DIV20==
-Option MAKE_CHANGES = on
+STEP 5		Option MAKE_CHANGES = on
 
 Look at the OPTIONS section of the ini file still open in NotePad, edit these
 two lines so they are as shown:
@@ -407,7 +431,8 @@ Check that there are no error messages listed in the Report file.
 
 Open the database in RootsMagic and confirm that the desired changes have been made.
 
-If there are changes that you did not want, make another copy of yor main database file and copy it to the working folder and try again.
+If there are changes that you did not want, make another copy of your main
+database file and copy it to the working folder and try again.
 
 
 =========================================================================DIV80==
@@ -415,7 +440,7 @@ If there are changes that you did not want, make another copy of yor main databa
 NOTES
 
 ===========================================DIV50==
-All possible Source Template changes for source templates 
+All possible Source Template changes for source templates
 that are already in use by Sources and Citations
 
 These alterations:
@@ -428,6 +453,7 @@ These alterations:
 *    change short footnote template
 *    change bibliography template
 *    change order of source fields
+
 May be made at anytime. No negative consequence. The changes will be immediately
 seen in all new and existing source and citations. This utility is not needed.
 Converting a field type from say, "name" type to "date" would not make much
@@ -437,6 +463,7 @@ done at any time.
 
 This alteration:
 *    change order of citation fields
+
 May be made at any time, but existing citations whose citation names were
 automatically generated will not be updated with what would be the new
 auto generated name using the new order of citation fields.
@@ -446,7 +473,8 @@ citation name and let it be auto generated using the new template information.
 
 
 This alteration:
-*    change state of check-box "This is a source detail field"
+*    change state of check-box ("This is a source detail field")
+
 This change implies movement of data from a source to a citation
 or vice versa. This could be called "Lumping" or "Splitting" source info.
 Do not use this utility. (See my site for Lumping utilities.)
@@ -456,13 +484,14 @@ These alterations:
 *    change field name
 *    add new fields
 *    delete fields
-Use this utility to update existing source and citations to the new template 
-structure. 
+
+Use this utility to update existing source and citations to the new template
+structure.
 
 If the utility is not used and these changes are made:
 *    change field name
 Data is be invisible when accessed with the new name. The old date remains, but
-hidden.
+is hidden.
 *    add new fields
 New fields will not be correctly initialized, sentence language will not see the
 new field as empty when tested by <> in the sentence language.
@@ -472,20 +501,22 @@ it's not tidy.
 
 
 ===========================================DIV50==
-Selecting source to be changed
+Selecting sources to be changed
 
 If the SOURCE_NAME_LIKE variable does not give you the set you need, you can
-run the utility multiple times with different values of SOURCE_NAME_LIKE. 
+run the utility multiple times with different values of SOURCE_NAME_LIKE.
+Once a source has been updated, it won't show up in future lists because it now
+uses a new template and the list only shows sources using the old template.
 
 Or, one could work with just one source at a time by giving the full source name
 and not including a wild card, say
 SOURCE_NAME_LIKE = BIRTH Helen Sauer
 The list would include only the one source. After that source is successfully
-converted, a different source could be converted in a new  MAKE_CHANGES run. 
+converted, a different source could be converted in a new  MAKE_CHANGES run.
 The error checking runs can be skipped since the other parameters are already
 confirmed as accurate.
 
-Or, you may consider renaming your sources so they fit an easy to find pattern.
+Or, you may consider renaming your sources (temporarily ?) so they fit an easy to find pattern.
 
 
 ===========================================DIV50==
@@ -502,45 +533,53 @@ If the template name, field name or SOURCE_NAME_LIKE variable contains a space c
 
 ===========================================DIV50==
 Running the utility with MAKE_CHHANGES = off does not make any changes to your
-database. You can run it as many times as you need. However, once you have run
-the utility with MAKE_CHHANGES = on, the database is no longer the way it was.
-Running the utility again with MAKE_CHHANGES = on using the same mapping may
-give unexpected results unless you take into account the new status of your data.
-
+database. You can run it as many times as you need.
 
 ===========================================DIV50==
 Mapping rules processing
 
-The mapping is processed in the order that they are listed.
+* The mappings are processed in the order that they are listed.
 
-NULL on left side means that the field on right side will be empty but correctly
-initialized. Must be used when adding a new field but without moving old data
-to it.
+* Each line describes how a field in the old template will be renamed in the new template
 
-NULL on right side means the data on left side field will not be used and the
-old data is deleted.
+* Data in a source field can't be renamed so as to make it a citation field (and vice versa)
 
-RULE each line describes how a field in the old template will be renamed in the new template
-RULE data in a source field can't be renamed so as to make it a citation field (and vice versa)
-RULE if the exact same name appears on the 2nd and 3rd column of a row, that row will have no effect.
+* NULL on the left side (old source template) means that the field on right
+side will be empty but correctly initialized. Must be used when adding a new
+field but without moving old data to it.
+In RM v9.1.3, an uninitialized Name-Value pair will not behave as expected in
+the footnote sentence language. This may get fixed.
 
+Do not name an existing field as the field for the new source template.
+This would create a duplicated name. The app will prevent this but it will stop
+the run and a new copy of the database should be used after that.
 
-The selection by SourceTemplateID is easy, the name Like selection may be an issue.
-The script prints out the selected sources (ID and name) to the console.
-Confirm that the list is what is desired.
+* NULL on right side means the data on left side field will not be used and the
+old name-Value pair is deleted.
 
-Now double check that a new source template exists and has the properties desired.
-run the script with
+* The exact same name on the left and right side means that the mapping will
+have no effect.
 
-
+* If you want to switch names of fields that already exist, be careful
+not create a duplicate field in an intermediate step.
+The app will prevent this but it will stop the run and a new copy of the
+database should be used after that.
+Best to make the names slightly different but still distinguishable.
+Can accomplish exact name switch, but with two runs of the app with 2 new
+templates.
 
 ===========================================DIV50==
-REPORT_FILE_DISPLAY_APP
-Option to automatically open the report file in a display application.
-The included ini sample file has this option activated and set to use Windows
-NotePad as the display app. Your favorite editor may be substituted.
-It can be deactivated by inserting a # character
-at the start of the line.
+To help understand how the system works- think of each source and citation
+record as having a set of Key-Value pairs.These are the fields.
+The source fields are in the source record and vice versa.
+When you enter a source/citation, using the template, RM displays the key names
+and the user adds the values.
+When a footnote needs to be created, RM uses the template to construct it from
+the Key-Value pairs.
+This app operates on source and citation records. It can-
+Rename a Key
+Delete a Key-Value pair
+Add a new, Key-Value pair with a particular Key and an empty value.-
 
 ===========================================DIV50==
 RM-Python-config.ini  (the ini file)
@@ -555,8 +594,20 @@ ini file path names may be absolute or relative to the current directory.
 
 The MAPPING key takes a multi-line value.
 Each line must be indented with at least one space character.
-Each line must have 3 entries- type, old field, new field
+All the rows in a value must have the same indentation.
+Each line must have 2 entries- old field, new field
+The space between the columns is flexible.
+There is one or more blank lines at the end of a value separating it
+from the next item.
 
+
+===========================================DIV50==
+REPORT_FILE_DISPLAY_APP
+Option to automatically open the report file in a display application.
+The included ini sample file has this option activated and set to use Windows
+NotePad as the display app. Your favorite editor may be substituted.
+It can be deactivated by inserting a # character
+at the start of the line.
 
 ===========================================DIV50==
 Directory structure (optional)
@@ -594,8 +645,7 @@ and you'll be able to read any error messages.
 Development Notes   (not needed to use utility)
 =========================================================================DIV80==
 =========================================================================DIV80==
-
-The XML fields in the source and citation record are just a collection of 
+The XML fields in the source and citation record are just a collection of
 FieldName-Value pairs.
 The order of these pairs in the XML is not significant.
 The Template determines the order of the values in the default citation name.
@@ -606,9 +656,7 @@ SourceTemplateTable		FieldDefs
 SourceTable				Fields
 CitationTable			Fields
 
-
 ===========================================DIV50==
-
 XML tag info
 SourceTemplate XML has Field Name, Display Name, Type, Hint, LongHint, and boolean for field is in source or citation.
 Sources and Citations have XML that contain only Field Name/Field Value pairs.
@@ -633,29 +681,12 @@ This app-
 Odd cases of XML format found in my database:
 
 Found an odd Fields value in CitationTable.
-CitationID 101294 had just <root />
-<Root> <Fields> </Fields> </Root>
-
-for citations, found one that had no Fields tag.
-So when finding them, got None.
-If changed <Root /> to one with fields, works.
-Do this happen in other places?
-maybe do a search for just <Root > in citations.
-
+One Citation had just <root />
 Fixed by adding a Fields empty element within Root, then continuing.
 
-Caused by same fields value of <Root />
-When looking to remove processing instruction element found in old data, was
-looking for start of XML by searching for <Root>, but it wasn't found in this case. So look for "<Root"
-
-
-===========================================DIV50==
-Possible changes
-Should a separate variable be used for source and citation fields, Would no
-longer need col 1.
-MAPPING_SOURCE
-MAPPING_CITATION
-
+To do text search for start of root element, can't look for <Root> because at
+least one entry had an empty Root element encoded by: <Root />
+So look for "<Root"
 
 ===========================================DIV50==
 LIKE note from SQLite doc-
