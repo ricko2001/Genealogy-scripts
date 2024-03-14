@@ -1,508 +1,743 @@
 import os
 import sys
-import time
 import sqlite3
-from pathlib  import Path
+from pathlib import Path
 from datetime import datetime
-import configparser
+import configparser  # https://docs.python.org/3/library/configparser.html
 import xml.etree.ElementTree as ET
+import subprocess
+import traceback
 
-## WARNING make a known-good backup of the rmtree file before use.
-
-##  Requirements: (see ReadMe.txt for details)
-##   RootsMagic v8 database file
-##   RM-Python-config.ini  ( Configuration ini file to set options and parameters)
-##   unifuzz64.dll
-##   Python v3.9 or greater
-
+# Requirements: (see ReadMe.txt for details)
+# RootsMagic v9 database file
+# RM-Python-config.ini  ( Configuration ini file to set options and parameters)
+# Python v3.11 or greater
 
 # ===================================================DIV60==
 #  Global Variables
-G_QT = "\""
-
+G_DEBUG = False
 
 # ===================================================DIV60==
+
+
 def main():
 
-  # Configuration
-  IniFileName = "RM-Python-config.ini"
+    # Configuration
+    IniFileName = "RM-Python-config.ini"
+    db_connection = None
+    report_display_app = ''
 
-  # ini file must be in "current directory" and encoded as UTF-8 if non-ASCII chars present (no BOM).
-  # see   https://docs.python.org/3/library/configparser.html
-  IniFile = os.path.join(GetCurrentDirectory(), IniFileName)
+    # ===========================================DIV50==
+    # Error go to console window
+    # ===========================================DIV50==
+    try:
+        # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
+        # see   https://docs.python.org/3/library/configparser.html
+        IniFile = os.path.join(get_current_directory(), IniFileName)
 
-  # Check that ini file is at expected path and that it is readable & valid.
-  if not os.path.exists(IniFile):
-      print("ERROR: The ini configuration file, " + IniFileName + " must be in the same directory as the .py or .exe file.\n\n" )
-      input("Press the <Enter> key to exit...")
-      return
+        # Check that ini file is at expected path and that it is readable & valid.
+        if not os.path.exists(IniFile):
+            raise RMPyExcep("ERROR: The ini configuration file, " + IniFileName +
+                            " must be in the same directory as the .py or .exe file.\n\n")
 
-  #  Need interpolation=None because Like wildcard is %
-  config = configparser.ConfigParser(interpolation=None, empty_lines_in_values=False)
-  try:
-    config.read(IniFile, 'UTF-8')
-  except:
-    print("ERROR: The " + IniFileName + " file contains a format error and cannot be parsed.\n\n" )
-    input("Press the <Enter> key to exit...")
-    return
+        config = configparser.ConfigParser(empty_lines_in_values=False,
+                                           interpolation=None)
+        try:
+            config.read(IniFile, 'UTF-8')
+        except:
+            raise RMPyExcep("ERROR: The " + IniFileName +
+                            " file contains a format error and cannot be parsed.\n\n")
 
-  # Read file paths from ini file
-  #  https://docs.python.org/3/library/configparser.html
+        try:
+            report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
+        except:
+            raise RMPyExcep('ERROR: REPORT_FILE_PATH must be defined in the ' +
+                            IniFileName + "\n\n")
 
-  try:
-    # First check report file. If OK, all user messages will go there.
-    report_Path = config['FILE_PATHS']['REPORT_FILE_PATH']
-  except:
-    print('ERROR: REPORT_FILE_PATH must be defined in the ' + IniFileName + "\n\n")
-    input("Press the <Enter> key to exit...")
-    return
+        try:
+            # test open the report file
+            open(report_path,  mode='w', encoding='utf-8')
+        except:
+            raise RMPyExcep(
+                'ERROR: Cannot create the report file: ' + q_str(report_path) + "\n\n")
 
-  try:
-    open( report_Path,  mode='w', encoding='utf-8-sig')
-  except:
-    print('ERROR: Cannot create the report file ' + report_Path + "\n\n")
-    input("Press the <Enter> key to exit...")
-    return
+    except RMPyExcep as e:
+        pause_console_with_message(e)
+        return 1
+    except Exception as e:
+        traceback.print_exception(e, file=sys.stdout)
+        pause_console_with_message(
+            "ERROR: Application failed.\n\n"
+            + str(e)
+            + "Please email console text & ini file to author.\n\n")
+        return 1
 
-  with open( report_Path,  mode='w', encoding='utf-8-sig') as reportF:
-    reportF.write ("\nReport generated at      = " + TimeStampNow() + "\n")  
+    # ===========================================DIV50==
+    # Error go to Report File
+    # ===========================================DIV50==
+    try:
+        report_file = open(report_path,  mode='w', encoding='utf-8')
+        try:
+            database_path = config['FILE_PATHS']['DB_PATH']
+        except:
+            raise RMPyExcep(
+                'ERROR: DB_PATH must be specified.')
+
+        if not os.path.exists(database_path):
+            raise RMPyExcep(
+                'ERROR: Path for database path not found: ' + database_path)
+        try:
+            report_display_app = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
+        except:
+            pass
+        if report_display_app != '' and not os.path.exists(report_display_app):
+            input_string = report_display_app
+            report_display_app = ''
+            raise RMPyExcep('ERROR: Path for report-file display app not found: '
+                            + input_string)
+        # RM database file specific
+        FileModificationTime = datetime.fromtimestamp(
+            os.path.getmtime(database_path))
+
+        # Process the database for requested output
+        dbConnection = create_db_connection(database_path, None)
+        report_file.write("Report generated at      = " +
+                          time_stamp_now() + "\n")
+        report_file.write("Database processed       = " + database_path + "\n")
+        report_file.write("Database last changed on = " +
+                          FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n")
+        report_file.write("SQLite library version   = " +
+                          get_SQLite_library_version(dbConnection) + "\n\n")
+
+        # test option values conversion to boolean
+        try:
+            config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES')
+            config['OPTIONS'].getboolean('LIST_SOURCES')
+            config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS')
+            config['OPTIONS'].getboolean('CHECK_MAPPING_DETAILS')
+            config['OPTIONS'].getboolean('MAKE_CHANGES')
+        except:
+            raise RMPyExcep(
+                "ERROR: One of the OPTIONS values could not be parsed as boolean. \n")
+
+        # run active options
+        if config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES'):
+            check_template_names_feature(config, report_file, dbConnection)
+        elif config['OPTIONS'].getboolean('LIST_SOURCES'):
+            list_sources_feature(config, report_file, dbConnection)
+        elif config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS'):
+            list_template_details_feature(config, report_file, dbConnection)
+        elif config['OPTIONS'].getboolean('CHECK_MAPPING_DETAILS'):
+            check_mapping_feature(config, report_file, dbConnection)
+        elif config['OPTIONS'].getboolean('MAKE_CHANGES'):
+            make_changes_feature(config, report_file, dbConnection)
+    except RMPyExcep as e:
+        report_file.write("\n\n" + str(e) + "\n\n")
+        return 1
+    except Exception as e:
+        traceback.print_exception(e, file=report_file)
+        report_file.write("\n\n" "ERROR: Application failed. Please email "
+                          "report & ini file to author." "\n\n")
+        return 1
+    finally:
+        if db_connection is not None:
+            db_connection.commit()
+            db_connection.close()
+        report_file.close()
+        if report_display_app != '':
+            subprocess.Popen([report_display_app, report_path])
+    return 0
+
+
+# ===================================================DIV60==
+def check_template_names_feature(config, report_file, dbConnection):
 
     try:
-      database_Path = config['FILE_PATHS']['DB_PATH']
-      RMNOCASE_Path = config['FILE_PATHS']['RMNOCASE_PATH']
+        old_template_name = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        new_template_name = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
     except:
-      reportF.write('ERROR: Both DB_PATH and RMNOCASE_PATH must be specified.')
-      return
-
-    if not os.path.exists(database_Path):
-      reportF.write('ERROR: Path for database path not found: ' + database_Path)
-      return
-    if not os.path.exists(RMNOCASE_Path):
-      reportF.write('ERROR: dll file not found at: ' + RMNOCASE_Path)
-      return
-
-    # RM database file specific
-    FileModificationTime = datetime.fromtimestamp(os.path.getmtime(database_Path))
-
-    # Process the database for requested output
-    with create_DBconnection(database_Path, RMNOCASE_Path) as dbConnection:
-      reportF.write ("Report generated at      = " + TimeStampNow() + "\n")
-      reportF.write ("Database processed       = " + database_Path + "\n")
-      reportF.write ("Database last changed on = " + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + "\n")
-      reportF.write ("SQLite library version   = " + GetSQLiteLibraryVersion (dbConnection) + "\n\n")
-
-      # test option values conversion to boolean
-      try:
-        config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES')
-        config['OPTIONS'].getboolean('LIST_SOURCES')
-        config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS')
-        config['OPTIONS'].getboolean('MAKE_CHANGES')
-      except:
-        reportF.write ("ERROR: One of the OPTIONS values could not be parsed as boolean. \n")
-        sys.exit()
-
-
-      # run active options
-
-      if config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES'):
-        CheckTemplateNamesFeature ( config, reportF, dbConnection)
-
-      elif config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS'):
-        ListTemplateDetailsFeature ( config, reportF, dbConnection)
-
-      elif config['OPTIONS'].getboolean('LIST_SOURCES'):
-        ListSourcesFeature ( config, reportF, dbConnection)
-
-      elif config['OPTIONS'].getboolean('MAKE_CHANGES'):
-        MakeChangesFeature ( config, reportF, dbConnection)
-
-  return 0
-
-
-# ===================================================DIV60==
-def CheckTemplateNamesFeature ( config, reportF, dbConnection):
-  try:
-    oldTemplateName =  config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-    newTemplateName =  config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
-  except:
-    reportF.write( "ERROR: CHECK_TEMPLATE_NAMES option requires specification of both TEMPLATE_OLD and TEMPLATE_NEW.")
-    return
-  CheckSourceTemplates(reportF, dbConnection, oldTemplateName, newTemplateName)
-  return
-
-
-# ===================================================DIV60==
-def ListTemplateDetailsFeature ( config, reportF, dbConnection):
-  try:
-    oldTemplateName  =  config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-    newTemplateName  =  config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
-    mapping          =  config['SOURCE_TEMPLATES']['MAPPING']
-  except:
-    reportF.write( "ERROR: LIST_TEMPLATE_DETAILS option requires specification of TEMPLATE_OLD and TEMPLATE_NEW and MAPPING.")
+        raise RMPyExcep(
+            "ERROR: CHECK_TEMPLATE_NAMES option requires specification"
+            " of both TEMPLATE_OLD and TEMPLATE_NEW.")
+    check_source_templates(report_file, dbConnection,
+                           old_template_name, new_template_name)
     return
 
-  oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
-  newTemplateID = GetSrcTempID(dbConnection, newTemplateName)[0][0]
-  DumpSrcTemplateFields( reportF, dbConnection, oldTemplateID)
-  DumpSrcTemplateFields( reportF, dbConnection, newTemplateID)
-  reportF.write("\nThe field mappings, as entered in the configuration file: \n")
-  for each in mapping:
-    reportF.write (each)
-  reportF.write("\n\n")
-  return
-
 
 # ===================================================DIV60==
-def ListSourcesFeature ( config, reportF, dbConnection):
-  try:
-    oldTemplateName =  config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-    srcNamesLike    =  config['SOURCES']['SOURCE_NAME_LIKE']
-  except:
-    reportF.write( "ERROR: LIST_SOURCES option requires specification of both TEMPLATE_OLD and SOURCE_NAME_LIKE.")
+def list_template_details_feature(config, reportF, dbConnection):
+
+    try:
+        oldTemplateName = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        newTemplateName = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
+
+        mapping_source = config['SOURCE_TEMPLATES']['MAPPING_SOURCE']
+        mapping_citation = config['SOURCE_TEMPLATES']['MAPPING_CITATION']
+
+    except:
+        raise RMPyExcep(
+            "ERROR: LIST_TEMPLATE_DETAILS option requires specification"
+            " of TEMPLATE_OLD and TEMPLATE_NEW, MAPPING_SOURCE & MAPPING_CITATION.")
+
+    old_template_ID = get_src_template_ID(dbConnection, oldTemplateName)[0][0]
+    new_template_ID = get_src_template_ID(dbConnection, newTemplateName)[0][0]
+    dump_src_template_fields(reportF, dbConnection, old_template_ID)
+    dump_src_template_fields(reportF, dbConnection, new_template_ID)
+
+    reportF.write(
+        "\nThe field mappings, as entered in the configuration file:\n\n")
+
+    reportF.write("Source mapping:\n")
+    for each in mapping_source:
+        reportF.write(each)
+    reportF.write("\n\nCitation mapping:\n")
+    for each in mapping_citation:
+        reportF.write(each)
+    reportF.write("\n\n")
+
+    if G_DEBUG:
+        reportF.write("\n\nSource fields:\n")
+        reportF.write(str(parse_field_mapping(mapping_source)))
+        reportF.write("Source fields:\n")
+        reportF.write(str(parse_field_mapping(mapping_citation)))
+
     return
-  oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
-  reportF.write( "\nSources with template name:\n" + oldTemplateName + "\nand source name like:\n" + srcNamesLike + "\n\nSource #      Source Name\n\n")
-  srcTuples = GetSelectedSources(reportF, dbConnection, oldTemplateID, srcNamesLike)
-  for src in srcTuples:
-    reportF.write (str(src[0]) + "    " + src[1] + "\n")
-  return
 
 
 # ===================================================DIV60==
-def MakeChangesFeature ( config, reportF, dbConnection):
-  try:
-    oldTemplateName  =  config['SOURCE_TEMPLATES']['TEMPLATE_OLD']
-    newTemplateName  =  config['SOURCE_TEMPLATES']['TEMPLATE_NEW']
-    srcNamesLike     =  config['SOURCES']['SOURCE_NAME_LIKE']
-    fieldMapping     =  config['SOURCE_TEMPLATES']['MAPPING']
-  except:
-    reportF.write( "ERROR: MAKE_CHANGES option requires specification of TEMPLATE_OLD and TEMPLATE_NEW and SOURCE_NAME_LIKE and MAPPING.")
+def list_sources_feature(config, reportF, dbConnection):
+
+    try:
+        old_template_name = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        source_names_like = unquote_config_string(
+            config['SOURCES']['SOURCE_NAME_LIKE'])
+    except:
+        raise RMPyExcep(
+            "ERROR: LIST_SOURCES option requires specification of"
+            " both TEMPLATE_OLD and SOURCE_NAME_LIKE.")
+
+    oldTemplateID = get_src_template_ID(dbConnection, old_template_name)[0][0]
+    reportF.write('\nSources with template name: ' + q_str(old_template_name) + '\n'
+                  + 'and source name like: ' +
+                  q_str(source_names_like) + '\n\n'
+                  + "Source #      Source Name\n\n")
+    srcTuples = get_selected_sources(
+        reportF, dbConnection, oldTemplateID, source_names_like)
+    for src in srcTuples:
+        reportF.write(str(src[0]) + "    " + src[1] + "\n")
     return
 
-  oldTemplateID = GetSrcTempID(dbConnection, oldTemplateName)[0][0]
-  newTemplateID = GetSrcTempID(dbConnection, newTemplateName)[0][0]
 
-  mapping = parseFieldMapping(fieldMapping)
+# ===================================================DIV60==
+def check_mapping_feature(config, report_file, dbConnection):
 
-  srcTuples = GetSelectedSources(reportF, dbConnection, oldTemplateID, srcNamesLike)
-  for srcTuple in srcTuples:
-    reportF.write ("=====================================================\n")
-    reportF.write (str(srcTuple[0]) + "    " + srcTuple[1] + "\n")
-    ConvertSource (reportF, dbConnection, srcTuple[0], newTemplateID, mapping)
-  return
+    # confirms each fielsd in mapping appears in the corresponding
+    # template description
+    list_template_details_feature(config, report_file, dbConnection)
+
+    try:
+        old_template_name = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        new_template_name = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
+        mapping_source = config['SOURCE_TEMPLATES']['MAPPING_SOURCE']
+        mapping_citation = config['SOURCE_TEMPLATES']['MAPPING_CITATION']
+
+    except:
+        raise RMPyExcep(
+            "ERROR: LIST_TEMPLATE_DETAILS option requires specification"
+            " of TEMPLATE_OLD and TEMPLATE_NEW, MAPPING_SOURCE & MAPPING_CITATION.")
+
+    field_mapping_source = parse_field_mapping(mapping_source)
+    field_mapping_citation = parse_field_mapping(mapping_citation)
+
+    old_template_ID = get_src_template_ID(
+        dbConnection, old_template_name)[0][0]
+    new_template_ID = get_src_template_ID(
+        dbConnection, new_template_name)[0][0]
+
+    new_st_fields = get_list_src_template_fields(new_template_ID, dbConnection)
+    old_st_fields = get_list_src_template_fields(old_template_ID, dbConnection)
+
+    # make lists of the 4 types of source template fields
+    old_src_fields = []
+    for each in old_st_fields:
+        if each[1] == "source":
+            old_src_fields.append(each[3])
+    old_src_fields.append('NULL')
+
+    old_cit_fields = []
+    for each in old_st_fields:
+        if each[1] == "citation":
+            old_cit_fields.append(each[3])
+    old_cit_fields.append('NULL')
+
+    new_src_fields = []
+    for each in new_st_fields:
+        if each[1] == "source":
+            new_src_fields.append(each[3])
+    new_src_fields.append('NULL')
+
+    new_cit_fields = []
+    for each in new_st_fields:
+        if each[1] == "citation":
+            new_cit_fields.append(each[3])
+    new_cit_fields.append('NULL')
+
+    # Confirm that the entered mapping uses correct fields
+    first_field_error = False
+    for each in field_mapping_source:
+        if each[0] not in old_src_fields:
+            raise RMPyExcep(q_str(each[0])
+                            + ' is not among the source fields in the existing source template.')
+        if each[1] not in new_src_fields:
+            raise RMPyExcep(q_str(each[1])
+                            + ' is not among the citation fields in the new source template.')
+
+    for each in field_mapping_citation:
+        if each[0] not in old_cit_fields:
+            raise RMPyExcep(q_str(each[0])
+                            + ' is not among the source fields in the existing source template.')
+        if each[1] not in new_cit_fields:
+            raise RMPyExcep(q_str(each[1])
+                            + ' is not among the citation fields in the new source template.')
+
+    for each in field_mapping_source:
+        if each[0] == 'NULL' and each[1] == 'NULL':
+            raise RMPyExcep('ERROR: A NULL NULL field mapping is not allowed.')
+    for each in field_mapping_citation:
+        if each[0] == 'NULL' and each[1] == 'NULL':
+            raise RMPyExcep('ERROR: A NULL NULL field mapping is not allowed.')
+
+    report_file.write(
+        "\n\n" "No problems detected in the specified mapping." "\n\n")
+    return
 
 
 # ===================================================DIV60==
-def ConvertSource ( reportF, dbConnection, srcID, newTemplateID, fieldMapping):
-  # Get the SourceTable.Fields BLOB from the srcID to extract its data
-  SqlStmt_src_r = """
-  SELECT Fields
-    FROM SourceTable
-    WHERE SourceID = ?
-    """
-  cur = dbConnection.cursor()
-  cur.execute(SqlStmt_src_r, (srcID,))
-  srcField = cur.fetchone()[0].decode()
+def make_changes_feature(config, reportF, dbConnection):
 
-  # test for and fix old style "XML" no longer used in RM8
-  xmlStart = "<Root"
-  rootLoc=srcField.find(xmlStart)
-  if rootLoc != 0:
-    srcField = srcField[rootLoc::]
+    try:
+        old_template_name = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
+        new_template_name = unquote_config_string(
+            config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
+        source_names_like = unquote_config_string(
+            config['SOURCES']['SOURCE_NAME_LIKE'])
+        mapping_source = config['SOURCE_TEMPLATES']['MAPPING_SOURCE']
+        mapping_citation = config['SOURCE_TEMPLATES']['MAPPING_CITATION']
+    except:
+        raise RMPyExcep(
+            "ERROR: MAKE_CHANGES option requires specification of TEMPLATE_OLD"
+            " TEMPLATE_NEW, SOURCE_NAME_LIKE, MAPPING_SOURCE & MAPPING_CITATION.")
 
-  # read into DOM and parse for needed values
-  srcRoot = ET.fromstring(srcField)
-  newField = srcRoot.find(".//Fields")
-  if newField == None: ET.SubElement( srcRoot, "Fields")
+    oldTemplateID = get_src_template_ID(dbConnection, old_template_name)[0][0]
+    newTemplateID = get_src_template_ID(dbConnection, new_template_name)[0][0]
 
-  #print("source XML OLD START ============================")
-  #ET.indent(srcRoot)
-  #ET.dump(srcRoot)
-  #print("source XML OLD END ==============================")
+    field_mapping_source = parse_field_mapping(mapping_source)
+    field_mapping_citation = parse_field_mapping(mapping_citation)
 
-  # change fields in source as per mapping:
-  for eachMap in fieldMapping: 
-    if eachMap[0] == "y": continue
-
-    if eachMap[1] == "NULL":
-      # create a name and value pair.
-      newPair = ET.SubElement( newField, "Field")
-      ET.SubElement( newPair, "Name").text = eachMap[2]
-      ET.SubElement( newPair, "Value")
-      continue
-
-    for eachField in srcRoot.findall('.//Field'):
-      if eachField.find('Name').text == eachMap[1]:
-        if eachMap[2] == "NULL":
-          # delete the unused field
-          srcRoot.find(".//Fields").remove(eachField)
-          break
-        eachField.find('Name').text = eachMap[2]
-        break
-      # end of for eachField loop
-    #end of for eachMap loop
-
-  #print("source XML NEW START ============================")
-  #ET.indent(srcRoot)
-  #ET.dump(srcRoot)
-  #print("source XML NEW END ==============================")
-  #sys.exit()
-
-  # Update the source with new XML and new templateID
-  newSrcFields = ET.tostring(srcRoot, encoding="unicode")
-  SqlStmt_src_w = """
-  UPDATE SourceTable
-    SET Fields = ?, TemplateID = ?
-    WHERE SourceID = ?
-    """
-  dbConnection.execute(SqlStmt_src_w, (newSrcFields, newTemplateID, srcID) )
-
-  #deal with this source's citations
-  for citationTuple in getCitationsForSrc(dbConnection, srcID):
-    reportF.write("   " + str(citationTuple[0]) + "    " + citationTuple[1][:70] + "\n")
-    ConvertCitation( dbConnection, citationTuple[0], fieldMapping)
-    #end loop for citations
-
-  dbConnection.commit()
-  return
+    srcTuples = get_selected_sources(
+        reportF, dbConnection, oldTemplateID, source_names_like)
+    for srcTuple in srcTuples:
+        reportF.write(
+            "=====================================================\n")
+        reportF.write(str(srcTuple[0]) + "    " + srcTuple[1] + "\n")
+        convert_source(reportF, dbConnection, srcTuple[0],
+                       newTemplateID, field_mapping_source, field_mapping_citation)
+    return
 
 
 # ===================================================DIV60==
-def ConvertCitation( dbConnection, citationID, fieldMapping):
-  # Get the CitationTable.Fields BLOB from the citation to extract its data
-  SqlStmt_cit_r = """
-  SELECT Fields
-    FROM CitationTable
-    WHERE citationID = ?
-    """
-  cur = dbConnection.cursor()
-  cur.execute(SqlStmt_cit_r, (citationID,))
-  citFields = cur.fetchone()[0].decode()
+def convert_source(reportF, dbConnection, srcID, newTemplateID,
+                   field_mapping_source, field_mapping_citation):
 
-  # test for and fix old style "XML" no longer used in RM8
-  xmlStart = "<Root"
-  rootLoc=citFields.find(xmlStart)
-  if rootLoc != 0:
-    citFields = citFields[rootLoc::]
+    root_element = get_root_element(dbConnection, SourceID=srcID)
+    fields_element = root_element.find(".//Fields")
+   # change fields in source as per mapping:
+    for transform in field_mapping_source:
+        if transform[0] == "NULL":
+            # create a name and empty value pair.
+            newPair = ET.SubElement(fields_element, "Field")
+            ET.SubElement(newPair, "Name").text = transform[1]
+            ET.SubElement(newPair, "Value")
+            continue
 
-  # read into DOM and parse for needed values
-  citRoot = ET.fromstring(citFields)
-  newField = citRoot.find(".//Fields")
-  if newField == None: ET.SubElement( citRoot, "Fields")
+        for eachField in fields_element.findall('.//Field'):
+            if eachField.find('Name').text == transform[0]:
+                if transform[1] == "NULL":
+                    # delete the unused field
+                    fields_element.remove(eachField)
+                    break
+                eachField.find('Name').text = transform[1]
+                break
+            # end of for eachField loop
+        # end of for each transform loop
 
-  #print("citation XML OLD START ============================")
-  #ET.indent(srcRoot)
-  #ET.dump(srcRoot)
-  #print("citation XML OLD END ==============================")
-  #sys.exit()
+    if G_DEBUG:
+        print("source XML NEW START ============================")
+        ET.indent(root_element)
+        ET.dump(root_element)
+        print("source XML NEW END ==============================")
 
-  # change fields in citation as per mapping:
-  for eachMap in fieldMapping:
-    if eachMap[0] == "n": continue
+    # Update the source with new XML and new templateID
+    newSrcFields = ET.tostring(root_element, encoding="unicode")
+    SqlStmt_src_w = """
+UPDATE SourceTable
+   SET Fields = ?, TemplateID = ?
+ WHERE SourceID = ?
+"""
+    dbConnection.execute(SqlStmt_src_w, (newSrcFields, newTemplateID, srcID))
 
-    if eachMap[1] == "NULL":
-      # create a name and value pair.
-      newField = citRoot.find(".//Fields")
-      newPair = ET.SubElement( newField, "Field")
-      ET.SubElement( newPair, "Name").text = eachMap[2]
-      ET.SubElement( newPair, "Value")
-      continue
+    # deal with this source's citations
+    for citationTuple in get_citations_of_source(dbConnection, srcID):
+        reportF.write(
+            "   " + q_str(str(citationTuple[0])) + "    " + citationTuple[1][:70] + "\n")
+        convert_citation(
+            dbConnection, citationTuple[0], field_mapping_citation)
+        # end loop for citations
 
-    for eachField in citRoot.findall('.//Field'):
-      if eachField.find('Name').text == eachMap[1]:
-        if eachMap[2] == "NULL":
-          # delete the unused field
-          citRoot.find(".//Fields").remove(eachField)
-          break
-        eachField.find('Name').text = eachMap[2]
-        break
-    # end of for eachField loop
-  #end of for eachMap loop
-
-  #print("citation XML NEW START ============================")
-  #ET.indent(srcRoot)
-  #ET.dump(srcRoot)
-  #print("citation XML NEW END ==============================")
-  #sys.exit()
-
-  newCitFileds = ET.tostring(citRoot, encoding="unicode")
-  # Update the citation with new XML and new templateID
-  SqlStmt_cit_w = """
-  UPDATE CitationTable
-    SET Fields = ?
-    WHERE CitationID = ? 
-    """
-  dbConnection.execute(SqlStmt_cit_w, (newCitFileds, citationID) )
-  return
+    dbConnection.commit()
+    return
 
 
 # ===================================================DIV60==
-def getCitationsForSrc ( dbConnection, oldSourceID):
+def convert_citation(dbConnection, citation_ID, field_mapping_citation):
+
+    root_element = get_root_element(dbConnection, None, citation_ID)
+    fields_element = root_element.find(".//Fields")
+
+    if G_DEBUG:
+        print("citation XML OLD START ============================")
+        ET.indent(root_element)
+        ET.dump(root_element)
+        print("citation XML OLD END ==============================")
+
+    # change fields in citation as per mapping:
+    for transform in field_mapping_citation:
+        if transform[0] == "NULL":
+            # create a name and value pair.
+            newPair = ET.SubElement(fields_element, "Field")
+            ET.SubElement(newPair, "Name").text = transform[1]
+            ET.SubElement(newPair, "Value")
+            continue
+
+        for eachField in fields_element.findall('.//Field'):
+            if eachField.find('Name').text == transform[0]:
+                if transform[1] == "NULL":
+                    # delete the unused field
+                    root_element.find(".//Fields").remove(eachField)
+                    break
+                eachField.find('Name').text = transform[1]
+                break
+        # end of for eachField loop
+    # end of for each transform loop
+
+    if G_DEBUG:
+        print("citation XML NEW START ============================")
+        ET.indent(root_element)
+        ET.dump(root_element)
+        print("citation XML NEW END ==============================")
+
+    newCitFileds = ET.tostring(root_element, encoding="unicode")
+    # Update the citation with new XML and new templateID
+    SqlStmt = """
+UPDATE CitationTable
+   SET Fields = ?
+ WHERE CitationID = ? 
+"""
+    dbConnection.execute(SqlStmt, (newCitFileds, citation_ID))
+    return
+
+
+# ===================================================DIV60==
+def get_root_element(dbConnection, SourceID=None, CitationID=None):
+
+    # Get the Table.Fields BLOB from the ID to extract its data
+    if SourceID is not None:
+        ID = SourceID
+        SqlStmt = """
+SELECT Fields
+  FROM SourceTable
+ WHERE SourceID = ?
+"""
+    elif CitationID is not None:
+        ID = CitationID
+        SqlStmt = """
+SELECT Fields
+  FROM CitationTable
+ WHERE CitationID = ?
+"""
+    else:
+        raise RMPyExcep("ERROR internal: both inputs None")
+
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, (ID,))
+    xml_text = cur.fetchone()[0].decode()
+
+    # test for and "fix" old style XML no longer used in RMv>=8
+    xml_real_start_chars = "<Root"
+    root_location = xml_text.find(xml_real_start_chars)
+    xml_text = xml_text[root_location::]
+
+    # Extraneous characters are not read into DOM or written back
+    # Read into DOM and parse for needed values
+    root_element = ET.fromstring(xml_text)
+    fields_element = root_element.find(".//Fields")
+
+    # Fix XML that is missing the Fields element
+    if fields_element == None:
+        ET.SubElement(root_element, "Fields")
+
+    return root_element
+
+
+# ===================================================DIV60==
+def get_citations_of_source(dbConnection, oldSourceID):
+
     # get citations for oldSourceID
     SqlStmt = """
-    SELECT CitationID, CitationName
-      FROM CitationTable
-      WHERE SourceID = ?
-      """
+SELECT CitationID, CitationName
+  FROM CitationTable
+ WHERE SourceID = ?
+"""
     cur = dbConnection.cursor()
     cur.execute(SqlStmt, (oldSourceID,))
     return cur.fetchall()
 
 
 # ===================================================DIV60==
-def create_DBconnection(db_file_path, RMNOCASE_Path):
-    conn = None
-    try:
-      conn = sqlite3.connect(db_file_path)
-      conn.enable_load_extension(True)
-      conn.load_extension(RMNOCASE_Path)
-    except Error as e:
-        reportF.write(e)
-        reportF.write( "Cannot open the RM database file. \n")
-    return conn
+def parse_field_mapping(in_str):
+
+    # convert string to list of lists (of 3 strings)
+    in_str = in_str.strip()
+    list_of_lines = in_str.splitlines()
+    list_of_lists = []
+    for each_line in list_of_lines:
+        item_set = list(each_line.split())
+        item_set = [x.strip('"') for x in item_set]
+        list_of_lists.append(item_set)
+    return list_of_lists
 
 
 # ===================================================DIV60==
-def GetSQLiteLibraryVersion (dbConnection):
-  # returns a string like 3.42.0
-  SqlStmt="""\
-  SELECT sqlite_version()
-  """
-  cur = dbConnection.cursor()
-  cur.execute(SqlStmt)
-  return cur.fetchone()[0]
+def unquote_config_string(instr):
 
-
-# ===================================================DIV60==
-def parseFieldMapping( text ):
-# convert string to list of 2-tuple strings
- text = text.strip()
- list = text.split('\n')
- newList = []
- for each in list:
-     newList.append( tuple(each.split()))
- return newList
-
+    # deals with names with leading and/or trailing space or quote characters
+    # name must be enclosed in quotes.
+    # can't deal with names containing both kinds of quotes and spaces !!
+    if instr.count('"') == 0 and instr.count("'") == 0:
+        return instr
+    else:
+        if instr[0] == '"':
+            return instr.replace('"', '')
+        elif instr[0] == "'":
+            return instr.replace("'", '')
 
 # ===================================================DIV60==
-def GetListOfRows ( dbConnection, SqlStmt):
+
+
+def q_str(in_str):
+    return '"' + in_str + '"'
+
+# ===================================================DIV60==
+
+
+def get_list_of_rows(dbConnection, SqlStmt):
+
     # SqlStmt should return a set of single values
     cur = dbConnection.cursor()
     cur.execute(SqlStmt)
 
     result = []
     for t in cur:
-      for x in t:
-        result.append(x)
+        for x in t:
+            result.append(x)
     return result
 
 
 # ===================================================DIV60==
-def GetCurrentDirectory():
-  # Determine if application is a script file or frozen exe and get its directory
-  # see   https://pyinstaller.org/en/stable/runtime-information.html
-  if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-    application_path = os.path.dirname(sys.executable)
-  else:
-    application_path = os.path.dirname(__file__)
-  return application_path
+def check_source_templates(reportF, dbConnection, oldTemplateName, newTemplateName):
+
+    if newTemplateName == oldTemplateName:
+        reportF.write("The old and new template names must be different.")
+        return
+
+    IDs = []
+    IDs = get_src_template_ID(dbConnection, oldTemplateName)
+    if len(IDs) == 0:
+        reportF.write(
+            'Could not find a SourceTemplate named: ' + q_str(oldTemplateName))
+        return
+    if len(IDs) > 1:
+        reportF.write(q_str(oldTemplateName) +
+                      " is not a unique name. Edit the name in RM and try again")
+        return
+    reportF.write(G_QT + oldTemplateName + G_QT + " checks out OK\n")
+
+    IDs = get_src_template_ID(dbConnection, newTemplateName)
+    if len(IDs) == 0:
+        reportF.write(
+            'Could not find a SourceTemplate named: ' + q_str(newTemplateName))
+        return
+    if len(IDs) > 1:
+        reportF.write(q_str(newTemplateName)
+                      + " is not a unique name. Edit the name in RM and try again")
+        return
+    reportF.write(q_str(newTemplateName) + " checks out OK\n")
+
+    return
 
 
 # ===================================================DIV60==
-def TimeStampNow():
-     # return a TimeStamp string
-     now = datetime.now()
-     dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
-     return dt_string
+def get_src_template_ID(dbConnection, TemplateName):
+
+    SqlStmt = """
+SELECT TemplateID
+  FROM SourceTemplateTable
+ WHERE Name = ? COLLATE NOCASE
+"""
+    cur = dbConnection.execute(SqlStmt, (TemplateName,))
+    rows = []
+    rows = cur.fetchall()
+    return rows
 
 
 # ===================================================DIV60==
-def CheckSourceTemplates(reportF, dbConnection, oldTemplateName, newTemplateName):
-  if newTemplateName == oldTemplateName:
-    reportF.write( "The old and new template names must be different." )
-    return
+def dump_src_template_fields(reportF, dbConnection, TemplateID):
 
-  IDs = []
-  IDs = GetSrcTempID( dbConnection, oldTemplateName )
-  if len(IDs) == 0:
-    reportF.write( "Could not find a SourceTemplate named: " + oldTemplateName )
-    return
-  if len(IDs) > 1:
-    reportF.write( G_QT + oldTemplateName + G_QT + " is not a unique name. Edit the name in RM and try again" )
-    return
-  reportF.write( G_QT + oldTemplateName + G_QT + " checks out OK\n" )
+    field_list = get_list_src_template_fields(TemplateID, dbConnection)
+    reportF.write(field_list[0][0] + "\n")
+    for item in field_list:
+        reportF.write(item[1] + '   ' + item[2] +
+                      '     ' + q_str(item[3]) + '\n')
+    reportF.write("\n\n")
 
- 
-  IDs = GetSrcTempID( dbConnection, newTemplateName )
-  if len(IDs) == 0:
-    reportF.write( "Could not find a SourceTemplate named: " + newTemplateName )
+    for item in field_list:
+        if item[3].count(" ") != 0:
+            reportF.write("NOTE: At least one field name above has leading, trailing"
+                          " or embedded whitespace !! See ReadMe file for help.")
+            reportF.write("\n\n")
+            break
     return
-  if len(IDs) > 1:
-    reportF.write( G_QT + newTemplateName + G_QT + " is not a unique name. Edit the name in RM and try again" )
-    return
-  reportF.write( G_QT + newTemplateName + G_QT + " checks out OK\n" )
-
-  return
 
 
 # ===================================================DIV60==
-def GetSrcTempID( dbConnection, TemplateName):
-  SqlStmt = """
-  SELECT TemplateID
-   FROM SourceTemplateTable
-   WHERE Name = ?
-    """
-  cur = dbConnection.execute(SqlStmt, (TemplateName,) )
-  rows=[]  
-  rows = cur.fetchall()
-  return rows
+def get_list_src_template_fields(TemplateID, dbConnection):
+
+    SqlStmt = """
+SELECT FieldDefs, Name
+  FROM SourceTemplateTable
+ WHERE TemplateID = ?
+"""
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, (TemplateID,))
+    textTuple = cur.fetchone()
+    newRoot = ET.fromstring(textTuple[0].decode())
+    st_name = textTuple[1]
+    field_list = []
+
+    fieldItr = newRoot.findall(".Fields/Field")
+    for item in fieldItr:
+        if "True" == item.find("CitationField").text:
+            fieldLoc = "citation"
+        else:
+            fieldLoc = "source"
+        field_list.append(
+            (st_name, fieldLoc, item.find("Type").text, item.find("FieldName").text)
+        )
+
+    return field_list
 
 
 # ===================================================DIV60==
-def DumpSrcTemplateFields (reportF, dbConnection, TemplateID):
-  # dump fields in Templates
-  SqlStmt = """
-  SELECT FieldDefs, Name
-    FROM SourceTemplateTable
-    WHERE TemplateID = ?
-    """
-  cur = dbConnection.cursor()
-  cur.execute(SqlStmt, (TemplateID,))
-  #text = cur.fetchone()[0].decode()
-  textTuple = cur.fetchone()
-  templateName= textTuple[1]
-  newRoot = ET.fromstring(textTuple[0].decode())
-
-  fieldItr = newRoot.findall(".Fields/Field")
-  reportF.write(templateName + "\n")
-  for item in fieldItr:
-      if "True" == item.find("CitationField").text:
-        fieldLoc = "citation"
-      else:
-        fieldLoc ="source  "
-      reportF.write(fieldLoc + "   " + item.find("Type").text + "      " + item.find("FieldName").text  + "\n")
-  reportF.write("\n\n")
-  return
+def get_selected_sources(reportF, dbConnection, oldTemplateID, SourceNamesLike):
+    SqlStmt = """
+SELECT st.SourceID, st.Name
+  FROM SourceTable st
+  JOIN SourceTemplateTable stt ON st.TemplateID = stt.TemplateID
+ WHERE st.TemplateID = ? AND st.Name LIKE ?   COLLATE NOCASE
+"""
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, (oldTemplateID, SourceNamesLike))
+    srcTuples = cur.fetchall()
+    if len(srcTuples) == 0:
+        raise RMPyExcep("No sources found with specified search criteria.\n")
+    return srcTuples
 
 
 # ===================================================DIV60==
-def GetSelectedSources(reportF, dbConnection, oldTemplateID, SourceNamesLike):
-  SqlStmt = """
-  SELECT  ST.SourceID, ST.Name
-    FROM SourceTable ST
-    JOIN SourceTemplateTable STT ON ST.TemplateID = STT.TemplateID
-    WHERE ST.TemplateID = ? AND ST.Name LIKE ?
-    """
-  cur = dbConnection.cursor()
-  cur.execute(SqlStmt, (oldTemplateID,SourceNamesLike))
-  srcTuples = cur.fetchall()
-  if len(srcTuples) == 0: 
-    reportF.write( "No sources found with specified search criteria.\n")
+def get_current_directory():
+
+    # Determine if application is a script file or frozen exe and get its directory
+    # see   https://pyinstaller.org/en/stable/runtime-information.html
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        application_path = os.path.dirname(sys.executable)
+    else:
+        application_path = os.path.dirname(__file__)
+    return application_path
+
+
+# ===================================================DIV60==
+def time_stamp_now(type=""):
+
+    # return a TimeStamp string
+    now = datetime.now()
+    if type == '':
+        dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
+    elif type == 'file':
+        dt_string = now.strftime("%Y-%m-%d_%H%M%S")
+    return dt_string
+
+
+# ===================================================DIV60==
+def pause_console_with_message(message=None):
+
+    if (message != None):
+        print(str(message))
+    input("\n" "Press the <Enter> key to continue...")
     return
-  return srcTuples
+
+
+# ===================================================DIV60==
+def create_db_connection(db_file_path, db_extension):
+
+    dbConnection = None
+    try:
+        dbConnection = sqlite3.connect(db_file_path)
+        if db_extension is not None:
+            # load SQLite extension
+            dbConnection.enable_load_extension(True)
+            dbConnection.load_extension(db_extension)
+    except Exception as e:
+        raise RMPyExcep(e, "\n\n" "Cannot open the RM database file." "\n")
+    return dbConnection
+
+
+# ===================================================DIV60==
+def get_SQLite_library_version(dbConnection):
+
+    # returns a string like 3.42.0
+    SqlStmt = "SELECT sqlite_version()"
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt)
+    return cur.fetchone()[0]
+
+
+# ===================================================DIV60==
+class RMPyExcep(Exception):
+
+    '''Exceptions thrown for configuration/database issues'''
 
 
 # ===================================================DIV60==
 # Call the "main" function
 if __name__ == '__main__':
     main()
+
+# ===================================================DIV60==
