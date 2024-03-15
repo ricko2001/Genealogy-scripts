@@ -614,7 +614,7 @@ Directory structure (optional)
 My directory structure, which of course, I recommend 🙂, is-
 
 Genealogy          (top level folder, mine is in my Home folder)
-  myRD-DB.rmtree   (my main database file)
+  myRM-DB.rmtree   (my main database file)
   Misc Databases   (folder for other databases I frequently use)
   Exhibits         (folder containing all media files in a folder hierarchy)
   SW               (folder containing various utility apps and the ini file)
