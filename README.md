@@ -39,6 +39,17 @@ A simple utility to fix a particular kind of data entry mistake. It moves a cita
 The fix that this utility makes is trivial in SQL, but this app takes information that is available in the RootsMagic user interface and does all of the look ups for you. 
 
 
+### RM -Change source template
+A utility to switch the source template used by one or a set of sources.
+Preserves all linkages and allows remapping of field data.
+This is the solution for modifying a SourceTemplate in use.
+
+This makes changes to the RM file when run with the "MAKE_CHANGES" option. Be absolutely sure that a working backup is available. The script works, but you will likely want to re-run it several times to get the exact results that you desire.
+
+My process is to always run the script on a copy of the main database. Then after iterating through fixes to the ini file and I'm satisfied with the results, I backup the main database and then move the copy with the changes done by the script to the main database file location.
+
+
+
 ### RM -Citation Sort Order
 A utility to allow the user to re-order the listing of citations attached to Persons, Names, or Facts. Uses python module RMDate.py in RM -Dates and Sort Dates
 
@@ -60,18 +71,6 @@ Consists of a Windows cmd script that runs a SQL file containing SQL updates
 that fix reoccurring problems in my database caused by user errors during 
 data entry. The cmd script generates a report file which is then 
 automatically displayed in NotePad++.
-
-
-### RM -Change source template
-A utility to switch the source template used by one or a set of sources.
-Preserves all linkages and allows remapping of field data.
-This is the solution for modifying a SourceTemplate in use.
-
-This makes changes to the RM file when run with the "MAKE_CHANGES" option. Be absolutely sure that a working backup is available. The script works, but you will likely want to re-run it several times to get the exact results that you desire.
-
-My process is to always run the script on a copy of the main database. Then after iterating through fixes to the ini file and I'm satisfied with the results, I backup the main database and then move the copy with the changes done by the script to the main database file location.
-
-This is close to release.
 
 
 ### RM -Lump misc sources
