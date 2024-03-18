@@ -1,5 +1,4 @@
-REM DB folder in script development folder\
-REM This script and local copy and dev database all in the same folder
+REM Copy the production database to the local dev database folder
 
 SET DB_EXTEN=rmtree
 
@@ -10,7 +9,6 @@ SET DEV_DB_PATH=.
 
 SET DEV_DB_NAME=TEST
 SET DEV_DB_BACKUP=TEST_dev_backup
-
 
 REM delete existing dev test database and local backup
 del "%DEV_DB_PATH%\%DEV_DB_NAME%.%DB_EXTEN%" 
