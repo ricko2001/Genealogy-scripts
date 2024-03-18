@@ -1,13 +1,13 @@
 rem @ECHO OFF
 REM
-REM  File paths must use either doubled back slash due to Sqlite3.exe limitation
+REM  File paths must use doubled back slash due to Sqlite3.exe limitation
 
 REM file locations
 
-REM SET DATABASE=.\\DB\\TEST.rmtree
-SET DATABASE=..\\Otter-Saito.rmtree
+SET DATABASE=.\\DB\\TEST.rmtree
 
-SET RMNOCASE=C:\\Users\\rotter\\Genealogy\\GeneDB\\SW\\unifuzz64.dll
+SET RMNOCASE=C:\\Users\\me\\Genealogy\\SW\\unifuzz64.dll
+REM see "Notes on collation RMNOCASE.txt" in root of repo
 
 SET SQL_FILE=.\\Maintenance-auto.sql
 
@@ -37,7 +37,9 @@ echo .                       >> "%TEMPFILE%"
 echo --Database="%DATABASE%" >> "%TEMPFILE%"
 echo --Date %TIMESTAMP%      >> "%TEMPFILE%"
 echo --File "%SQL_FILE%"     >> "%TEMPFILE%"
+
 copy "%TEMPFILE%" +"%SQL_FILE%" "%TEMPFILE%"
+
 echo .quit                   >> "%TEMPFILE%"
 
 
@@ -51,5 +53,6 @@ SQLite3 < "%TEMPFILE%"
 REM delete the temp file
 del "%TEMPFILE%"
 
-REM Display the report file in NotePad++
-"%PROGRAMFILES%\notepad++\notepad++.exe" "%REPORT_FILE%"
+REM Display the report file in NotePad
+REM "%PROGRAMFILES%\notepad++\notepad++.exe" "%REPORT_FILE%"
+C:\Windows\system32\notepad.exe "%REPORT_FILE%"

@@ -1,7 +1,7 @@
 
 NOTES ON COLATION SEQUENCE RMNOCASE
 
-SQLite needs the ability to sort data. It does so by comparing two items and determining if they are equal, less or greater than by using a collation function. 
+SQLite needs the ability to sort data. It does so by comparing two items and determining if they are equal, less or greater than by using a collation function.
 A summary can be found at:
 https://www.w3resource.com/sqlite/sqlite-collating-function-or-sequence.php
 
@@ -9,7 +9,7 @@ RMNOCASE is the name of a collation used by the RM schema for columns that repre
 
 The collation is also used to create any indexes where it is specified.
 
-RMNOCASE is designed to sort upper and lower case names together (not tested by me) like SQLite's builtin NOCASE collation. 
+RMNOCASE is designed to sort upper and lower case names together (not tested by me) like SQLite's builtin NOCASE collation.
 NOCASE does this for the 26 letters of the latin alphabet, but not for accented characters found, for example, in European languages. RMNOCASE also sorts upper and lower case accented characters together.
 
 RMNOCASE is not part of SQLite. It's a piece of sw created by RM Inc. as a SQLite extension. That software is proprietary and its specification has not be made public.
@@ -33,6 +33,12 @@ The SQLiteToolsforRootsMagic website has been around for many years and is run b
  MD5 hash values are used to confirm the identity of files.
  MD5 hash							File size		File name
  06a1f485b0fae62caa80850a8c7fd7c2	256,406 bytes	unifuzz64.dll
+
+===========================================DIV50==
+Note that an empty database created on MacOS will fail integrity check when
+done on a Windows OS machine.
+Due to missing entries in the idxSourceTemplateName index.
+Not clear what characters sort differently on Win and MacOS.
 
 ===========================================DIV50==
 
@@ -59,18 +65,18 @@ Every time you plan to add, remove, or modify data in a column sorted by RMNOCAS
 
 reindex RMNOCASE
 
-Then all of your modification will work fine. But then, when you open your file in RM, the very first thing to do is the RM Rebuild indexes tool. After that, you'll be ok 
+Then all of your modification will work fine. But then, when you open your file in RM, the very first thing to do is the RM Rebuild indexes tool. After that, you'll be ok
 I always confirm by running check file integrity after the build index.
 
 The above is critical to maintain your database integrity. Maybe one day we'll be able to reverse engineer RM's RMNOCASE so an exact 'copy' can be made.
 
 
-As regards to what you can do with sql- it's anything you can code. 
+As regards to what you can do with sql- it's anything you can code.
 There are lots of examples on Tom's site and I've put my stuff on GitHub.
 
 
 When opening RootsMagic after having had the database reindexed using a fake RMNOCASE-
-One can open the file, switch to the File tab, select Tools and then Rebuild Indexes. 
+One can open the file, switch to the File tab, select Tools and then Rebuild Indexes.
 
 Is the database completely inert before running the Rebuild Indexes tool?
 Perhaps meta data is saved to ConfigTable ?
@@ -105,11 +111,11 @@ https://github.com/nalgeon/sqlean
 ===========================================DIV50==
 Where is RMNOCASE used in v9 schema
 
-SELECT 
+SELECT
   name,
   tbl_name,
   sql
-FROM sqlite_master 
+FROM sqlite_master
 WHERE SQL like  '%RMNOCASE%'
 
 
@@ -142,7 +148,7 @@ CitationTable	CitationTable	CREATE TABLE CitationTable (CitationID INTEGER PRIMA
 
 
 
-idxSourceName	SourceTable	CREATE INDEX idxSourceName ON SourceTable (Name COLLATE RMNOCASE) 
+idxSourceName	SourceTable	CREATE INDEX idxSourceName ON SourceTable (Name COLLATE RMNOCASE)
 
 
 ===========================================DIV50==
@@ -196,7 +202,7 @@ CitationTable
 CitationName TEXT COLLATE RMNOCASE
 
 idxSourceName
-SourceTable	
+SourceTable
 Name COLLATE RMNOCASE
 
 
