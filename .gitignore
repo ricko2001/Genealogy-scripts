@@ -9,6 +9,12 @@
 *.pyproj
 *.sln
 
+# ignore vscode stuff
+.vscode/
+
+#  ignore python temp
+__pycache__
+
 # ignore test database stuff
 DB/
 
@@ -20,4 +26,3 @@ DISTRO_RM-Python-config.ini
 HIDE_*
 
 Releases/
-RM Tables/

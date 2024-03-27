@@ -1,5 +1,5 @@
 
-Records that serve as Top Level places should have MasterID=0
+Records that serve as Top Level places, PlaceType=0, should have MasterID=0
 
 FIND
 select pt.PlaceID, pt.PlaceType, MasterID, pt.Name
@@ -13,21 +13,7 @@ SET  MasterID = 0
 where PlaceType=0 and MasterID <> 0;
 
 
-Records that are Details must have a MasterID non zero 
-
-FIND
-select pt.PlaceID, pt.PlaceType, pt.MasterID, pt.Name
-from PlaceTable as pt
-where pt.PlaceType=2 and pt.MasterID = 0;
-
-FIX
-reindex RMNOCASE;
-delete from PlaceTable
-where PlaceType=2 and MasterID = 0;
-
-
-
-Records that are Details must have a MasterID that points to o a valid top level place
+Records that are Details, PlaceType=3, must have a non zero MasterID  that points to a PlaceID with MasterID=0.
 
 FIND
 reindex RMNOCASE;
@@ -40,4 +26,25 @@ from PlaceTable as pt
 inner join PlaceTable as pt2 on pt.MasterID = pt2.PlaceID
 where pt.PlaceType=2;
 
+
+
+
+OR
+
+
+
+
+just check for non zero
+
+Records that are Details, PlaceType=3, must have a non zero MasterID  that point to a PlaceID with MasterID=0.
+
+FIND
+select pt.PlaceID, pt.PlaceType, pt.MasterID, pt.Name
+from PlaceTable as pt
+where pt.PlaceType=2 and pt.MasterID = 0;
+
+FIX These should first be checked for use before deletion
+reindex RMNOCASE;
+delete from PlaceTable
+where PlaceType=2 and MasterID = 0;
 
