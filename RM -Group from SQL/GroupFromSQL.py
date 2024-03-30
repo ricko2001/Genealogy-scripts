@@ -46,7 +46,7 @@ def main():
     Pause()
     return 2
 
-  #sucess !
+  #success !
   Pause()
   return 0
 
@@ -166,7 +166,7 @@ def RunSQLGroupFeature(config, dbConnection):
     print ("# of persons selected: " + str(numInView) + "\n")
   except:
     raise ("ERROR: SQL_QUERY returned an error when run as a VIEW. \n\n" +
-           + "SQL entered was:\n" + SQLvalue + "\n")
+           "SQL entered was:\n" + SQLvalue + "\n")
 
   groupName = config[ActiveOptionsSection]['RM_GROUP_NAME']
   updateGroup = config[ActiveOptionsSection].getboolean('UPDATE_GROUP')
