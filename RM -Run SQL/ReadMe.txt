@@ -19,20 +19,20 @@ This program is what is called a "command line utility".
 
 To use it:
 
-1:  Create or find a SQL statement to run. 
-Database modification statements should usually be followed by a
-SELECT Changes(); statement to display how many rows were changed.
+1:  Create or find or solicit a SQL statement to run. 
 
-2:  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter 
+2:  Make a copy of your database file and yest the utility on this copy.
+
+3.  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter 
 referred to as the "ini file".) The utility needs to know where the RM database 
 file is located, the location of the database extension dll file if needed,
 what SQL to use for the query. Editing the ini file can be done 
 using the Windows NotePad app.
 
-2:  Double click the RunSQL file. This momentarily displays the black 
+4:  Double click the RunSQL file. This momentarily displays the black 
 command console window and then displays the report file using Notepad.
 
-3:  Open the database in RootsMagic and examine the results.
+5:  Open the database in RootsMagic and examine the results.
 
 
 ======================================================================
@@ -65,6 +65,9 @@ To install and use the single .exe file version:
 
 *  Create a working folder on your disk, far away from your research database.
 
+*  Make a copy of your RM database and place it in the working folder. 
+I suggest that you name it "TEST.rmtree"
+
 *  Copy these files from downloaded zip file to the working folder-
       RunSQL.exe
       RM-Python-config.ini
@@ -74,12 +77,15 @@ To install and use the single .exe file version:
 *  OPTIONAL Move the unifuzz64.dll file to the working folder
 
 *  Edit the RM-Python-config.ini in the working folder to specify the location 
-   of the RM file. 
+   of the RM file. If you named it TEST.rmtree, you're already done.
    To edit, Open NotePad and drag the ini file onto the NotePad window.
+
+*  Database modification statements should usually be followed by a
+   SELECT changes(); statement to display how many rows were changed.
 
 *  Double click the RunSQL.exe file to run the utility.
 
-*  Examine the Report file.
+*  Examine the Report file that was displayed in NotePad.
 
 *  Open the database in RM and review the changes.
 
