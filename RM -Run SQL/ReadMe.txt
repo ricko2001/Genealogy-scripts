@@ -20,7 +20,7 @@ This program is what is called a "command line utility".
 To use it:
 
 1:  Create or find a SQL statement to run. 
-Database modification statements should ususally be followed by a
+Database modification statements should usually be followed by a
 SELECT Changes(); statement to display how many rows were changed.
 
 2:  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter 

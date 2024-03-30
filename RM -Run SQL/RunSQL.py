@@ -113,6 +113,10 @@ def main():
       
     RunSQLFeature(config, report_file, db_connection)
 
+  except sqlite3.OperationalError as e:
+    report_file.write("ERROR: SQL_QUERY returned an error \n\n" +str(e))
+    return 1
+  
   except RMPyExcep as e:
       report_file.write(str(e))
       return 1
@@ -138,35 +142,30 @@ def RunSQLFeature(config, report_file, dbConnection):
   except:
      raise RMPyExcep('ERROR: SQL - SQL_STATEMENT_1 must be specified.')
 
-  # generate the SQL statement
-  try:
-    cur = dbConnection.cursor()
-    cur.execute( SqlStmt )
-  except:
-    raise Exception("ERROR: SQL_QUERY returned an error \n\n" +
-           + "SQL entered was:\n" + SqlStmt + "\n")
-  
-  report_file.write( "The SQL that was run: \n\n" + SqlStmt + "\n\nThe results:\n\n")
+  # run the SQL statement
+  cur = dbConnection.cursor()
+  cur.execute( SqlStmt )
+
+  report_file.write( "===============================================\n"
+                    "The SQL that was run: \n\n" + SqlStmt + "\n\nThe results:\n\n")
 
   result = cur.fetchall()
   for row in result:
     report_file.write( str(row[0]) + "\n")
 
+  SqlStmt = None
   try:
     SqlStmt = config['SQL']['SQL_STATEMENT_2']
   except:
     pass
 
   if SqlStmt is not None:
-    # generate the SQL statement
-    try:
-        cur = dbConnection.cursor()
-        cur.execute( SqlStmt )
-    except:
-        raise Exception("ERROR: SQL_QUERY returned an error \n\n" +
-            + "SQL entered was:\n" + SqlStmt + "\n")
+    # run the second SQL statement
+    cur = dbConnection.cursor()
+    cur.execute( SqlStmt )
     
-    report_file.write( "The SQL that was run: \n\n" + SqlStmt + "\n\nThe results:\n\n")
+    report_file.write( "===============================================\n"
+                    "The SQL that was run: \n\n" + SqlStmt + "\n\nThe results:\n\n")
 
     result = cur.fetchall()
     for row in result:
