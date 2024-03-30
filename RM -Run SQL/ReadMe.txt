@@ -1,7 +1,7 @@
 Run SQL
 Utility application for use with RootsMagic databases
 
-BETA  v 0.9.1
+BETA  v 0.9.2
 
 
 RootsMagic (RM) software uses a SQLite relational database as its main storage.

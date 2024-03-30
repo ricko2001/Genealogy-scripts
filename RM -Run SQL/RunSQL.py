@@ -151,7 +151,7 @@ def RunSQLFeature(config, report_file, dbConnection):
 
   result = cur.fetchall()
   for row in result:
-    report_file.write( str(row[0]) + "\n")
+    report_file.write( str(row) + "\n")
 
   SqlStmt = None
   try:
@@ -169,7 +169,7 @@ def RunSQLFeature(config, report_file, dbConnection):
 
     result = cur.fetchall()
     for row in result:
-        report_file.write( str(row[0]) + "\n")
+        report_file.write( str(row) + "\n")
 
   return
 

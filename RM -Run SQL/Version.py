@@ -8,7 +8,7 @@ VSVersionInfo(
 # Set not needed items to zero 0.
 
 
-filevers=(0, 9, 1, 0),
+filevers=(0, 9, 2, 0),
 
 
 prodvers=(1, 0, 0, 0),
@@ -37,7 +37,7 @@ StringFileInfo(
     StringStruct(u'FileDescription', u'Utility to work with RootsMagic database files'),
 
 # ver
-    StringStruct(u'FileVersion', u'0.9.1.0'),
+    StringStruct(u'FileVersion', u'0.9.2.0'),
 #
 
     StringStruct(u'InternalName', u''),
