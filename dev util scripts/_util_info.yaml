@@ -1,0 +1,19 @@
+InternalName:  RunSQL=====
+OriginalFilename: &orig_file_name RunSQL.exe=====
+Version: 0.9.2.0====
+
+DistributionFileList:
+# <InternalName>.py amd <InternalName>.exe always included by build script
+ - ReadMe.txt
+ - RM-Python-config.ini
+
+
+CompanyName: RJOtter SW
+FileDescription: Utility to work with RootsMagic database files
+LegalCopyright: Open Source
+ProductName: RM utilities
+Translation:
+  - langID: 0
+    charsetID: 1200
+  - langID: 1033
+    charsetID: 1252
