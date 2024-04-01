@@ -1,16 +1,18 @@
 Run SQL
 Utility application for use with RootsMagic databases
 
-BETA  v 0.9.2
 
-
-RootsMagic (RM) software uses a SQLite relational database as its main storage.
-This utility uses SQL to query the database file and create a RM group in the 
-RM database independently of RM. Groups may be created with RootsMagic software,
-of course, but the types of queries are limited.
+RootsMagic (RM) software uses a SQLite relational database as its data storage
+file. Having access to that file via third party tools is a major advantage
+to using RM.
 
 This utility will run one or two SQL statements on a database and display the
 results in a report file.
+
+This utility is meant to help the novice SQL user get the task done.
+It attempts to eliminate most of the complications found using more 
+sophisticated off the shelf software.
+
 
 ======================================================================
 Overview
@@ -19,9 +21,9 @@ This program is what is called a "command line utility".
 
 To use it:
 
-1:  Create or find or solicit a SQL statement to run. 
+1:  Create or find or solicit an SQL statement to run. 
 
-2:  Make a copy of your database file and yest the utility on this copy.
+2:  Make a copy of your database file and run the utility on this copy.
 
 3.  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter 
 referred to as the "ini file".) The utility needs to know where the RM database 
@@ -32,7 +34,8 @@ using the Windows NotePad app.
 4:  Double click the RunSQL file. This momentarily displays the black 
 command console window and then displays the report file using Notepad.
 
-5:  Open the database in RootsMagic and examine the results.
+5:  If the database was modified, open the database in RootsMagic and
+examine the results.
 
 
 ======================================================================
@@ -63,21 +66,24 @@ Getting Started
 
 To install and use the single .exe file version:
 
-*  Create a working folder on your disk, far away from your research database.
+*  Create a working folder on your disk, far away from your research database so that
+ there will not be confusion.
 
 *  Make a copy of your RM database and place it in the working folder. 
-I suggest that you name it "TEST.rmtree"
+It is suggested that you name the database copy: "TEST.rmtree"
 
 *  Copy these files from downloaded zip file to the working folder-
       RunSQL.exe
       RM-Python-config.ini
 
-*  OPTIONAL Download the SQLite extension file: unifuzz64.dll   -see below
-
-*  OPTIONAL Move the unifuzz64.dll file to the working folder
+*  OPTIONAL if required: Download the SQLite extension file: unifuzz64.dll   -see below
+*  OPTIONAL if required: Move the unifuzz64.dll file to the working folder
+   Only some SQL operations require the unifuzz64.dll to provide the RMNOCASE collation.
+   You will see an error message if it is necessary but not provided.
 
 *  Edit the RM-Python-config.ini in the working folder to specify the location 
-   of the RM file. If you named it TEST.rmtree, you're already done.
+   of the RM file. If it's named TEST.rmtree, you're already done.
+   OPTIONAL if required:  Specify the path to the unifuzz64.dll file.
    To edit, Open NotePad and drag the ini file onto the NotePad window.
 
 *  Database modification statements should usually be followed by a
@@ -120,6 +126,7 @@ at the left. Comment lines start with # and are only included to help the user
 read and understand the file.
 
 The example values shown below are from the supplied sample RM-Python-config.ini file
+The unifuzz64.dll/RMNOCASE is not needed for the example.
 
 [SQL]
 SQL_STATEMENT_1 =
@@ -135,14 +142,13 @@ SQL_STATEMENT_2 =
 The section name is "SQL"
 The first Key is "SQL_STATEMENT_1"
 Follow the existing format where the Value (statement) begins on the next line.
-Each following line of the Value must also be indented with white space. Either blanks or tabs. 
+Each following line of the Value must also be indented with blank characters.
 Blank lines within a Value are not allowed. 
 Use indented SQL comments (--) to add spacing.
 
 The next Key is "SQL_STATEMENT_2"
 
-Note that the SQL_STATEMENT_2 key is optional. 
-
+Note that the SQL_STATEMENT_1 key is required, while the SQL_STATEMENT_2 key is optional. 
 
 
 ======================================================================
@@ -153,11 +159,19 @@ working environment in which to create your SQL statement.
 Confirm you query works before running it in this utility. (Or get the SQL from
 a source that has confirmed its results. 
 
-*    The RMNOCASE database extension will be required for many queries.
-(BUT NOT FOR THIS FIRST EXAMPLE)
+*    The RMNOCASE collation, provided by the unifuzz64.dll database extension
+will be required for many queries. If it is required, but not configured, 
+an error message- "no such collation sequence: RMNOCASE" will be displayed in 
+the report file. 
+To enable it, download the unifuzz64.dll file, place it in the working folder,
+remove the "#" character in the ini file at the left of the word RMNOCASE_PATH. 
+
+*    Note that the SQL_STATEMENT_1 key is required, while the SQL_STATEMENT_2 key is optional. If you want to keep a statement in the ini file for future use, but want it inactive, change its key name to SQL_STATEMENT_100  or any number except 1 or 2.
+Duplicate key names generate an error.
+
 
 *    On some occasions, the utility console window will display a "Database 
-Locked" message. In that case. close the console window, close RM and re-run the
+Locked" message. In that case: Close the console window, Close RM and re-run the
  utility, then re-open RM. It's not clear why this sometimes happens, but it is
  rare. No database damage has ever been seem after many hundreds of uses (as 
 expected. "Database locked" is a normal message encountered with SQLite.)
@@ -210,21 +224,31 @@ Pro's and Con's
 To use the py script version of the app
 
 To install and use the script file version:
+
 *  Install Python for Windows x64  -see immediately below
-*  Create a working folder on your disk, perhaps in the same folder
-   that contains your RM database.
+
+*  Create a working folder on your disk, far away from your research database so that
+ there will not be confusion.
+
+*  Make a copy of your RM database and place it in the working folder. 
+It is suggested that you name the database copy: "TEST.rmtree"
+
 *  Copy these files from downloaded zip file to the above folder-
       RunSQL.py
       RM-Python-config.ini
-*  Download the SQLite extension file: unifuzz64.dll   -see above
-*  Move the unifuzz64.dll file to the working folder
+
+*  OPTIONAL if required: Download the SQLite extension file: unifuzz64.dll   -see above
+*  OPTIONAL if required: Move the unifuzz64.dll file to the working folder
+
 *  Edit the RM-Python-config.ini in the working folder to specify the location 
    of the RM file and the unifuzz64.dll file. 
    To edit, Open NotePad and drag the ini file onto the NotePad window.
+
 *  Double click the RunSQL.py file to run the utility.
-*  Examine the console window text and press the enter key to close it.
-*  Open the database in RM, open the People view window and select the created
-   group as filter to see the results.
+
+*  Examine the Report file that was displayed in NotePad.
+
+*  Open the database in RM and review the changes.
 
 
 ======================================================================
@@ -257,7 +281,9 @@ Run the Python installer selecting all default options.
 
 ======================================================================
 TODO
-Display errors from running SQL
+Consider adding execution of SQL scripts.
+Consider fancier formatting of output.
+Add ability to add additional database extensions besides RMNOCASE.
 
 ======================================================================
 Feedback
