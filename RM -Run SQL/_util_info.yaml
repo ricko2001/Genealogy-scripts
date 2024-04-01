@@ -1,5 +1,8 @@
 InternalName:  RunSQL
-OriginalFilename: &orig_file_name RunSQL.exe  
+OriginalFilename:  RunSQL.exe
+
+# Use 4 place version here. Last dot and zero will be truncated for folder name.
+# Last Release  none but 0.9.2 distributed
 Version: 0.9.2.0
 
 DistributionFileList:

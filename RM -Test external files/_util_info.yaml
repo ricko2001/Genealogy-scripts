@@ -1,6 +1,7 @@
 InternalName:  TestExternalFiles
 OriginalFilename: TestExternalFiles.exe
 
+# Use 4 place version here. Last dot and zero will be truncated for folder name.
 # last release 1.6.0
 Version: 1.6.1.0
 
