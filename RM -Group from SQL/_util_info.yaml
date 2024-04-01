@@ -1,9 +1,9 @@
-InternalName:  RunSQL=====
-OriginalFilename:  RunSQL.exe=====
+InternalName:  GroupFromSQL
+OriginalFilename: GroupFromSQL.exe
 
 # Use 4 place version here. Last dot and zero will be truncated for folder name.
-# Last Release v?? 
-Version: 0.9.2.0====
+# Last Release v1.1.0.0
+Version: 1.1.1.0
 
 DistributionFileList:
 # <InternalName>.py amd <InternalName>.exe always included by build script
