@@ -4,7 +4,7 @@ updated: 2024-03-17
 
 These are scripts I've written to help my work with RootsMagic genealogy software. They directly access the SQLite database used by RootsMagic (RM) to store its data.
 
-Some are simple SWL in txt files, there are several Windows command files, and a number of Python
+Some are simple SQL in txt files, there are several Windows command files, and a number of Python
 scripts.
 
 The are tested only on Windows 11 x64 OS with Python 3x. Most have been tested only with RM v9 databases.
@@ -16,7 +16,7 @@ I don't have a MacOS computer to test with, but I'd guess that most could easily
 * Each release is version numbered.
 * The ReadMe file is user friendly.
 * All configuration is done through an ini file so the python code does not need to be changed.
-* Eall needed files are in a single zip archive for easy download.
+* All needed files are in a single zip archive for easy download.
 * I've done significant amounts of testing.
 
 The Release zip file packages are found in the Releases page, here on Github (https://github.com/ricko2001/Genealogy-scripts/releases)
@@ -25,6 +25,15 @@ If any of the other scripts are of interest, I may be persuaded to make them rel
 Always interested in feedback.
 
 ## RELEASED:
+
+### RM -Run SQL
+
+This utility is meant to help the novice SQL user get the task done.
+It attempts to eliminate most of the complications found using more
+sophisticated off the shelf software.
+
+This utility will run one or two SQL statements on a database and display the
+results in a report file.
 
 ### RM -Test external files
 
@@ -67,7 +76,8 @@ Probably most useful for projects imported from TMG, or when introducing a custo
 
 ### RM -SQL for creating useful groups
 
-As the name says, contains SQL that can be used by the GroupFromSQL utility.\
+As the name says, contains SQL that can be used by the GroupFromSQL utility.
+
 These are just SQL statements, not python scripts, so they won't be released
 as the scripts above. But they have been extensively tested.
 They don't modify the database, so little risk involved.
