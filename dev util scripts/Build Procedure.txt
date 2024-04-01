@@ -1,0 +1,70 @@
+Update all files in local git - make sure main branch is correct.
+Test script.py, readme.txt, _util_info.yaml
+push code to github main
+This script is to be run from the "RM -<fldr name>" folder, where the py file is.
+It will create a subfolder -  Release "<util_name> v<short_ver_num>  <time>"
+where all building is done.
+That subfolder should be moved to the upper level Releases folder when done.
+
+
+RELEASE PROCEDURE for GitHub
+see build script output for git tag name, git release title and git commands
+
+commit all files locally
+
+push files to git
+
+tag local with command line
+write tag comment in default text editor, save and close.
+Perhaps mini release notes?
+
+push tag with command line
+
+Build again % save output
+in Terminal use - Shift-Control-A,  Shift-Control-C  
+and paste into a new Build_output.txt file, and put it into Release folder/
+
+Tag the local repo with an annotated tag  - no spaces allowed in tag name
+Add release info, refer to previous descriptions for what to write.
+
+Draft a release at Github
+  see build output for release Title
+  Check previous title for pattern (use spaces in title, not in tag)
+  Select the git tag in the drop down list
+Add the zip file
+Save as draft and let it sit and age for a while
+Publish the release
+Write an announcement post to groups.
+
+
+
+see -  https://git-scm.com/docs/git-tag
+tags can be deleted and or renamed-  see   https://phoenixnap.com/kb/git-rename-tag
+
+
+Required software
+
+Python
+	from Python.org
+	or 
+	Microsoft store
+
+pip
+downloads & installs python modules/packages
+https://pip.pypa.io/en/stable/installation/
+	installed with Python from Python.org
+	otherwise, to install
+	py -m ensurepip --upgrade
+	py -m pip install --upgrade pip
+
+Pyinstaller
+Creates exe file from py
+https://pyinstaller.org/en/stable/installation.html
+	pip install pyinstaller
+	pip install --upgrade pyinstaller
+
+pyinstaller-versionfile
+implements command line:: create-version-file
+https://pypi.org/project/pyinstaller-versionfile/
+	pip install pyinstaller-versionfile
+
