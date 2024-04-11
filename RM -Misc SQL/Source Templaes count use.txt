@@ -5,7 +5,7 @@ SELECT COUNT(*), stt.Name, st.TemplateID
 FROM SourceTemplateTable stt
 JOIN SourceTable st ON  stt.TemplateID = st.TemplateID
 GROUP BY stt.TemplateID
-ORDER BY COUNT(*) desc
+ORDER BY COUNT(*) DESC
 
 --===========================================DIV50==
 

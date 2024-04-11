@@ -1,4 +1,0 @@
-
-A new, empty database created with RM 8.13 does not have the old style XML found in previous versions.
-That is, no BOM or XML processing line in the Fields or FieldsDef columns.
-

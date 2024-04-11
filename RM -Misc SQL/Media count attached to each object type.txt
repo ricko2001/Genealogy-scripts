@@ -1,0 +1,7 @@
+
+-- Media count attached to each object type
+
+SELECT OwnerType, COUNT(0)
+FROM MediaLinkTable
+GROUP BY ownertype
+

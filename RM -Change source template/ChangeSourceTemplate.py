@@ -28,7 +28,7 @@ def main():
     report_display_app = ''
 
     # ===========================================DIV50==
-    # Error go to console window
+    # Errors go to console window
     # ===========================================DIV50==
     try:
         # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
@@ -72,20 +72,13 @@ def main():
             + 'Please email console text & ini file to author.\n\n')
         return 1
 
+    # open the already tested report file
+    report_file = open(report_path,  mode='w', encoding='utf-8')
+
     # ===========================================DIV50==
-    # Error go to Report File
+    # Errors from here forward, go to Report File
     # ===========================================DIV50==
     try:
-        report_file = open(report_path,  mode='w', encoding='utf-8')
-        try:
-            database_path = config['FILE_PATHS']['DB_PATH']
-        except:
-            raise RMPyExcep(
-                'ERROR: DB_PATH must be specified.')
-
-        if not os.path.exists(database_path):
-            raise RMPyExcep(
-                'ERROR: Path for database path not found: ' + database_path)
         try:
             report_display_app = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
         except:
@@ -95,6 +88,16 @@ def main():
             report_display_app = ''
             raise RMPyExcep('ERROR: Path for report-file display app not found: '
                             + input_string)
+
+        try:
+            database_path = config['FILE_PATHS']['DB_PATH']
+        except:
+            raise RMPyExcep(
+                'ERROR: DB_PATH must be specified.')
+
+        if not os.path.exists(database_path):
+            raise RMPyExcep(
+                'ERROR: Path for database path not found: ' + database_path)
         # RM database file specific
         FileModificationTime = datetime.fromtimestamp(
             os.path.getmtime(database_path))
@@ -135,7 +138,7 @@ def main():
     except RMPyExcep as e:
         report_file.write('\n\n' + str(e) + '\n\n')
         return 1
-    except Exception as e:
+    except (Exception, sqlite3.OperationalError) as e:
         traceback.print_exception(e, file=report_file)
         report_file.write('n\n' 'ERROR: Application failed. Please email '
                           'report & ini file to author.' '\n\n')
