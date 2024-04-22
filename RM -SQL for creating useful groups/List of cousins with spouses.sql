@@ -45,7 +45,7 @@
         END
     UNION
     SELECT MotherID, ct.ChildID FROM FamilyTable
-      LEFT JOIN ChildTable as ct USING(FamilyID)
+      LEFT JOIN ChildTable AS ct USING(FamilyID)
       WHERE MotherID <> 0 AND
         CASE (SELECT C_BirthParentOnly FROM constants)
         WHEN 1 THEN RelFather=0 ELSE 1
@@ -60,15 +60,14 @@
       FROM FamilyTable AS ft
       WHERE PersonID <> 0 AND SpouseID <> 0
     ),
-  cousin_spouse(SpouseID) AS (
-    SELECT SpouseID as PersonID
+  cousin_spouse_of(SpouseID) AS (
+    SELECT SpouseID AS PersonID
       FROM spouse_of AS so
       INNER JOIN cousin_of AS co ON co.CousinID = so.PersonID
     )
-    
-  SELECT CousinID as PersonID
-  FROM cousin_of
+  SELECT CousinID AS PersonID
+    FROM cousin_of
   UNION
-  SELECT SpouseID as PersonID
-  FROM cousin_spouse
+  SELECT SpouseID AS PersonID
+    FROM cousin_spouse_of
   --

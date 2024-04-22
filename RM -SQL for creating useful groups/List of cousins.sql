@@ -38,19 +38,20 @@
     ),
   child_of(ParentID, ChildID) AS (
     SELECT FatherID, ct.ChildID FROM FamilyTable
-      LEFT JOIN ChildTable as ct USING(FamilyID)
+      LEFT JOIN ChildTable AS ct USING(FamilyID)
       WHERE FatherID <> 0 AND
         CASE (SELECT C_BirthParentOnly FROM constants)
         WHEN 1 THEN RelFather=0 ELSE 1
         END
     UNION
     SELECT MotherID, ct.ChildID FROM FamilyTable
-      LEFT JOIN ChildTable as ct USING(FamilyID)
+      LEFT JOIN ChildTable AS ct USING(FamilyID)
       WHERE MotherID <> 0 AND
         CASE (SELECT C_BirthParentOnly FROM constants)
         WHEN 1 THEN RelFather=0 ELSE 1
         END
     )
-  SELECT CousinID as PersonID FROM cousin_of
+  SELECT CousinID AS PersonID
+    FROM cousin_of
   --
 
