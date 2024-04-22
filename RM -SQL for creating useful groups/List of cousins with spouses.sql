@@ -59,11 +59,16 @@
     SELECT ft.MotherID AS PersonID, ft.FatherID AS SpouseID
       FROM FamilyTable AS ft
       WHERE PersonID <> 0 AND SpouseID <> 0
+    ),
+  cousin_spouse(SpouseID) AS (
+    SELECT SpouseID as PersonID
+      FROM spouse_of AS so
+      INNER JOIN cousin_of AS co ON co.CousinID = so.PersonID
     )
+    
   SELECT CousinID as PersonID
-    FROM cousin_of
+  FROM cousin_of
   UNION
   SELECT SpouseID as PersonID
-    FROM spouse_of AS so
-    INNER JOIN cousin_of AS co ON co.CousinID = so.PersonID
+  FROM cousin_spouse
   --
