@@ -23,33 +23,33 @@
     SELECT ct.ChildID, FatherID AS ParentID
       FROM ChildTable AS ct
       LEFT JOIN FamilyTable USING(FamilyID)
-      WHERE ParentID <> 0 AND
-        CASE (SELECT C_BirthParentOnly FROM constants)
-        WHEN 1 THEN RelFather=0 ELSE 1
-        END
+      WHERE ParentID <> 0
+        AND CASE (SELECT C_BirthParentOnly FROM constants)
+            WHEN 1 THEN RelFather=0 ELSE 1
+            END
     UNION
     SELECT ct.ChildID, MotherID AS ParentID
       FROM ChildTable AS ct
       LEFT JOIN FamilyTable USING(FamilyID)
-      WHERE ParentID <> 0 AND
-        CASE (SELECT C_BirthParentOnly FROM constants)
-        WHEN 1 THEN RelMother=0 ELSE 1
-        END
+      WHERE ParentID <> 0
+        AND CASE (SELECT C_BirthParentOnly FROM constants)
+            WHEN 1 THEN RelMother=0 ELSE 1
+            END
     ),
   child_of(ParentID, ChildID) AS (
     SELECT FatherID, ct.ChildID FROM FamilyTable
       LEFT JOIN ChildTable as ct USING(FamilyID)
-      WHERE FatherID <> 0 AND
-        CASE (SELECT C_BirthParentOnly FROM constants)
-        WHEN 1 THEN RelFather=0 ELSE 1
-        END
+      WHERE FatherID <> 0
+        AND CASE (SELECT C_BirthParentOnly FROM constants)
+            WHEN 1 THEN RelFather=0 ELSE 1
+            END
     UNION
     SELECT MotherID, ct.ChildID FROM FamilyTable
       LEFT JOIN ChildTable as ct USING(FamilyID)
-      WHERE MotherID <> 0 AND
-        CASE (SELECT C_BirthParentOnly FROM constants)
-        WHEN 1 THEN RelFather=0 ELSE 1
-        END
+      WHERE MotherID <> 0
+        AND CASE (SELECT C_BirthParentOnly FROM constants)
+            WHEN 1 THEN RelFather=0 ELSE 1
+            END
     ),
   spouse_of(PersonID, SpouseID) AS (
     SELECT ft.FatherID AS PersonID, ft.MotherID AS SpouseID
@@ -68,14 +68,11 @@
   cousin_spouse_parent_of(ParentID) AS (
     SELECT ParentID
       FROM parent_of AS po
-      INNER JOIN cousin_spouse_of AS cso ON cso.SpouseID = po.ParentID
+      INNER JOIN cousin_spouse_of AS cso ON cso.SpouseID = po.ChildID
     )
-  SELECT CousinID AS PersonID
-    FROM cousin_of
+  SELECT CousinID AS PersonID FROM cousin_of
   UNION
-  SELECT SpouseID AS PersonID
-    FROM cousin_spouse_of
+  SELECT SpouseID AS PersonID FROM cousin_spouse_of
   UNION
-  SELECT ParentID AS PersonID
-    FROM cousin_spouse_parent_of
+  SELECT ParentID AS PersonID FROM cousin_spouse_parent_of
   --
