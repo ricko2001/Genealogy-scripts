@@ -9,15 +9,14 @@ import traceback
 # Always make a database backup before using this script.
 # Runs one or two SQL statements on a database and returns results
 
-# Requirements: (see ReadMe.txt for details)
-# RM-Python-config.ini  ( Configuration ini file to set options and parameters)
-# Python v3.9 or greater
-
+##  Requirements: (see ReadMe.txt for details)
+##  RootsMagic database file
+##  RM-Python-config.ini  ( Configuration ini file to set options and parameters)
+##  unifuzz64.dll optionally needed depending on the SQL run
+##  Python v3.9 or greater
 
 # ===================================================DIV60==
 def main():
-    # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
-    # see   https://docs.python.org/3/library/configparser.html
 
     # Configuration
     ini_file_name = "RM-Python-config.ini"
@@ -60,11 +59,11 @@ def main():
                             + report_path + "\n\n")
 
     except RMPyExcep as e:
-        PauseWithMessage(e)
+        pause_with_message(e)
         return 1
     except Exception as e:
         traceback.print_exception(e, file=sys.stdout)
-        PauseWithMessage(
+        pause_with_message(
             "ERROR: Application failed. Please report.\n\n " + str(e))
         return 1
 
@@ -181,20 +180,20 @@ def RunSQLFeature(config, report_file, dbConnection):
 # ===================================================DIV60==
 def create_db_connection(db_file_path, db_extension):
 
-    dbConnection = None
+    db_connection = None
     try:
-        dbConnection = sqlite3.connect(db_file_path)
+        db_connection = sqlite3.connect(db_file_path)
         if db_extension is not None and db_extension != '':
             # load SQLite extension
-            dbConnection.enable_load_extension(True)
-            dbConnection.load_extension(db_extension)
+            db_connection.enable_load_extension(True)
+            db_connection.load_extension(db_extension)
     except Exception as e:
         raise RMPyExcep(e, "\n\n" "Cannot open the RM database file." "\n")
-    return dbConnection
+    return db_connection
 
 
 # ===================================================DIV60==
-def PauseWithMessage(message=None):
+def pause_with_message(message=None):
 
     if (message != None):
         print(str(message))
