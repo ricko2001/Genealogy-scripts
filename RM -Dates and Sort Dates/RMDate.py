@@ -2,8 +2,10 @@ from enum import Enum
 
 # ===================================================DIV60==
 def main():
-    RD = "DR+19210113..+19220125.."
-    SD = 6710968738434343951
+    #RD = "DR+19210113..+19220125.."
+    RD = "D-+19210113.S+00010000.."
+    #SD = 6710968738434343951
+    SD = 6710968736419938325
 
     print(from_RMDate (RD ,Format.SHORT))
     print(to_RMsort_date(RD))
@@ -41,8 +43,8 @@ def from_RMDate(RMDate, form):
         raise Exception("Malformed RM Date: wrong length")
 
     Char_1_2 = RMDate[1:2]
-    data =RMdate_structure()
-    StructCodeE = data.get_enum_from_symbol(Char_1_2)
+    data_s =RMdate_structure()
+    StructCodeE = data_s.get_enum_from_symbol(Char_1_2)
 
 
     Char_2_3 = RMDate[2:3]
@@ -68,8 +70,8 @@ def from_RMDate(RMDate, form):
         raise Exception("Malformed RM Date: Double Date 1 indicator")
 
     Char_12_13 = RMDate[12:13]
-    c_data =RMdate_confidence()
-    ConfidenceE_1 = c_data.get_enum_from_symbol(Char_12_13)
+    data_c =RMdate_confidence()
+    ConfidenceE_1 = data_c.get_enum_from_symbol(Char_12_13)
 
     Char_13_14 = RMDate[13:14]
     if Char_13_14 == '-':
@@ -97,7 +99,7 @@ def from_RMDate(RMDate, form):
 
     # only if 2nd date
     Char_23_24 = RMDate[23:24]
-    ConfidenceE_2 = c_data.get_enum_from_symbol(Char_23_24)
+    ConfidenceE_2 = data_c.get_enum_from_symbol(Char_23_24)
 
     SingleDate = False
     if year_2 == '' and month_2_i == 0 and day_2 == '' and AdBc_2 == '':
@@ -116,16 +118,8 @@ def from_RMDate(RMDate, form):
     else:
         month_trsp_1 = ' '
 
-    if form == Format.SHORT:
-        fDate_1 = (RMdate_structure.data[StructCodeE][3] + RMdate_confidence.data[ConfidenceE_1][1]
+        fDate_1 = (data_s.get_str_1(StructCodeE, form) + data_c.get_str(ConfidenceE_1, form)
                    + day_1 + NumToMonthStr(month_1_i, 0) + month_trsp_1 + year_1 + AdBc_1)
-
-    elif form == Format.LONG:
-        fDate_1 = (RMdate_structure.data[StructCodeE][4] + RMdate_confidence.data[ConfidenceE_1][2]
-                   + day_1 + NumToMonthStr(month_1_i, 1) + month_trsp_1 + year_1 + AdBc_1)
-
-    else:
-        raise Exception("Format not supported")
 
     fDate = ''
     if SingleDate:
@@ -140,16 +134,10 @@ def from_RMDate(RMDate, form):
         else:
             month_trsp_2 = ' '
 
-        if form == Format.SHORT:
-            fDate_2 = (RMdate_structure.data[StructCodeE][5] + RMdate_confidence.data[ConfidenceE_2][1]
+        fDate_2 = (data_s.get_str_2(StructCodeE, form) + data_c.get_str(ConfidenceE_2, form)
                        + day_2 + NumToMonthStr(month_2_i, 0) + month_trsp_2 + year_2 + AdBc_2)
 
-        elif form == Format.LONG:
-            fDate_2 = (RMdate_structure.data[StructCodeE][6] + RMdate_confidence.data[ConfidenceE_2][2]
-                       + day_2 + NumToMonthStr(month_2_i, 1) + month_trsp_2 + year_2 + AdBc_2)
 
-        else:
-            raise Exception("Format not supported")
 
         fDate = fDate_1 + fDate_2
 
@@ -190,6 +178,21 @@ def to_RMsort_date(RM_date):
 
     return RM_sort_date
 
+# ===================================================DIV60==
+def from_RMsort_date(RM_sort_date):
+
+    Y1 = (RM_sort_date >> 49) - 10000 
+    M1 = (RM_sort_date >> 45) & 0xf
+    D1 = (RM_sort_date >> 39) & 0x3f
+    Y2 = ((RM_sort_date >> 20) & 0x3fff) - 10000
+    M2 = (RM_sort_date >> 16) & 0xf
+    D2 = (RM_sort_date >> 10) & 0x3f
+    F = RM_sort_date & 0x3ff
+
+    #  raise Exception("FromRMSortDate not yet implemented")
+
+    print ( Y1, M1, D1, Y2, M2, D2, F)
+    return Y1
 
 # ===================================================DIV60==
 class RMdate_structure:
@@ -218,8 +221,6 @@ class RMdate_structure:
 # I SINCE = 1047582 = (30 + xFFC00)
 # A AFTER = 1047583 = (31 + xFFC00)
 
-
-
     def get_enum_from_symbol (self, symbol):
         for date_type in RMdate_structure.data.items():
             if symbol ==  date_type[1][0]:
@@ -232,6 +233,22 @@ class RMdate_structure:
                 return date_type[1][1]
         raise Exception("Malformed RM Date: StructCode character, no offset available")
 
+    def get_str_1 (self, type, format):
+        if format == Format.SHORT:
+           return RMdate_structure.data[type][3]
+        elif format == Format.LONG:
+           return RMdate_structure.data[type][4]
+        else:
+            raise Exception( "Format not supported")
+    
+    def get_str_2 (self, type, format):
+        if format == Format.SHORT:
+           return RMdate_structure.data[type][5]
+        elif format == Format.LONG:
+           return RMdate_structure.data[type][6]
+        else:
+            raise Exception( "Format not supported")
+ 
 # ===================================================DIV60==
 class RMdate_confidence:
 
@@ -262,20 +279,13 @@ class RMdate_confidence:
                 return date_type[0]
         raise Exception("Malformed RM Date: Confidence character")
 
-# ===================================================DIV60==
-def from_RMsort_date(RM_sort_date):
-
-    Y1 = (RM_sort_date >> 49) - 10000
-    M1 = (RM_sort_date >> 45) & 0xf
-    D1 = (RM_sort_date >> 39) & 0x3f
-    Y2 = (RM_sort_date >> 20) & 0x3fff - 10000
-    M2 = (RM_sort_date >> 16) & 0xf
-    D2 = (RM_sort_date >> 10) & 0x3f
-    F = RM_sort_date & 0x3ff
-
-    #  raise Exception("FromRMSortDate not yet implemented")
-
-    return Y1 #RM_date
+    def get_str(self, type, format):
+        if format == Format.SHORT:
+           return RMdate_confidence.data[type][1]
+        elif format == Format.LONG:
+           return RMdate_confidence.data[type][2]
+        else:
+            raise Exception( "Format not supported")
 
 # ===================================================DIV60==
 class Direction(Enum):
