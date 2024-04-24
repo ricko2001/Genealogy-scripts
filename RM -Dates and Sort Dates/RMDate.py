@@ -166,7 +166,7 @@ def to_RMsort_date(RM_date):
         raise Exception("Malformed RM Date: Invalid characters in date part 2")
 
     if date_type in ('.', 'T'):
-        RM_sort_date = 9223372036854775807  # x'7F FF FF FF FF FF FF FF' (2^63-1)
+        RM_sort_date = 9223372036854775807  #   x'7F FF FF FF FF FF FF FF' (2^63-1)
 
     Char_1_2 = RM_date[1:2]
     struct_data = RMdate_structure()
@@ -194,110 +194,6 @@ def from_RMsort_date(RM_sort_date):
     print ( Y1, M1, D1, Y2, M2, D2, F)
     return Y1
 
-# ===================================================DIV60==
-class RMdate_structure:
-
-    data = {}  # Class Variable   shared among all instances 
-
-    def __init__(self):
-        #                                           0    1        2    3         4          5         6
-        #  fmt: off                                 sym  offset   num  1stShort  1stLong    2ndShort 2ndLong
-        RMdate_structure.data[StructCode.NORM] = (  '.', 12,      1,   '',       '',        '',      ''     )
-        RMdate_structure.data[StructCode.AFT]  = (  'A', 1047583, 1,   'aft ',   'after ',  '',      ''     )
-        RMdate_structure.data[StructCode.BEF]  = (  'B', 0,       1,   'bef ',   'before ', '',      ''     )
-        RMdate_structure.data[StructCode.FROM] = (  'F', 1047579, 1,   'from ',  'from ',   '',      ''     )
-        RMdate_structure.data[StructCode.SINC] = (  'I', 1047582, 1,   'since ', 'since ',  '',      ''     )
-        RMdate_structure.data[StructCode.TO]   = (  'T', 6,       1,   'to ',    'to ',     '',      ''     )
-        RMdate_structure.data[StructCode.UNTL] = (  'U', 9,       1,   'until ', 'until ',  '',      ''     )
-        RMdate_structure.data[StructCode.BY]   = (  'Y', 3,       1,   'by ',    'by ',     '',      ''     )
-        RMdate_structure.data[StructCode.OR]   = (  'O', 24,      2,   '',       '',        ' or ',  ' or ' )
-        RMdate_structure.data[StructCode.BTWN] = (  'R', 15,      2,   'bet ',   'between ' ' and ', ' and ')
-        RMdate_structure.data[StructCode.FRTO] = (  'S', 18,      2,   'from ',  'from ',   ' to ',  ' to ' )
-        RMdate_structure.data[StructCode.DASH] = (  '-', 21,      2,   '',       '',        '–',     '–'    )
-        # fmt: on
-
-# Sort order  TODO
-# F FROM  = 1047579 = (27 + xFFC00)
-# I SINCE = 1047582 = (30 + xFFC00)
-# A AFTER = 1047583 = (31 + xFFC00)
-
-    def get_enum_from_symbol (self, symbol):
-        for date_type in RMdate_structure.data.items():
-            if symbol ==  date_type[1][0]:
-                return date_type[0]
-        raise Exception("Malformed RM Date: StructCode character, no enum available")
-    
-    def get_offset_from_symbol (self, symbol):
-        for date_type in RMdate_structure.data.items():
-            if symbol ==  date_type[1][0]:
-                return date_type[1][1]
-        raise Exception("Malformed RM Date: StructCode character, no offset available")
-
-    def get_str_1 (self, type, format):
-        if format == Format.SHORT:
-           return RMdate_structure.data[type][3]
-        elif format == Format.LONG:
-           return RMdate_structure.data[type][4]
-        else:
-            raise Exception( "Format not supported")
-    
-    def get_str_2 (self, type, format):
-        if format == Format.SHORT:
-           return RMdate_structure.data[type][5]
-        elif format == Format.LONG:
-           return RMdate_structure.data[type][6]
-        else:
-            raise Exception( "Format not supported")
- 
-# ===================================================DIV60==
-class RMdate_confidence:
-
-    data = {}  # Class Variable   shared among all instances 
-
-    def __init__(self):
-        #                                               0     1              2
-        # fmt: off                                      sym   short          long
-        RMdate_confidence.data[ConfidenceCode.NONE] = ( '.',  "",            "")
-        RMdate_confidence.data[ConfidenceCode.ABT]  = ( 'A',  "abt ",        "about ")
-        RMdate_confidence.data[ConfidenceCode.SAY]  = ( 'S',  "say ",        "say ")
-        RMdate_confidence.data[ConfidenceCode.CIR]  = ( 'C',  "ca ",         "circa ")
-        RMdate_confidence.data[ConfidenceCode.EST]  = ( 'E',  "est ",        "estimated ")
-        RMdate_confidence.data[ConfidenceCode.CAL]  = ( 'L',  "calc ",       "calculated ")
-        RMdate_confidence.data[ConfidenceCode.MAY]  = ( '?' , "maybe ",      "maybe ")
-        RMdate_confidence.data[ConfidenceCode.PER]  = ( '1',  "perhaps ",    "perhaps ")
-        RMdate_confidence.data[ConfidenceCode.APAR] = ( '2',  "apparently ", "apparently ")
-        RMdate_confidence.data[ConfidenceCode.LKLY] = ( '3',  "likely ",     "likely ")
-        RMdate_confidence.data[ConfidenceCode.POSS] = ( '4',  "poss ",       "possibly ")
-        RMdate_confidence.data[ConfidenceCode.PROB] = ( '5',  "prob ",       "probably ")
-        RMdate_confidence.data[ConfidenceCode.CERT] = ( '6',  "cert ",       "certainly ")
-        # fmt: on
-
-    def get_enum_from_symbol (self, symbol):
-        StructCodeE = None
-        for date_type in RMdate_confidence.data.items():
-            if symbol ==  date_type[1][0]:
-                return date_type[0]
-        raise Exception("Malformed RM Date: Confidence character")
-
-    def get_str(self, type, format):
-        if format == Format.SHORT:
-           return RMdate_confidence.data[type][1]
-        elif format == Format.LONG:
-           return RMdate_confidence.data[type][2]
-        else:
-            raise Exception( "Format not supported")
-
-# ===================================================DIV60==
-class Direction(Enum):
-    FROM_RM = 1
-    TO_RM = 2
-
-
-# ===================================================DIV60==
-class Format(Enum):
-    SHORT = 1
-    LONG = 2
-
 
 # ===================================================DIV60==
 class StructCode(Enum):
@@ -314,8 +210,69 @@ class StructCode(Enum):
     FRTO = 11
     DASH = 12
 
-
 # ===================================================DIV60==
+class RMdate_structure:
+
+    data = (
+        #  fmt: off
+        #          0          1      2          3    4         5          6        7
+        #          enum       sym    offset     num  1stShort  1stLong    2ndShort 2ndLong
+        ( StructCode.NORM,    '.',   12,        1,   '',       '',        '',      ''     ),
+        ( StructCode.AFT,     'A',   1047583,   1,   'aft ',   'after ',  '',      ''     ),
+        ( StructCode.BEF,     'B',   0,         1,   'bef ',   'before ', '',      ''     ),
+        ( StructCode.FROM,    'F',   1047579,   1,   'from ',  'from ',   '',      ''     ),
+        ( StructCode.SINC,    'I',   1047582,   1,   'since ', 'since ',  '',      ''     ),
+        ( StructCode.TO,      'T',   6,         1,   'to ',    'to ',     '',      ''     ),
+        ( StructCode.UNTL,    'U',   9,         1,   'until ', 'until ',  '',      ''     ),
+        ( StructCode.BY,      'Y',   3,         1,   'by ',    'by ',     '',      ''     ),
+        ( StructCode.OR,      'O',   24,        2,   '',       '',        ' or ',  ' or ' ),
+        ( StructCode.BTWN,    'R',   15,        2,   'bet ',   'between ' ' and ', ' and '),
+        ( StructCode.FRTO,    'S',   18,        2,   'from ',  'from ',   ' to ',  ' to ' ),
+        ( StructCode.DASH,    '-',   21,        2,   '',       '',        '–',     '–'    )
+        # fmt: on
+        )
+
+# Sort order  TODO
+# F FROM  = 1047579 = (27 + xFFC00)
+# I SINCE = 1047582 = (30 + xFFC00)
+# A AFTER = 1047583 = (31 + xFFC00)
+
+    def get_enum_from_symbol (self, symbol):
+        for date_type in RMdate_structure.data:
+            if symbol ==  date_type[1]:
+                return date_type[0]
+        raise Exception("Malformed RM Date: StructCode character, no enum available")
+    
+    def get_offset_from_symbol (self, symbol):
+        for date_type in RMdate_structure.data:
+            if symbol ==  date_type[1]:
+                return date_type[2]
+        raise Exception("Malformed RM Date: StructCode character, no offset available")
+
+    def get_str_1 (self, type, format):
+        for date_type in RMdate_structure.data:
+            if type ==  date_type[0]:
+                if format == Format.SHORT:
+                    return date_type[4]
+                elif format == Format.LONG:
+                    return date_type[5]
+                else:
+                     raise Exception( "Format not supported")
+        raise Exception("Malformed RM Date: StructCode character, no offset available")
+
+    def get_str_2 (self, type, format):
+        for date_type in RMdate_structure.data:
+            if type ==  date_type[0]:
+                if format == Format.SHORT:
+                    return date_type[6]
+                elif format == Format.LONG:
+                    return date_type[7]
+                else:
+                     raise Exception( "Format not supported")
+        raise Exception("Malformed RM Date: StructCode character, no offset available")
+
+
+ # ===================================================DIV60==
 class ConfidenceCode(Enum):
     NONE = 1
     ABT = 2
@@ -330,6 +287,61 @@ class ConfidenceCode(Enum):
     POSS = 11
     PROB = 12
     CERT = 13
+
+
+# ===================================================DIV60==
+class RMdate_confidence:
+
+    data = (
+        # fmt: off 
+        #                0        1       2              3
+        #                enum     sym     short          long
+        ( ConfidenceCode.NONE,    '.',    "",            ""           ),
+        ( ConfidenceCode.ABT,     'A',    "abt ",        "about "     ),
+        ( ConfidenceCode.SAY,     'S',    "say ",        "say "       ),
+        ( ConfidenceCode.CIR,     'C',    "ca ",         "circa "     ),
+        ( ConfidenceCode.EST,     'E',    "est ",        "estimated " ),
+        ( ConfidenceCode.CAL,     'L',    "calc ",       "calculated "),
+        ( ConfidenceCode.MAY,     '?'   , "maybe ",      "maybe "     ),
+        ( ConfidenceCode.PER,     '1',    "perhaps ",    "perhaps "   ),
+        ( ConfidenceCode.APAR,    '2',    "apparently ", "apparently "),
+        ( ConfidenceCode.LKLY,    '3',    "likely ",     "likely "    ),
+        ( ConfidenceCode.POSS,    '4',    "poss ",       "possibly "  ),
+        ( ConfidenceCode.PROB,    '5',    "prob ",       "probably "  ),
+        ( ConfidenceCode.CERT,    '6',    "cert ",       "certainly " )
+        # fmt: on
+        )
+
+    def get_enum_from_symbol (self, symbol):
+        for date_type in RMdate_confidence.data:
+            if symbol ==  date_type[1]:
+                return date_type[0]
+        raise Exception("Malformed RM Date: Confidence character")
+
+    def get_str(self, type, format):
+        for date_type in RMdate_confidence.data:
+            if type ==  date_type[0]:
+                if format == Format.SHORT:
+                    return date_type[2]
+                elif format == Format.LONG:
+                    return date_type[3]
+                else:
+                    raise Exception( "Format not supported")
+        raise Exception( "Confidence enum not supported")
+
+
+
+
+# ===================================================DIV60==
+class Direction(Enum):
+    FROM_RM = 1
+    TO_RM = 2
+
+
+# ===================================================DIV60==
+class Format(Enum):
+    SHORT = 1
+    LONG = 2
 
 
 # ===================================================DIV60==
