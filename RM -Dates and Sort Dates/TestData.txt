@@ -1,15 +1,17 @@
 SELECT '('||substr('000'||rowid, -3, 3)||', ' , char(34)|| Date|| char(34)||', ', char(34)|| SortDate|| char(34)||', ', char(34)|| Details|| char(34)||'),' FROM EventTable ORDER BY SortDate
 
 
-update eventtable set details = replace (details,  '][', '] [')
+update EventTable : set details = replace (details,  '][', '] [')
 
 
-in RM databadse, Fact description=   [expected norm date][expected sort date]  comments
+in RM database, Fact description=   [expected norm date][expected sort date]  comments
 
 
 
 
 '('||substr('000'||rowid, -3, 3)||', '	char(34)|| Date|| char(34)||', '	char(34)|| SortDate|| char(34)||', '	char(34)|| Details|| char(34)||'),'
+
+
 (048, 	"D-+19210000..+99990000..", 	"4548072677481381909", 	"[1921–9999] [1921–6385 BC]"),
 (059, 	"D-+19210113..+90000000..", 	"4548115007631523861", 	"[13 January 1921–9000] [13 January 1921–7384 BC]   2nd date overflow"),
 (056, 	"D-+19210113..+99990000..", 	"4548115008679051285", 	"[13 January 1921–9999] [13 January 1921 BC–6385 BC]"),

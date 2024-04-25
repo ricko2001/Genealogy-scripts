@@ -214,8 +214,8 @@ def from_RMsort_date(RM_sort_date):
     #  raise Exception("FromRMSortDate not yet implemented")
  # "DR+19210113..+19220125.."
 
-    RM_date = ("this: " + "D" + FF + "+{:=04}".format(Y1) + "{:=02}".format(M1) + "{:=02}".format(D1)
-               + ".." + "{:=04}".format(Y2) + "{:=02}".format(M2) + "{:=02}".format(D2) + ".." )
+    RM_date = ( "D" + FF + "+{:=04}{:=02}{:=02}".format(Y1, M1, D1)
+               + ".." + "{:=04}{:=02}{:=02}".format(Y2, M2, D2) + ".." )
 
     return RM_date
 
