@@ -1,8 +1,6 @@
 from enum import Enum
 
 # ===================================================DIV60==
-
-
 def main():
     # RD = "DR+19210113..+19220125.."
     RD = "D-+19210113.S+00010000.."
@@ -25,8 +23,6 @@ def to_RMDate(DateStr, form):
     return ""
 
 # ===================================================DIV60==
-
-
 def from_RMDate(RMDate, form):
     # form is Format.LONG, Format.SHORT
 
@@ -59,7 +55,7 @@ def from_RMDate(RMDate, form):
         AdBc_1 = ''
     else:
         raise Exception("Malformed RM Date: AD-BC_1 indicator")
-
+    
     try:
         year_1 = (RMDate[3:7]).lstrip("0")
         month_1_i = int(RMDate[7:9])
@@ -94,7 +90,7 @@ def from_RMDate(RMDate, form):
     except ValueError as ve:
         raise Exception("Malformed RM Date: Invalid characters in date 1")
 
-        # complicated TODO
+    # complicated TODO
     Char_22_23 = RMDate[22:23]
     DoubDate_2 = False
     if Char_22_23 == '/':
@@ -110,10 +106,11 @@ def from_RMDate(RMDate, form):
     if year_2 == '' and month_2_i == 0 and day_2 == '' and AdBc_2 == '':
         SingleDate = True
 
-    if SingleDate and RMdate_structure[StructCodeE][2] == 2:
+    if SingleDate and data_s.get_num_from_enum(StructCodeE) != 1:
         raise Exception(
             "Malformed date: conflict between struct code & second date empty")
 
+    month_trsp_1 = ''
     if year_1 != '' and day_1 != '' and month_1_i == 0:
         month_1_i = 13
     if day_1 != '':
@@ -123,9 +120,10 @@ def from_RMDate(RMDate, form):
     else:
         month_trsp_1 = ' '
 
-        fDate_1 = (data_s.get_str_1(StructCodeE, form) + data_c.get_str(ConfidenceE_1, form)
-                   + day_1 + NumToMonthStr(month_1_i, 0) + month_trsp_1 + year_1 + AdBc_1)
-
+    fDate_1 = (data_s.get_str_1(StructCodeE, form) + data_c.get_str(ConfidenceE_1, form)
+                + day_1 + NumToMonthStr(month_1_i, form) + month_trsp_1 + year_1 + AdBc_1)
+    
+    month_trsp_2 = ''
     fDate = ''
     if SingleDate:
         fDate = fDate_1
@@ -139,10 +137,10 @@ def from_RMDate(RMDate, form):
         else:
             month_trsp_2 = ' '
 
-        fDate_2 = (data_s.get_str_2(StructCodeE, form) + data_c.get_str(ConfidenceE_2, form)
-                   + day_2 + NumToMonthStr(month_2_i, 0) + month_trsp_2 + year_2 + AdBc_2)
+    fDate_2 = (data_s.get_str_2(StructCodeE, form) + data_c.get_str(ConfidenceE_2, form)
+             + day_2 + NumToMonthStr(month_2_i, form) + month_trsp_2 + year_2 + AdBc_2)
 
-        fDate = fDate_1 + fDate_2
+    fDate = fDate_1 + fDate_2
 
     return fDate
 
@@ -211,9 +209,6 @@ def from_RMsort_date(RM_sort_date):
     data_s = RMdate_structure()
     FF = data_s.get_symbol_from_offset(F)
 
-    #  raise Exception("FromRMSortDate not yet implemented")
- # "DR+19210113..+19220125.."
-
     RM_date = ( "D" + FF + "+{:=04}{:=02}{:=02}".format(Y1, M1, D1)
                + ".." + "{:=04}{:=02}{:=02}".format(Y2, M2, D2) + ".." )
 
@@ -261,6 +256,14 @@ class RMdate_structure:
 # F FROM  = 1047579 = (27 + xFFC00)
 # I SINCE = 1047582 = (30 + xFFC00)
 # A AFTER = 1047583 = (31 + xFFC00)
+
+
+    def get_num_from_enum(self, enum):
+        for date_type in RMdate_structure._data:
+            if enum == date_type[0]:
+                return date_type[3]
+        raise Exception(
+            "Malformed RM Date: StructCode character, no enum available")
 
     def get_enum_from_symbol(self, symbol):
         for date_type in RMdate_structure._data:
@@ -379,10 +382,14 @@ class Format(Enum):
 
 # ===================================================DIV60==
 def NumToMonthStr(MonthNum, style):
-    if style != 0 and style != 1:
-        raise Exception("style not supported")
     if MonthNum < 0 or MonthNum > 13:
         raise Exception("Month number out of range")
+    if style == Format.LONG:
+        index=1
+    elif style == Format.SHORT:
+        index=0
+    else:
+        raise Exception("style not supported")
 
    # Items must appear in this order
     Months = (
@@ -401,7 +408,9 @@ def NumToMonthStr(MonthNum, style):
         ('Dec',  "December"),
         ('???',  "??????")
     )
-    return Months[MonthNum][style]
+    return Months[MonthNum][index]
+
+     
 
 
 # ===================================================DIV60==
