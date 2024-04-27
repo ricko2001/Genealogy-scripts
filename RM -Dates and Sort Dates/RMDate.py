@@ -163,15 +163,15 @@ def to_RMsort_date(RM_date):
 
     date_type = RM_date[0:1]
     if date_type == 'T':
-        # x'7F FF FF FF FF FF FF FF'   ( 2^63  sign bit is 0, largest possible signed 64 bit int)
-        return 9223372036854775807
+        #  9223372036854775807    ( 2^63,  sign bit is 0, largest possible signed 64 bit int)
+        return 0x7F_FF_FF_FF_FF_FF_FF_FF 
     elif date_type == 'Q':
         raise Exception("RM Quaker dates not yet supported")
     elif date_type == 'R':
         raise Exception("RM Quarter dates not yet supported")
     elif date_type == '.':
-        # x'7F FF FF FF FF FF FF FF'   ( 2^63  sign bit is 0, largest possible signed 64 bit int)
-        return 9223372036854775807
+        #  9223372036854775807    ( 2^63,  sign bit is 0, largest possible signed 64 bit int)
+        return 0x7F_FF_FF_FF_FF_FF_FF_FF 
     elif date_type == 'D':
         pass  # continue and process D type below
     else:
@@ -180,11 +180,15 @@ def to_RMsort_date(RM_date):
     # Process D type dates
 
     # Julian date / slash date
-    date_type_slash_1 = RM_date[11:12]
-    date_type_slash_2 = RM_date[22:23]
-    if date_type_slash_1 == '/' or  date_type_slash_2 == '/':
+    date_type_slash_1 = False
+    date_type_slash_2 = False
+    if  RM_date[11:12]== '/':
+        date_type_slash_1 == True
         raise Exception("Slash dates not yet supported")
-
+    if  RM_date[22:23]== '/':
+        date_type_slash_1 == True
+        raise Exception("Slash dates not yet supported")
+    
     try:
         # include +/- sign in year
         year_1 = int(RM_date[2:7])
@@ -206,14 +210,15 @@ def to_RMsort_date(RM_date):
     offset = struct_data.get_offset_from_symbol(Char_1_2)
 
     if year_1 == 0 and ((month_1 != 0) or (day_1 != 0)):
-        y1 = 16383 << 49  # a date with no year
+        # year 1 is 0 but month or day or both present
+        y1 =  0x3F_FF << 49  # a date with no year  16383<<49 = 9,222,809,086,901,354,496
     else:
         # Slash date is in Julian and increments year by 1
         y1 = ((year_1 + 10000 + (1 if date_type_slash_1 else 0)) << 49)
 
     # np correction for slash date in part 2 of date ?  TODO test case
-    if year_2 == 0:
-        y2 = 17178820608     # x'03 FF F0 00 00' or (2^34 - 2^20)
+    if year_2 == 0 and month_2 == 0 and day_2 == 0:
+        y2 = 0x03_FF_F0_00_00        # (2^34 - 2^20)  17178820608
     else:
         y2 = (year_2 + 10000) << 20
 
@@ -232,12 +237,12 @@ def from_RMsort_date(sort_date):
     RM_sort_date = int(sort_date)
 
     Y1 = (RM_sort_date >> 49) - 10000
-    M1 = (RM_sort_date >> 45) & 0xf
-    D1 = (RM_sort_date >> 39) & 0x3f
-    Y2 = ((RM_sort_date >> 20) & 0x3fff)  - 10000 #-6383
-    M2 = (RM_sort_date >> 16) & 0xf
-    D2 = (RM_sort_date >> 10) & 0x3f
-    F = RM_sort_date & 0x3ff
+    M1 = (RM_sort_date >> 45) & 0xF
+    D1 = (RM_sort_date >> 39) & 0x3F
+    Y2 = ((RM_sort_date >> 20) & 0x3F_FF)  - 10000   #-6383
+    M2 = (RM_sort_date >> 16) & 0xF
+    D2 = (RM_sort_date >> 10) & 0x3F
+    F = RM_sort_date & 0x3F_FF
 
     if Y1 > 0:
         ADBC1 = '+'
@@ -283,13 +288,13 @@ class RMdate_structure:
         #          0          1      2          3    4         5           6        7
         #          enum       sym    offset     num  1stShort  1stLong     2ndShort 2ndLong
         ( StructCode.NORM,    '.',   12,        1,   '',       '',         '',      ''     ),
-        ( StructCode.AFT,     'A',   31,        1,   'aft ',   'after ',   '',      ''     ),
-#        ( StructCode.AFT,     'A',   1047583,   1,   'aft ',   'after ',   '',      ''     ),
+#        ( StructCode.AFT,     'A',   31,        1,   'aft ',   'after ',   '',      ''     ),
+        ( StructCode.AFT,     'A',   1047583,   1,   'aft ',   'after ',   '',      ''     ),
         ( StructCode.BEF,     'B',   0,         1,   'bef ',   'before ',  '',      ''     ),
-        ( StructCode.FROM,    'F',   27,        1,   'from ',  'from ',    '',      ''     ),
-#        ( StructCode.FROM,    'F',   1047579,   1,   'from ',  'from ',    '',      ''     ),
-        ( StructCode.SINC,    'I',   30,        1,   'since ', 'since ',   '',      ''     ),
-#        ( StructCode.SINC,    'I',   1047582,   1,   'since ', 'since ',   '',      ''     ),
+#        ( StructCode.FROM,    'F',   27,        1,   'from ',  'from ',    '',      ''     ),
+        ( StructCode.FROM,    'F',   1047579,   1,   'from ',  'from ',    '',      ''     ),
+#        ( StructCode.SINC,    'I',   30,        1,   'since ', 'since ',   '',      ''     ),
+        ( StructCode.SINC,    'I',   1047582,   1,   'since ', 'since ',   '',      ''     ),
         ( StructCode.TO,      'T',   6,         1,   'to ',    'to ',      '',      ''     ),
         ( StructCode.UNTL,    'U',   9,         1,   'until ', 'until ',   '',      ''     ),
         ( StructCode.BY,      'Y',   3,         1,   'by ',    'by ',      '',      ''     ),
