@@ -210,17 +210,21 @@ def to_RMsort_date(RM_date):
     offset = struct_data.get_offset_from_symbol(Char_1_2)
 
     if year_1 == 0 and ((month_1 != 0) or (day_1 != 0)):
-        # year 1 is 0 but month or day or both present
+        # year 1 is 0 but either month or day present
         y1 =  0x3F_FF << 49  # a date with no year  16383<<49 = 9,222,809,086,901,354,496
     else:
         # Slash date is in Julian and increments year by 1
         y1 = ((year_1 + 10000 + (1 if date_type_slash_1 else 0)) << 49)
 
-    # np correction for slash date in part 2 of date ?  TODO test case
     if year_2 == 0 and month_2 == 0 and day_2 == 0:
         y2 = 0x03_FF_F0_00_00        # (2^34 - 2^20)  17178820608
+    elif year_2 == 0 and ((month_2 != 0) or (day_2 != 0)):
+        # year 2 is 0 but either month or day present
+        # this step by RJO. Seems to work.TODO test
+        y2 = (0x18EF + 10000) << 20
     else:
-        y2 = (year_2 + 10000) << 20
+        y2 = (year_2 + 10000 + (1 if date_type_slash_1 else 0)) << 20
+        # correction for julian year by RJO. TODO test
 
     return (y1 + (month_1 << 45) + (day_1 << 39)
               + y2 + (month_2 << 16) + (day_2 << 10) + offset)
