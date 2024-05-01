@@ -213,8 +213,27 @@ def to_RMsort_date(RM_date):
         # year 1 is 0 but either month or day present
         y1 =  0x3F_FF << 49  # a date with no year  16383<<49 = 9,222,809,086,901,354,496
     else:
-        # Slash date is in Julian and increments year by 1
-        y1 = ((year_1 + 10000 + (1 if date_type_slash_1 else 0)) << 49)
+        # Slash date is in Julian and sort date year must increased by 1
+        y1 = (year_1 + 10000 + (1 if date_type_slash_1 else 0)) << 49
+
+    if (offset == (27 + 0xFFC00) 
+        and month_1==0 and day_1==0 ):
+        offset  = 27
+        month_1 = 0xF
+        day_1   = 0x3F
+        y2      = 0x3FFF << 20
+        month_2 = 0xF
+        day_2   = 0x3F
+
+    if (offset == (27 + 0xFFC00) 
+        and month_1!=0 and day_1==0 ):
+        offset  = 27
+        # month_1 = 0xF
+        day_1   = 0x3F
+        y2      = 0x3FFF << 20
+        month_2 = 0xF
+        day_2   = 0x3F
+
 
     if year_2 == 0 and month_2 == 0 and day_2 == 0:
         y2 = 0x03_FF_F0_00_00        # (2^34 - 2^20)  17178820608
@@ -223,8 +242,13 @@ def to_RMsort_date(RM_date):
         # this step by RJO. Seems to work.TODO test
         y2 = (0x18EF + 10000) << 20
     else:
-        y2 = (year_2 + 10000 + (1 if date_type_slash_1 else 0)) << 20
+        y2 = (year_2 + 10000 + (1 if date_type_slash_2 else 0)) << 20
         # correction for julian year by RJO. TODO test
+
+
+
+
+
 
     return (y1 + (month_1 << 45) + (day_1 << 39)
               + y2 + (month_2 << 16) + (day_2 << 10) + offset)
@@ -289,23 +313,20 @@ class RMdate_structure:
 
     _data = (
         #  fmt: off
-        #          0          1      2          3    4         5           6        7
-        #          enum       sym    offset     num  1stShort  1stLong     2ndShort 2ndLong
-        ( StructCode.NORM,    '.',   12,        1,   '',       '',         '',      ''     ),
-#        ( StructCode.AFT,     'A',   31,        1,   'aft ',   'after ',   '',      ''     ),
-        ( StructCode.AFT,     'A',   1047583,   1,   'aft ',   'after ',   '',      ''     ),
-        ( StructCode.BEF,     'B',   0,         1,   'bef ',   'before ',  '',      ''     ),
-#        ( StructCode.FROM,    'F',   27,        1,   'from ',  'from ',    '',      ''     ),
-        ( StructCode.FROM,    'F',   1047579,   1,   'from ',  'from ',    '',      ''     ),
-#        ( StructCode.SINC,    'I',   30,        1,   'since ', 'since ',   '',      ''     ),
-        ( StructCode.SINC,    'I',   1047582,   1,   'since ', 'since ',   '',      ''     ),
-        ( StructCode.TO,      'T',   6,         1,   'to ',    'to ',      '',      ''     ),
-        ( StructCode.UNTL,    'U',   9,         1,   'until ', 'until ',   '',      ''     ),
-        ( StructCode.BY,      'Y',   3,         1,   'by ',    'by ',      '',      ''     ),
-        ( StructCode.OR,      'O',   24,        2,   '',       '',         ' or ',  ' or ' ),
-        ( StructCode.BTWN,    'R',   15,        2,   'bet ',   'between ', ' and ', ' and '),
-        ( StructCode.FRTO,    'S',   18,        2,   'from ',  'from ',    ' to ',  ' to ' ),
-        ( StructCode.DASH,    '-',   21,        2,   '',       '',         '–',     '–'    )
+        #          0          1      2              3    4         5           6        7
+        #          enum       sym    offset         num  1stShort  1stLong     2ndShort 2ndLong
+        ( StructCode.NORM,    '.',   12,            1,   '',       '',         '',      ''     ),
+        ( StructCode.AFT,     'A',   31 + 0xFFC00,  1,   'aft ',   'after ',   '',      ''     ),
+        ( StructCode.BEF,     'B',   0,             1,   'bef ',   'before ',  '',      ''     ),
+        ( StructCode.FROM,    'F',   27 + 0xFFC00,  1,   'from ',  'from ',    '',      ''     ),
+        ( StructCode.SINC,    'I',   30 + 0xFFC00,  1,   'since ', 'since ',   '',      ''     ),
+        ( StructCode.TO,      'T',   6,             1,   'to ',    'to ',      '',      ''     ),
+        ( StructCode.UNTL,    'U',   9,             1,   'until ', 'until ',   '',      ''     ),
+        ( StructCode.BY,      'Y',   3,             1,   'by ',    'by ',      '',      ''     ),
+        ( StructCode.OR,      'O',   24,            2,   '',       '',         ' or ',  ' or ' ),
+        ( StructCode.BTWN,    'R',   15,            2,   'bet ',   'between ', ' and ', ' and '),
+        ( StructCode.FRTO,    'S',   18,            2,   'from ',  'from ',    ' to ',  ' to ' ),
+        ( StructCode.DASH,    '-',   21,            2,   '',       '',         '–',     '–'    )
         # fmt: on
     )
 
