@@ -22,6 +22,18 @@ from enum import Enum
 #  10 JANUARY 1950
 #  JANUARY 10, 1950
 
+# Sort Dates
+# SYYYYYYYYYYYYYYMMMMDDDDDD-----YYYYYYYYYYYYYYMMMMDDDDDDFFFFFFFFFF
+# bits: 1 sign, 14 year, 4 month, 6 day, 5 unused, 14 year, 4 month, 6 day, 10 flag
+
+
+# P1 and P2 date, 
+# P2-M&D=1      0xFFC00                                        11111111110000000000
+# P2-Y&M&D =1   0x3FFFFFC00                    001111111111111111111111110000000000
+# P1-M&D =1     0x1FF8<<36     0001111111111000000000000000000000000000000000000000
+                
+
+
 # ===================================================DIV60==
 def to_RMDate(DateStr, form):
     # form is Format.LONG, Format.SHORT
@@ -188,7 +200,6 @@ def to_RMsort_date(RM_date):
     if  RM_date[22:23]== '/':
         date_type_slash_1 == True
         raise Exception("Slash dates not yet supported")
-    
     try:
         # include +/- sign in year
         year_1 = int(RM_date[2:7])
@@ -196,7 +207,6 @@ def to_RMsort_date(RM_date):
         day_1 = int(RM_date[9:11])
     except ValueError as ve:
         raise Exception("Malformed RM Date: Invalid characters in date part 1")
-
     try:
         # include +/- sign in year
         year_2 = int(RM_date[13:18])
@@ -209,15 +219,15 @@ def to_RMsort_date(RM_date):
     struct_data = RMdate_structure()
     offset = struct_data.get_offset_from_symbol(Char_1_2)
 
+
     if year_1 == 0 and ((month_1 != 0) or (day_1 != 0)):
         # year 1 is 0 but either month or day present
-        y1 =  0x3F_FF << 49  # a date with no year  16383<<49 = 9,222,809,086,901,354,496
+        y1 =  0x3F_FF << 49   # a date with no year  16383<<49 = 9,222,809,086,901,354,496
     else:
         # Slash date is in Julian and sort date year must increased by 1
         y1 = (year_1 + 10000 + (1 if date_type_slash_1 else 0)) << 49
 
-    if (offset == (27 + 0xFFC00) 
-        and month_1==0 and day_1==0 ):
+    if (offset == (27 + 0xFFC00) and month_1==0 and day_1==0 ):
         offset  = 27
         month_1 = 0xF
         day_1   = 0x3F
@@ -225,8 +235,7 @@ def to_RMsort_date(RM_date):
         month_2 = 0xF
         day_2   = 0x3F
 
-    if (offset == (27 + 0xFFC00) 
-        and month_1!=0 and day_1==0 ):
+    if (offset == (27 + 0xFFC00) and month_1!=0 and day_1==0 ):
         offset  = 27
         # month_1 = 0xF
         day_1   = 0x3F
@@ -236,7 +245,7 @@ def to_RMsort_date(RM_date):
 
 
     if year_2 == 0 and month_2 == 0 and day_2 == 0:
-        y2 = 0x03_FF_F0_00_00        # (2^34 - 2^20)  17178820608
+        y2 = 0x3FFF << 20        # 17178820608
     elif year_2 == 0 and ((month_2 != 0) or (day_2 != 0)):
         # year 2 is 0 but either month or day present
         # this step by RJO. Seems to work.TODO test
@@ -245,12 +254,7 @@ def to_RMsort_date(RM_date):
         y2 = (year_2 + 10000 + (1 if date_type_slash_2 else 0)) << 20
         # correction for julian year by RJO. TODO test
 
-
-
-
-
-
-    return (y1 + (month_1 << 45) + (day_1 << 39)
+    return     (y1 + (month_1 << 45) + (day_1 << 39)
               + y2 + (month_2 << 16) + (day_2 << 10) + offset)
 
 
