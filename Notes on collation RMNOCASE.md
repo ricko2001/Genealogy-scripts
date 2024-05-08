@@ -1,68 +1,45 @@
+# Note on the Collation RMNOCASE
 
-## NOTES ON COLATION SEQUENCE RMNOCASE
-
-SQLite needs the ability to sort data. It does so by comparing two items and determining if they are equal, less or greater than by using a collation function.
+SQLite needs the ability to sort data. It does so by comparing two items and determining if they are equal, less than or greater than by using a collation function.\
 A summary can be found at:
-https://www.w3resource.com/sqlite/sqlite-collating-function-or-sequence.php
+[sqlite-collating-function-or-sequence](https://www.w3resource.com/sqlite/sqlite-collating-function-or-sequence.php)
 
-RMNOCASE is the name of a collation used by the RM schema for columns that represent names.  If you look at the listings at the end of this doc, you'll see that the name columns in the NameTable and SourceTable are ordered by RMNOCASE. Many other names also use the same collation. All indexed on these columns therefore also use RMNOCASE.
+RMNOCASE is the name of a collation used by the RM schema for columns that represent names. If you look at the listings at the end of this doc, you'll see that the name columns in the NameTable and SourceTable are ordered by RMNOCASE. Many other names also use the same collation. 
+
+Collations specified in the table declaration are the default collations for any index created using that column.
 
 RMNOCASE is designed to sort upper and lower case names together (not tested by me) like SQLite's builtin NOCASE collation.
 NOCASE does this for the 26 letters of the latin alphabet, but not for accented characters found, for example, in European languages. RMNOCASE also sorts upper and lower case accented characters together.
 
 RMNOCASE is not part of SQLite. It's a piece of SW created by RM Inc. as a SQLite extension. That software is proprietary and its specification has not be made public.
 
-The collation used within the RM app for Windows and MacOS seems to use a OS native call, because the collations on Win and MacOS are not identical. This can be seen when moving a DB file between platforms; integrity check shows errors until a reindex is done.
+A shared library (dll in Windows) that approximates the function of the RMNOCASE collation extension is on Tom's site, SQLiteToolsForRootsMagic.com. We'll call it the fake RMNOCASE.
 
-A dll that approximates the function of the RMNOCASE collation extension is on Tom's site, SQLiteToolsForRootsMagic.com. We'll call it the fake RMNOCASE.
+A key point is the available dll and the proprietary code found inside RootsMagic do not function identically.
 
-The key point is the available dll and the proprietary code found inside RootsMagic do not function identically.
+## Workarounds
 
-SQLite documentation states that while a database is operational, a collation may not change. If it does, it may lead to indeterminate results. BAD.BAD.BAD.
-[How to handle collation version changes](https://sqlite.org/forum/info/5317344555f7a5f2)
+When doing read-only queries externally, one can often include a specific collation sequence in the query that will override the defalut specified in the table declaration. This may mean that exisring indexes won't be used which could impact speed.
 
-Other collations-\
-https://learn.microsoft.com/en-us/dotnet/standard/data/sqlite/collation
+The safest procedure to run data modifing SQL on a RM database is-
+-close the database in RM\
+-open it in an external app and load the “fake” RMNOCASE collation extension\
+-do a “reindex RMNOCASE” SQL command\
+-do whatever SQL operations desired, including inserts\
+-close the database\
+-open the database in RM and immediately use the RM tool to rebuild indexes.\
 
-https://github.com/nalgeon/sqlean/blob/main/docs/unicode.md
+Another idea-
+Modify the RM database tables so that the they do not use RMNOCASE. Once would have to move all of the data to the new desired tables, delete the old table, and then rename the table. Rebuild the indexes.\
+It is not clear whether the RM app will notice the removal of the RMNOCASE dependency.\
+If NOCASE were substituted for RMNOCASE, at least ASCII name would sort as expected.
 
-extensions listings-\
-https://sqlpkg.org/all/
-
-issues with custom collations
-
-https://stackoverflow.com/questions/75494491/how-to-use-sqlite-database-created-with-custom-collation-in-an-environment-wher
-
-https://stackoverflow.com/questions/47095400/exporting-a-sqlite3-table-from-a-db-with-error-no-such-collation-sequence-iun
-
-[Define New Collating Sequences](https://sqlite.org/c3ref/create_collation.html)
-
-So the safe procedure is-
--close the database in RM
--open it in an external app and add the “fake” RMNOCASE collation
--do a “reindex RMNOCASE” SQL command
--do whatever, including inserts
--close the database
--oSo the safe procedure is-
--close the database in RM
--open it in an external app and add the “fake” RMNOCASE collation
--do a “reindex RMNOCASE” SQL command
--do whatever, including inserts
--close the database
--open the database in RM and immediately use the RM tool to rebuild indexes.
+Of course, one would want to create the corresponding SQL to return the schema back to "the factory default".
 
 Another idea-\
-Create the SQL to change the CitationTable to substitute NOCASE for RMNOCASE and recreate any relevant indexes. NOCASE is in every SQLite database. One would lose the nice sorting for non ASCII names.
+Reverse engineer the real RMNOCASE collatiion and write an extension that implements it exactly.
 
-That should allow inserts on line databases and not require any reindexing.
-
-Of course, one would want to create the corresponding SQL to return the schema back to how it normally is.
-
-Another idea-\
-Reverse engineer the real RMNOCASE collatiion and write an extension that implements it.
-
-===========================================DIV50==
-unifuzz64.dll download-
+## The Fake RMNOCASE: unifuzz64.dll
 
 direct download:\
 https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2018/05/unifuzz64.dll
@@ -73,18 +50,20 @@ https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlite-expert-command
 The SQLiteToolsforRootsMagic website has been around for many years and is run by a trusted RM user. Many posts to public RootsMagic user forums mention use of unifuzz64.dll from the SQLiteToolsforRootsMagic website.
 
  MD5 hash values are used to confirm the identity of files.
+
+ ```
  MD5 hash							File size		File name
  06a1f485b0fae62caa80850a8c7fd7c2	256,406 bytes	unifuzz64.dll
+```
 
-===========================================DIV50==
+## An interesting issue
+
+The RMNOCASE collation function used within the RM app for Windows and MacOS seems to use a OS native call, because the collations on Win and MacOS are not identical. This can be seen when moving a DB file between platforms; integrity check shows errors until a reindex is done.
 
 Note that an empty database created on MacOS will fail integrity check when done on a Windows OS machine due to missing entries in the idxSourceTemplateName index.
 Not clear what characters sort differently on Win and MacOS.
 
-===========================================DIV50==
-
-
-What to worry about
+## What to worry about
 
 While operating on a database with RootsMagic alone, there is no problem. The authentic RMNOCASE collation is always used.
 
@@ -92,12 +71,9 @@ When working on a RootsMagic database externally, there can be issues if precaut
 
 If names contain only the 26 latin characters, it would seem that there should not be a problem because the fake and authentic RMNOCASE should produce the same results. NOT TESTED
 
+Indexes contain data that can be easily reconstructed by the SQLite command "reindex". However, if a database is opened and it already has an index created with, say the authentic RMNOCASE and one operates on the date using the fake RMNOCASE and an index using RMNOCASE collation is used, bad things may happen.
 
-Indexes contain data that can be easily reconstructed by the SQLite command "reindex"
-However, if a database is opened and it already has an index created with, say the authentic RMNOCASE and one operates on the date using the fake RMNOCASE and an index using RMNOCASE collation is used, bad things may happen.
-
-
-Two situations to consider
+### Two situations to consider
 
 Operating on a database opened only in an external tool
 Operating on a database opened in RootsMagic and an external tool simultaneously.
@@ -108,12 +84,6 @@ reindex RMNOCASE
 
 Then all of your modification will work fine. But then, when you open your file in RM, the very first thing to do is the RM Rebuild indexes tool. After that, you'll be ok
 I always confirm by running check file integrity after the build index.
-
-The above is critical to maintain your database integrity. Maybe one day we'll be able to reverse engineer RM's RMNOCASE so an exact 'copy' can be made.
-
-
-As regards to what you can do with sql- it's anything you can code.
-There are lots of examples on Tom's site and I've put my stuff on GitHub.
 
 
 When opening RootsMagic after having had the database reindexed using a fake RMNOCASE-
@@ -126,32 +96,54 @@ Perhaps Web Hints will be searched for ?
 Are those problems- or ignorable with regard to the RMNOCASE issue?
 
 
+## References
 
-Reference
-How to handle collation version changes
-https://sqlite.org/forum/info/5317344555f7a5f2
+Some links to discussions about custom collations and extensions/
+
+SQLite documentation states that while a database is operational, a collation may not change. If it does, it may lead to indeterminate results. BAD.BAD.BAD.
+
+[How to handle collation version changes](https://sqlite.org/forum/info/5317344555f7a5f2)
+
+Other collations-\
+https://learn.microsoft.com/en-us/dotnet/standard/data/sqlite/collation
+
+https://github.com/nalgeon/sqlean/blob/main/docs/unicode.md
+
+SQLite extensions listings-
+
+https://sqlpkg.org/all/
+
+issues with custom collations-
+
+https://stackoverflow.com/questions/75494491/how-to-use-sqlite-database-created-with-custom-collation-in-an-environment-wher
+
+https://stackoverflow.com/questions/47095400/exporting-a-sqlite3-table-from-a-db-with-error-no-such-collation-sequence-iun
+
+[Define New Collating Sequences](https://sqlite.org/c3ref/create_collation.html)
 
 
 https://shallowdepth.online/posts/2022/01/5-ways-to-implement-case-insensitive-search-in-sqlite-with-full-unicode-support/
 
 https://www.sqlite.org/src/artifact?ci=trunk&filename=ext/icu/README.txt
 
-https://stackoverflow.com/questions/15051018/localized-collate-on-a-sqlite-string-comparison
+https://stackoverflow.com/questions/15051018/
+localized-collate-on-a-sqlite-string-comparison
 
-https://stackoverflow.com/questions/181037/case-insensitive-utf-8-string-collation-for-sqlite-c-c
+https://stackoverflow.com/questions/181037/
+case-insensitive-utf-8-string-collation-for-sqlite-c-c
 
 https://sourceforge.net/projects/icu/files/ICU4C/58.2/
 
 https://icu.unicode.org/
+
 https://www.npcglib.org/~stathis/blog/precompiled-icu/
+
 https://www.sqlite.org/src/artifact?ci=trunk&filename=ext/icu/README.txt
 
 https://github.com/nalgeon/sqlean
 
 
-===========================================DIV50==
-
-Where is RMNOCASE used in v9 schema
+## Where is RMNOCASE used in v9 schema
 ```
 SELECT
   tbl_name,
@@ -205,8 +197,7 @@ idxSourceName
 CREATE INDEX idxSourceName ON SourceTable (Name COLLATE RMNOCASE)
 ```
 
-===========================================DIV50==
-Listing by table in plain English
+### Listing by table in simplified format
 
 ```
 AddressTable
@@ -261,10 +252,8 @@ CitationName TEXT COLLATE RMNOCASE
 idxSourceName
 SourceTable
 Name COLLATE RMNOCASE
-
-
-13 tables and 1 index on name in SourceTable
-The index use of RMNOCASE can be ignored since the table already specifies RMNOCASE as the default collation for SourceTable.Name
 ```
 
-===========================================DIV50==
+13 tables and 1 index on name in SourceTable
+
+The index use of RMNOCASE can be ignored since the table already specifies RMNOCASE as the default collation for SourceTable.Name. Why was it specified for this one index? Why were the tables set up with default collations instead of the collation being specified in the Index declaration statements?

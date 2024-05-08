@@ -103,6 +103,10 @@ def main():
                 continue
         else:
             # SKIP THESE TESTS
+            # Quaker dates
+            # Quarter dates
+            # Split dates
+            # Sort date changed from default
             if item[0] in (31, 33, 22, 21, 20, 73, 25, 23 ):  
                 continue # QUAKER
             if item[0] in (45, 63, 46, 47, 48 ): 
