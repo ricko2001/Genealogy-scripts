@@ -1,19 +1,37 @@
 # Note on the Collation RMNOCASE
 
-SQLite needs the ability to sort data. It does so by comparing two items and determining if they are equal, less than or greater than by using a collation function.\
+SQLite needs the ability to sort data. It does so by comparing two items and determining if one is equal, less than or greater than the other by using a collation function.
+
 A summary can be found at:
 [sqlite-collating-function-or-sequence](https://www.w3resource.com/sqlite/sqlite-collating-function-or-sequence.php)
 
-RMNOCASE is the name of a collation used by the RM schema for columns that represent names. If you look at the listings at the end of this doc, you'll see that the name columns in the NameTable and SourceTable are ordered by RMNOCASE. Many other names also use the same collation. 
+This is from the official [SQLite documention](https://www.sqlite.org/quirks.html). It describes a peculiarity of SQLite:
 
-Collations specified in the table declaration are the default collations for any index created using that column.
+``` TEXT
+7. Does Not Do Full Unicode Case Folding By Default
+SQLite does not know about the upper-case/lower-case distinction for all unicode characters.
+SQL functions like upper() and lower() only work on ASCII characters.
+There are two reasons for this:
+1  Though stable now, when SQLite was first designed, the rules for unicode case folding were still in flux.
+That means that the behavior might have changed with each new unicode release, disrupting applications and
+corrupting indexes in the process.
+2  The tables necessary to do full and proper unicode case folding are larger than the whole SQLite library.
+
+Full unicode case folding is supported in SQLite if it is compiled with the -DSQLITE_ENABLE_ICU option
+and linked against the International Components for Unicode library.
+```
+It appears that RM uses a standard SQLite build, not one that does Unicode case folding. It is also not clear whether the above referenced "International Components for Unicode library" calls an OS native function.
+
+RMNOCASE is the name of a cutome collation used by the RM schema for to do Unicode case folding. It is not clear how many characters are actuallly supported by RMNOCASE. RM uses RMNOCASE for columns that represent names. If you look at the listings at the end of this doc, you'll see that the name columns in the NameTable and SourceTable are ordered by RMNOCASE. Many other names, such as source name and citation names also use RMNOCASE. 
+
+Collations specified in the table declaration are the default collations for any index created using that column and are also the default collations used for the operators =, <, >, <=, >=, !=, IS, and IS NOT.
 
 RMNOCASE is designed to sort upper and lower case names together (not tested by me) like SQLite's builtin NOCASE collation.
-NOCASE does this for the 26 letters of the latin alphabet, but not for accented characters found, for example, in European languages. RMNOCASE also sorts upper and lower case accented characters together.
+NOCASE does this for the 26 letters of the latin alphabet, but not for accented characters or characters with diacritical marks found, for example, in many European languages. RMNOCASE also sorts upper and lower case accented characters together.
 
 RMNOCASE is not part of SQLite. It's a piece of SW created by RM Inc. as a SQLite extension. That software is proprietary and its specification has not be made public.
 
-A shared library (dll in Windows) that approximates the function of the RMNOCASE collation extension is on Tom's site, SQLiteToolsForRootsMagic.com. We'll call it the fake RMNOCASE.
+A shared library (dll in Windows) that approximates the function of the RMNOCASE collation extension is on Tom's site, SQLiteToolsForRootsMagic.com. We'll call it the "fake RMNOCASE".
 
 A key point is the available dll and the proprietary code found inside RootsMagic do not function identically.
 
@@ -21,23 +39,26 @@ A key point is the available dll and the proprietary code found inside RootsMagi
 
 When doing read-only queries externally, one can often include a specific collation sequence in the query that will override the defalut specified in the table declaration. This may mean that exisring indexes won't be used which could impact speed.
 
-The safest procedure to run data modifing SQL on a RM database is-
+The safest procedure to run data modifing SQL on a RM database is-\
 -close the database in RM\
 -open it in an external app and load the “fake” RMNOCASE collation extension\
 -do a “reindex RMNOCASE” SQL command\
 -do whatever SQL operations desired, including inserts\
 -close the database\
--open the database in RM and immediately use the RM tool to rebuild indexes.\
+-open the database in RM and immediately use the RM tool to rebuild indexes.
 
-Another idea-
-Modify the RM database tables so that the they do not use RMNOCASE. Once would have to move all of the data to the new desired tables, delete the old table, and then rename the table. Rebuild the indexes.\
-It is not clear whether the RM app will notice the removal of the RMNOCASE dependency.\
+Another idea-\
+Modify the RM database tables so that the they do not use RMNOCASE. Once would have to move all of the data to the new desired tables, delete the old table, and then rename the table. Rebuild the indexes.
+It is not clear whether the RM app will notice the removal of the RMNOCASE dependency.
 If NOCASE were substituted for RMNOCASE, at least ASCII name would sort as expected.
 
 Of course, one would want to create the corresponding SQL to return the schema back to "the factory default".
 
 Another idea-\
 Reverse engineer the real RMNOCASE collatiion and write an extension that implements it exactly.
+
+Another idea-\
+Determine whether the RMNOCASE code used inside RM can be extracted from the RootsMagic.exe file and then used as an extension by external apps.
 
 ## The Fake RMNOCASE: unifuzz64.dll
 
@@ -67,16 +88,17 @@ Not clear what characters sort differently on Win and MacOS.
 
 While operating on a database with RootsMagic alone, there is no problem. The authentic RMNOCASE collation is always used.
 
-When working on a RootsMagic database externally, there can be issues if precautions are not take,
+When working on a RootsMagic database externally, there can be issues if precautions are not take. This is becasue the authentic RMNOCASE collation function is not available outside the RM app and the fake RMNOCASE is used instead.
 
 If names contain only the 26 latin characters, it would seem that there should not be a problem because the fake and authentic RMNOCASE should produce the same results. NOT TESTED
 
-Indexes contain data that can be easily reconstructed by the SQLite command "reindex". However, if a database is opened and it already has an index created with, say the authentic RMNOCASE and one operates on the date using the fake RMNOCASE and an index using RMNOCASE collation is used, bad things may happen.
+Indexes contain data that can be easily reconstructed by the SQLite command "reindex". However, if a database is opened and it already has an index created with, say the authentic RMNOCASE and one operates on the data using the fake RMNOCASE and an index using RMNOCASE collation is used, bad things may happen.
 
 ### Two situations to consider
 
-Operating on a database opened only in an external tool
-Operating on a database opened in RootsMagic and an external tool simultaneously.
+  Operating on a database opened only in an external tool.
+
+  Operating on a database opened in RootsMagic and an external tool simultaneously.
 
 Every time you plan to add, remove, or modify data in a column sorted by RMNOCASE, you must run the command to reindex first.
 
