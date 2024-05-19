@@ -37,18 +37,18 @@ A key point is the available dll and the proprietary code found inside RootsMagi
 
 ## Workarounds
 
-When doing read-only queries externally, one can often include a specific collation sequence in the query that will override the defalut specified in the table declaration. This may mean that exisring indexes won't be used which could impact speed.
+When doing read-only queries externally, one can often include in the SQL statement a collation sequence that will override the defalut specified in the table declaration. This may mean that exisring indexes won't be used which could impact speed.
 
-The safest procedure to run data modifing SQL on a RM database is-\
+For data modifing SQL, the safest procedure is-\
 -close the database in RM\
 -open it in an external app and load the “fake” RMNOCASE collation extension\
--do a “reindex RMNOCASE” SQL command\
--do whatever SQL operations desired, including inserts\
+-do a “reindex RMNOCASE;” SQL command\
+-do whatever SQL operations are desired, including updates and inserts\
 -close the database\
--open the database in RM and immediately use the RM tool to rebuild indexes.
+-open the database in RM and immediately use the RM tools to rebuild indexes.
 
 Another idea-\
-Modify the RM database tables so that the they do not use RMNOCASE. Once would have to move all of the data to the new desired tables, delete the old table, and then rename the table. Rebuild the indexes.
+Modify the RM database tables so that the they do not specify RMNOCASE. Once would have to move all of the data to the newly created tables, delete the old tables, and then rename the tables, and then rebuild the indexes.
 It is not clear whether the RM app will notice the removal of the RMNOCASE dependency.
 If NOCASE were substituted for RMNOCASE, at least ASCII name would sort as expected.
 
@@ -58,7 +58,7 @@ Another idea-\
 Reverse engineer the real RMNOCASE collatiion and write an extension that implements it exactly.
 
 Another idea-\
-Determine whether the RMNOCASE code used inside RM can be extracted from the RootsMagic.exe file and then used as an extension by external apps.
+Determine whether the RMNOCASE code used inside RM can\\ould be extracted from the RootsMagic.exe file and then used as an extension by external apps.
 
 ## The Fake RMNOCASE: unifuzz64.dll
 
@@ -73,16 +73,15 @@ The SQLiteToolsforRootsMagic website has been around for many years and is run b
  MD5 hash values are used to confirm the identity of files.
 
  ```
- MD5 hash							File size		File name
+ MD5 hash							                   File size		    File name
  06a1f485b0fae62caa80850a8c7fd7c2	256,406 bytes	unifuzz64.dll
 ```
 
 ## An interesting issue
 
-The RMNOCASE collation function used within the RM app for Windows and MacOS seems to use a OS native call, because the collations on Win and MacOS are not identical. This can be seen when moving a DB file between platforms; integrity check shows errors until a reindex is done.
+The RMNOCASE collation function used within the RM app for Windows and MacOS seems to use an OS native call because the collations on Win and MacOS are not identical. This can be seen when moving a RM file between platforms; integrity check shows errors until a reindex is done.
 
-Note that an empty database created on MacOS will fail integrity check when done on a Windows OS machine due to missing entries in the idxSourceTemplateName index.
-Not clear what characters sort differently on Win and MacOS.
+Note that even an empty database created on MacOS will fail integrity check when done on a Windows OS machine due to missing entries in the idxSourceTemplateName index. It is not clear which characters sort differently on Win and MacOS.
 
 ## What to worry about
 
