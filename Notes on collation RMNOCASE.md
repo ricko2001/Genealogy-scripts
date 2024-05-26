@@ -78,9 +78,9 @@ The SQLiteToolsforRootsMagic website has been around for many years and is run b
 
  MD5 hash values are used to confirm the identity of files.
 
- ```
- MD5 hash							                   File size		    File name
- 06a1f485b0fae62caa80850a8c7fd7c2	256,406 bytes	unifuzz64.dll
+ ``` TEXT
+ MD5 hash                          File size       File name
+ 06a1f485b0fae62caa80850a8c7fd7c2  256,406 bytes   unifuzz64.dll
 ```
 
 ### Two situations to consider
@@ -159,14 +159,12 @@ https://www.sqlite.org/src/artifact?ci=trunk&filename=ext/icu/README.txt
 
 https://github.com/nalgeon/sqlean
 
-
 ## Where is RMNOCASE used in v9 schema
-```
-SELECT
-  tbl_name,
-  sql
-FROM sqlite_master
-WHERE SQL like  '%RMNOCASE%'
+
+``` TEXT
+SELECT tbl_name, sql
+  FROM sqlite_master
+  WHERE SQL LIKE '%RMNOCASE%'
 
 
 AddressTable
@@ -216,7 +214,7 @@ CREATE INDEX idxSourceName ON SourceTable (Name COLLATE RMNOCASE)
 
 ### Listing by table in simplified format
 
-```
+``` TEXT
 AddressTable
 Name TEXT COLLATE RMNOCASE
 
