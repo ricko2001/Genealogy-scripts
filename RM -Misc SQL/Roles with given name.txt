@@ -1,0 +1,9 @@
+
+--===========================================DIV50==
+-- Edit RoleName = 'Spouse'
+
+SELECT RoleID, RoleName, ftt.Name
+FROM RoleTable as rt
+INNER JOIN FactTypeTable AS ftt ON rt.EventType = ftt.FactTypeId
+WHERE RoleName = 'Spouse'
+
