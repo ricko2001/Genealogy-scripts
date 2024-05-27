@@ -7,9 +7,9 @@ Version: 1.6.1.0
 
 DistributionFileList:
 # <InternalName>.py amd <InternalName>.exe always included by build script
- - ReadMe.txt
  - RM-Python-config.ini
- - Sample report file.txt
+ - doc\ReadMe.txt
+ - doc\Sample report file.txt
 
 CompanyName: RJOtter SW
 FileDescription: Utility to work with RootsMagic database files
