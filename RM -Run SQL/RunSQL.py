@@ -12,8 +12,9 @@ import traceback
 ##  Requirements: (see ReadMe.txt for details)
 ##  RootsMagic database file
 ##  RM-Python-config.ini  ( Configuration ini file to set options and parameters)
-##  unifuzz64.dll optionally needed depending on the SQL run
-##  Python v3.9 or greater
+##  Python v3.11 or greater
+##  unifuzz64.dll (RMNOCASE collation) optionally needed depending on the SQL run
+
 
 # ===================================================DIV60==
 def main():
@@ -34,7 +35,7 @@ def main():
 
         # Check that ini file is at expected path and that it is readable & valid.
         if not os.path.exists(ini_file):
-            raise RMPyExcep("ERROR: The ini configuration file, " + ini_file_name
+            raise RM_Py_Exception("ERROR: The ini configuration file, " + ini_file_name
                             + " must be in the same directory as the .py or .exe file.\n\n")
 
         config = configparser.ConfigParser(empty_lines_in_values=False,
@@ -42,23 +43,23 @@ def main():
         try:
             config.read(ini_file, 'UTF-8')
         except:
-            raise RMPyExcep("ERROR: The " + ini_file_name
+            raise RM_Py_Exception("ERROR: The " + ini_file_name
                             + " file contains a format error and cannot be parsed.\n\n")
 
         try:
             report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
         except:
-            raise RMPyExcep('ERROR: REPORT_FILE_PATH must be defined in the '
+            raise RM_Py_Exception('ERROR: REPORT_FILE_PATH must be defined in the '
                             + ini_file_name + "\n\n")
 
         try:
             # Use UTF-8 encoding for the report file. Test for write-ability
             open(report_path,  mode='w', encoding='utf-8')
         except:
-            raise RMPyExcep('ERROR: Cannot create the report file '
+            raise RM_Py_Exception('ERROR: Cannot create the report file '
                             + report_path + "\n\n")
 
-    except RMPyExcep as e:
+    except RM_Py_Exception as e:
         pause_with_message(e)
         return 1
     except Exception as e:
@@ -79,15 +80,15 @@ def main():
         except:
             pass
         if report_display_app is not None and not os.path.exists(report_display_app):
-            raise RMPyExcep('ERROR: Path for report file display app not found: '
+            raise RM_Py_Exception('ERROR: Path for report file display app not found: '
                             + report_display_app)
 
         try:
             database_path = config['FILE_PATHS']['DB_PATH']
         except:
-            raise RMPyExcep('ERROR: DB_PATH must be specified.')
+            raise RM_Py_Exception('ERROR: DB_PATH must be specified.')
         if not os.path.exists(database_path):
-            raise RMPyExcep('ERROR: Path for database not found: ' + database_path
+            raise RM_Py_Exception('ERROR: Path for database not found: ' + database_path
                             + '\n\n' 'Absolute path checked:\n"'
                               + os.path.abspath(database_path) + '"')
 
@@ -96,7 +97,7 @@ def main():
         except:
             pass
         if rmnocase_path is not None and not os.path.exists(rmnocase_path):
-            raise RMPyExcep('ERROR: Path for RMNOCASE dll file not found: ' + rmnocase_path
+            raise RM_Py_Exception('ERROR: Path for RMNOCASE dll file not found: ' + rmnocase_path
                             + '\n\n' 'Absolute path checked:\n"'
                               + os.path.abspath(rmnocase_path) + '"')
 
@@ -118,9 +119,10 @@ def main():
         RunSQLFeature(config, report_file, db_connection)
 
     except (sqlite3.OperationalError, sqlite3.ProgrammingError) as e:
-        report_file.write("ERROR: SQL execution returned an error \n\n" + str(e))
+        report_file.write(
+            "ERROR: SQL execution returned an error \n\n" + str(e))
         return 1
-    except RMPyExcep as e:
+    except RM_Py_Exception as e:
         report_file.write(str(e))
         return 1
     except Exception as e:
@@ -139,14 +141,15 @@ def main():
 
 
 # ===================================================DIV60==
-def RunSQLFeature(config, report_file, dbConnection):
+def RunSQLFeature(config, report_file, db_connection):
+
     try:
         SqlStmt = config['SQL']['SQL_STATEMENT_1']
     except:
-        raise RMPyExcep('ERROR: SQL - SQL_STATEMENT_1 must be specified.')
+        raise RM_Py_Exception('ERROR: SQL - SQL_STATEMENT_1 must be specified.')
 
     # run the SQL statement
-    cur = dbConnection.cursor()
+    cur = db_connection.cursor()
     cur.execute(SqlStmt)
 
     report_file.write("===============================================\n"
@@ -164,7 +167,7 @@ def RunSQLFeature(config, report_file, dbConnection):
 
     if SqlStmt is not None:
         # run the second SQL statement
-        cur = dbConnection.cursor()
+        cur = db_connection.cursor()
         cur.execute(SqlStmt)
 
         report_file.write("===============================================\n"
@@ -188,7 +191,7 @@ def create_db_connection(db_file_path, db_extension):
             db_connection.enable_load_extension(True)
             db_connection.load_extension(db_extension)
     except Exception as e:
-        raise RMPyExcep(e, "\n\n" "Cannot open the RM database file." "\n")
+        raise RM_Py_Exception(e, "\n\n" "Cannot open the RM database file." "\n")
     return db_connection
 
 
@@ -236,7 +239,7 @@ def get_current_directory():
 
 
 # ===================================================DIV60==
-class RMPyExcep(Exception):
+class RM_Py_Exception(Exception):
 
     '''Exceptions thrown for configuration/database issues'''
 
