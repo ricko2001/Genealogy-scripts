@@ -1,0 +1,39 @@
+# Configuration data for RootsMagic related Python scripts. (ä)
+# https://yaml.org/spec/1.2.2/
+# https://yaml-online-parser.appspot.com/
+
+---
+FILE_PATHS:
+  DB_PATH                 :   'C:\Users\me\Genealogy\myRMfile.rmtree'
+  SEARCH_ROOT_FLDR_PATH   :   'C:\Users\me\Genealogy\media'
+  REPORT_FILE_PATH        :   'C:\Users\me\Genealogy\Report_TestExternalFiles.txt'
+  HASH_FILE_FLDR_PATH     :   'C:\Users\me\Genealogy'
+  REPORT_FILE_DISPLAY_APP :   'C:\Windows\System32\notepad.exe'
+
+
+OPTIONS:
+  CHECK_FILES    :  on
+  UNREF_FILES    :  off
+  NO_TAG_FILES   :  on
+  FOLDER_LIST    :  off
+  DUP_FILEPATHS  :  off
+  DUP_FILENAMES  :  off
+  HASH_FILE      :  off
+
+  SHOW_ORIG_PATH  :      off
+  UNREF_CASE_SENSITIVE : on
+
+
+# This section used by the UNREF_FILES option only.
+# See the ReadMe.txt file, NOTES section for usage.
+IGNORED_OBJECTS:
+  FOLDERS:
+   - 'folder name 1'
+   - 'folder name 2'
+   - 'folder name 3'
+  FILENAMES:
+   - 'filename 1'
+   - 'filename 2'
+   - 'filename 3'
+
+...

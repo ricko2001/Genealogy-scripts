@@ -2,7 +2,7 @@ import os
 import sys
 import sqlite3
 from datetime import datetime
-import configparser
+import yaml
 from pathlib import Path
 import xml.etree.ElementTree as ET
 import hashlib
@@ -30,7 +30,7 @@ G_QT = "\""
 def main():
 
     # Configuration
-    IniFileName = "RM-Python-config.ini"
+    config_file_name = "RM-utility.yaml"
     global G_db_file_folder_path
     report_display_app = None
     db_connection = None
@@ -39,25 +39,24 @@ def main():
     # Errors go to console window
     # ===========================================DIV50==
     try:
-      # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
-      # see   https://docs.python.org/3/library/configparser.html
-        IniFile = os.path.join(get_current_directory(), IniFileName)
+        # config file must be in "current directory" and encoded as UTF-8 (no BOM).
+        # see   https://docs.python.org/3/library/configparser.html
+        config_file = os.path.join(get_current_directory(), config_file_name)
 
-        # Check that ini file is at expected path and that it is readable & valid.
-        if not os.path.exists(IniFile):
-            raise RM_Py_Exception("ERROR: The ini configuration file, " + IniFileName
+        # Check that config file is at expected path and that it is readable & valid.
+        if not os.path.exists(config_file):
+            raise RM_Py_Exception("ERROR: The configuration file, " + config_file_name
                                 + " must be in the same directory as the .py or .exe file.\n\n")
 
-        config = configparser.ConfigParser(empty_lines_in_values=False,
-                                           interpolation=None)
         try:
-            config.read(IniFile, 'UTF-8')
+            with open(config_file, 'r') as fs:
+                config = yaml.safe_load(fs)
         except:
-            raise RM_Py_Exception("ERROR: The " + IniFileName
+            raise RM_Py_Exception("ERROR: The " + config_file_name
                                 + " file contains a format error and cannot be parsed.\n\n")
 
         try:
-            report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
+            report_path = config['FILE_PATHS'] ['REPORT_FILE_PATH']
         except:
             raise RM_Py_Exception('ERROR: REPORT_FILE_PATH must be defined in the '
                                 + IniFileName + "\n\n")
