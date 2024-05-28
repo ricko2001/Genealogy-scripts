@@ -21,8 +21,8 @@ import traceback
 
 # ===================================================DIV60==
 #  Global Variables
-G_MediaDirectoryPath = ""
-G_DbFileFolderPath = ""
+G_media_directory_path = ""
+G_db_file_folder_path = ""
 G_QT = "\""
 
 
@@ -31,7 +31,7 @@ def main():
 
     # Configuration
     IniFileName = "RM-Python-config.ini"
-    global G_DbFileFolderPath
+    global G_db_file_folder_path
     report_display_app = None
     db_connection = None
 
@@ -41,11 +41,11 @@ def main():
     try:
       # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
       # see   https://docs.python.org/3/library/configparser.html
-        IniFile = os.path.join(GetCurrentDirectory(), IniFileName)
+        IniFile = os.path.join(get_current_directory(), IniFileName)
 
         # Check that ini file is at expected path and that it is readable & valid.
         if not os.path.exists(IniFile):
-            raise RMPyException("ERROR: The ini configuration file, " + IniFileName
+            raise RM_Py_Exception("ERROR: The ini configuration file, " + IniFileName
                                 + " must be in the same directory as the .py or .exe file.\n\n")
 
         config = configparser.ConfigParser(empty_lines_in_values=False,
@@ -53,23 +53,23 @@ def main():
         try:
             config.read(IniFile, 'UTF-8')
         except:
-            raise RMPyException("ERROR: The " + IniFileName
+            raise RM_Py_Exception("ERROR: The " + IniFileName
                                 + " file contains a format error and cannot be parsed.\n\n")
 
         try:
             report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
         except:
-            raise RMPyException('ERROR: REPORT_FILE_PATH must be defined in the '
+            raise RM_Py_Exception('ERROR: REPORT_FILE_PATH must be defined in the '
                                 + IniFileName + "\n\n")
 
         try:
             # Use UTF-8 encoding for the report file. Test for write-ability
             open(report_path,  mode='w', encoding='utf-8')
         except:
-            raise RMPyException('ERROR: Cannot create the report file '
+            raise RM_Py_Exception('ERROR: Cannot create the report file '
                                 + report_path + "\n\n")
 
-    except RMPyException as e:
+    except RM_Py_Exception as e:
         pause_with_message(e)
         return 1
     except Exception as e:
@@ -80,6 +80,7 @@ def main():
 
     # open the already tested report file
     report_file = open(report_path,  mode='w', encoding='utf-8')
+
     # ===========================================DIV50==
     # Errors from here forward, go to Report File
     # ===========================================DIV50==
@@ -90,35 +91,33 @@ def main():
         except:
             pass
         if report_display_app is not None and not os.path.exists(report_display_app):
-            raise RMPyException('ERROR: Path for report file display app not found: '
+            raise RM_Py_Exception('ERROR: Path for report file display app not found: '
                                 + report_display_app)
-        
+
         try:
             database_path = config['FILE_PATHS']['DB_PATH']
         except:
-            raise RMPyException('ERROR: DB_PATH must be specified.')
+            raise RM_Py_Exception('ERROR: DB_PATH must be specified.')
         if not os.path.exists(database_path):
-            raise RMPyException('Path for database not found: ' + database_path
+            raise RM_Py_Exception('Path for database not found: ' + database_path
                                 + '\n\n' 'Absolute path checked:\n"'
                                 + os.path.abspath(database_path) + '"')
-
-
 
         # RM database file info
         FileModificationTime = datetime.fromtimestamp(
             os.path.getmtime(database_path))
-        G_DbFileFolderPath = Path(database_path).parent
+        G_db_file_folder_path = Path(database_path).parent
 
         db_connection = create_db_connection(database_path, None)
 
         # write header to report file
-        report_file.write("Report generated at      = " + TimeStampNow()
-                      + "\nDatabase processed       = " +
-                      os.path.abspath(database_path)
-                      + "\nDatabase last changed on = "
-                      + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S")
-                      + "\nSQLite library version   = "
-                      + GetSQLiteLibraryVersion(db_connection) + "\n\n")
+        report_file.write("Report generated at      = " + time_stamp_now()
+                          + "\nDatabase processed       = " +
+                          os.path.abspath(database_path)
+                          + "\nDatabase last changed on = "
+                          + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S")
+                          + "\nSQLite library version   = "
+                          + get_SQLite_library_version(db_connection) + "\n\n")
 
         # test option values conversion to boolean
         # if missing, treated as false
@@ -132,7 +131,7 @@ def main():
             config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
             config['OPTIONS'].getboolean('HASH_FILE')
         except:
-            raise RMPyException(
+            raise RM_Py_Exception(
                 "One of the OPTIONS values could not be parsed as boolean. \n")
 
         # Run the requested options. Usually multiple options.
@@ -144,27 +143,27 @@ def main():
                 config, db_connection, report_file)
 
         if config['OPTIONS'].getboolean('FOLDER_LIST'):
-            ListFoldersFeature(config, db_connection, report_file)
+            list_folders_feature(config, db_connection, report_file)
 
         if config['OPTIONS'].getboolean('NO_TAG_FILES'):
-            FilesWithNoTagsFeature(config, db_connection, report_file)
+            files_with_no_tags_feature(config, db_connection, report_file)
 
         if config['OPTIONS'].getboolean('DUP_FILEPATHS'):
-            FindDuplcateFilePathsFeature(db_connection, report_file)
+            find_duplcate_file_paths_feature(db_connection, report_file)
 
         if config['OPTIONS'].getboolean('DUP_FILENAMES'):
-            FindDuplcateFileNamesFeature(db_connection, report_file)
+            find_duplcate_file_names_feature(db_connection, report_file)
 
         if config['OPTIONS'].getboolean('HASH_FILE'):
-            FileHashFeature(config, db_connection, report_file)
+            file_hash_feature(config, db_connection, report_file)
 
-        Section("FINAL", "", report_file)
+        section("FINAL", "", report_file)
 
     except (sqlite3.OperationalError, sqlite3.ProgrammingError) as e:
         report_file.write(
             "ERROR: SQL execution returned an error \n\n" + str(e))
         return 1
-    except RMPyException as e:
+    except RM_Py_Exception as e:
         report_file.write(str(e))
         return 1
     except Exception as e:
@@ -182,327 +181,331 @@ def main():
 
 
 # ===================================================DIV60==
-def ListMissingFilesFeature(config, dbConnection, reportF):
+def ListMissingFilesFeature(config, db_connection, report_file):
 
-    FeatureName = "Files Not Found"
+    feature_name = "Files Not Found"
     Label_OrigPath = "Path in database:  "
     foundSomeMissingFiles = False
 
-    Section("START", FeatureName, reportF)
+    section("START", feature_name, report_file)
     # get options
-    ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
+    show_original_path = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
 
     # First check database for empty paths or filenames
-    ReportEmptyPaths(dbConnection, reportF)
+    report_empty_paths(db_connection, report_file)
 
-    cur = GetDBFileList(dbConnection)
-    # row[0] = path,   row[1] = fileName
-
+    cur = get_db_file_list(db_connection)
     for row in cur:
         if len(str(row[0])) == 0 or len(str(row[1])) == 0:
             continue
         dirPathOrig = row[0]
-        dirPath = ExpandDirPath(dirPathOrig)
+        dirPath = expand_relative_dir_path(dirPathOrig)
         filePath = Path(os.path.join(dirPath, row[1]))
 
         if not os.path.exists(dirPath):
             foundSomeMissingFiles = True
-            reportF.write("Directory path not found:\n"
-                          + G_QT + str(dirPath) + G_QT + " for file: "
-                          + G_QT + row[1] + G_QT + "\n")
-            if ShowOrigPath:
-                reportF.write(Label_OrigPath + G_QT + str(dirPathOrig)
-                              + G_QT + "\n")
+            report_file.write("\n" "Directory path not found:\n"
+                              + G_QT + str(dirPath) + G_QT + " for file: "
+                              + G_QT + row[1] + G_QT + "\n")
+            if show_original_path:
+                report_file.write(Label_OrigPath + G_QT + str(dirPathOrig)
+                                  + G_QT + "\n")
 
         else:
             if filePath.exists():
                 if not filePath.is_file():
                     foundSomeMissingFiles = True
-                    reportF.write("File path is not a file: \n" + G_QT
-                                  + str(filePath) + G_QT + "\n")
-                    if ShowOrigPath:
-                        reportF.write(Label_OrigPath + G_QT
-                                      + str(dirPathOrig) + G_QT + "\n")
+                    report_file.write("File path is not a file: \n" + G_QT
+                                      + str(filePath) + G_QT + "\n")
+                    if show_original_path:
+                        report_file.write(Label_OrigPath + G_QT
+                                          + str(dirPathOrig) + G_QT + "\n")
 
             else:
                 foundSomeMissingFiles = True
-                reportF.write("File path not found: \n" + G_QT
-                              + str(filePath) + G_QT + "\n")
-                if ShowOrigPath:
-                    reportF.write(Label_OrigPath + G_QT + str(dirPathOrig)
-                                  + G_QT + "\n")
+                report_file.write("File path not found: \n" + G_QT
+                                  + str(filePath) + G_QT + "\n")
+                if show_original_path:
+                    report_file.write(Label_OrigPath + G_QT + str(dirPathOrig)
+                                      + G_QT + "\n")
 
     if not foundSomeMissingFiles:
-        reportF.write("\n    No files were found missing.\n")
-    Section("END", FeatureName, reportF)
+        report_file.write("\n    No files were found missing.\n")
+    section("END", feature_name, report_file)
     return
 
 
 # ===================================================DIV60==
 
-def ListUnReferencedFilesFeature(config, dbConnection, reportF):
-    FeatureName = "Unreferenced Files"
+def ListUnReferencedFilesFeature(config, db_connection, report_file):
+    feature_name = "Unreferenced Files"
 
-    Section("START", FeatureName, reportF)
+    section("START", feature_name, report_file)
+
     # get option
     try:
-        ExtFilesFolderPath = config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH']
+        ext_files_folder_path = config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH']
     except:
-        raise RMPyException(
+        raise RM_Py_Exception(
             "ERROR: SEARCH_ROOT_FLDR_PATH must be specified for this option. \n")
+    
+    unref_case_sensitive = True
+    try:
+        unref_case_sensitive = config['OPTIONS'].getboolean('UNREF_CASE_SENSITIVE')
+    except:
+        pass
 
     # Validate the folder path
-    if not Path(ExtFilesFolderPath).exists():
-        raise RMPyException("ERROR: Directory path not found:"
-                            + G_QT + ExtFilesFolderPath + G_QT + "\n")
-    if not Path(ExtFilesFolderPath).is_dir():
-        raise RMPyException("ERROR: Path is not a directory:"
-                            + G_QT + ExtFilesFolderPath + G_QT + "\n")
+    if not Path(ext_files_folder_path).exists():
+        raise RM_Py_Exception("ERROR: Directory path not found:"
+                            + G_QT + ext_files_folder_path + G_QT + "\n")
+    if not Path(ext_files_folder_path).is_dir():
+        raise RM_Py_Exception("ERROR: Path is not a directory:"
+                            + G_QT + ext_files_folder_path + G_QT + "\n")
 
     # First check database for empty paths or filenames
-    ReportEmptyPaths(dbConnection, reportF)
+    report_empty_paths(db_connection, report_file)
 
-    cur = GetDBFileList(dbConnection)
+    cur = get_db_file_list(db_connection)
 
-    dbFileList = []
+    db_file_list = []
     for row in cur:
         if len(str(row[0])) == 0 or len(str(row[1])) == 0:
             continue
         if row[0][0] == '*':
             pass
-        dirPath = ExpandDirPath(row[0])
-        filePath = os.path.join(dirPath, row[1])
-        dbFileList.append(filePath)
+        dirPath = expand_relative_dir_path(row[0])
+        file_path = os.path.join(dirPath, row[1])
+        db_file_list.append(file_path)
 
-    mediaFileList = FolderContentsMinusIgnored(
-        reportF, Path(ExtFilesFolderPath), config)
+    media_file_list = folder_contents_minus_ignored(
+        report_file, Path(ext_files_folder_path), config)
 
-    caseSens = True
-    if (caseSens == True):
+
+    if (unref_case_sensitive == True):
         # case sensitive
-        unRefFiles = list(set(mediaFileList).difference(dbFileList))
+        unRefFiles = list(set(media_file_list).difference(db_file_list))
     else:
-        mediaFileList_lc = [item.lower() for item in mediaFileList]
-        dbFileList_lc = [item.lower() for item in dbFileList]
+        mediaFileList_lc = [item.lower() for item in media_file_list]
+        dbFileList_lc = [item.lower() for item in db_file_list]
         unRefFiles = list(set(mediaFileList_lc).difference(dbFileList_lc))
 
     if len(unRefFiles) > 0:
         unRefFiles.sort()
 
         # don't print full path from root folder
-        cutoff = len(ExtFilesFolderPath)
+        cutoff = len(ext_files_folder_path)
         for i in range(len(unRefFiles)):
-            reportF.write("." + str(unRefFiles[i])[cutoff:] + "\n")
+            report_file.write("." + str(unRefFiles[i])[cutoff:] + "\n")
 
-        reportF.write("\nFiles in processed folder not referenced by the database: "
+        report_file.write("\nFiles in processed folder not referenced by the database: "
                       + str(len(unRefFiles)) + "\n")
     else:
-        reportF.write("\n    No unreferenced files were found.\n\n")
+        report_file.write("\n    No unreferenced files were found.\n\n")
 
-    reportF.write("\n    Folder processed: " + G_QT + ExtFilesFolderPath + G_QT
-                  + "\n    Number of files " + str(len(mediaFileList))
+    report_file.write("\n    Folder processed: " + G_QT + ext_files_folder_path + G_QT
+                  + "\n    Number of files " + str(len(media_file_list))
                   + "  (exclusive of ignored items)"
                   + "\n    Number of database file links: " +
-                  str(len(dbFileList))
+                  str(len(db_file_list))
                   + "\n    # DB links minus # non-ignored files: "
-                  + str(len(dbFileList) - len(mediaFileList)) + "\n")
+                  + str(len(db_file_list) - len(media_file_list)) + "\n")
 
-    Section("END", FeatureName, reportF)
+    section("END", feature_name, report_file)
     return
 
 
 # ===================================================DIV60==
-def FilesWithNoTagsFeature(config, dbConnection, reportF):
+def files_with_no_tags_feature(config, db_connection, report_file):
 
-    FeatureName = "Files with no Tags"
-    Label_OrigPath = "Path in database:  "
-    FoundNoTagFiles = False
+    feature_name = "Files with no Tags"
+    label_orig_path = "Path in database:  "
+    found_no_tag_files = False
 
-    Section("START", FeatureName, reportF)
+    section("START", feature_name, report_file)
     # get options
-    ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
+    show_orig_path = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
 
-    cur = GetDBNoTagFileList(dbConnection)
+    cur = get_db_no_tag_file_list(db_connection)
     # row[0] = path,   row[1] = fileName
 
     for row in cur:
-        FoundNoTagFiles = True
+        found_no_tag_files = True
         dirPathOrig = row[0]
-        dirPath = ExpandDirPath(row[0])
-        filePath = Path(os.path.join(dirPath, row[1]))
-        reportF.write(G_QT + str(filePath) + G_QT + "\n")
-        if ShowOrigPath:
-            reportF.write(Label_OrigPath
+        dir_path = expand_relative_dir_path(row[0])
+        file_path = Path(os.path.join(dir_path, row[1]))
+        report_file.write(G_QT + str(file_path) + G_QT + "\n")
+        if show_orig_path:
+            report_file.write(label_orig_path
                           + G_QT + str(dirPathOrig) + G_QT + "\n")
 
-    if not FoundNoTagFiles:
-        reportF.write("\n    No files with no tags were found.\n")
+    if not found_no_tag_files:
+        report_file.write("\n    No files with no tags were found.\n")
 
-    Section("END", FeatureName, reportF)
+    section("END", feature_name, report_file)
     return
 
 
 # ===================================================DIV60==
-def ListFoldersFeature(config, dbConnection, reportF):
+def list_folders_feature(config, db_connection, report_file):
 
-    FeatureName = "Referenced Folders"
+    feature_name = "Referenced Folders"
     Label_OrigPath = "Path in database:  "
     foundSomeFolders = False
 
-    Section("START", FeatureName, reportF)
+    section("START", feature_name, report_file)
     # get options
     ShowOrigPath = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
 
     # First check database for empty paths or filenames
     # easier to handle them now than later
-    ReportEmptyPaths(dbConnection, reportF)
+    report_empty_paths(db_connection, report_file)
 
-    cur = GetDBFolderList(dbConnection)
+    cur = get_db_folder_list(db_connection)
     rows = cur.fetchall()
     for row in rows:
         if len(str(row[0])) == 0:
             continue
         foundSomeFolders = True
-        reportF.write(str(ExpandDirPath(row[0])) + "\n")
+        report_file.write(str(expand_relative_dir_path(row[0])) + "\n")
         if ShowOrigPath:
-            reportF.write(Label_OrigPath + row[0] + "\n")
+            report_file.write(Label_OrigPath + row[0] + "\n")
 
     if foundSomeFolders:
-        reportF.write("\nFolders referenced in database:  "
+        report_file.write("\nFolders referenced in database:  "
                       + str(len(rows)) + "\n")
 
     if not foundSomeFolders:
-        reportF.write("\n    No folders found in database.\n")
-    Section("END", FeatureName, reportF)
+        report_file.write("\n    No folders found in database.\n")
+    section("END", feature_name, report_file)
 
     return
 
 
 # ===================================================DIV60==
-def FindDuplcateFilePathsFeature(dbConnection, reportF):
+def find_duplcate_file_paths_feature(db_connection, report_file):
 
     # this currently find exact duplicates as saved in DB path & filename (ignoring case)
     # duplicates *after expansion* of relative paths not found
-    FeatureName = "Duplicated File Paths"
-    foundSomeDupFiles = False
+    feature_name = "Duplicated File Paths"
+    found_some_dup_files = False
 
-    Section("START", FeatureName, reportF)
-    cur = GetDuplicateFilePathsList(dbConnection)
+    section("START", feature_name, report_file)
+    cur = get_duplicate_file_paths_list(db_connection)
 
     for row in cur:
-        foundSomeDupFiles = True
+        found_some_dup_files = True
         dirPathOrig = row[0]
-        dirPath = ExpandDirPath(row[0])
+        dirPath = expand_relative_dir_path(row[0])
         filePath = Path(os.path.join(dirPath, row[1]))
-        reportF.write(G_QT + str(filePath) + G_QT + "\n")
+        report_file.write(G_QT + str(filePath) + G_QT + "\n")
 
-    if not foundSomeDupFiles:
-        reportF.write(
+    if not found_some_dup_files:
+        report_file.write(
             "\n    No Duplicate File Paths in Media Gallery were found.\n")
 
-    Section("END", FeatureName, reportF)
+    section("END", feature_name, report_file)
     return
 
 
 # ===================================================DIV60==
-def FindDuplcateFileNamesFeature(dbConnection, reportF):
+def find_duplcate_file_names_feature(db_connection, report_file):
 
     # this finds exact filename duplicates as saved in DB (ignoring case)
-    FeatureName = "Duplicated File Names"
-    foundSomeDupFiles = False
+    feature_ame = "Duplicated File Names"
+    found_some_dup_files = False
 
-    Section("START", FeatureName, reportF)
-    cur = GetDuplicateFileNamesList(dbConnection)
+    section("START", feature_ame, report_file)
+    cur = get_duplicate_file_names_list(db_connection)
 
     for row in cur:
-        foundSomeDupFiles = True
+        found_some_dup_files = True
         fileName = row[0]
-        reportF.write(G_QT + str(fileName) + G_QT + "\n")
+        report_file.write(G_QT + str(fileName) + G_QT + "\n")
 
-    if not foundSomeDupFiles:
-        reportF.write(
+    if not found_some_dup_files:
+        report_file.write(
             "\n    No Duplicate File Names in Media Gallery were found.\n")
 
-    Section("END", FeatureName, reportF)
+    section("END", feature_ame, report_file)
     return
 
 
 # ===================================================DIV60==
-def FileHashFeature(config, dbConnection, reportF):
+def file_hash_feature(config, db_connection, report_file):
 
-    FeatureName = "Generate media files hash"
-    Label_OrigPath = "Saved at:  "
-    foundSomeMissingFiles = False
+    feature_name = "Generate media files hash"
+    found_some_missing_files = False
 
     print("\n Please wait, HASH file may take several minutes to generate.\n")
 
-    Section("START", FeatureName, reportF)
+    section("START", feature_name, report_file)
     # get option
     try:
         hashFileFolder = config['FILE_PATHS']['HASH_FILE_FLDR_PATH']
     except:
-        raise RMPyException(
+        raise RM_Py_Exception(
             "ERROR: HASH_FILE_FLDR_PATH must be specified for this option. \n")
 
-    hashFilePath = os.path.join(hashFileFolder, "MediaFiles_HASH_"
-                                + TimeStampNow("file") + ".txt")
+    hash_file_path = os.path.join(hashFileFolder, "MediaFiles_HASH_"
+                                + time_stamp_now("file") + ".txt")
 
     try:
-        hashFile = open(hashFilePath,  mode='w', encoding='utf-8')
+        hash_file = open(hash_file_path,  mode='w', encoding='utf-8')
     except:
-        raise RMPyException('ERROR: Cannot create the hash file '
-                            + hashFilePath + "\n\n")
+        raise RM_Py_Exception('ERROR: Cannot create the hash file '
+                            + hash_file_path + "\n\n")
 
-    reportF.write("MD5 hash of files saved in file:\n" +
-                  str(hashFilePath) + "\n\n")
-    cur = GetDBFileList(dbConnection)
+    report_file.write("MD5 hash of files saved in file:\n" +
+                  str(hash_file_path) + "\n\n")
+    cur = get_db_file_list(db_connection)
     # row[0] = path,   row[1] = fileName
 
     for row in cur:
         if len(str(row[0])) == 0 or len(str(row[1])) == 0:
             continue
         dirPathOrig = row[0]
-        dirPath = ExpandDirPath(row[0])
-        filePath = Path(os.path.join(dirPath, row[1]))
-        if not dirPath.exists():
-            foundSomeMissingFiles = True
-            reportF.write("Directory path not found:\n"
-                          + G_QT + str(dirPath) + G_QT + " for file: "
+        dir_path = expand_relative_dir_path(row[0])
+        file_path = Path(os.path.join(dir_path, row[1]))
+        if not dir_path.exists():
+            found_some_missing_files = True
+            report_file.write("Directory path not found:\n"
+                          + G_QT + str(dir_path) + G_QT + " for file: "
                           + G_QT + row[1] + G_QT + "\n")
 
         else:
-            if filePath.exists():
-                if not filePath.is_file():
-                    foundSomeMissingFiles = True
-                    reportF.write("File path is not a file: \n"
-                                  + G_QT + str(filePath) + G_QT + "\n")
+            if file_path.exists():
+                if not file_path.is_file():
+                    found_some_missing_files = True
+                    report_file.write("File path is not a file: \n"
+                                  + G_QT + str(file_path) + G_QT + "\n")
                 # take hash
                 BUF_SIZE = 65536  # reads in 64kb chunks
 
                 md5 = hashlib.md5()
                 # or sha1 = hashlib.sha1()
 
-                with open(filePath, 'rb') as f:
+                with open(file_path, 'rb') as f:
                     while True:
                         data = f.read(BUF_SIZE)
                         if not data:
                             break
                         md5.update(data)
-                hashFile.write(str(filePath) + "\n" + md5.hexdigest() + "\n\n")
+                hash_file.write(str(file_path) + "\n" + md5.hexdigest() + "\n\n")
             else:
-                foundSomeMissingFiles = True
-                reportF.write("File path not found: \n"
-                              + G_QT + str(filePath) + G_QT + "\n")
+                found_some_missing_files = True
+                report_file.write("File path not found: \n"
+                              + G_QT + str(file_path) + G_QT + "\n")
 
-    if not foundSomeMissingFiles:
-        reportF.write("\n    All files were processed.\n")
-    Section("END", FeatureName, reportF)
+    if not found_some_missing_files:
+        report_file.write("\n    All files were processed.\n")
+    section("END", feature_name, report_file)
 
     return
 
 
 # ===================================================DIV60==
-def GetDBFolderList(dbConnection):
+def get_db_folder_list(dbConnection):
 
     SqlStmt = """
   SELECT  DISTINCT MediaPath
@@ -515,7 +518,7 @@ def GetDBFolderList(dbConnection):
 
 
 # ===================================================DIV60==
-def GetDBFileList(dbConnection):
+def get_db_file_list(dbConnection):
 
     SqlStmt = """
   SELECT  MediaPath, MediaFile
@@ -528,7 +531,7 @@ def GetDBFileList(dbConnection):
 
 
 # ===================================================DIV60==
-def ReportEmptyPaths(dbConnection, report_file):
+def report_empty_paths(dbConnection, report_file):
 
     # First check database for empty paths or filenames
     # easier to handle them now than later
@@ -545,16 +548,16 @@ def ReportEmptyPaths(dbConnection, report_file):
     rows = cur.fetchall()
     if len(rows) != 0:
         report_file.write(str(len(rows)) +
-                      " entires with blank filename or path found:\n\n")
+                          " entires with blank filename or path found:\n\n")
         for row in rows:
             # MediaPath, MediaFile, Caption, Description
             report_file.write("Path       =" + str(row[0]) + '\nFile Name  ='
-                          + str(row[1]) + '\nCaption    ='
-                          + row[2] + "\nDescription=" + row[3] + "\n\n")
+                              + str(row[1]) + '\nCaption    ='
+                              + row[2] + "\nDescription=" + row[3] + "\n\n")
 
 
 # ===================================================DIV60==
-def GetDBNoTagFileList(dbConnection):
+def get_db_no_tag_file_list(dbConnection):
 
     SqlStmt = """
   SELECT MediaPath, MediaFile
@@ -569,7 +572,7 @@ def GetDBNoTagFileList(dbConnection):
 
 
 # ===================================================DIV60==
-def GetDuplicateFileNamesList(dbConnection):
+def get_duplicate_file_names_list(dbConnection):
 
     # see for examples
     # https://database.guide/6-ways-to-select-duplicate-rows-in-sqlite/
@@ -586,7 +589,7 @@ def GetDuplicateFileNamesList(dbConnection):
 
 
 # ===================================================DIV60==
-def GetDuplicateFilePathsList(dbConnection):
+def get_duplicate_file_paths_list(dbConnection):
 
     SqlStmt = """
   SELECT p.MediaPath, p.MediaFile, COUNT(*) AS "Count"
@@ -601,7 +604,7 @@ def GetDuplicateFilePathsList(dbConnection):
 
 
 # ===================================================DIV60==
-def GetSQLiteLibraryVersion(dbConnection):
+def get_SQLite_library_version(dbConnection):
 
     # returns a string like 3.42.0
     SqlStmt = """
@@ -613,7 +616,7 @@ def GetSQLiteLibraryVersion(dbConnection):
 
 
 # ===================================================DIV60==
-def GetCurrentDirectory():
+def get_current_directory():
 
     # Determine if application is a script file or frozen exe and get its directory
     # see   https://pyinstaller.org/en/stable/runtime-information.html
@@ -625,7 +628,7 @@ def GetCurrentDirectory():
 
 
 # ===================================================DIV60==
-def TimeStampNow(type=""):
+def time_stamp_now(type=""):
 
     # return a TimeStamp string
     now = datetime.now()
@@ -637,7 +640,7 @@ def TimeStampNow(type=""):
 
 
 # ===================================================DIV60==
-def Section(pos, name, report_file):
+def section(pos, name, report_file):
 
     Divider = "="*60 + "===DIV70==\n"
     if pos == "START":
@@ -647,7 +650,7 @@ def Section(pos, name, report_file):
     elif pos == "FINAL":
         text = "\n" + Divider + "\n=== End of Report\n"
     else:
-        raise RMPyException(
+        raise RM_Py_Exception(
             "INTERNAL ERROR: Section position not correctly defined")
 
     report_file.write(text)
@@ -666,17 +669,17 @@ def create_db_connection(db_file_path, db_extension):
             db_connection.enable_load_extension(True)
             db_connection.load_extension(db_extension)
     except Exception as e:
-        raise RMPyException(e, "\n\n" "Cannot open the RM database file." "\n")
+        raise RM_Py_Exception(e, "\n\n" "Cannot open the RM database file." "\n")
     return db_connection
 
 
 # ===================================================DIV60==
-def ExpandDirPath(in_path):
+def expand_relative_dir_path(in_path):
 
     # deal with relative paths in RootsMagic 8 + 9 databases
     # RM7 path are always absolute and will never be processed here
 
-    global G_MediaDirectoryPath
+    global G_media_directory_path
     path = str(in_path)
     # input parameter path should always be of type str, output will be Path
     # note when using Path / operator, second operand should not be absolute
@@ -685,18 +688,18 @@ def ExpandDirPath(in_path):
         absolutePath = Path(os.path.expanduser(path))
 
     elif path[0] == "?":
-        if G_MediaDirectoryPath == "":
-            G_MediaDirectoryPath = GetMediaDirectory()
+        if G_media_directory_path == "":
+            G_media_directory_path = get_media_directory()
         if len(path) == 1:
-            absolutePath = Path(G_MediaDirectoryPath)
+            absolutePath = Path(G_media_directory_path)
         else:
-            absolutePath = Path(G_MediaDirectoryPath) / path[2:]
+            absolutePath = Path(G_media_directory_path) / path[2:]
 
     elif path[0] == "*":
         if len(path) == 1:
-            absolutePath = Path(G_DbFileFolderPath)
+            absolutePath = Path(G_db_file_folder_path)
         else:
-            absolutePath = Path(G_DbFileFolderPath) / path[2:]
+            absolutePath = Path(G_db_file_folder_path) / path[2:]
 
     else:
         absolutePath = Path(path)
@@ -705,7 +708,7 @@ def ExpandDirPath(in_path):
 
 
 # ===================================================DIV60==
-def GetMediaDirectory():
+def get_media_directory():
 
     #  Relies on the RM installed xml file containing application preferences
     #  File location set by RootsMagic installer
@@ -737,7 +740,7 @@ def GetMediaDirectory():
 
 
 # ===================================================DIV60==
-def FolderContentsMinusIgnored(reportF, dirPath, config):
+def folder_contents_minus_ignored(reportF, dirPath, config):
 
     ignoredFolderNames = []
     ignoredFileNames = []
@@ -778,7 +781,9 @@ def pause_with_message(message=None):
     return
 
 # ===================================================DIV60==
-class RMPyException(Exception):
+
+
+class RM_Py_Exception(Exception):
 
     '''Exceptions thrown for configuration/database issues'''
 
