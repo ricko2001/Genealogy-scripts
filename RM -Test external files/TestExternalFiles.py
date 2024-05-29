@@ -85,7 +85,6 @@ def main():
     # ===========================================DIV50==
     # Errors from here forward, go to Report File
     # ===========================================DIV50==
-
     try:
         try:
             report_display_app = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
@@ -100,7 +99,7 @@ def main():
         except:
             raise RM_Py_Exception('ERROR: DB_PATH must be specified.')
         if not os.path.exists(database_path):
-            raise RM_Py_Exception('Path for database not found: ' + database_path
+            raise RM_Py_Exception('ERROR: Path for database not found: ' + database_path
                                   + '\n\n' 'Absolute path checked:\n"'
                                   + os.path.abspath(database_path) + '"')
 
