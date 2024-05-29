@@ -21,7 +21,7 @@ def main():
         version_number_short = version_number_full[0:-2]
         distribution_dir_name = util_name + ' v' + version_number_short
         release_dir_name = ("Release " + util_name + ' v'
-                            + version_number_short + "  " + TimeStampNow('file'))
+                            + version_number_short + "  " + time_stamp_now('file'))
 
         if os.path.exists(release_dir_name):
             raise Exception("Folder already exists")
@@ -68,7 +68,7 @@ def main():
 
         print("\n\nCopy window contents to build log in the Release folder."
               "In terminal: Ctl-Shift-A, Ctl-C\n")
-        PauseWithMessage(" hit Enter to continue")
+        pause_with_message(" hit Enter to continue")
 
         git_tag = util_name + "_v" + version_number_short
         release_name = util_name + " v" + version_number_short
@@ -86,14 +86,12 @@ END OF SCRIPT
 ''')
     except Exception as e:
         print(str(e))
-        PauseWithMessage("\n\nPress Enter to continue, window will close")
+        pause_with_message("\n\nPress Enter to continue, window will close")
         return 1
-    PauseWithMessage("Press Enter to continue, window will close")
+    pause_with_message("Press Enter to continue, window will close")
     return 0
 
 # ===================================================DIV60==
-
-
 def make_zipfile(output_filename, source_dir):
 
     # https://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory
@@ -111,7 +109,7 @@ def make_zipfile(output_filename, source_dir):
 
 
 # ===================================================DIV60==
-def TimeStampNow(type=""):
+def time_stamp_now(type=""):
 
     # return a TimeStamp string
     now = datetime.now()
@@ -123,7 +121,8 @@ def TimeStampNow(type=""):
 
 
 # ===================================================DIV60==
-def PauseWithMessage(message=None):
+def pause_with_message(message=None):
+    
     if (message != None):
         input(str(message))
     else:
