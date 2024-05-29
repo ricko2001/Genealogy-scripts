@@ -31,16 +31,16 @@ def main():
 
     # Configuration
     config_file_name = "RM-Python-config.ini"
-    global G_db_file_folder_path
-    report_display_app = None
     db_connection = None
+    report_display_app = None
+    global G_db_file_folder_path
 
     # ===========================================DIV50==
     # Errors go to console window
     # ===========================================DIV50==
     try:
-      # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
-      # see   https://docs.python.org/3/library/configparser.html
+        # config file must be in "current directory" and encoded as UTF-8 (no BOM).
+        # see   https://docs.python.org/3/library/configparser.html
         config_file_path = os.path.join(
             get_current_directory(), config_file_name)
 
@@ -56,13 +56,11 @@ def main():
         except:
             raise RM_Py_Exception("ERROR: The " + config_file_name
                                   + " file contains a format error and cannot be parsed.\n\n")
-
         try:
             report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
         except:
             raise RM_Py_Exception('ERROR: REPORT_FILE_PATH must be defined in the '
                                   + config_file_name + "\n\n")
-
         try:
             # Use UTF-8 encoding for the report file. Test for write-ability
             open(report_path,  mode='w', encoding='utf-8')
@@ -76,7 +74,8 @@ def main():
     except Exception as e:
         traceback.print_exception(e, file=sys.stdout)
         pause_with_message(
-            "ERROR: Application failed. Please report. " + str(e))
+            "ERROR: Application failed. Please email report.\n\n " + str(e)
+            + "\n\n to the author")
         return 1
 
     # open the already tested report file
@@ -112,12 +111,12 @@ def main():
 
         # write header to report file
         report_file.write("Report generated at      = " + time_stamp_now()
-                          + "\nDatabase processed       = " +
-                          os.path.abspath(database_path)
-                          + "\nDatabase last changed on = "
+                          + "\n" "Database processed       = "
+                          + os.path.abspath(database_path)
+                          + "\n" "Database last changed on = "
                           + file_modification_time.strftime("%Y-%m-%d %H:%M:%S")
-                          + "\nSQLite library version   = "
-                          + get_SQLite_library_version(db_connection) + "\n\n")
+                          + "\n" "SQLite library version   = "
+                          + get_SQLite_library_version(db_connection) + "\n\n\n\n")
 
         # test option values conversion to boolean
         # if missing, treated as false
@@ -169,7 +168,7 @@ def main():
     except Exception as e:
         traceback.print_exception(e, file=report_file)
         report_file.write("\n\n"
-                          "ERROR: Application failed. Please send text to author. ")
+                          "ERROR: Application failed. Please email report file to author. ")
         return 1
     finally:
         if db_connection is not None:
