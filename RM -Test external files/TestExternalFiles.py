@@ -10,17 +10,39 @@ import subprocess
 import traceback
 
 # This script can only read a RootsMagic database file and cannot change it.
-# However, until trust is established, make a backup before use.
+# However, until trust is established:
+# Always make a RM database backup before using any external script.
 
-# Requirements: (see ReadMe.txt for details)
-# RootsMagic v7, v8 or v9 database file
-# RM-Python-config.ini  ( Configuration ini text file to set options )
-# Python v3.11 or greater
-# RootsMagic v7, v8 or v9 installed (only for unref files option)
+# Requirements:
+#   RootsMagic database file
+#   RM-Python-config.ini
+
+# Last tested with:
+#   RootsMagic database v7, v8 or v9
+#   Python for Windows v3.12.3
+#   RootsMagic v7, v8 or v9 installed (only for unref files option)
+
+# Config files fields used
+#    FILE_PATHS  REPORT_FILE_PATH
+#    FILE_PATHS  REPORT_FILE_DISPLAY_APP
+#    FILE_PATHS  DB_PATH
+#    FILE_PATHS  SEARCH_ROOT_FLDR_PATH
+#    OPTIONS    CHECK_FILES
+#    OPTIONS    UNREF_FILES
+#    OPTIONS    NO_TAG_FILES
+#    OPTIONS    FOLDER_LIST
+#    OPTIONS    DUP_FILENAMES
+#    OPTIONS    DUP_FILEPATHS
+#    OPTIONS    HASH_FILE
+#    OPTIONS    SHOW_ORIG_PATH
+#    OPTIONS    UNREF_CASE_SENSITIVE
+#    IGNORED_OBJECTS  FOLDERS 
+#    IGNORED_OBJECTS  FILES
 
 
 # ===================================================DIV60==
 #  Global Variables
+
 G_media_directory_path = ""
 G_db_file_folder_path = ""
 G_QT = "\""
@@ -33,7 +55,8 @@ def main():
     config_file_name = "RM-Python-config.ini"
     db_connection = None
     report_display_app = None
-    global G_db_file_folder_path
+    RMNOCASE_required = False
+    allow_db_changes = False
 
     # ===========================================DIV50==
     # Errors go to console window
@@ -46,21 +69,24 @@ def main():
 
         # Check that config file is at expected path and that it is readable & valid.
         if not os.path.exists(config_file_path):
-            raise RM_Py_Exception("ERROR: The configuration file, " + config_file_name
-                                  + " must be in the same directory as the .py or .exe file.\n\n")
+            raise RM_Py_Exception(
+                "ERROR: The configuration file, " + config_file_name
+                + " must be in the same directory as the .py or .exe file." "\n\n")
 
         config = configparser.ConfigParser(empty_lines_in_values=False,
                                            interpolation=None)
         try:
             config.read(config_file_path, 'UTF-8')
         except:
-            raise RM_Py_Exception("ERROR: The " + config_file_name
-                                  + " file contains a format error and cannot be parsed.\n\n")
+            raise RM_Py_Exception(
+                "ERROR: The " + config_file_name
+                + " file contains a format error and cannot be parsed." "\n\n")
         try:
             report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
         except:
-            raise RM_Py_Exception('ERROR: REPORT_FILE_PATH must be defined in the '
-                                  + config_file_name + "\n\n")
+            raise RM_Py_Exception(
+                'ERROR: REPORT_FILE_PATH must be defined in the '
+                + config_file_name + "\n\n")
         try:
             # Use UTF-8 encoding for the report file. Test for write-ability
             open(report_path,  mode='w', encoding='utf-8')
@@ -74,8 +100,9 @@ def main():
     except Exception as e:
         traceback.print_exception(e, file=sys.stdout)
         pause_with_message(
-            "ERROR: Application failed. Please email report.\n\n " + str(e)
-            + "\n\n to the author")
+            "ERROR: Application failed. Please email error report:" "\n\n " +
+            str(e)
+            + "\n\n" "to the author")
         return 1
 
     # open the already tested report file
@@ -90,24 +117,41 @@ def main():
         except:
             pass
         if report_display_app is not None and not os.path.exists(report_display_app):
-            raise RM_Py_Exception('ERROR: Path for report file display app not found: '
-                                  + report_display_app)
+            raise RM_Py_Exception(
+                'ERROR: Path for report file display app not found: '
+                + report_display_app)
 
         try:
             database_path = config['FILE_PATHS']['DB_PATH']
         except:
             raise RM_Py_Exception('ERROR: DB_PATH must be specified.')
         if not os.path.exists(database_path):
-            raise RM_Py_Exception('ERROR: Path for database not found: ' + database_path
-                                  + '\n\n' 'Absolute path checked:\n"'
-                                  + os.path.abspath(database_path) + '"')
+            raise RM_Py_Exception(
+                'ERROR: Path for database not found: ' + database_path
+                + '\n\n' 'Absolute path checked:\n"'
+                + os.path.abspath(database_path) + '"')
+
+        if RMNOCASE_required:
+            try:
+                rmnocase_path = config['FILE_PATHS']['RMNOCASE_PATH']
+            except:
+                raise RM_Py_Exception(
+                    'ERROR: RMNOCASE_PATH must be specified.')
+            if not os.path.exists(rmnocase_path):
+                raise RM_Py_Exception(
+                    'ERROR: Path for RMNOCASE extension (unifuzz64.dll) not found: '
+                    + rmnocase_path
+                    + '\n\n' 'Absolute path checked:\n"'
+                    + os.path.abspath(rmnocase_path) + '"')
 
         # RM database file info
         file_modification_time = datetime.fromtimestamp(
             os.path.getmtime(database_path))
-        G_db_file_folder_path = Path(database_path).parent
 
-        db_connection = create_db_connection(database_path, None)
+        if RMNOCASE_required:
+            db_connection = create_db_connection(database_path, rmnocase_path)
+        else:
+            db_connection = create_db_connection(database_path, None)
 
         # write header to report file
         report_file.write("Report generated at      = " + time_stamp_now()
@@ -118,45 +162,7 @@ def main():
                           + "\n" "SQLite library version   = "
                           + get_SQLite_library_version(db_connection) + "\n\n\n\n")
 
-        # test option values conversion to boolean
-        # if missing, treated as false
-        try:
-            config['OPTIONS'].getboolean('CHECK_FILES')
-            config['OPTIONS'].getboolean('UNREF_FILES')
-            config['OPTIONS'].getboolean('NO_TAG_FILES')
-            config['OPTIONS'].getboolean('FOLDER_LIST')
-            config['OPTIONS'].getboolean('DUP_FILENAMES')
-            config['OPTIONS'].getboolean('DUP_FILEPATHS')
-            config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
-            config['OPTIONS'].getboolean('HASH_FILE')
-        except:
-            raise RM_Py_Exception(
-                "One of the OPTIONS values could not be parsed as boolean. \n")
-
-        # Run the requested options. Usually multiple options.
-        if config['OPTIONS'].getboolean('CHECK_FILES'):
-            list_missing_files_feature(config, db_connection, report_file)
-
-        if config['OPTIONS'].getboolean('UNREF_FILES'):
-            list_unreferenced_files_feature(
-                config, db_connection, report_file)
-
-        if config['OPTIONS'].getboolean('FOLDER_LIST'):
-            list_folders_feature(config, db_connection, report_file)
-
-        if config['OPTIONS'].getboolean('NO_TAG_FILES'):
-            files_with_no_tags_feature(config, db_connection, report_file)
-
-        if config['OPTIONS'].getboolean('DUP_FILEPATHS'):
-            find_duplcate_file_paths_feature(db_connection, report_file)
-
-        if config['OPTIONS'].getboolean('DUP_FILENAMES'):
-            find_duplcate_file_names_feature(db_connection, report_file)
-
-        if config['OPTIONS'].getboolean('HASH_FILE'):
-            file_hash_feature(config, db_connection, report_file)
-
-        section("FINAL", "", report_file)
+        run_selected_features(config, db_connection, report_file)
 
     except (sqlite3.OperationalError, sqlite3.ProgrammingError) as e:
         report_file.write(
@@ -167,16 +173,65 @@ def main():
         return 1
     except Exception as e:
         traceback.print_exception(e, file=report_file)
-        report_file.write("\n\n"
-                          "ERROR: Application failed. Please email report file to author. ")
+        report_file.write(
+            "\n\n" "ERROR: Application failed. Please email report file to author. ")
         return 1
     finally:
         if db_connection is not None:
+            if allow_db_changes:
+                db_connection.commit()
             db_connection.close()
         report_file.close()
         if report_display_app is not None:
             subprocess.Popen([report_display_app, report_path])
     return 0
+
+
+# ===================================================DIV60==
+def run_selected_features(config, db_connection, report_file):
+    
+    global G_db_file_folder_path
+    G_db_file_folder_path = Path(config['FILE_PATHS']['DB_PATH']).parent
+
+    # test option values conversion to boolean
+    # if missing, treated as false
+    try:
+        config['OPTIONS'].getboolean('CHECK_FILES')
+        config['OPTIONS'].getboolean('UNREF_FILES')
+        config['OPTIONS'].getboolean('NO_TAG_FILES')
+        config['OPTIONS'].getboolean('FOLDER_LIST')
+        config['OPTIONS'].getboolean('DUP_FILENAMES')
+        config['OPTIONS'].getboolean('DUP_FILEPATHS')
+        config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
+        config['OPTIONS'].getboolean('HASH_FILE')
+    except:
+        raise RM_Py_Exception(
+            "One of the OPTIONS values could not be parsed as boolean. \n")
+
+    # Run the requested options. Usually multiple options.
+    if config['OPTIONS'].getboolean('CHECK_FILES'):
+        list_missing_files_feature(config, db_connection, report_file)
+
+    if config['OPTIONS'].getboolean('UNREF_FILES'):
+        list_unreferenced_files_feature(
+            config, db_connection, report_file)
+
+    if config['OPTIONS'].getboolean('FOLDER_LIST'):
+        list_folders_feature(config, db_connection, report_file)
+
+    if config['OPTIONS'].getboolean('NO_TAG_FILES'):
+        files_with_no_tags_feature(config, db_connection, report_file)
+
+    if config['OPTIONS'].getboolean('DUP_FILEPATHS'):
+        find_duplcate_file_paths_feature(db_connection, report_file)
+
+    if config['OPTIONS'].getboolean('DUP_FILENAMES'):
+        find_duplcate_file_names_feature(db_connection, report_file)
+
+    if config['OPTIONS'].getboolean('HASH_FILE'):
+        file_hash_feature(config, db_connection, report_file)
+
+    section("FINAL", "", report_file)
 
 
 # ===================================================DIV60==
