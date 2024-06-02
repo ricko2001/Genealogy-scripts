@@ -8,12 +8,19 @@ import traceback
 
 # List all citations associated with a Person
 
+# Requirements:
+#   RootsMagic database file
+#   RM-Python-config.ini
+
 # Tested with: 
 #   RootsMagic database file v9.1.6
-#   Python for Windows v3.45.1
-#   unifuzz64.dll (MD5=06a1f485b0fae62caa80850a8c7fd7c2)
+#   Python for Windows v3.12.3
 
-
+# Config files fields used
+#    FILE_PATHS  REPORT_FILE_PATH
+#    FILE_PATHS  REPORT_FILE_DISPLAY_APP
+#    FILE_PATHS  DB_PATH
+#    RIN         PERSON_RIN
 
 # ===================================================DIV60==
 def main():
@@ -22,6 +29,8 @@ def main():
     config_file_name = "RM-Python-config.ini"
     db_connection = None
     report_display_app = None
+    RMNOCASE_required = False
+    allow_db_changes = False
 
     # ===========================================DIV50==
     # Errors go to console window
@@ -34,21 +43,24 @@ def main():
 
         # Check that config file is at expected path and that it is readable & valid.
         if not os.path.exists(config_file_path):
-            raise RM_Py_Exception("ERROR: The configuration file, " + config_file_name
-                                  + " must be in the same directory as the .py or .exe file.\n\n")
+            raise RM_Py_Exception(
+                "ERROR: The configuration file, " + config_file_name
+                + " must be in the same directory as the .py or .exe file." "\n\n")
 
         config = configparser.ConfigParser(empty_lines_in_values=False,
                                            interpolation=None)
         try:
             config.read(config_file_path, 'UTF-8')
         except:
-            raise RM_Py_Exception("ERROR: The " + config_file_name
-                                  + " file contains a format error and cannot be parsed.\n\n")
+            raise RM_Py_Exception(
+                "ERROR: The " + config_file_name
+                + " file contains a format error and cannot be parsed." "\n\n")
         try:
             report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
         except:
-            raise RM_Py_Exception('ERROR: REPORT_FILE_PATH must be defined in the '
-                                  + config_file_name + "\n\n")
+            raise RM_Py_Exception(
+                'ERROR: REPORT_FILE_PATH must be defined in the '
+                + config_file_name + "\n\n")
         try:
             # Use UTF-8 encoding for the report file. Test for write-ability
             open(report_path,  mode='w', encoding='utf-8')
@@ -62,8 +74,9 @@ def main():
     except Exception as e:
         traceback.print_exception(e, file=sys.stdout)
         pause_with_message(
-            "ERROR: Application failed. Please email report.\n\n " + str(e)
-            + "\n\n to the author")
+            "ERROR: Application failed. Please email error report:" "\n\n " +
+            str(e)
+            + "\n\n" "to the author")
         return 1
 
     # open the already tested report file
@@ -78,34 +91,41 @@ def main():
         except:
             pass
         if report_display_app is not None and not os.path.exists(report_display_app):
-            raise RM_Py_Exception('ERROR: Path for report file display app not found: '
-                                  + report_display_app)
+            raise RM_Py_Exception(
+                'ERROR: Path for report file display app not found: '
+                + report_display_app)
 
         try:
             database_path = config['FILE_PATHS']['DB_PATH']
         except:
             raise RM_Py_Exception('ERROR: DB_PATH must be specified.')
         if not os.path.exists(database_path):
-            raise RM_Py_Exception('ERROR: Path for database not found: ' + database_path
-                                  + '\n\n' 'Absolute path checked:\n"'
-                                  + os.path.abspath(database_path) + '"')
-        
-        # Always need RMNOCASE for creating a new group (tag name index)
-        try:
-            rmnocase_path = config['FILE_PATHS']['RMNOCASE_PATH']
-        except:
-            raise RM_Py_Exception('ERROR: RMNOCASE_PATH must be specified.')
-        if rmnocase_path is not None and not os.path.exists(rmnocase_path):
-            raise RM_Py_Exception('ERROR: Path for RMNOCASE extension (unifuzz64.dll) not found: '
-                            + rmnocase_path
-                            + '\n\n' 'Absolute path checked:\n"'
-                              + os.path.abspath(rmnocase_path) + '"')
+            raise RM_Py_Exception(
+                'ERROR: Path for database not found: ' + database_path
+                + '\n\n' 'Absolute path checked:\n"'
+                + os.path.abspath(database_path) + '"')
+
+        if RMNOCASE_required:
+            try:
+                rmnocase_path = config['FILE_PATHS']['RMNOCASE_PATH']
+            except:
+                raise RM_Py_Exception(
+                    'ERROR: RMNOCASE_PATH must be specified.')
+            if not os.path.exists(rmnocase_path):
+                raise RM_Py_Exception(
+                    'ERROR: Path for RMNOCASE extension (unifuzz64.dll) not found: '
+                    + rmnocase_path
+                    + '\n\n' 'Absolute path checked:\n"'
+                    + os.path.abspath(rmnocase_path) + '"')
 
         # RM database file info
         file_modification_time = datetime.fromtimestamp(
             os.path.getmtime(database_path))
 
-        db_connection = create_db_connection(database_path, rmnocase_path)
+        if RMNOCASE_required:
+            db_connection = create_db_connection(database_path, rmnocase_path)
+        else:
+            db_connection = create_db_connection(database_path, None)
 
         # write header to report file
         report_file.write("Report generated at      = " + time_stamp_now()
@@ -116,7 +136,7 @@ def main():
                           + "\n" "SQLite library version   = "
                           + get_SQLite_library_version(db_connection) + "\n\n\n\n")
 
-        display_sources_feature(config, db_connection, report_file)
+        run_selected_features(config, db_connection, report_file)
 
     except (sqlite3.OperationalError, sqlite3.ProgrammingError) as e:
         report_file.write(
@@ -127,12 +147,13 @@ def main():
         return 1
     except Exception as e:
         traceback.print_exception(e, file=report_file)
-        report_file.write("\n\n"
-                          "ERROR: Application failed. Please email report file to author. ")
+        report_file.write(
+            "\n\n" "ERROR: Application failed. Please email report file to author. ")
         return 1
     finally:
         if db_connection is not None:
-            db_connection.commit()
+            if allow_db_changes:
+                db_connection.commit()
             db_connection.close()
         report_file.close()
         if report_display_app is not None:
@@ -141,81 +162,34 @@ def main():
 
 
 # ===================================================DIV60==
+def run_selected_features(config, db_connection, report_file):
+
+    display_sources_feature(config, db_connection, report_file)
+
+
+# ===================================================DIV60==
 def display_sources_feature(config, db_connection, report_file):
 
     PersonID = None
     try:
-        PersonID = config['RIN']['PERSON_RIN']
+        PersonID_str = config['RIN']['PERSON_RIN']
+        PersonID = int(PersonID_str)
+
     except:
         pass
     
     if PersonID is None:
-        PersonID = input("\n"  "PersonID/RIN =")
-
-
-    SqlStmt_orig="""\
--- PERSON sources
-SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
-  FROM SourceTable
-  JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
-  JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
-  JOIN PersonTable       ON CitationLinkTable.OwnerID = PersonTable.PersonID
-  WHERE PersonTable.PersonID=?
-    AND CitationLinkTable.OwnerType=0
-
-UNION
-
--- NAME sources
-SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
-  FROM SourceTable
-  JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
-  JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
-  JOIN NameTable         ON CitationLinkTable.OwnerID = NameTable.NameID
-  WHERE NameTable.OwnerID=?
-    AND CitationLinkTable.OwnerType=7
-
-UNION
-
---- EVENT-PERSON sources
-SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
-  FROM SourceTable
-  JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
-  JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
-  JOIN EventTable ON CitationLinkTable.OwnerID = EventTable.EventID
-  WHERE EventTable.OwnerID=?
-    AND CitationLinkTable.OwnerType=2
-    AND EventTable.OwnerType=0
-
-UNION
-
----- EVENT-FAMILY sources
-SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
-  FROM SourceTable
-  JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
-  JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
-  JOIN EventTable        ON CitationLinkTable.OwnerID = EventTable.EventID
-  JOIN FamilyTable       ON EventTable.OwnerID = FamilyTable.FamilyID
-  WHERE (FamilyTable.FatherID=? OR FamilyTable.MotherID=?)
-    AND CitationLinkTable.OwnerType=2
-    AND EventTable.OwnerType=1
-
-UNION
-
---- FAMILY sources
-SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
-  FROM SourceTable
-  JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
-  JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
-  JOIN FamilyTable       ON CitationLinkTable.OwnerID = FamilyTable.FamilyID
-  WHERE (FamilyTable.FatherID=? OR FamilyTable.MotherID=?)
-    AND CitationLinkTable.OwnerType=1
-    
-ORDER BY SourceTable.Name;
-"""
+        PersonID_str = input("\n"  "PersonID/RIN =")
+        try:
+            PersonID = int(PersonID_str)
+        except:
+            raise RM_Py_Exception('ERROR: Enter an integer for the PersonID/RIN.')
+        if not PersonID >0: 
+            raise RM_Py_Exception('ERROR: Enter an integer larger than 0.')
 
     SqlStmt="""\
 --      PERSON sources
-SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
+SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
   FROM SourceTable
   JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
   JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
@@ -225,7 +199,7 @@ SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
 UNION
 
 --      NAME sources
-SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
+SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
   FROM SourceTable
   JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
   JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
@@ -236,7 +210,7 @@ SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
 UNION
 
 --      EVENT-PERSON sources
-SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
+SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
   FROM SourceTable
   JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
   JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
@@ -248,7 +222,7 @@ SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
 UNION
 
 --      EVENT-FAMILY sources
-SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
+SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
   FROM SourceTable
   JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
   JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
@@ -261,7 +235,7 @@ SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
 UNION
 
 --      FAMILY sources
-SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
+SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
   FROM SourceTable
   JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
   JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
@@ -269,9 +243,8 @@ SELECT DISTINCT SourceTable.Name, CitationTable.CitationName
   WHERE (FamilyTable.FatherID=? OR FamilyTable.MotherID=?)
     AND CitationLinkTable.OwnerType=1
     
-ORDER BY SourceTable.Name;
+ORDER BY SourceTable.Name COLLATE NOCASE;
 """
-
 
     cur = db_connection.cursor()
     cur.execute(SqlStmt, (PersonID,PersonID,PersonID,PersonID,PersonID,PersonID,PersonID) )
@@ -282,6 +255,8 @@ ORDER BY SourceTable.Name;
 
     for row in rows:
         report_file.write(row[0] + "\t\t" + row[1] + "\n\n")
+
+    report_file.write("================================================" "\n\n")
 
     return
 
