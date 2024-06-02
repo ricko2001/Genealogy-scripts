@@ -11,7 +11,7 @@ results in a report file.
 
 This utility is meant to help the novice SQL user get the task done.
 It attempts to eliminate most of the complications found using more 
-sophisticated off the shelf software.
+sophisticated off the shelf SQLIite manager software.
 
 
 ======================================================================
@@ -23,13 +23,12 @@ To use it:
 
 1:  Create or find or solicit an SQL statement to run. 
 
-2:  Make a copy of your database file and run the utility on this copy.
+2:  Make a copy of your database file (do not modify your research database).
 
 3.  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter 
 referred to as the "ini file".) The utility needs to know where the RM database 
-file is located, the location of the database extension dll file if needed,
-what SQL to use for the query. Editing the ini file can be done 
-using the Windows NotePad app.
+file is located, the location of the database extension dll file, and what SQL to
+use for the query. Editing the ini file can be done using the Windows NotePad app.
 
 4:  Double click the RunSQL file. This momentarily displays the black 
 command console window and then displays the report file using Notepad.
@@ -39,12 +38,11 @@ examine the results.
 
 
 ======================================================================
-Compatibility
 Tested with 
-       RootsMagic v9.   Not tested with RM 7 or 8.
-       Operating system Window 11, 64bit  (Windows 10 most probably OK)
-       Python for Windows v3.11.4   64bit  (when using the py version)
-       unifuzz64.dll (file has no version number defined. see MD5 and file size below)
+       RootsMagic database file v9
+       Operating system Window 11, 64bit
+       Python for Windows v3.45.2   64bit
+       unifuzz64.dll (see file size and MD5 below)
 
 The py script file could be modified to work on MacOS with Python ver 3 installed.
 
@@ -55,8 +53,6 @@ Backups
 IMPORTANT: You should run this script on a copy of your database file until you
 have confidence using it and confidence in its results. Or at least have a 
 several current known-good backups.
-Assume software developers are fallible and make mistakes, but are not 
-malevolent.
 
 Similarly, always use a database copy when you are developing your SQL.
 
@@ -72,19 +68,25 @@ To install and use the single .exe file version:
 *  Make a copy of your RM database and place it in the working folder. 
 It is suggested that you name the database copy: "TEST.rmtree"
 
-*  Copy these files from downloaded zip file to the working folder-
+*  Copy these files from the downloaded zip file to the working folder-
       RunSQL.exe
       RM-Python-config.ini
 
-*  OPTIONAL if required: Download the SQLite extension file: unifuzz64.dll   -see below
-*  OPTIONAL if required: Move the unifuzz64.dll file to the working folder
-   Only some SQL operations require the unifuzz64.dll to provide the RMNOCASE collation.
-   You will see an error message if it is necessary but not provided.
+*  Download the SQLite extension file: unifuzz64.dll   -see below
+   This dll provides the RMNOCASE collation used by RM
 
-*  Edit the RM-Python-config.ini in the working folder to specify the location 
-   of the RM file. If it's named TEST.rmtree, you're already done.
-   OPTIONAL if required:  Specify the path to the unifuzz64.dll file.
+*  Move the unifuzz64.dll file to the working folder
+
+*  Edit the RM-Python-config.ini in the working folder to specify the configuration
+   parameters. 
    To edit, Open NotePad and drag the ini file onto the NotePad window.
+   Edit the file to specify the following:
+   * the location of the RM database file. If it's named TEST.rmtree, it's OK as is.
+   * the path to the unifuzz64.dll file. If you followed the directions
+   above, it's OK as is.
+   * the SQL statement (s) to run. Be sure to indent the SQL text lines as shown
+   in the example.
+   See the section "ini file configuration" below for more info.
 
 *  Database modification statements should usually be followed by a
    SELECT changes(); statement to display how many rows were changed.
@@ -93,7 +95,7 @@ It is suggested that you name the database copy: "TEST.rmtree"
 
 *  Examine the Report file that was displayed in NotePad.
 
-*  Open the database in RM and review the changes.
+*  Open the database in RM and review the results.
 
 --- OR ---
 
@@ -126,7 +128,7 @@ at the left. Comment lines start with # and are only included to help the user
 read and understand the file.
 
 The example values shown below are from the supplied sample RM-Python-config.ini file
-The unifuzz64.dll/RMNOCASE is not needed for the example.
+
 
 [SQL]
 SQL_STATEMENT_1 =
@@ -141,10 +143,10 @@ SQL_STATEMENT_2 =
 
 The section name is "SQL"
 The first Key is "SQL_STATEMENT_1"
-Follow the existing format where the Value (statement) begins on the next line.
-Each following line of the Value must also be indented with blank characters.
-Blank lines within a Value are not allowed. 
-Use indented SQL comments (--) to add spacing.
+The Value (starting with 'UPDATE') begins, indented, on the next line. 
+Each following line of the Value must also be indented with
+space characters.
+Blank lines within a Value are not allowed.
 
 The next Key is "SQL_STATEMENT_2"
 
@@ -159,12 +161,6 @@ working environment in which to create your SQL statement.
 Confirm you query works before running it in this utility. (Or get the SQL from
 a source that has confirmed its results. 
 
-*    The RMNOCASE collation, provided by the unifuzz64.dll database extension
-will be required for many queries. If it is required, but not configured, 
-an error message- "no such collation sequence: RMNOCASE" will be displayed in 
-the report file. 
-To enable it, download the unifuzz64.dll file, place it in the working folder,
-remove the "#" character in the ini file at the left of the word RMNOCASE_PATH. 
 
 *    Note that the SQL_STATEMENT_1 key is required, while the SQL_STATEMENT_2 key is optional. If you want to keep a statement in the ini file for future use, but want it inactive, change its key name to SQL_STATEMENT_100  or any number except 1 or 2.
 Duplicate key names generate an error.
@@ -237,18 +233,27 @@ It is suggested that you name the database copy: "TEST.rmtree"
       RunSQL.py
       RM-Python-config.ini
 
-*  OPTIONAL if required: Download the SQLite extension file: unifuzz64.dll   -see above
-*  OPTIONAL if required: Move the unifuzz64.dll file to the working folder
+*  Download the SQLite extension file: unifuzz64.dll   -see below
+   This dll provides the RMNOCASE collation used by RM
 
-*  Edit the RM-Python-config.ini in the working folder to specify the location 
-   of the RM file and the unifuzz64.dll file. 
+*  Move the unifuzz64.dll file to the working folder
+
+*  Edit the RM-Python-config.ini in the working folder to specify the configuration
+   parameters. 
    To edit, Open NotePad and drag the ini file onto the NotePad window.
+   Edit the file to specify the following:
+   * the location of the RM database file. If it's named TEST.rmtree, it's OK as is.
+   * the path to the unifuzz64.dll file. If you followed the directions
+   above, it's OK as is.
+   * the SQL statement (s) to run. Be sure to indent the SQL text lines as shown
+   in the example.
+   See the section "ini file configuration" below for more info.
 
 *  Double click the RunSQL.py file to run the utility.
 
 *  Examine the Report file that was displayed in NotePad.
 
-*  Open the database in RM and review the changes.
+*  Open the database in RM and review the results.
 
 
 ======================================================================
@@ -270,8 +275,8 @@ Find the link near bottom left side of the page, in the "Stable Releases"
 section, labeled "Download Windows installer (64-bit)"
 Click it and save the installer.
 
-Direct link to recent (2023-07) version installer-
-https://www.python.org/ftp/python/3.11.4/python-3.11.4-amd64.exe
+Direct link to recent (2024-06) version installer-
+https://www.python.org/ftp/python/3.12.3/python-3.12.3-amd64.exe
 
 The Python installation requires about 100 Mbytes.
 It is easily and cleanly removed using the standard method found in Windows=>Settings

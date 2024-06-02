@@ -9,55 +9,68 @@ import traceback
 # Always make a database backup before using this script.
 # Runs one or two SQL statements on a database and returns results
 
-##  Requirements: (see ReadMe.txt for details)
-##  RootsMagic database file
-##  RM-Python-config.ini  ( Configuration ini file to set options and parameters)
-##  Python v3.11 or greater
-##  unifuzz64.dll (RMNOCASE collation) optionally needed depending on the SQL run
+# Requirements:
+#   RootsMagic database file
+#   RM-Python-config.ini
+#   unifuzz64.dll (RMNOCASE collation) optionally needed depending on the SQL run
 
+# Tested with:
+#   RootsMagic database file v9.1.6
+#   Python for Windows v3.12.3
+
+# Config files fields used
+#    FILE_PATHS  REPORT_FILE_PATH
+#    FILE_PATHS  REPORT_FILE_DISPLAY_APP
+#    FILE_PATHS  DB_PATH
+#    FILE_PATHS  RMNOCASE_PATH
+#    SQL  SQL_STATEMENT_1
+#    SQL  SQL_STATEMENT_2
 
 # ===================================================DIV60==
 def main():
 
     # Configuration
-    ini_file_name = "RM-Python-config.ini"
+    config_file_name = "RM-Python-config.ini"
     db_connection = None
-    rmnocase_path = None
     report_display_app = None
+    RMNOCASE_required = True
+    allow_db_changes = True
 
     # ===========================================DIV50==
     # Errors go to console window
     # ===========================================DIV50==
-    try:  # errors go to console window
-        # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
+    try:
+        # config file must be in "current directory" and encoded as UTF-8 (no BOM).
         # see   https://docs.python.org/3/library/configparser.html
-        ini_file = os.path.join(get_current_directory(), ini_file_name)
+        config_file_path = os.path.join(
+            get_current_directory(), config_file_name)
 
-        # Check that ini file is at expected path and that it is readable & valid.
-        if not os.path.exists(ini_file):
-            raise RM_Py_Exception("ERROR: The ini configuration file, " + ini_file_name
-                            + " must be in the same directory as the .py or .exe file.\n\n")
+        # Check that config file is at expected path and that it is readable & valid.
+        if not os.path.exists(config_file_path):
+            raise RM_Py_Exception(
+                "ERROR: The configuration file, " + config_file_name
+                + " must be in the same directory as the .py or .exe file." "\n\n")
 
         config = configparser.ConfigParser(empty_lines_in_values=False,
                                            interpolation=None)
         try:
-            config.read(ini_file, 'UTF-8')
+            config.read(config_file_path, 'UTF-8')
         except:
-            raise RM_Py_Exception("ERROR: The " + ini_file_name
-                            + " file contains a format error and cannot be parsed.\n\n")
-
+            raise RM_Py_Exception(
+                "ERROR: The " + config_file_name
+                + " file contains a format error and cannot be parsed." "\n\n")
         try:
             report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
         except:
-            raise RM_Py_Exception('ERROR: REPORT_FILE_PATH must be defined in the '
-                            + ini_file_name + "\n\n")
-
+            raise RM_Py_Exception(
+                'ERROR: REPORT_FILE_PATH must be defined in the '
+                + config_file_name + "\n\n")
         try:
             # Use UTF-8 encoding for the report file. Test for write-ability
             open(report_path,  mode='w', encoding='utf-8')
         except:
             raise RM_Py_Exception('ERROR: Cannot create the report file '
-                            + report_path + "\n\n")
+                                  + report_path + "\n\n")
 
     except RM_Py_Exception as e:
         pause_with_message(e)
@@ -65,58 +78,69 @@ def main():
     except Exception as e:
         traceback.print_exception(e, file=sys.stdout)
         pause_with_message(
-            "ERROR: Application failed. Please report.\n\n " + str(e))
+            "ERROR: Application failed. Please email error report:" "\n\n " +
+            str(e)
+            + "\n\n" "to the author")
         return 1
 
     # open the already tested report file
     report_file = open(report_path,  mode='w', encoding='utf-8')
+
     # ===========================================DIV50==
     # Errors from here forward, go to Report File
     # ===========================================DIV50==
-
-    try:        # errors go to the report file
+    try:
         try:
             report_display_app = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
         except:
             pass
         if report_display_app is not None and not os.path.exists(report_display_app):
-            raise RM_Py_Exception('ERROR: Path for report file display app not found: '
-                            + report_display_app)
+            raise RM_Py_Exception(
+                'ERROR: Path for report file display app not found: '
+                + report_display_app)
 
         try:
             database_path = config['FILE_PATHS']['DB_PATH']
         except:
             raise RM_Py_Exception('ERROR: DB_PATH must be specified.')
         if not os.path.exists(database_path):
-            raise RM_Py_Exception('ERROR: Path for database not found: ' + database_path
-                            + '\n\n' 'Absolute path checked:\n"'
-                              + os.path.abspath(database_path) + '"')
+            raise RM_Py_Exception(
+                'ERROR: Path for database not found: ' + database_path
+                + '\n\n' 'Absolute path checked:\n"'
+                + os.path.abspath(database_path) + '"')
 
-        try:
-            rmnocase_path = config['FILE_PATHS']['RMNOCASE_PATH']
-        except:
-            pass
-        if rmnocase_path is not None and not os.path.exists(rmnocase_path):
-            raise RM_Py_Exception('ERROR: Path for RMNOCASE dll file not found: ' + rmnocase_path
-                            + '\n\n' 'Absolute path checked:\n"'
-                              + os.path.abspath(rmnocase_path) + '"')
+        if RMNOCASE_required:
+            try:
+                rmnocase_path = config['FILE_PATHS']['RMNOCASE_PATH']
+            except:
+                raise RM_Py_Exception(
+                    'ERROR: RMNOCASE_PATH must be specified.')
+            if not os.path.exists(rmnocase_path):
+                raise RM_Py_Exception(
+                    'ERROR: Path for RMNOCASE extension (unifuzz64.dll) not found: '
+                    + rmnocase_path
+                    + '\n\n' 'Absolute path checked:\n"'
+                    + os.path.abspath(rmnocase_path) + '"')
 
         # RM database file info
-        FileModificationTime = datetime.fromtimestamp(
+        file_modification_time = datetime.fromtimestamp(
             os.path.getmtime(database_path))
 
-        db_connection = create_db_connection(database_path, rmnocase_path)
+        if RMNOCASE_required:
+            db_connection = create_db_connection(database_path, rmnocase_path)
+        else:
+            db_connection = create_db_connection(database_path, None)
 
         # write header to report file
-        report_file.write("Report generated at      = " + TimeStampNow()
+        report_file.write("Report generated at      = " + time_stamp_now()
                           + "\n" "Database processed       = "
                           + os.path.abspath(database_path)
                           + "\n" "Database last changed on = "
-                          + FileModificationTime.strftime("%Y-%m-%d %H:%M:%S")
+                          + file_modification_time.strftime("%Y-%m-%d %H:%M:%S")
                           + "\n" "SQLite library version   = "
-                          + GetSQLiteLibraryVersion(db_connection) + "\n\n\n\n")
+                          + get_SQLite_library_version(db_connection) + "\n\n\n\n")
 
-        RunSQLFeature(config, report_file, db_connection)
+        run_selected_features(config, db_connection, report_file)
 
     except (sqlite3.OperationalError, sqlite3.ProgrammingError) as e:
         report_file.write(
@@ -127,12 +151,13 @@ def main():
         return 1
     except Exception as e:
         traceback.print_exception(e, file=report_file)
-        report_file.write("\n\n"
-                          "ERROR: Application failed. Please email report file to author. ")
+        report_file.write(
+            "\n\n" "ERROR: Application failed. Please email report file to author. ")
         return 1
     finally:
         if db_connection is not None:
-            db_connection.commit()
+            if allow_db_changes:
+                db_connection.commit()
             db_connection.close()
         report_file.close()
         if report_display_app is not None:
@@ -141,19 +166,27 @@ def main():
 
 
 # ===================================================DIV60==
-def RunSQLFeature(config, report_file, db_connection):
+def run_selected_features(config, db_connection, report_file):
+
+    RunSQLFeature(config, db_connection, report_file)
+
+
+# ===================================================DIV60==
+def RunSQLFeature(config, db_connection, report_file):
 
     try:
         SqlStmt = config['SQL']['SQL_STATEMENT_1']
     except:
-        raise RM_Py_Exception('ERROR: SQL - SQL_STATEMENT_1 must be specified.')
+        raise RM_Py_Exception(
+            'ERROR: SQL - SQL_STATEMENT_1 must be specified.')
 
     # run the SQL statement
     cur = db_connection.cursor()
     cur.execute(SqlStmt)
 
     report_file.write("===============================================\n"
-                      "The SQL that was run: \n\n" + SqlStmt + "\n\nThe results:\n\n")
+                      "The SQL that was run: \n\n" + SqlStmt
+                      + "\n\n" "The results:" "\n\n")
 
     result = cur.fetchall()
     for row in result:
@@ -171,7 +204,8 @@ def RunSQLFeature(config, report_file, db_connection):
         cur.execute(SqlStmt)
 
         report_file.write("===============================================\n"
-                          "The SQL that was run: \n\n" + SqlStmt + "\n\nThe results:\n\n")
+                          "The SQL that was run: \n\n"
+                          + SqlStmt + "\n\nThe results:\n\n")
 
         result = cur.fetchall()
         for row in result:
@@ -191,7 +225,8 @@ def create_db_connection(db_file_path, db_extension):
             db_connection.enable_load_extension(True)
             db_connection.load_extension(db_extension)
     except Exception as e:
-        raise RM_Py_Exception(e, "\n\n" "Cannot open the RM database file." "\n")
+        raise RM_Py_Exception(
+            e, "\n\n" "Cannot open the RM database file." "\n")
     return db_connection
 
 
@@ -205,7 +240,7 @@ def pause_with_message(message=None):
 
 
 # ===================================================DIV60==
-def TimeStampNow(type=""):
+def time_stamp_now(type=""):
 
     # return a TimeStamp string
     now = datetime.now()
@@ -217,7 +252,7 @@ def TimeStampNow(type=""):
 
 
 # ===================================================DIV60==
-def GetSQLiteLibraryVersion(dbConnection):
+def get_SQLite_library_version(dbConnection):
 
     # returns a string like 3.42.0
     SqlStmt = "SELECT sqlite_version()"
