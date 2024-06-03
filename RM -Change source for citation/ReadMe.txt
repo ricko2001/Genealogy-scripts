@@ -9,7 +9,7 @@ Citations are also called "Source Details".
 Sources are created using a Source Template. If 2 sources are created
 from the same source template, they will have the same fundamental structure
 
-Citations are created as a child of a Source. Citations of different sources
+A Citation is created as a child of a Source. Citations of different sources
 created using the same source template will also have the same fundamental
 structure.
 
@@ -30,7 +30,7 @@ Works with RootsMagic v8 and v9
        Windows 64bit only. Tested with Window 11.
 
 .py file version
-       Python for Windows v3.11.4   64bit
+       Python for Windows v3.12.3   64bit
        The py file has not been tested on MacOS.
        The script could probably be modified to work on MacOS with Python
        version 3 installed.
@@ -52,15 +52,14 @@ This program is what is called a "command line utility".
 
 To use it:
 
-*  Create a working folder on your disk, perhaps in the same folder
-   that contains your RM database.
+*  Create a working folder on your disk.
 
 *  Copy these files from the downloaded zip file to the working folder-
       ChangeSrcForCitation.exe
       RM-Python-config.ini
 
 *  Edit the ini file in the working folder to specify the location
-   of the RM file. (To edit, Open NotePad and drag the ini file onto the
+   of the RM file (DBPath). (To edit, Open NotePad and drag the ini file onto the
    NotePad window.)
 
 *  Double click the ChangeSrcForCitation.exe file to run the utility.
@@ -155,8 +154,7 @@ To use the py script version of the app
 
 To install and use the script file version:
 *  Install Python for Windows x64  -see immediately below
-*  Create a working folder on your disk, perhaps in the same folder
-   that contains your RM database.
+*  Create a working folder on your disk.
 *  Copy these files from downloaded zip file to the working folder-
       ChangeSrcForCitation.py
       RM-Python-config.ini
