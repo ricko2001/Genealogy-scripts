@@ -3,73 +3,97 @@ import sys
 import sqlite3
 from pathlib import Path
 from datetime import datetime
-import configparser  # https://docs.python.org/3/library/configparser.html
+import configparser
 import xml.etree.ElementTree as ET
 import subprocess
 import traceback
 
-# Requirements: (see ReadMe.txt for details)
-# RootsMagic v9 database file
-# RM-Python-config.ini  ( Configuration ini file to set options and parameters)
-# Python v3.11 or greater
+# Requirements:
+#   RootsMagic database file
+#   RM-Python-config.ini
 
-# ===================================================DIV60==
+# Tested with:
+#   RootsMagic database file v9.1.6
+#   Python for Windows v3.12.3
+
+# Config file fields used
+#    FILE_PATHS  REPORT_FILE_PATH
+#    FILE_PATHS  REPORT_FILE_DISPLAY_APP
+#    FILE_PATHS  DB_PATH
+#
+#    SOURCE_TEMPLATES   TEMPLATE_OLD
+#    SOURCE_TEMPLATES   TEMPLATE_NEW
+#    SOURCE_TEMPLATES   MAPPING_SOURCE
+#    SOURCE_TEMPLATES   MAPPING_CITATION
+#    SOURCES            SOURCE_NAME_LIKE
+#
+#    OPTIONS     CHECK_TEMPLATE_NAMES
+#    OPTIONS     LIST_SOURCES
+#    OPTIONS     LIST_TEMPLATE_DETAILS
+#    OPTIONS     CHECK_MAPPING_DETAILS
+#    OPTIONS     MAKE_CHANGES
+
+
+# ====================================DIV60==
 #  Global Variables
 G_DEBUG = False
 
+
 # ===================================================DIV60==
-
-
 def main():
 
     # Configuration
-    IniFileName = "RM-Python-config.ini"
+    config_file_name = "RM-Python-config.ini"
     db_connection = None
-    report_display_app = ''
+    report_display_app = None
+    RMNOCASE_required = False
+    allow_db_changes = True
 
     # ===========================================DIV50==
     # Errors go to console window
     # ===========================================DIV50==
     try:
-        # ini file must be in "current directory" and encoded as UTF-8 (no BOM).
+        # config file must be in "current directory" and encoded as UTF-8 (no BOM).
         # see   https://docs.python.org/3/library/configparser.html
-        IniFile = os.path.join(get_current_directory(), IniFileName)
+        config_file_path = os.path.join(
+            get_current_directory(), config_file_name)
 
-        # Check that ini file is at expected path and that it is readable & valid.
-        if not os.path.exists(IniFile):
-            raise RMPyExcep("ERROR: The ini configuration file, " + IniFileName +
-                            " must be in the same directory as the .py or .exe file.\n\n")
+        # Check that config file is at expected path and that it is readable & valid.
+        if not os.path.exists(config_file_path):
+            raise RM_Py_Exception(
+                "ERROR: The configuration file, " + config_file_name
+                + " must be in the same directory as the .py or .exe file." "\n\n")
 
         config = configparser.ConfigParser(empty_lines_in_values=False,
                                            interpolation=None)
         try:
-            config.read(IniFile, 'UTF-8')
+            config.read(config_file_path, 'UTF-8')
         except:
-            raise RMPyExcep("ERROR: The " + IniFileName +
-                            " file contains a format error and cannot be parsed.\n\n")
-
+            raise RM_Py_Exception(
+                "ERROR: The " + config_file_name
+                + " file contains a format error and cannot be parsed." "\n\n")
         try:
             report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
         except:
-            raise RMPyExcep('ERROR: REPORT_FILE_PATH must be defined in the ' +
-                            IniFileName + '\n\n')
-
+            raise RM_Py_Exception(
+                'ERROR: REPORT_FILE_PATH must be defined in the '
+                + config_file_name + "\n\n")
         try:
-            # test open the report file
+            # Use UTF-8 encoding for the report file. Test for write-ability
             open(report_path,  mode='w', encoding='utf-8')
         except:
-            raise RMPyExcep(
-                'ERROR: Cannot create the report file: ' + q_str(report_path) + '\n\n')
+            raise RM_Py_Exception('ERROR: Cannot create the report file '
+                                  + report_path + "\n\n")
 
-    except RMPyExcep as e:
-        pause_console_with_message(e)
+    except RM_Py_Exception as e:
+        pause_with_message(e)
         return 1
     except Exception as e:
         traceback.print_exception(e, file=sys.stdout)
-        pause_console_with_message(
-            'ERROR: Application failed.\n\n'
-            + str(e)
-            + 'Please email console text & ini file to author.\n\n')
+        pause_with_message(
+            "ERROR: Application failed. Please email error report:" "\n\n " +
+            str(e)
+            + "\n\n" "to the author")
         return 1
 
     # open the already tested report file
@@ -83,74 +107,103 @@ def main():
             report_display_app = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
         except:
             pass
-        if report_display_app != '' and not os.path.exists(report_display_app):
-            input_string = report_display_app
-            report_display_app = ''
-            raise RMPyExcep('ERROR: Path for report-file display app not found: '
-                            + input_string)
+        if report_display_app is not None and not os.path.exists(report_display_app):
+            raise RM_Py_Exception(
+                'ERROR: Path for report file display app not found: '
+                + report_display_app)
 
         try:
             database_path = config['FILE_PATHS']['DB_PATH']
         except:
-            raise RMPyExcep(
-                'ERROR: DB_PATH must be specified.')
-
+            raise RM_Py_Exception('ERROR: DB_PATH must be specified.')
         if not os.path.exists(database_path):
-            raise RMPyExcep(
-                'ERROR: Path for database path not found: ' + database_path)
-        # RM database file specific
-        FileModificationTime = datetime.fromtimestamp(
+            raise RM_Py_Exception(
+                'ERROR: Path for database not found: ' + database_path
+                + '\n\n' 'Absolute path checked:\n"'
+                + os.path.abspath(database_path) + '"')
+
+        if RMNOCASE_required:
+            try:
+                rmnocase_path = config['FILE_PATHS']['RMNOCASE_PATH']
+            except:
+                raise RM_Py_Exception(
+                    'ERROR: RMNOCASE_PATH must be specified.')
+            if not os.path.exists(rmnocase_path):
+                raise RM_Py_Exception(
+                    'ERROR: Path for RMNOCASE extension (unifuzz64.dll) not found: '
+                    + rmnocase_path
+                    + '\n\n' 'Absolute path checked:\n"'
+                    + os.path.abspath(rmnocase_path) + '"')
+
+        # RM database file info
+        file_modification_time = datetime.fromtimestamp(
             os.path.getmtime(database_path))
 
-        # Process the database for requested output
-        dbConnection = create_db_connection(database_path, None)
-        report_file.write("Report generated at      = " +
-                          time_stamp_now() + '\n')
-        report_file.write("Database processed       = " + database_path + '\n')
-        report_file.write("Database last changed on = " +
-                          FileModificationTime.strftime("%Y-%m-%d %H:%M:%S") + '\n')
-        report_file.write("SQLite library version   = " +
-                          get_SQLite_library_version(dbConnection) + '\n\n')
+        if RMNOCASE_required:
+            db_connection = create_db_connection(database_path, rmnocase_path)
+        else:
+            db_connection = create_db_connection(database_path, None)
 
-        # test option values conversion to boolean
-        try:
-            config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES')
-            config['OPTIONS'].getboolean('LIST_SOURCES')
-            config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS')
-            config['OPTIONS'].getboolean('CHECK_MAPPING_DETAILS')
-            config['OPTIONS'].getboolean('MAKE_CHANGES')
-        except:
-            raise RMPyExcep(
-                'ERROR: One of the OPTIONS values could not be parsed as boolean. \n')
+        # write header to report file
+        report_file.write("Report generated at      = " + time_stamp_now()
+                          + "\n" "Database processed       = "
+                          + os.path.abspath(database_path)
+                          + "\n" "Database last changed on = "
+                          + file_modification_time.strftime("%Y-%m-%d %H:%M:%S")
+                          + "\n" "SQLite library version   = "
+                          + get_SQLite_library_version(db_connection) + "\n\n\n\n")
 
-        # run active options
-        if config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES'):
-            check_template_names_feature(config, report_file, dbConnection)
-        elif config['OPTIONS'].getboolean('LIST_SOURCES'):
-            list_sources_feature(config, report_file, dbConnection)
-        elif config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS'):
-            list_template_details_feature(
-                config, report_file, dbConnection, False)
-        elif config['OPTIONS'].getboolean('CHECK_MAPPING_DETAILS'):
-            check_mapping_feature(config, report_file, dbConnection)
-        elif config['OPTIONS'].getboolean('MAKE_CHANGES'):
-            make_changes_feature(config, report_file, dbConnection)
-    except RMPyExcep as e:
-        report_file.write('\n\n' + str(e) + '\n\n')
+        run_selected_features(config, db_connection, report_file)
+
+    except (sqlite3.OperationalError, sqlite3.ProgrammingError) as e:
+        report_file.write(
+            "ERROR: SQL execution returned an error \n\n" + str(e))
         return 1
-    except (Exception, sqlite3.OperationalError) as e:
+    except RM_Py_Exception as e:
+        report_file.write(str(e))
+        return 1
+    except Exception as e:
         traceback.print_exception(e, file=report_file)
-        report_file.write('n\n' 'ERROR: Application failed. Please email '
-                          'report & ini file to author.' '\n\n')
+        report_file.write(
+            "\n\n" "ERROR: Application failed. Please email report file to author. ")
         return 1
     finally:
         if db_connection is not None:
-            db_connection.commit()
+            if allow_db_changes:
+                db_connection.commit()
             db_connection.close()
         report_file.close()
-        if report_display_app != '':
+        if report_display_app is not None:
             subprocess.Popen([report_display_app, report_path])
     return 0
+
+
+# ===================================================DIV60==
+def run_selected_features(config, db_connection, report_file):
+
+    # test option values conversion to boolean
+    try:
+        config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES')
+        config['OPTIONS'].getboolean('LIST_SOURCES')
+        config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS')
+        config['OPTIONS'].getboolean('CHECK_MAPPING_DETAILS')
+        config['OPTIONS'].getboolean('MAKE_CHANGES')
+    except:
+        raise RM_Py_Exception(
+            'ERROR: One of the OPTIONS values could not be parsed as boolean. \n')
+
+    # run active options
+    if config['OPTIONS'].getboolean('CHECK_TEMPLATE_NAMES'):
+        check_template_names_feature(config, report_file, db_connection)
+    elif config['OPTIONS'].getboolean('LIST_SOURCES'):
+        list_sources_feature(config, report_file, db_connection)
+    elif config['OPTIONS'].getboolean('LIST_TEMPLATE_DETAILS'):
+        list_template_details_feature(
+            config, report_file, db_connection, False)
+    elif config['OPTIONS'].getboolean('CHECK_MAPPING_DETAILS'):
+        check_mapping_feature(config, report_file, db_connection)
+    elif config['OPTIONS'].getboolean('MAKE_CHANGES'):
+        make_changes_feature(config, report_file, db_connection)
 
 
 # ===================================================DIV60==
@@ -162,7 +215,7 @@ def check_template_names_feature(config, report_file, dbConnection):
         new_template_name = unquote_config_string(
             config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
     except:
-        raise RMPyExcep(
+        raise RM_Py_Exception(
             "ERROR: CHECK_TEMPLATE_NAMES option requires specification"
             " of both TEMPLATE_OLD and TEMPLATE_NEW.")
     check_source_templates(report_file, dbConnection,
@@ -183,7 +236,7 @@ def list_template_details_feature(config, reportF, dbConnection, include_mapping
         mapping_citation = config['SOURCE_TEMPLATES']['MAPPING_CITATION']
 
     except:
-        raise RMPyExcep(
+        raise RM_Py_Exception(
             "ERROR: LIST_TEMPLATE_DETAILS option requires specification"
             " of TEMPLATE_OLD and TEMPLATE_NEW, MAPPING_SOURCE & MAPPING_CITATION.")
 
@@ -222,7 +275,7 @@ def list_sources_feature(config, reportF, dbConnection):
         source_names_like = unquote_config_string(
             config['SOURCES']['SOURCE_NAME_LIKE'])
     except:
-        raise RMPyExcep(
+        raise RM_Py_Exception(
             "ERROR: LIST_SOURCES option requires specification of"
             " both TEMPLATE_OLD and SOURCE_NAME_LIKE.")
 
@@ -254,7 +307,7 @@ def check_mapping_feature(config, report_file, dbConnection):
         mapping_citation = config['SOURCE_TEMPLATES']['MAPPING_CITATION']
 
     except:
-        raise RMPyExcep(
+        raise RM_Py_Exception(
             "ERROR: LIST_TEMPLATE_DETAILS option requires specification"
             " of TEMPLATE_OLD and TEMPLATE_NEW, MAPPING_SOURCE & MAPPING_CITATION.")
 
@@ -298,26 +351,28 @@ def check_mapping_feature(config, report_file, dbConnection):
     first_field_error = False
     for each in field_mapping_source:
         if each[0] not in old_src_fields:
-            raise RMPyExcep(q_str(each[0])
-                            + ' is not among the source fields in the existing source template.')
+            raise RM_Py_Exception(q_str(each[0])
+                                  + ' is not among the source fields in the existing source template.')
         if each[1] not in new_src_fields:
-            raise RMPyExcep(q_str(each[1])
-                            + ' is not among the citation fields in the new source template.')
+            raise RM_Py_Exception(q_str(each[1])
+                                  + ' is not among the citation fields in the new source template.')
 
     for each in field_mapping_citation:
         if each[0] not in old_cit_fields:
-            raise RMPyExcep(q_str(each[0])
-                            + ' is not among the source fields in the existing source template.')
+            raise RM_Py_Exception(q_str(each[0])
+                                  + ' is not among the source fields in the existing source template.')
         if each[1] not in new_cit_fields:
-            raise RMPyExcep(q_str(each[1])
-                            + ' is not among the citation fields in the new source template.')
+            raise RM_Py_Exception(q_str(each[1])
+                                  + ' is not among the citation fields in the new source template.')
 
     for each in field_mapping_source:
         if each[0] == 'NULL' and each[1] == 'NULL':
-            raise RMPyExcep('ERROR: A NULL NULL field mapping is not allowed.')
+            raise RM_Py_Exception(
+                'ERROR: A NULL NULL field mapping is not allowed.')
     for each in field_mapping_citation:
         if each[0] == 'NULL' and each[1] == 'NULL':
-            raise RMPyExcep('ERROR: A NULL NULL field mapping is not allowed.')
+            raise RM_Py_Exception(
+                'ERROR: A NULL NULL field mapping is not allowed.')
 
     report_file.write(
         "\n\n" "No problems detected in the specified mapping." '\n\n')
@@ -337,7 +392,7 @@ def make_changes_feature(config, reportF, dbConnection):
         mapping_source = config['SOURCE_TEMPLATES']['MAPPING_SOURCE']
         mapping_citation = config['SOURCE_TEMPLATES']['MAPPING_CITATION']
     except:
-        raise RMPyExcep(
+        raise RM_Py_Exception(
             "ERROR: MAKE_CHANGES option requires specification of TEMPLATE_OLD"
             " TEMPLATE_NEW, SOURCE_NAME_LIKE, MAPPING_SOURCE & MAPPING_CITATION.")
 
@@ -377,7 +432,7 @@ def convert_source(reportF, dbConnection, srcID, newTemplateID,
                 ET.SubElement(newPair, "Name").text = transform[1]
                 ET.SubElement(newPair, "Value")
             else:
-                raise RMPyExcep(
+                raise RM_Py_Exception(
                     "Tried to create duplicate Name in source XML.NULL on left")
             continue
         for eachField in fields_element.findall('.//Field'):
@@ -389,7 +444,7 @@ def convert_source(reportF, dbConnection, srcID, newTemplateID,
                 if root_element.find("Fields/Field[Name='" + transform[1] + "']") == None:
                     eachField.find('Name').text = transform[1]
                 else:
-                    raise RMPyExcep(
+                    raise RM_Py_Exception(
                         "Tried to create duplicate Name in source XML.")
                 break
             # end of for eachField loop
@@ -447,7 +502,7 @@ def convert_citation(dbConnection, citation_ID, field_mapping_citation):
                 ET.SubElement(newPair, "Name").text = transform[1]
                 ET.SubElement(newPair, "Value")
             else:
-                raise RMPyExcep(
+                raise RM_Py_Exception(
                     "Tried to create duplicate Name in citation XML. NULL on left")
             continue
             # create a name and value pair.
@@ -465,7 +520,7 @@ def convert_citation(dbConnection, citation_ID, field_mapping_citation):
                 if root_element.find("Fields/Field[Name='" + transform[1] + "']") == None:
                     eachField.find('Name').text = transform[1]
                 else:
-                    raise RMPyExcep(
+                    raise RM_Py_Exception(
                         "Tried to create duplicate Name in citation XML.")
                 break
         # end of for eachField loop
@@ -507,7 +562,7 @@ SELECT Fields
  WHERE CitationID = ?
 """
     else:
-        raise RMPyExcep("ERROR internal: both inputs None")
+        raise RM_Py_Exception("ERROR internal: both inputs None")
 
     cur = dbConnection.cursor()
     cur.execute(SqlStmt, (ID,))
@@ -573,14 +628,10 @@ def unquote_config_string(instr):
             return instr.replace("'", '')
 
 # ===================================================DIV60==
-
-
 def q_str(in_str):
     return '"' + in_str + '"'
 
 # ===================================================DIV60==
-
-
 def get_list_of_rows(dbConnection, SqlStmt):
 
     # SqlStmt should return a set of single values
@@ -701,20 +752,35 @@ SELECT st.SourceID, st.Name
     cur.execute(SqlStmt, (oldTemplateID, SourceNamesLike))
     srcTuples = cur.fetchall()
     if len(srcTuples) == 0:
-        raise RMPyExcep("No sources found with specified search criteria.\n")
+        raise RM_Py_Exception(
+            "No sources found with specified search criteria.\n")
     return srcTuples
 
 
 # ===================================================DIV60==
-def get_current_directory():
+def create_db_connection(db_file_path, db_extension_file_path):
 
-    # Determine if application is a script file or frozen exe and get its directory
-    # see   https://pyinstaller.org/en/stable/runtime-information.html
-    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        application_path = os.path.dirname(sys.executable)
-    else:
-        application_path = os.path.dirname(__file__)
-    return application_path
+    dbConnection = None
+    try:
+        dbConnection = sqlite3.connect(db_file_path)
+        if db_extension_file_path is not None:
+            # load SQLite extension
+            dbConnection.enable_load_extension(True)
+            dbConnection.load_extension(db_extension_file_path)
+    except Exception as e:
+        raise RM_Py_Exception(
+            e, "\n\n" "Cannot open the RM database file." "\n")
+    return dbConnection
+
+
+# ===================================================DIV60==
+def get_SQLite_library_version(dbConnection):
+
+    # returns a string like 3.42.0
+    SqlStmt = "SELECT sqlite_version()"
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt)
+    return cur.fetchone()[0]
 
 
 # ===================================================DIV60==
@@ -730,41 +796,28 @@ def time_stamp_now(type=""):
 
 
 # ===================================================DIV60==
-def pause_console_with_message(message=None):
+def pause_with_message(message=None):
 
     if (message != None):
         print(str(message))
-    input('\n' "Press the <Enter> key to continue...")
+    input("\n" "Press the <Enter> key to continue...")
     return
 
 
 # ===================================================DIV60==
-def create_db_connection(db_file_path, db_extension):
+def get_current_directory():
 
-    dbConnection = None
-    try:
-        dbConnection = sqlite3.connect(db_file_path)
-        if db_extension is not None:
-            # load SQLite extension
-            dbConnection.enable_load_extension(True)
-            dbConnection.load_extension(db_extension)
-    except Exception as e:
-        raise RMPyExcep(e, '\n\n' "Cannot open the RM database file." '\n')
-    return dbConnection
+    # Determine if application is a script file or frozen exe and get its directory
+    # see   https://pyinstaller.org/en/stable/runtime-information.html
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        application_path = os.path.dirname(sys.executable)
+    else:
+        application_path = os.path.dirname(__file__)
+    return application_path
 
 
 # ===================================================DIV60==
-def get_SQLite_library_version(dbConnection):
-
-    # returns a string like 3.42.0
-    SqlStmt = "SELECT sqlite_version()"
-    cur = dbConnection.cursor()
-    cur.execute(SqlStmt)
-    return cur.fetchone()[0]
-
-
-# ===================================================DIV60==
-class RMPyExcep(Exception):
+class RM_Py_Exception(Exception):
 
     '''Exceptions thrown for configuration/database issues'''
 
