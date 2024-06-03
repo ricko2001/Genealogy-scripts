@@ -19,6 +19,10 @@ TestData/
 *.rmgc
 *.rmtree
 
+# ignore generated files
+MediaFiles_HASH*
+Report_*.txt
+
 # don't add exe files
 *.exe
 
