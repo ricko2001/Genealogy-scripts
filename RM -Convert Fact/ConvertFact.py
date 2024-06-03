@@ -1,7 +1,6 @@
 ﻿import os
 import sys
 import sqlite3
-from pathlib import Path
 from datetime import datetime
 import configparser
 import subprocess
@@ -11,8 +10,24 @@ import traceback
 # A family event type, may be converted to an individual fact type.
 # An individual type fact may *not* be converted to a family type.
 
-# Tested with: RootsMagic v9.1.3
-#              Python for Windows v3.12.2
+# Requirements:
+#   RootsMagic database file
+#   RM-Python-config.ini
+
+# Tested with:
+#   RootsMagic database file v9.1.6
+#   Python for Windows v3.12.3
+
+# Config files fields used
+#    FILE_PATHS  REPORT_FILE_PATH
+#    FILE_PATHS  REPORT_FILE_DISPLAY_APP
+#    FILE_PATHS  DB_PATH
+#
+#    MAPPING     FACTTYPE_CURRENT
+#    MAPPING     FACTTYPE_NEW
+#    MAPPING     ROLE
+#    MAPPING     DESC
+#    MAPPING     DATE
 
 
 # ===================================================DIV60==
@@ -22,6 +37,8 @@ def main():
     config_file_name = "RM-Python-config.ini"
     db_connection = None
     report_display_app = None
+    RMNOCASE_required = False
+    allow_db_changes = True
 
     # ===========================================DIV50==
     # Errors go to console window
@@ -34,21 +51,24 @@ def main():
 
         # Check that config file is at expected path and that it is readable & valid.
         if not os.path.exists(config_file_path):
-            raise RM_Py_Exception("ERROR: The configuration file, " + config_file_name
-                                  + " must be in the same directory as the .py or .exe file.\n\n")
+            raise RM_Py_Exception(
+                "ERROR: The configuration file, " + config_file_name
+                + " must be in the same directory as the .py or .exe file." "\n\n")
 
         config = configparser.ConfigParser(empty_lines_in_values=False,
                                            interpolation=None)
         try:
             config.read(config_file_path, 'UTF-8')
         except:
-            raise RM_Py_Exception("ERROR: The " + config_file_name
-                                  + " file contains a format error and cannot be parsed.\n\n")
+            raise RM_Py_Exception(
+                "ERROR: The " + config_file_name
+                + " file contains a format error and cannot be parsed." "\n\n")
         try:
             report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
         except:
-            raise RM_Py_Exception('ERROR: REPORT_FILE_PATH must be defined in the '
-                                  + config_file_name + "\n\n")
+            raise RM_Py_Exception(
+                'ERROR: REPORT_FILE_PATH must be defined in the '
+                + config_file_name + "\n\n")
         try:
             # Use UTF-8 encoding for the report file. Test for write-ability
             open(report_path,  mode='w', encoding='utf-8')
@@ -62,8 +82,9 @@ def main():
     except Exception as e:
         traceback.print_exception(e, file=sys.stdout)
         pause_with_message(
-            "ERROR: Application failed. Please email report.\n\n " + str(e)
-            + "\n\n to the author")
+            "ERROR: Application failed. Please email error report:" "\n\n " +
+            str(e)
+            + "\n\n" "to the author")
         return 1
 
     # open the already tested report file
@@ -78,23 +99,41 @@ def main():
         except:
             pass
         if report_display_app is not None and not os.path.exists(report_display_app):
-            raise RM_Py_Exception('ERROR: Path for report file display app not found: '
-                                  + report_display_app)
+            raise RM_Py_Exception(
+                'ERROR: Path for report file display app not found: '
+                + report_display_app)
 
         try:
             database_path = config['FILE_PATHS']['DB_PATH']
         except:
             raise RM_Py_Exception('ERROR: DB_PATH must be specified.')
         if not os.path.exists(database_path):
-            raise RM_Py_Exception('ERROR: Path for database not found: ' + database_path
-                                  + '\n\n' 'Absolute path checked:\n"'
-                                  + os.path.abspath(database_path) + '"')
+            raise RM_Py_Exception(
+                'ERROR: Path for database not found: ' + database_path
+                + '\n\n' 'Absolute path checked:\n"'
+                + os.path.abspath(database_path) + '"')
+
+        if RMNOCASE_required:
+            try:
+                rmnocase_path = config['FILE_PATHS']['RMNOCASE_PATH']
+            except:
+                raise RM_Py_Exception(
+                    'ERROR: RMNOCASE_PATH must be specified.')
+            if not os.path.exists(rmnocase_path):
+                raise RM_Py_Exception(
+                    'ERROR: Path for RMNOCASE extension (unifuzz64.dll) not found: '
+                    + rmnocase_path
+                    + '\n\n' 'Absolute path checked:\n"'
+                    + os.path.abspath(rmnocase_path) + '"')
 
         # RM database file info
         file_modification_time = datetime.fromtimestamp(
             os.path.getmtime(database_path))
 
-        db_connection = create_db_connection(database_path, None)
+        if RMNOCASE_required:
+            db_connection = create_db_connection(database_path, rmnocase_path)
+        else:
+            db_connection = create_db_connection(database_path, None)
 
         # write header to report file
         report_file.write("Report generated at      = " + time_stamp_now()
@@ -105,7 +144,7 @@ def main():
                           + "\n" "SQLite library version   = "
                           + get_SQLite_library_version(db_connection) + "\n\n\n\n")
 
-        convert_fact(config, db_connection, report_file)
+        run_selected_features(config, db_connection, report_file)
 
     except (sqlite3.OperationalError, sqlite3.ProgrammingError) as e:
         report_file.write(
@@ -116,17 +155,24 @@ def main():
         return 1
     except Exception as e:
         traceback.print_exception(e, file=report_file)
-        report_file.write("\n\n"
-                          "ERROR: Application failed. Please email report file to author. ")
+        report_file.write(
+            "\n\n" "ERROR: Application failed. Please email report file to author. ")
         return 1
     finally:
         if db_connection is not None:
-            db_connection.commit()
+            if allow_db_changes:
+                db_connection.commit()
             db_connection.close()
         report_file.close()
         if report_display_app is not None:
             subprocess.Popen([report_display_app, report_path])
     return 0
+
+
+# ===================================================DIV60==
+def run_selected_features(config, db_connection, report_file):
+
+    convert_fact(config, db_connection, report_file)
 
 
 # ===================================================DIV60==
@@ -245,7 +291,8 @@ def convert_fact(config, db_connection, report_file):
 
 
 # ===================================================DIV60==
-def lookup_and_validate(facttype_curr_name, facttype_new_name, role_name, dbConnection, reportF):
+def lookup_and_validate(facttype_curr_name, facttype_new_name,
+                        role_name, db_connection, report_file):
 
     # confirm fact type names are unique and of correct type
     SqlStmt = """
@@ -253,7 +300,7 @@ SELECT FactTypeID, OwnerType
   FROM FactTypeTable ftt
  WHERE ftt.Name = ? COLLATE NOCASE
 """
-    cur = dbConnection.cursor()
+    cur = db_connection.cursor()
     cur.execute(SqlStmt, (facttype_curr_name,))
     rows = cur.fetchall()
     if len(rows) == 0:
@@ -265,12 +312,12 @@ SELECT FactTypeID, OwnerType
     facttype_curr_id = rows[0][0]
     if rows[0][1] == 1:
         facttype_is_family_curr = True
-        reportF.write("FACTTYPE_CURRENT kind is 'FAMILY'.\n")
+        report_file.write("FACTTYPE_CURRENT kind is 'FAMILY'.\n")
     else:
         facttype_is_family_curr = False
-        reportF.write("FACTTYPE_CURRENT kind is 'PERSONAL'.\n")
+        report_file.write("FACTTYPE_CURRENT kind is 'PERSONAL'.\n")
 
-    cur = dbConnection.cursor()
+    cur = db_connection.cursor()
     cur.execute(SqlStmt, (facttype_new_name,))
     rows = cur.fetchall()
     if len(rows) == 0:
@@ -282,10 +329,10 @@ SELECT FactTypeID, OwnerType
     facttype_new_id = rows[0][0]
     if rows[0][1] == 1:
         facttype_is_family_new = True
-        reportF.write("FACTTYPE_NEW kind is 'FAMILY'.\n\n\n")
+        report_file.write("FACTTYPE_NEW kind is 'FAMILY'.\n\n\n")
     else:
         facttype_is_family_new = False
-        reportF.write("FACTTYPE_NEW kind is 'PERSONAL'.\n\n\n")
+        report_file.write("FACTTYPE_NEW kind is 'PERSONAL'.\n\n\n")
 
     role_id = 0
     if facttype_is_family_curr and not facttype_is_family_new:
@@ -299,7 +346,7 @@ SELECT RoleID, EventType
  WHERE rt.RoleName = ? COLLATE NOCASE
    AND rt.EventType = ?
 """
-        cur = dbConnection.cursor()
+        cur = db_connection.cursor()
         cur.execute(SqlStmt, (role_name, facttype_new_id))
         rows = cur.fetchall()
         if len(rows) == 0:
@@ -327,25 +374,25 @@ INNER JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
               FROM RoleTable rt
               WHERE EventType = :new_FTid )  -- NewFactType
 """
-    cur = dbConnection.cursor()
+    cur = db_connection.cursor()
     cur.execute(SqlStmt, {"curr_FTid": facttype_curr_id,
                 "new_FTid": facttype_new_id})
     rows = cur.fetchall()
     if len(rows) != 0:
-        reportF.write("The following Roles are in use by the Current"
-                      " Fact Type,\n"
-                      + "but do not exist for the New Fact Type.\n"
-                      + "They will either need to be defined for"
-                        " the new Fact Type\n"
-                      + "or eliminated from use by the Current Fact type.\n"
-                      + "Coordinating the roles may be accomplished"
-                      " by altering the\n"
-                      + "Role Names. This must be done before fact type\n"
-                      + "conversion can be performed.\n\n\n"
-                      + "--Missing Roles:--\n")
+        report_file.write("The following Roles are in use by the Current"
+                          " Fact Type,\n"
+                          + "but do not exist for the New Fact Type.\n"
+                          + "They will either need to be defined for"
+                          " the new Fact Type\n"
+                          + "or eliminated from use by the Current Fact type.\n"
+                          + "Coordinating the roles may be accomplished"
+                          " by altering the\n"
+                          + "Role Names. This must be done before fact type\n"
+                          + "conversion can be performed.\n\n\n"
+                          + "--Missing Roles:--\n")
         for row in rows:
-            reportF.write(str(row[1]) + "\n")
-        reportF.write("\n\n\n")
+            report_file.write(str(row[1]) + "\n")
+        report_file.write("\n\n\n")
         raise RM_Py_Exception(
             "ERROR: Roles need to be coordinated between the Current and New Fact Types.\n")
 
@@ -354,7 +401,7 @@ INNER JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
 
 
 # ===================================================DIV60==
-def update_role_in_existing_witnesses(FactToConvert, FactTypeID_new, dbConnection):
+def update_role_in_existing_witnesses(FactToConvert, FactTypeID_new, db_connection):
 
     # List of all Witness records that need their role updated
     SqlStmt = """
@@ -364,7 +411,7 @@ INNER JOIN RoleTable AS rt ON rt.RoleID = wt.Role
       WHERE wt.EventID = :FactId
   ORDER BY rt.RoleName  COLLATE NOCASE
 """
-    cur = dbConnection.cursor()
+    cur = db_connection.cursor()
     cur.execute(SqlStmt, {"FactId": FactToConvert})
     rows = cur.fetchall()
 
@@ -379,7 +426,7 @@ INNER JOIN RoleTable AS rt ON rt.RoleID = wt.Role
    WHERE EventType = :new_FTid
      AND RoleName = :RoleName COLLATE NOCASE
   """
-        cur = dbConnection.cursor()
+        cur = db_connection.cursor()
         cur.execute(SqlStmt, {"new_FTid": FactTypeID_new,
                               "RoleName": RolNameToUse})
         row = cur.fetchone()
@@ -391,7 +438,7 @@ INNER JOIN RoleTable AS rt ON rt.RoleID = wt.Role
          UTCModDate = julianday('now') - 2415018.5
    WHERE WitnessID = :WitnessID
   """
-        cur = dbConnection.cursor()
+        cur = db_connection.cursor()
         cur.execute(
             SqlStmt, {"WitnessID": WitnessToUpdate,
                       "RoleID": newRoleID})
@@ -400,28 +447,28 @@ INNER JOIN RoleTable AS rt ON rt.RoleID = wt.Role
 
 
 # ===================================================DIV60==
-def get_PersonID_from_EventID(ID, dbConn):
+def get_PersonID_from_EventID(ID, db_connection):
 
     SqlStmt = """
 SELECT OwnerID
   FROM EventTable
  WHERE EventID = ?
 """
-    cur = dbConn.cursor()
+    cur = db_connection.cursor()
     cur.execute(SqlStmt, (ID,))
     row = cur.fetchone()
     return row[0]
 
 
 # ===================================================DIV60==
-def get_FamilyID_from_EventID(ID, dbConn):
+def get_FamilyID_from_EventID(ID, db_connection):
 
     SqlStmt = """
 SELECT OwnerID
   FROM EventTable et
 WHERE  et.EventID = ?
 """
-    cur = dbConn.cursor()
+    cur = db_connection.cursor()
     cur.execute(SqlStmt, (ID,))
     rows = cur.fetchall()
 
@@ -431,7 +478,8 @@ WHERE  et.EventID = ?
 
 
 # ===================================================DIV60==
-def get_list_of_events_to_convert(ID, FamilyType, desc_sel, date_sel, dbConn):
+def get_list_of_events_to_convert(ID, FamilyType,
+                                  desc_sel, date_sel, db_connection):
 
     OwnerType = 0
     if FamilyType:
@@ -446,7 +494,7 @@ SELECT EventID
    AND et.Details LIKE (?)
  ORDER BY OwnerID
 """
-        cur = dbConn.cursor()
+        cur = db_connection.cursor()
         cur.execute(SqlStmt, (ID, OwnerType, desc_sel))
     elif desc_sel == '' and date_sel != '':
         SqlStmt = """
@@ -457,7 +505,7 @@ SELECT EventID
    AND SUBSTR(et.Date,4,4) = ?
  ORDER BY OwnerID
 """
-        cur = dbConn.cursor()
+        cur = db_connection.cursor()
         cur.execute(SqlStmt, (ID, OwnerType, date_sel))
     elif desc_sel == '' and date_sel == '':
         SqlStmt = """
@@ -467,7 +515,7 @@ SELECT EventID
    AND et.OwnerType = ?
  ORDER BY OwnerID
 """
-        cur = dbConn.cursor()
+        cur = db_connection.cursor()
         cur.execute(SqlStmt, (ID, OwnerType))
     elif desc_sel != '' and date_sel != '':
         SqlStmt = """
@@ -479,7 +527,7 @@ SELECT EventID
    AND et.Details LIKE (?)
  ORDER BY OwnerID
 """
-        cur = dbConn.cursor()
+        cur = db_connection.cursor()
         cur.execute(SqlStmt, (ID, OwnerType, date_sel, desc_sel))
     else:
         raise RM_Py_Exception('Combo search terms not supported')
@@ -492,14 +540,14 @@ SELECT EventID
 
 
 # ===================================================DIV60==
-def get_father_mother_IDs(ID, dbConn):
+def get_father_mother_IDs(ID, db_connection):
 
     SqlStmt = """
 SELECT FatherID, MotherID
   FROM FamilyTable ft
  WHERE ft.FamilyID = ?
 """
-    cur = dbConn.cursor()
+    cur = db_connection.cursor()
     cur.execute(SqlStmt, (ID,))
     rows = cur.fetchall()
 
@@ -511,7 +559,7 @@ SELECT FatherID, MotherID
 
 # ===================================================DIV60==
 def change_the_event(EventID, OwnerID, newEventTypeID,
-                     facttype_is_fam_new, dbConn):
+                     facttype_is_fam_new, db_connection):
 
     if facttype_is_fam_new:
         OwnerType = 1
@@ -525,38 +573,38 @@ UPDATE EventTable
        OwnerID = ?
  WHERE EventID = ?
 """
-    cur = dbConn.cursor()
+    cur = db_connection.cursor()
     cur.execute(SqlStmt, (OwnerType, newEventTypeID, OwnerID, EventID))
     return
 
 
 # ===================================================DIV60==
-def add_new_witness(EventID, OwnerID, RoleID, dbConn):
+def add_new_witness(EventID, OwnerID, RoleID, db_connection):
 
     SqlStmt = """
 INSERT INTO WitnessTable
   ( EventID, PersonID, Role, UTCModDate)
   VALUES ( ?, ?, ?, julianday('now') - 2415018.5 )
 """
-    cur = dbConn.cursor()
+    cur = db_connection.cursor()
     cur.execute(SqlStmt, (EventID, OwnerID, RoleID))
     return
 
 
 # ===================================================DIV60==
-def create_db_connection(db_file_path, db_extension):
+def create_db_connection(db_file_path, db_extension_file_path):
 
-    dbConnection = None
+    db_connection = None
     try:
-        dbConnection = sqlite3.connect(db_file_path)
-        if db_extension is not None:
+        db_connection = sqlite3.connect(db_file_path)
+        if db_extension_file_path is not None:
             # load SQLite extension
-            dbConnection.enable_load_extension(True)
-            dbConnection.load_extension(db_extension)
+            db_connection.enable_load_extension(True)
+            db_connection.load_extension(db_extension_file_path)
     except Exception as e:
         raise RM_Py_Exception(
             e, "\n\n" "Cannot open the RM database file." "\n")
-    return dbConnection
+    return db_connection
 
 
 # ===================================================DIV60==
