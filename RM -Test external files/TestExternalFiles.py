@@ -36,7 +36,7 @@ import traceback
 #    OPTIONS    HASH_FILE
 #    OPTIONS    SHOW_ORIG_PATH
 #    OPTIONS    UNREF_CASE_SENSITIVE
-#    IGNORED_OBJECTS  FOLDERS 
+#    IGNORED_OBJECTS  FOLDERS
 #    IGNORED_OBJECTS  FILES
 
 
@@ -189,7 +189,7 @@ def main():
 
 # ===================================================DIV60==
 def run_selected_features(config, db_connection, report_file):
-    
+
     global G_db_file_folder_path
     G_db_file_folder_path = Path(config['FILE_PATHS']['DB_PATH']).parent
 
@@ -658,42 +658,6 @@ def get_duplicate_file_paths_list(db_connection):
 
 
 # ===================================================DIV60==
-def get_SQLite_library_version(db_connection):
-
-    # returns a string like 3.42.0
-    SqlStmt = """
-  SELECT sqlite_version()
-  """
-    cur = db_connection.cursor()
-    cur.execute(SqlStmt)
-    return cur.fetchone()[0]
-
-
-# ===================================================DIV60==
-def get_current_directory():
-
-    # Determine if application is a script file or frozen exe and get its directory
-    # see   https://pyinstaller.org/en/stable/runtime-information.html
-    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        application_path = os.path.dirname(sys.executable)
-    else:
-        application_path = os.path.dirname(__file__)
-    return application_path
-
-
-# ===================================================DIV60==
-def time_stamp_now(type=""):
-
-    # return a TimeStamp string
-    now = datetime.now()
-    if type == '':
-        dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
-    elif type == 'file':
-        dt_string = now.strftime("%Y-%m-%d_%H%M%S")
-    return dt_string
-
-
-# ===================================================DIV60==
 def section(pos, name, report_file):
 
     Divider = "="*60 + "===DIV70==\n"
@@ -710,22 +674,6 @@ def section(pos, name, report_file):
     report_file.write(text)
     report_file.flush()
     return
-
-
-# ===================================================DIV60==
-def create_db_connection(db_file_path, db_extension):
-
-    db_connection = None
-    try:
-        db_connection = sqlite3.connect(db_file_path)
-        if db_extension is not None and db_extension != '':
-            # load SQLite extension
-            db_connection.enable_load_extension(True)
-            db_connection.load_extension(db_extension)
-    except Exception as e:
-        raise RM_Py_Exception(
-            e, "\n\n" "Cannot open the RM database file." "\n")
-    return db_connection
 
 
 # ===================================================DIV60==
@@ -826,7 +774,6 @@ def folder_contents_minus_ignored(report_file, dir_path, config):
 
     return media_file_list
 
-
 # ===================================================DIV60==
 def pause_with_message(message=None):
 
@@ -834,6 +781,57 @@ def pause_with_message(message=None):
         print(str(message))
     input("\n" "Press the <Enter> key to continue...")
     return
+
+
+# ===================================================DIV60==
+def create_db_connection(db_file_path, db_extension):
+
+    db_connection = None
+    try:
+        db_connection = sqlite3.connect(db_file_path)
+        if db_extension is not None and db_extension != '':
+            # load SQLite extension
+            db_connection.enable_load_extension(True)
+            db_connection.load_extension(db_extension)
+    except Exception as e:
+        raise RM_Py_Exception(
+            e, "\n\n" "Cannot open the RM database file." "\n")
+    return db_connection
+
+
+# ===================================================DIV60==
+def time_stamp_now(type=""):
+
+    # return a TimeStamp string
+    now = datetime.now()
+    if type == '':
+        dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
+    elif type == 'file':
+        dt_string = now.strftime("%Y-%m-%d_%H%M%S")
+    return dt_string
+
+
+# ===================================================DIV60==
+def get_SQLite_library_version(dbConnection):
+
+    # returns a string like 3.42.0
+    SqlStmt = "SELECT sqlite_version()"
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt)
+    return cur.fetchone()[0]
+
+
+# ===================================================DIV60==
+def get_current_directory():
+
+    # Determine if application is a script file or frozen exe and get its directory
+    # see   https://pyinstaller.org/en/stable/runtime-information.html
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        application_path = os.path.dirname(sys.executable)
+    else:
+        application_path = os.path.dirname(__file__)
+    return application_path
+
 
 # ===================================================DIV60==
 class RM_Py_Exception(Exception):
