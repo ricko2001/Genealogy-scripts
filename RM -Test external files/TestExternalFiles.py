@@ -29,13 +29,14 @@ import traceback
 #    FILE_PATHS  SEARCH_ROOT_FLDR_PATH
 #    OPTIONS    CHECK_FILES
 #    OPTIONS    UNREF_FILES
-#    OPTIONS    NO_TAG_FILES
 #    OPTIONS    FOLDER_LIST
+#    OPTIONS    NO_TAG_FILES
 #    OPTIONS    DUP_FILENAMES
 #    OPTIONS    DUP_FILEPATHS
 #    OPTIONS    HASH_FILE
+#    OPTIONS    NOT_MEDIA_FLDR
 #    OPTIONS    SHOW_ORIG_PATH
-#    OPTIONS    UNREF_CASE_SENSITIVE
+#    OPTIONS    CASE_SENSITIVE
 #    IGNORED_OBJECTS  FOLDERS
 #    IGNORED_OBJECTS  FILES
 
@@ -194,7 +195,9 @@ def run_selected_features(config, db_connection, report_file):
 
     global G_db_file_folder_path
     # used only in function expand_relative_dir_path, but no access to config there.
-    G_db_file_folder_path = Path(config['FILE_PATHS']['DB_PATH']).parent
+    parent_dir= Path(config['FILE_PATHS']['DB_PATH']).parent
+    # get the absolute path in case the DB_PATH was relative
+    G_db_file_folder_path = parent_dir.resolve()
 
     # test option values conversion to boolean
     # if missing, treated as false
@@ -205,8 +208,12 @@ def run_selected_features(config, db_connection, report_file):
         config['OPTIONS'].getboolean('FOLDER_LIST')
         config['OPTIONS'].getboolean('DUP_FILENAMES')
         config['OPTIONS'].getboolean('DUP_FILEPATHS')
-        config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
+        config['OPTIONS'].getboolean('NOT_MEDIA_FLDR')
         config['OPTIONS'].getboolean('HASH_FILE')
+        config['OPTIONS'].getboolean('NOT_MEDIA_FLDR')
+        config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
+        config['OPTIONS'].getboolean('CASE_SENSITIVE')
+
     except:
         raise RM_Py_Exception(
             "One of the OPTIONS values could not be parsed as boolean. \n")
@@ -219,17 +226,20 @@ def run_selected_features(config, db_connection, report_file):
         list_unreferenced_files_feature(
             config, db_connection, report_file)
 
+    if config['OPTIONS'].getboolean('NO_TAG_FILES'):
+        files_with_no_tags_feature(config, db_connection, report_file)
+
     if config['OPTIONS'].getboolean('FOLDER_LIST'):
         list_folders_feature(config, db_connection, report_file)
 
-    if config['OPTIONS'].getboolean('NO_TAG_FILES'):
-        files_with_no_tags_feature(config, db_connection, report_file)
+    if config['OPTIONS'].getboolean('DUP_FILENAMES'):
+        find_duplcate_file_names_feature(db_connection, report_file)
 
     if config['OPTIONS'].getboolean('DUP_FILEPATHS'):
         find_duplcate_file_paths_feature(db_connection, report_file)
 
-    if config['OPTIONS'].getboolean('DUP_FILENAMES'):
-        find_duplcate_file_names_feature(db_connection, report_file)
+    if config['OPTIONS'].getboolean('NOT_MEDIA_FLDR'):
+        find_file_not_in_media_folder_feature(config, db_connection, report_file)
 
     if config['OPTIONS'].getboolean('HASH_FILE'):
         file_hash_feature(config, db_connection, report_file)
@@ -241,12 +251,16 @@ def run_selected_features(config, db_connection, report_file):
 def list_missing_files_feature(config, db_connection, report_file):
 
     feature_name = "Files Not Found"
-    Label_OrigPath = "Path in database:  "
-    foundSomeMissingFiles = False
+    label_original_path = "Path in database:  "
+    found_files = 0
 
     section("START", feature_name, report_file)
     # get options
-    show_original_path = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
+    try:
+        show_original_path = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
+        case_sensitive = config['OPTIONS'].getboolean('CASE_SENSITIVE')
+    except:
+        pass
 
     # First check database for empty paths or filenames
     report_empty_paths(db_connection, report_file)
@@ -255,37 +269,64 @@ def list_missing_files_feature(config, db_connection, report_file):
     for row in cur:
         if len(str(row[0])) == 0 or len(str(row[1])) == 0:
             continue
-        dirPathOrig = row[0]
-        dirPath = expand_relative_dir_path(dirPathOrig)
-        filePath = Path(os.path.join(dirPath, row[1]))
+        dir_path_original = row[0]
+        dir_path = expand_relative_dir_path(dir_path_original)
+        file_path = Path(os.path.join(dir_path, row[1]))
 
-        if not os.path.exists(dirPath):
-            foundSomeMissingFiles = True
-            report_file.write(
-                f"\n" "Directory path not found:\n"
-                f"{qtStr(dirPath)} for file: {qtStr(row[1])} \n")
-            if show_original_path:
-                report_file.write(f"{Label_OrigPath} {qtStr(dirPathOrig)} \n")
 
-        else:
-            if filePath.exists():
-                if not filePath.is_file():
-                    foundSomeMissingFiles = True
-                    report_file.write(
-                        f"\nFile path is not a file: \n"
-                        f"{qtStr(filePath)} \n")
+        if not case_sensitive:
+            # Case in-sensitive
+            if not os.path.exists(dir_path):
+                found_files += 1
+                report_file.write(
+                    f"\n" "Directory path not found:\n"
+                    f"{qtStr(dir_path)} for file: {qtStr(row[1])} \n")
+                if show_original_path:
+                    report_file.write(f"{label_original_path} {qtStr(dir_path_original)} \n")
+            else:
+                if file_path.exists():
+                    if not file_path.is_file():
+                        found_files += 1
+                        report_file.write(
+                            f"\nFile path is not a file: \n"
+                            f"{qtStr(file_path)} \n")
+                        if show_original_path:
+                            report_file.write(f"{label_original_path} {qtStr(row[0])} \n")
+                else:
+                    found_files += 1
+                    report_file.write(f"\nFile path not found: \n{file_path} \n")
                     if show_original_path:
                         report_file.write(
-                            f"{Label_OrigPath} {qtStr(dirPathOrig)} \n")
-
-            else:
-                foundSomeMissingFiles = True
-                report_file.write(f"\nFile path not found: \n{filePath} \n")
+                            f"{label_original_path} {qtStr(dir_path_original)} \n")
+        else:
+            # use case sensitive compare
+            if str(dir_path) != str(os.path.realpath(dir_path)):
+                found_files += 1
+                report_file.write(
+                    f"\n" "Directory path with correct case not found:\n"
+                    f"{qtStr(dir_path)} for file: {qtStr(row[1])} \n")
                 if show_original_path:
-                    report_file.write(
-                        f"{Label_OrigPath} {qtStr(dirPathOrig)} \n")
+                    report_file.write(f"{label_original_path} {qtStr(dir_path_original)} \n")
+            else:
+                if file_path.exists():
+                    if not file_path.is_file():
+                        found_files += 1
+                        report_file.write(
+                            f"\nPath is not a file: \n{qtStr(file_path)} \n")
+                        if show_original_path:
+                            report_file.write(f"{label_original_path} {qtStr(row[0])} \n")
+                else:
+                    found_files += 1
+                    report_file.write(f"\nFile name with correct case not found at path: \n{file_path} \n")
+                    if show_original_path:
+                        report_file.write(
+                            f"{label_original_path} {qtStr(dir_path_original)} \n")
 
-    if not foundSomeMissingFiles:
+    if found_files > 0:
+        report_file.write(f"\nNumber of file links in "
+                          f"database not found on disk: {found_files} \n")
+
+    if found_files == 0:
         report_file.write("\n    No files were found missing.\n")
     section("END", feature_name, report_file)
     return
@@ -304,10 +345,8 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
         raise RM_Py_Exception(
             "ERROR: SEARCH_ROOT_FLDR_PATH must be specified for this option. \n")
 
-    unref_case_sensitive = True
     try:
-        unref_case_sensitive = config['OPTIONS'].getboolean(
-            'UNREF_CASE_SENSITIVE')
+        case_sensitive = config['OPTIONS'].getboolean('CASE_SENSITIVE')
     except:
         pass
 
@@ -337,7 +376,7 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
     media_file_list = folder_contents_minus_ignored(
         report_file, Path(ext_files_folder_path), config)
 
-    if (unref_case_sensitive == True):
+    if (case_sensitive == True):
         # case sensitive
         unref_files = list(set(media_file_list).difference(db_file_list))
     else:
@@ -384,7 +423,6 @@ def files_with_no_tags_feature(config, db_connection, report_file):
     show_orig_path = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
 
     cur = get_db_no_tag_file_list(db_connection)
-    # row[0] = path,   row[1] = fileName
 
     for row in cur:
         found_no_tag_files = True
@@ -560,6 +598,45 @@ def file_hash_feature(config, db_connection, report_file):
 
     return
 
+
+# ===================================================DIV60==
+def find_file_not_in_media_folder_feature(config, db_connection, report_file):
+
+    feature_name = "Files Not in Media Folder"
+    label_orig_path = "Path in database:  "
+    found_files = 0
+
+    section("START", feature_name, report_file)
+    # get options
+    show_original_path = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
+
+    # First check database for empty paths or filenames
+    report_empty_paths(db_connection, report_file)
+
+    cur = get_db_file_list(db_connection)
+    rows = cur.fetchall()
+    for row in rows:
+        if len(str(row[0])) == 0:
+            continue
+        if row[0][0] != '?':
+            found_files += 1
+            dir_path = expand_relative_dir_path(row[0])
+            file_path = Path(os.path.join(dir_path, row[1]))
+            report_file.write(f"\n{file_path} \n")
+            if show_original_path:
+                report_file.write(f"{label_orig_path} {qtStr(row[0])} \n")
+
+    if found_files > 0:
+        report_file.write(f"\nNumber of file links in database not in Media Folder: {found_files} \n")
+
+    if found_files == 0:
+        report_file.write(
+            "\n    All file links in the database "
+             "point to the Media Folder.\n")
+
+    section("END", feature_name, report_file)
+
+    return
 
 # ===================================================DIV60==
 def get_db_folder_list(dbConnection):
