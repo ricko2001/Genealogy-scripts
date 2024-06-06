@@ -188,66 +188,83 @@ def display_sources_feature(config, db_connection, report_file):
             raise RM_Py_Exception('ERROR: Enter an integer larger than 0.')
 
     SqlStmt="""\
---      PERSON sources
+WITH
+  constants(C_Person) AS (
+    SELECT   ?   AS C_Person
+    )
+--      person citations
 SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
   FROM SourceTable
-  JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
-  JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
-  WHERE CitationLinkTable.OwnerID=?
+  JOIN CitationTable     ON CitationTable.SourceID = SourceTable.SourceID
+  JOIN CitationLinkTable ON CitationLinkTable.LinkID = CitationTable.CitationID
+  WHERE CitationLinkTable.OwnerID=(SELECT C_Person FROM constants)
     AND CitationLinkTable.OwnerType=0
 
 UNION
 
---      NAME sources
+--      name citations
 SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
   FROM SourceTable
-  JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
-  JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
-  JOIN NameTable         ON CitationLinkTable.OwnerID = NameTable.NameID
-  WHERE NameTable.OwnerID=?
+  JOIN CitationTable     ON CitationTable.SourceID = SourceTable.SourceID
+  JOIN CitationLinkTable ON CitationLinkTable.CitationID = CitationTable.CitationID
+  JOIN NameTable         ON NameTable.NameID = CitationLinkTable.OwnerID 
+  WHERE NameTable.OwnerID=(SELECT C_Person FROM constants)
     AND CitationLinkTable.OwnerType=7
 
 UNION
 
---      EVENT-PERSON sources
+--      fact-person citations
 SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
   FROM SourceTable
-  JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
-  JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
-  JOIN EventTable ON CitationLinkTable.OwnerID = EventTable.EventID
-  WHERE EventTable.OwnerID=?
+  JOIN CitationTable     ON CitationTable.SourceID = SourceTable.SourceID
+  JOIN CitationLinkTable ON CitationLinkTable.CitationID = CitationTable.CitationID
+  JOIN EventTable ON EventTable.EventID = CitationLinkTable.OwnerID
+  WHERE EventTable.OwnerID=(SELECT C_Person FROM constants)
     AND CitationLinkTable.OwnerType=2
     AND EventTable.OwnerType=0
 
 UNION
 
---      EVENT-FAMILY sources
+--      fact-family citations
 SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
   FROM SourceTable
-  JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
-  JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
-  JOIN EventTable        ON CitationLinkTable.OwnerID = EventTable.EventID
-  JOIN FamilyTable       ON EventTable.OwnerID = FamilyTable.FamilyID
-  WHERE (FamilyTable.FatherID=? OR FamilyTable.MotherID=?)
+  JOIN CitationTable     ON CitationTable.SourceID = SourceTable.SourceID
+  JOIN CitationLinkTable ON CitationLinkTable.CitationID = CitationTable.CitationID
+  JOIN EventTable        ON EventTable.EventID = CitationLinkTable.OwnerID
+  JOIN FamilyTable       ON FamilyTable.FamilyID = EventTable.OwnerID
+  WHERE (FamilyTable.FatherID=(SELECT C_Person FROM constants) OR FamilyTable.MotherID=(SELECT C_Person FROM constants))
     AND CitationLinkTable.OwnerType=2
     AND EventTable.OwnerType=1
 
 UNION
 
---      FAMILY sources
+--      family citations
 SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
   FROM SourceTable
-  JOIN CitationTable     ON SourceTable.SourceID = CitationTable.SourceID
-  JOIN CitationLinkTable ON CitationTable.CitationID = CitationLinkTable.LinkID
-  JOIN FamilyTable       ON CitationLinkTable.OwnerID = FamilyTable.FamilyID
-  WHERE (FamilyTable.FatherID=? OR FamilyTable.MotherID=?)
+  JOIN CitationTable     ON CitationTable.SourceID = SourceTable.SourceID
+  JOIN CitationLinkTable ON CitationLinkTable.CitationID = CitationTable.CitationID
+  JOIN FamilyTable       ON FamilyTable.FamilyID = CitationLinkTable.OwnerID
+  WHERE (FamilyTable.FatherID=(SELECT C_Person FROM constants) OR FamilyTable.MotherID=(SELECT C_Person FROM constants))
     AND CitationLinkTable.OwnerType=1
+
+UNION
+--      association citations
+SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
+  FROM SourceTable
+  JOIN CitationTable     ON CitationTable.SourceID = SourceTable.SourceID
+  JOIN CitationLinkTable ON CitationLinkTable.CitationID = CitationTable.CitationID
+  JOIN FANTable          ON FANTable.FanID = CitationLinkTable.OwnerID
+  WHERE (FANTable.ID1=(SELECT C_Person FROM constants) OR FANTable.ID2=(SELECT C_Person FROM constants))
+    AND CitationLinkTable.OwnerType=19
+
+--      shared fact citations
+
     
 ORDER BY SourceTable.Name COLLATE NOCASE;
 """
 
     cur = db_connection.cursor()
-    cur.execute(SqlStmt, (PersonID,PersonID,PersonID,PersonID,PersonID,PersonID,PersonID) )
+    cur.execute(SqlStmt, (PersonID,) )
     rows = cur.fetchall()
 
     report_file.write("PersonID = " + str(PersonID) + "\n")
