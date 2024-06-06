@@ -201,7 +201,6 @@ SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLL
     AND CitationLinkTable.OwnerType=0
 
 UNION
-
 --      name citations
 SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
   FROM SourceTable
@@ -212,7 +211,6 @@ SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLL
     AND CitationLinkTable.OwnerType=7
 
 UNION
-
 --      fact-person citations
 SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
   FROM SourceTable
@@ -224,7 +222,6 @@ SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLL
     AND EventTable.OwnerType=0
 
 UNION
-
 --      fact-family citations
 SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
   FROM SourceTable
@@ -237,7 +234,6 @@ SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLL
     AND EventTable.OwnerType=1
 
 UNION
-
 --      family citations
 SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
   FROM SourceTable
