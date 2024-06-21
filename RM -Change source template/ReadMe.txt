@@ -48,7 +48,7 @@ and have at least several known-good backups.
 
 Once you are satisfied, don't hurry to use the resulting file. Wait a week or so
 and to allow further consideration. Then run the utility with your perfected
-ini file on a copy of your now-current database and then use the modified
+config file on a copy of your now-current database and then use the modified
 database as your normal work file. The week delay will give you time to think
 about it. If you start using the newly modified database immediately, you'll
 lose work if you miss a problem and have to revert to a backup.
@@ -57,7 +57,7 @@ lose work if you miss a problem and have to revert to a backup.
 =========================================================================DIV80==
 Compatibility
 
-Tested with RootsMagic v9
+Tested with RootsMagic v10
 
 .exe file version
        Windows 64bit only. Tested with Window 11.
@@ -83,16 +83,16 @@ the exe single file version:
       RM-Python-config.ini
 
 *  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
-   referred to, simply, as the "ini file".) The utility needs to know where
+   referred to, simply, as the "config file".) The utility needs to know where
    the RM database file is located, the output report file name and location,
    and the various configuration parameters needed to tell the utility what to do.
-   Editing the ini file can be done using the Windows NotePad app.
+   Editing the config file can be done using the Windows NotePad app.
 
 *  Double click the ChangeSourceTemplate.exe file to run the utility and
    generate the report file.
 
 *  Examine the report output file and then, based on the output, go to the
-   next step by editing the ini file and re-running the utility. Repeat.
+   next step by editing the config file and re-running the utility. Repeat.
    A series of validation runs is completed first and then a final run is
    initiated with "MAKE_CHANAGES = on" to actually change the database.
 
@@ -128,8 +128,8 @@ Suggestion: name it "TEST.rmtree"
 Move the copy into the working folder that you created above.
 
 =============DIV20==
-Edit the RM-Python-config.ini file in the working folder by opening NotePad and then
-dragging the RM-Python-config.ini file onto the opened NotePad application window.
+Edit the RM-Python-config.config file in the working folder by opening NotePad and then
+dragging the RM-Python-config.config file onto the opened NotePad application window.
 
 Look for the section at the top-
 [FILE_PATHS]
@@ -141,7 +141,7 @@ DB_PATH to that of the file you placed in the working folder.
 If you named it TEST, you're done.
 The other line should be OK as is.
 
-Look at the section of the ini file containing options:
+Look at the section of the config file containing options:
 [OPTIONS]
 CHECK_TEMPLATE_NAMES   = off
 LIST_SOURCES           = off
@@ -153,7 +153,9 @@ Confirm all 5 options are set to off.
 The first four options tell the utility to execute validation runs. Only the last
 option, when "on" will make changes to your database. Either 0 or 1 of the five
 options may be "on" at one time in a run of the utility.
-Save the ini file, and leave the file open in the editor.
+Save the config file, and leave the file open in the editor.
+NOTE: only the first "on" action will be done, the rest ignored. So always check
+that only one action is set to on.
 
 =============DIV20==
 STEP 0		Option    All options = off
@@ -163,7 +165,7 @@ should momentarily open and then close.
 A new file, Report_ChangeSourceTemplate.txt, should appear in the working folder
 and then automatically open in NotePad.
 Check that there are no error messages listed in the Report file.
-If the database file couldn't be found, fix the ini file, save it and re-run
+If the database file couldn't be found, fix the config file, save it and re-run
 the utility until you get it right.
 
 If the report file did not open in NotePad, read the troubleshooting
@@ -173,34 +175,34 @@ section in the NOTES below.
 STEP 1		Option CHECK_TEMPLATE_NAMES = on
 
 Now you know what to expect when running the utility and how to configure the
-ini file. You're ready to start, but first, you need to figure out what needs
+config file. You're ready to start, but first, you need to figure out what needs
 to be accomplished and tell the utility.
 
 There is a source template in the RM file that is not quite right. You've used
 it to create sources, and, because of the template, they're not quite right either.
 Check your database and determine the exact name of the not-quite-right template.
 
-Look at the ini file, still open in NotePad and find the section :
+Look at the config file, still open in NotePad and find the section :
 
 [SOURCE_TEMPLATES]
 TEMPLATE_OLD    = Sample_OldTemplateName
 TEMPLATE_NEW    = Sample_NewTemplateName
 
-You need to edit the ini file so that Sample_OldTemplateName is replaced with
+You need to edit the config file so that Sample_OldTemplateName is replaced with
 the exact name of the not-quite-right template The easiest way is to do this is
 to find the template in the Source Template List in RM, click the edit button,
-and copy the name into the clipboard, then paste into the ini file.
+and copy the name into the clipboard, then paste into the config file.
 
 There should also be another source template, that is similar to the not-quite-right
 template, but that has the corrections that you want. Find its exact name, as
-above, and paste the name into the ini file.
-Your ini file in NotePad should now have the new names.
+above, and paste the name into the config file.
+Your config file in NotePad should now have the new names.
 
 [SOURCE_TEMPLATES]
 TEMPLATE_OLD    = not-quite-right template name
 TEMPLATE_NEW    = new and improved template name
 
-Now look back at the OPTIONS section of the ini file, and change the line-
+Now look back at the OPTIONS section of the config file, and change the line-
 CHECK_TEMPLATE_NAMES   = off
 to
 CHECK_TEMPLATE_NAMES   = on
@@ -210,7 +212,7 @@ run it. A black console window should momentarily open and then close.
 The Report_ChangeSourceTemplate.txt file should automatically open in NotePad.
 
 Check that there are no error messages listed in the Report file.
-If a source template name couldn't be found, fix the ini file, save it and re-run
+If a source template name couldn't be found, fix the config file, save it and re-run
 the utility until you get it right.
 A common issue is that template names may an embedded space, a leading or
 trailing space.  See NOTES section for details on how to use quote characters to fix.
@@ -224,7 +226,7 @@ be switched over to use the new template. Other situations are also possible in
 which only a subset of all sources using the old template should be switched over
 to the new template.
 
-In the ini file, look for the line:
+In the config file, look for the line:
 SOURCE_NAME_LIKE = %
 
 This line specifies the matching pattern that determines the sources to be
@@ -233,7 +235,7 @@ switched. Leave it alone for now.
 RM does not make it easy to get a list of sources that use a specific template,
 so the next utility run will generate that list.
 
-Look at the OPTIONS section of the ini file still open in NotePad, edit these
+Look at the OPTIONS section of the config file still open in NotePad, edit these
 two lines so they are as shown:
 CHECK_TEMPLATE_NAMES   = off
 LIST_SOURCES           = on
@@ -261,7 +263,7 @@ can be used in a search.
 STEP 3		Option LIST_TEMPLATE_DETAILS = on
 
 Now the utility has to be told how the old template relates to the new one.
-This is done with the MAPPING key in the ini file.
+This is done with the MAPPING key in the config file.
 Remember, many changes can be made to source templates that do not require this utility.
 See the Notes section starting with "All possible Source Template changes".
 
@@ -269,7 +271,7 @@ The mapping will only describe field renaming, field addition and field deletion
 
 Before the mapping value is edited, it's a good idea to get a clear listing of the fields in both the old and new templates. This can be gotten from the RM Source Template window, but it can be shown very quickly using this utility.
 
-Look at the OPTIONS section of the ini file still open in NotePad, edit these
+Look at the OPTIONS section of the config file still open in NotePad, edit these
 two lines so they are as shown:
 LIST_SOURCES           = off
 LIST_TEMPLATE_DETAILS  = on
@@ -309,7 +311,8 @@ citation   Text     "CertificateNo"
 citation   Date     "Date"
 citation   Text     "ID-number"
 
-The quotation marks are optional for most names. However names with spaces- either embedded, leading or trailing, must be enclosed in double quotes as shown.
+The quotation marks are optional for most names. However names with spaces- either embedded, 
+leading or trailing, must be enclosed in double quotes as shown.
 
 First, I'll take the old template and copy it here, eliminating the type column
 
@@ -358,7 +361,7 @@ citation      "Date"           "Date"
 citation      NULL           "ID-number"
 
 
-Add the KEY names above each catagory of field names
+Add the KEY names above each category of field names
 
 MAPPING_SOURCE =
 source        "Repository"     "RepositoryName"
@@ -373,31 +376,33 @@ citation      "Date"           "Date"
 citation      NULL             "ID-number"
 
 Remove the words source at citation at the start of each line.
+Insert a ">" character between the columns.
 The rows with the field names must be indented with at least 1 space.
 All the rows in a value must have the same indentation.
-The space between the columns is flexible.
-There is one or more blank lines at the end of a value separating it
-from the next item.
+The space between the columns and the ">" is flexible.
+There is one or more blank lines at the end of a value (MAPPING_SOURCE
+and MAPPING_CITATION) separating it from the next item.
+
+This is the text that has to go into the config file:
 
 MAPPING_SOURCE =
-  "Repository"     "RepositoryName"
-  "RepositoryLoc"  "RepositoryLoc"
-  "Jurisdiction"    NULL
+  "Repository"    > "RepositoryName"
+  "RepositoryLoc" > "RepositoryLoc"
+  "Jurisdiction"  >  NULL
 
 
 MAPPING_CITATION =
-  "Name"           "PersonName"
-  "Form"           "Form"
-  "CertificateNo"  "CertificateNo"
-  "Date"           "Date"
-  NULL             "ID-number"
+  "Name"          >  "PersonName"
+  "Form"          >  "Form"
+  "CertificateNo" >  "CertificateNo"
+  "Date"          >  "Date"
+  NULL            >  "ID-number"
 
-This is the text that has to go into the ini file.
 
 =============DIV20==
 STEP 4		Option CHECK_MAPPING_DETAILS = on
 
-Look at the OPTIONS section of the ini file still open in NotePad, edit these
+Look at the OPTIONS section of the config file still open in NotePad, edit these
 two lines so they are as shown:
 LIST_TEMPLATE_DETAILS  = off
 CHECK_MAPPING_DETAILS  = on
@@ -418,7 +423,7 @@ If everything checks out, you're ready to make the changes.
 =============DIV20==
 STEP 5		Option MAKE_CHANGES = on
 
-Look at the OPTIONS section of the ini file still open in NotePad, edit these
+Look at the OPTIONS section of the config file still open in NotePad, edit these
 two lines so they are as shown:
 CHECK_MAPPING_DETAILS  = off
 MAKE_CHANGES  = on
@@ -525,7 +530,7 @@ Source Template Names and Field Names
 For better or for worse source names, source template names, template field names
 in RM are not required to be unique and can start with, end with or contain space characters.
 
-If you specify a name in the ini file that is not unique, the report file will show the problem. Simply rename the item to make the name unique.
+If you specify a name in the config file that is not unique, the report file will show the problem. Simply rename the item to make the name unique.
 If you have duplicate field names that are of the same type (source vs citation), I don't know what to say. You will find odd behavior. Good luck.
 
 If the template name, field name or SOURCE_NAME_LIKE variable contains a space character at the start or the end it will generally be invisible when displayed. In any case you can quotation marks e.g. "Name ", or " Name" or "My Name".
@@ -582,15 +587,15 @@ Delete a Key-Value pair
 Add a new, Key-Value pair with a particular Key and an empty value.-
 
 ===========================================DIV50==
-RM-Python-config.ini  (the ini file)
-If there are any non-ASCII characters in the ini file then the file must be
+RM-Python-config.ini  (the config file)
+If there are any non-ASCII characters in the config file then the file must be
 saved in UTF-8 format, with no byte order mark (BOM).
-The included sample ini file has an accented ä in the first line comment to
+The included sample config file has an accented ä in the first line comment to
 force it to be in the correct format.
 File format is an option in the "Save file" dialog box in NotePad.
 The [END] section is entirely optional.
 
-ini file path names may be absolute or relative to the current directory.
+config file path names may be absolute or relative to the current directory.
 
 The MAPPING key takes a multi-line value.
 Each line must be indented with at least one space character.
@@ -617,7 +622,7 @@ Genealogy          (top level folder, mine is in my Home folder)
   myRM-DB.rmtree   (my main database file)
   Misc Databases   (folder for other databases I frequently use)
   Exhibits         (folder containing all media files in a folder hierarchy)
-  SW               (folder containing various utility apps and the ini file)
+  SW               (folder containing various utility apps and the config file)
 
 
 ===========================================DIV50==
@@ -625,15 +630,15 @@ Troubleshooting:
 If no report file is generated, look at the black command
 console window for error messages that will help you fix the problem.
 
-Error message- ... RM-Python-config.ini file contains a format error ...
+Error message- ... RM-Python-config.config file contains a format error ...
 The problem is as stated, the solution may be harder to determine.
-Start over with the supplied ini file and make sure that works, Then make your
+Start over with the supplied config file and make sure that works, Then make your
 edits one by one to identify the problem.
 You may want to look at- https://en.wikipedia.org/wiki/INI_file
 
 A reason that report file cannot be generated is if the specified REPORT_FILE_PATH
 cannot be created.
-The default value in the supplied ini file should always work.
+The default value in the supplied config file should always work.
 
 If no report file is generated and the black command console window closes
 before you can read it, try first opening a command line console and then
@@ -738,10 +743,10 @@ To install and use the script file version:
 *  Copy these files from downloaded zip file to the working folder-
       ChangeSourceTemplate.py
       RM-Python-config.ini
-*  Edit the ini file in the working folder to specify the locations of the RM
-   database file and the output report file. The ini file also specifies the
+*  Edit the config file in the working folder to specify the locations of the RM
+   database file and the output report file. The config file also specifies the
    input parameters for the fact conversion. See Notes section below.
-   The same ini file may be used with either the .exe or .py version of the utility.
+   The same config file may be used with either the .exe or .py version of the utility.
 *  Double click the ChangeSourceTemplate.py file to run the utility and generate the
    report file.
 *  Examine the report output file.

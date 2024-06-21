@@ -294,7 +294,7 @@ def list_sources_feature(config, reportF, dbConnection):
 # ===================================================DIV60==
 def check_mapping_feature(config, report_file, dbConnection):
 
-    # confirms each fielsd in mapping appears in the corresponding
+    # confirms each field in mapping appears in the corresponding
     # template description
     list_template_details_feature(config, report_file, dbConnection, True)
 
@@ -348,7 +348,6 @@ def check_mapping_feature(config, report_file, dbConnection):
     new_cit_fields.append('NULL')
 
     # Confirm that the entered mapping uses correct fields
-    first_field_error = False
     for each in field_mapping_source:
         if each[0] not in old_src_fields:
             raise RM_Py_Exception(q_str(each[0])
@@ -607,7 +606,8 @@ def parse_field_mapping(in_str):
     list_of_lines = in_str.splitlines()
     list_of_lists = []
     for each_line in list_of_lines:
-        item_set = list(each_line.split())
+        item_set = list(each_line.split(sep='>'))
+        item_set = [x.strip() for x in item_set]
         item_set = [x.strip('"') for x in item_set]
         list_of_lists.append(item_set)
     return list_of_lists
