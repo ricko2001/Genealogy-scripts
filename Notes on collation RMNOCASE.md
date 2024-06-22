@@ -61,10 +61,14 @@ If NOCASE were substituted for RMNOCASE, at least ASCII name would sort as expec
 Of course, one would want to create the corresponding SQL to return the schema back to "the factory default".
 
 Another idea-\
-Reverse engineer the real RMNOCASE collatiion and write an extension that implements it exactly.
+Reverse engineer the real RMNOCASE collation and write an extension that implements it exactly.
 
 Another idea-\
-Determine whether the RMNOCASE code used inside RM can\\ould be extracted from the RootsMagic.exe file and then used as an extension by external apps.
+The "sqlean" project by Anton Zhiyanov at: https://github.com/nalgeon/sqlean
+has a unicode aware collation SQLite database extension, that when loaded, overrides the default NOCASE collation. It could probably be modified to provide a RMNOCASE.
+
+Another idea-\
+Determine whether the RMNOCASE code used inside RM can\\could be extracted from the RootsMagic.exe file and then used as an extension by external apps. It isprobably loaded at runtime as a dll so it make be extracted to a temp folder.
 
 ### The Fake RMNOCASE: unifuzz64.dll
 

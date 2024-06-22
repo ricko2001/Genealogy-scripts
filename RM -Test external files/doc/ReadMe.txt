@@ -1,10 +1,12 @@
 TestExternalFiles
-Utility application for use with RootsMagic databases
 
+Utility application for use with RootsMagic databases
 
 RootsMagic (RM) software uses a SQLite relational database as its data storage
 file. Having access to that file via third part tools is a major advantage
 to using RM.
+
+Purpose
 The database includes links to external files which RM calls "media files".
 These files appear under the RM version 9 Media tab.
 
@@ -30,17 +32,23 @@ A Hash file might be generated semiannually and archived with the full dataset.
 ======================================================================
 Overview
 
-This program is what is called a "command line utility".
+This program is what is called a "command line utility". To install and use
+the exe single file version:
 
 To use it:
+*  Create a working folder on your disk.
 
-1:  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
-    referred to, simply, as the "ini file".)
+*  Copy these files from the downloaded zip file to the working folder-
+      TestExternalFiles.exe
+      RM-Python-config.ini
+
+*   Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
+    referred to, simply, as the "config file".)
     The utility needs to know where the RM database file is located, which
     functions to perform, and where to create the report file.
     Editing the ini file can be done using the Windows NotePad app.
 
-2:  Double click the TestExternalFiles file. This momentarily displays the
+*   Double click the TestExternalFiles file. This momentarily displays the
     black command console window and at the same time, generates the report
     text file.
 
@@ -95,6 +103,7 @@ HASH_FILE
 
 ======================================================================
 Performance
+
     A database with 7,000 media files requires about 3 seconds run time for 5
     features turned on without hash file.
     Generating a hash file for 7,000 files takes about a minute.
@@ -102,7 +111,8 @@ Performance
 
 ======================================================================
 Compatibility
-Works with RootsMagic v7, v8, and v9
+
+Works with RootsMagic v7 through v10
 
 .exe file version
        Windows 64bit only. Tested with Window 11.
@@ -179,10 +189,6 @@ NOTES
     be used to tell the utility to not include certain files in the list of
     unreferenced files. See below.
 
-*   UNREF_FILES
-    If there is a difference in capitalization of file name or directory
-    path in the database vs. the file system, the file will be listed as
-    unreferenced.  (Unix-like file system case sensitivity)
 
 *   UNREF_FILES
     The folder specified in RM's preferences as the Media folder is not 
@@ -225,7 +231,12 @@ NOTES
     organizational tool. This feature does not check the file contents,
     only the names. Use the HASH_File feature to distinguish file contents.
 
-*   SHOW_ORIG_PATH (RM v8 & v9 only)
+*   CASE_SENSITIVE
+    Used only for the features- CHECK_FILES and UNREF_FILES
+    when set to "on", uses case sensitive file and path name comparisons. This is 
+    clear for ASCII characters, not clear how non ASCII in Unicode is handled.
+
+*   SHOW_ORIG_PATH (RM v8 through v10 only)
     A display option is available for files found by either the CHECK_FILES or
     NO_TAG_FILES or DUP_FILES
     The option is turned on with the option SHOW_ORIG_PATH in the ini file.
@@ -234,8 +245,8 @@ NOTES
     - the path as saved in the database with the token not expanded.
     See the note below "Background information" regarding relative paths in RM.
 
-*   RM-Python-config.ini  (the ini file)
-    If there are any non-ASCII characters in the ini file then the file must be
+*   RM-Python-config.ini  (the config file)
+    If there are any non-ASCII characters in the config file then the file must be
     saved in UTF-8 format, with no byte order mark (BOM).
     The included sample ini file has an accented ä in the first line comment to
     force it to be in the correct format.
@@ -274,7 +285,7 @@ NOTES
     ~    home directory  (%USERPROFILE%)
     *    RM main database file location
 
-*   Switching between RM 8 and RM 9
+*   Switching between RM 8, RM 9 and RM 10
     This section probably applies to no-one. Please don't read it and get confused !
     If the machine running the script has had multiple versions of RootsMagic
     installed, over the years, there may be slightly unexpected behavior in some
@@ -286,7 +297,7 @@ NOTES
     when the same media folder location has been used for ver 8 and later.
 
     When run on a RM7 database, the Media Folder location is not needed so the
-    XML file is not referenced, so switching  between ver 7 and ver 9 will not
+    XML file is not referenced, so switching  between ver 7 and ver 10 will not
     be an issue.
 
 *   Troubleshooting:

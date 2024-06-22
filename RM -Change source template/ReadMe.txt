@@ -85,9 +85,10 @@ the exe single file version:
       RM-Python-config.ini
 
 *  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
-   referred to, simply, as the "config file".) The utility needs to know where
-   the RM database file is located, the output report file name and location,
-   and the various configuration parameters needed to tell the utility what to do.
+   referred to, simply, as the "config file".) 
+   The utility needs to know where the RM database file is located, the output
+   report file name and location, and the various configuration parameters
+   needed to tell the utility what to do.
    Editing the config file can be done using the Windows NotePad app.
 
 *  Double click the ChangeSourceTemplate.exe file to run the utility and
