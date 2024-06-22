@@ -101,3 +101,27 @@ I started in TMG as splitting all sources. Now in RM, I am lumping the sources t
 
 I have a Github web site where I have links to these utilities and other RootsMagic related information.\
 https://RichardOtter.github.io
+
+
+
+# Required packages for building frozen executables (exe files)
+
+for new install or upgrade of python
+
+Add to path-
+C:\Users\rotter\AppData\Local\Programs\Python\PythonNNN\Scripts
+(or update existing path to new ver number)
+
+confirm pip is working
+or
+install pip
+https://pip.pypa.io/en/stable/installation/
+
+
+Install these packages:
+
+pip install PyYAML
+
+pip install pyinstaller
+
+pip install pyinstaller-versionfile

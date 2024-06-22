@@ -14,17 +14,19 @@ used to create footnotes using the sentence language, as opposed to free form.
 RM users can create their own source templates. Those users often find that an
 initial source template design needs updating after using it for a time and
 gaining more experience. Changes to the source template are desired, but RM does
-not provide a mechanism to propagate changes to a source template back to
+not provide a mechanism to propagate changes made to a source template back to
 sources and citations already created from it. That's where this utility comes
 in.
 
 A common use case is to add to or rename the fields of a source template that's
 already in use. The work flow using this utility, involves :
-* copy the in-use source template (using the "Copy" button in the RM source
+* Be sure that you have a known-good backup of your database.
+* Copy the in-use source template (using the "Copy" button in the RM source
   templates list window)
-* Rename and edit the copy to have the desired fields
-* Uses this utility to switch the sources that used the old template
-  to instead use the newly created template.
+* Rename and edit the Source Template copy to have the desired fields 
+* Make a copy of your database and place it in a working folder.
+* Uses this utility on the database copy in the working folder to switch the 
+  sources that used the old template to instead use the newly created template.
 
 See "All possible Source Template changes" in the Notes section before
 proceeding.
@@ -39,11 +41,11 @@ utilities can do that.
 Backups
 
 VERY IMPORTANT
-This utility makes changes to the RM database file. It can change a
-large number of data items in a single run.
+This utility makes changes to the RM database file. It can change a large number 
+of data items in a single run.
 You will likely not be satisfied with your first run of the utility and you will
 want to try again, perhaps several times, each time making changes to your
-ini configuration file. You must run this script on a copy of your database file
+configuration file. You must run this script on a copy of your database file
 and have at least several known-good backups.
 
 Once you are satisfied, don't hurry to use the resulting file. Wait a week or so
@@ -57,14 +59,14 @@ lose work if you miss a problem and have to revert to a backup.
 =========================================================================DIV80==
 Compatibility
 
-Tested with RootsMagic v10
+Tested with RootsMagic version 10
 
 .exe file version
        Windows 64bit only. Tested with Window 11.
 
 .py file version
        Tested with Python for Windows v3.12   64bit
-       The py file has not been tested on MacOS could probably be easily
+       The py file has not been tested on MacOS but could probably be easily
        modified to work on MacOS with Python version 3 installed.
 
 =========================================================================DIV80==
@@ -75,8 +77,8 @@ the exe single file version:
 
 *  Create a working folder on your disk.
 
-*  With RM closed, make a cop of your main database, rename it, and put it into
-   the working folder. Never run the utility directly on you main database file.
+*  With RM closed, make a cop of your main database, rename it, and put the copy
+   into the working folder. Never run the utility directly on you main database file.
 
 *  Copy these files from the downloaded zip file to the working folder-
       ChangeSourceTemplate.exe
@@ -94,7 +96,7 @@ the exe single file version:
 *  Examine the report output file and then, based on the output, go to the
    next step by editing the config file and re-running the utility. Repeat.
    A series of validation runs is completed first and then a final run is
-   initiated with "MAKE_CHANAGES = on" to actually change the database.
+   initiated with "MAKE_CHANGES = on" to actually change the database.
 
    Details follow below.
 
@@ -111,7 +113,7 @@ Running the utility in detail
 
 =============DIV20==
 Create a folder on your computer that you will not confuse with other
-folders. It will be referred to as the "working folder" below.
+folders. It will be referred to as the "working folder".
 
 =============DIV20==
 Copy these two required files from the downloaded zip file to the working folder-
@@ -128,8 +130,8 @@ Suggestion: name it "TEST.rmtree"
 Move the copy into the working folder that you created above.
 
 =============DIV20==
-Edit the RM-Python-config.config file in the working folder by opening NotePad and then
-dragging the RM-Python-config.config file onto the opened NotePad application window.
+Edit the RM-Python-config.ini file in the working folder by opening NotePad and then
+dragging the RM-Python-config.ini file onto the opened NotePad application window.
 
 Look for the section at the top-
 [FILE_PATHS]
@@ -154,8 +156,8 @@ The first four options tell the utility to execute validation runs. Only the las
 option, when "on" will make changes to your database. Either 0 or 1 of the five
 options may be "on" at one time in a run of the utility.
 Save the config file, and leave the file open in the editor.
-NOTE: only the first "on" action will be done, the rest ignored. So always check
-that only one action is set to on.
+NOTE: only the first "on" action will be performed when the utility is run, the 
+remaining options are ignored. So always check that only one action is set to on.
 
 =============DIV20==
 STEP 0		Option    All options = off
@@ -630,7 +632,7 @@ Troubleshooting:
 If no report file is generated, look at the black command
 console window for error messages that will help you fix the problem.
 
-Error message- ... RM-Python-config.config file contains a format error ...
+Error message- ... RM-Python-config.ini file contains a format error ...
 The problem is as stated, the solution may be harder to determine.
 Start over with the supplied config file and make sure that works, Then make your
 edits one by one to identify the problem.
@@ -667,7 +669,7 @@ SourceTemplate XML has Field Name, Display Name, Type, Hint, LongHint, and boole
 Sources and Citations have XML that contain only Field Name/Field Value pairs.
 
 ===========================================DIV50==
-XML format has changed format from v7 to v8
+details of the XML format has changed format from v7 to v8
 
 Old style XML  (possibly only remains in built-in SourceTemplate records ?)
 ...<?xml version="1.0" encoding="UTF-8"?>x0A<root> text </root>c0A
@@ -675,7 +677,7 @@ NOTE- when copying from SQLite expert BLOB editor, the leading 3 BOM bytes and l
 
 New style
 <root> text </root>
-No characters outside of root element. (no XML processing statement, no BOM, no line feed chars.
+No characters outside of root element. (no XML processing statement, no BOM, no line feed chars. Much cleaner.
 
 This app-
   Ignores the extraneous info and looks only at the root element.
@@ -743,14 +745,7 @@ To install and use the script file version:
 *  Copy these files from downloaded zip file to the working folder-
       ChangeSourceTemplate.py
       RM-Python-config.ini
-*  Edit the config file in the working folder to specify the locations of the RM
-   database file and the output report file. The config file also specifies the
-   input parameters for the fact conversion. See Notes section below.
-   The same config file may be used with either the .exe or .py version of the utility.
-*  Double click the ChangeSourceTemplate.py file to run the utility and generate the
-   report file.
-*  Examine the report output file.
-
+*  continue as above, in the section "Running the utility in detail"
 
 =========================================================================DIV80==
 Python install-
