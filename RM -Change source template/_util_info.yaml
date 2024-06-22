@@ -10,6 +10,10 @@ DistributionFileList:
  - ReadMe.txt
  - RM-Python-config.ini
 
+PyInstaller_extra_params:
+# note the - for array and -- for param
+ - --hidden-import=sqlite3
+ -  --hidden-import=configparser
 
 CompanyName: RJOtter SW
 FileDescription: Utility to work with RootsMagic database files

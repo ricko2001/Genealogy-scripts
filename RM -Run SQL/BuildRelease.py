@@ -17,6 +17,7 @@ def main():
             util_name = doc["InternalName"]
             util_file_name = doc["OriginalFilename"]
             distribution_file_list = doc["DistributionFileList"]
+            PyInstaller_extra_params = doc["PyInstaller_extra_params"]
 
         version_number_short = version_number_full[0:-2]
         distribution_dir_name = util_name + ' v' + version_number_short
@@ -50,9 +51,20 @@ def main():
         subprocess.run(
             "create-version-file _util_info.yaml --outfile Version_rc.txt")
 
+        # set up PyInstaller command line
+        normal_params= " --onefile"
+        normal_params += " --version-file Version_rc.txt"
+        normal_params += (" " + util_name + ".py")
+
+        extra_params = ''
+        # get any extra params for PyInstaller
+        for item in PyInstaller_extra_params:
+            extra_params += (" " + item)
+
+        py_installer_cmd_line= "pyinstaller " + extra_params + normal_params
+
         # create the exe file
-        subprocess.run(
-            "pyinstaller --onefile --version-file Version_rc.txt  " + util_name + ".py")
+        subprocess.run(py_installer_cmd_line)
 
         os.remove("_util_info.yaml")
         os.remove("Version_rc.txt")
@@ -95,17 +107,17 @@ END OF SCRIPT
 def make_zipfile(output_filename, source_dir):
 
     # https://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory
-    relroot = os.path.abspath(os.path.join(source_dir, os.pardir))
+    relative_root = os.path.abspath(os.path.join(source_dir, os.pardir))
     with zipfile.ZipFile(output_filename, "w", zipfile.ZIP_DEFLATED) as zip:
         for root, dirs, files in os.walk(source_dir):
             # add directory (needed for empty dirs)
-            zip.write(root, os.path.relpath(root, relroot))
+            zip.write(root, os.path.relpath(root, relative_root))
             for file in files:
                 filename = os.path.join(root, file)
                 if os.path.isfile(filename):  # regular files only
-                    arcname = os.path.join(
-                        os.path.relpath(root, relroot), file)
-                    zip.write(filename, arcname)
+                    archive_name = os.path.join(
+                        os.path.relpath(root, relative_root), file)
+                    zip.write(filename, archive_name)
 
 
 # ===================================================DIV60==
