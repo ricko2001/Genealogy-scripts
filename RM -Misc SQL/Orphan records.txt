@@ -1,0 +1,209 @@
+This removes citation links only- not citations
+Best to look at the list and figure out what's not being used anymore before deleting anything.
+
+Cause- lack of referential integrity constraints in RM.
+
+This select uses NOCASE
+Add in missing tables
+
+
+SELECT 'Individual' AS CitationType,
+        S.Name COLLATE NOCASE AS SourceName,
+        C.CitationName COLLATE NOCASE,
+        CL.OwnerID AS RIN1,
+        NULL AS RIN2,
+        NULL AS FID,
+        CL.LinkID,
+        CL.OwnerID
+FROM CitationLinkTable AS CL
+JOIN CitationTable AS C ON C.CitationID = CL.CitationID AND Cl.OwnerType = 0
+JOIN SourceTable AS S ON S.SourceID = C.SourceID
+LEFT JOIN PersonTable AS P ON P.PersonID = CL.OwnerID
+WHERE P.PersonID IS NULL
+
+UNION
+
+SELECT 'Family' AS CitationType,
+        S.Name COLLATE NOCASE AS SourceName,
+       C.CitationName COLLATE NOCASE,
+       F.FatherID AS RIN1,
+       F.MotherID AS RIN2,
+       F.FamilyID AS FID,
+       CL.LinkID,
+       CL.OwnerID
+FROM CitationLinkTable AS CL
+JOIN CitationTable AS C ON C.CitationID = CL.CitationID AND CL.OwnerType = 1
+JOIN SourceTable AS S ON S.SourceID = C.SourceID
+LEFT JOIN FamilyTable AS F ON F.FamilyID = CL.OwnerID 
+WHERE F.FamilyID IS NULL
+
+UNION
+
+SELECT 'Event' AS CitationType,
+        S.Name COLLATE NOCASE AS SourceName,
+       C.CitationName COLLATE NOCASE,
+       E.OwnerID AS RIN1,
+       NULL AS RIN2,
+       NULL AS FID,
+       CL.LinkID,        
+       CL.OwnerID
+FROM CitationLinkTable AS CL
+JOIN CitationTable AS C ON C.CitationID = CL.CitationID AND CL.OwnerType = 2
+JOIN SourceTable AS S ON S.SourceID = C.SourceID
+LEFT JOIN EventTable AS E ON E.EventID = CL.OwnerID
+WHERE E.EventID IS NULL
+
+UNION
+
+SELECT 'Name' AS CitationType,
+        S.Name COLLATE NOCASE AS SourceName,
+       C.CitationName COLLATE NOCASE,
+       N.OwnerID AS RIN1,
+       NULL AS RIN2,
+       NULL AS FID,
+       CL.LinkID,
+       CL.OwnerID
+FROM CitationLinkTable AS CL
+JOIN CitationTable AS C ON C.CitationID = CL.CitationID AND CL.OwnerType = 7
+JOIN SourceTable AS S ON S.SourceID = C.SourceID
+LEFT JOIN NameTable AS N ON N.NameID = CL.OwnerID
+WHERE N.NameID IS NULL
+
+
+
+ORIGIN
+https://sqlitetoolsforrootsmagic.com/forum/topic/phantom-citation-links/
+
+Phantom Citation Links
+Jerry Bryan
+thejerrybryan
+119 Posts
+#1 · 2024-06-18, 11:46 pm
+The issue of phantom citation links came up recently on the RM Online Community. A citation link becomes phantom for causes unknown if the object to which the citation links ceases to exist while the link itself continues to exist. Such phantom links are not cleaned up by RM's Clean Phantom Records tool.
+
+I developed two scripts, one to identify such phantom citation links and the other to delete them. There is really nothing else you can do with such links other than to delete them. Attached are four files, two for RM7 and two for RM9. RM7's citation links are in the CitationTable itself while RM9's citation links are in the CitationLinkTable.
+
+Phantom citation links are identified or deleted for individuals, for families, for events, and for names. In RM9, there can be citation links for tasks and for associations. But I don't use these RM features, so I made no attempt to address phantom links for tasks or for associations.
+
+Uploaded files:
+delete_phantom_citation_link_7.sql
+delete_phantom_citation_link_9.sql
+phantom_citation_link_info_7.sql
+phantom_citation_link_info_9.sql
+
+===========================================DIV50==
+===========================================DIV50==
+
+/*
+phantom_citation_link_info_9.sql  (RM9 version)
+Jerry Bryan    6/18/2024
+
+Shows info for citation links in CitationLinkTable which are phantom.
+*/
+
+SELECT 'Individual' AS CitationType,
+        S.Name AS SourceName,
+        C.CitationName,
+        CL.OwnerID AS RIN1,
+        NULL AS RIN2,
+        NULL AS FID,
+        CL.LinkID,
+        CL.OwnerID
+FROM CitationLinkTable AS CL
+JOIN CitationTable AS C ON C.CitationID = CL.CitationID AND Cl.OwnerType = 0
+JOIN SourceTable AS S ON S.SourceID = C.SourceID
+LEFT JOIN PersonTable AS P ON P.PersonID = CL.OwnerID
+WHERE P.PersonID IS NULL
+
+UNION
+
+SELECT 'Family' AS CitationType,
+       S.Name AS SourceName,
+       C.CitationName,
+       F.FatherID AS RIN1,
+       F.MotherID AS RIN2,
+       F.FamilyID AS FID,
+       CL.LinkID,
+       CL.OwnerID
+FROM CitationLinkTable AS CL
+JOIN CitationTable AS C ON C.CitationID = CL.CitationID AND CL.OwnerType = 1
+JOIN SourceTable AS S ON S.SourceID = C.SourceID
+LEFT JOIN FamilyTable AS F ON F.FamilyID = CL.OwnerID 
+WHERE F.FamilyID IS NULL
+
+UNION
+
+SELECT 'Event' AS CitationType,
+       S.Name AS SourceName,
+       C.CitationName,
+       E.OwnerID AS RIN1,
+       NULL AS RIN2,
+       NULL AS FID,
+       CL.LinkID,        
+       CL.OwnerID
+FROM CitationLinkTable AS CL
+JOIN CitationTable AS C ON C.CitationID = CL.CitationID AND CL.OwnerType = 2
+JOIN SourceTable AS S ON S.SourceID = C.SourceID
+LEFT JOIN EventTable AS E ON E.EventID = CL.OwnerID
+WHERE E.EventID IS NULL
+
+UNION
+
+SELECT 'Name' AS CitationType,
+       S.Name AS SourceName,
+       C.CitationName,
+       N.OwnerID AS RIN1,
+       NULL AS RIN2,
+       NULL AS FID,
+       CL.LinkID,
+       CL.OwnerID
+FROM CitationLinkTable AS CL
+JOIN CitationTable AS C ON C.CitationID = CL.CitationID AND CL.OwnerType = 7
+JOIN SourceTable AS S ON S.SourceID = C.SourceID
+LEFT JOIN NameTable AS N ON N.NameID = CL.OwnerID
+WHERE N.NameID IS NULL
+
+===========================================DIV50==
+===========================================DIV50==
+
+/*
+delete_phantom_citation_link_9.sql  (RM9 version)
+Jerry Bryan    6/18/2024
+
+Deletes citation links in CitationLinkTable which
+are phantom.
+*/
+
+DELETE FROM CitationLinkTable
+WHERE LinkID IN
+(
+SELECT CL.LinkID
+FROM CitationLinkTable AS CL 
+LEFT JOIN PersonTable AS P ON P.PersonID = CL.OwnerID
+WHERE CL.OwnerType = 0 AND P.PersonID IS NULL
+
+UNION
+
+SELECT CL.LinkID
+FROM CitationLinkTable AS CL 
+LEFT JOIN FamilyTable AS F ON F.FamilyID = CL.OwnerID 
+WHERE CL.OwnerType = 1 AND F.FamilyID IS NULL
+
+UNION
+
+SELECT CL.LinkID
+FROM CitationLinkTable AS CL
+LEFT JOIN EventTable AS E ON E.EventID = CL.OwnerID
+WHERE CL.OwnerType = 2 AND E.EventID IS NULL
+
+UNION
+
+SELECT CL.LinkID
+FROM CitationLinkTable AS CL
+LEFT JOIN NameTable AS N ON N.NameID = CL.OwnerID
+WHERE CL.OwnerType = 7 AND N.NameID IS NULL
+)
+
+===========================================DIV50==
+===========================================DIV50==
+

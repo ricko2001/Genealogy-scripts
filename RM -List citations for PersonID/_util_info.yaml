@@ -1,9 +1,9 @@
-InternalName:  ListSourceNamesForPersonID
-OriginalFilename:  ListSourceNamesForPersonID.exe
+InternalName:  ListCitationsForPersonID
+OriginalFilename:  ListCitationsForPersonID.exe
 
 # Use 4 place version here. Last dot and zero will be truncated for folder name.
 # Last Release  none
-Version: 0.9.1.0
+Version: 1.0.0.0
 
 DistributionFileList:
 # <InternalName>.py amd <InternalName>.exe always included by build script

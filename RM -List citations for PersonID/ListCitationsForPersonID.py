@@ -12,7 +12,7 @@ import traceback
 #   RootsMagic database file
 #   RM-Python-config.ini
 
-# Tested with: 
+# Tested with:
 #   RootsMagic database file v9.1.6
 #   Python for Windows v3.12.3
 
@@ -23,6 +23,8 @@ import traceback
 #    RIN         PERSON_RIN
 
 # ===================================================DIV60==
+
+
 def main():
 
     # Configuration
@@ -177,17 +179,18 @@ def display_sources_feature(config, db_connection, report_file):
 
     except:
         pass
-    
+
     if PersonID is None:
         PersonID_str = input("\n"  "PersonID/RIN =")
         try:
             PersonID = int(PersonID_str)
         except:
-            raise RM_Py_Exception('ERROR: Enter an integer for the PersonID/RIN.')
-        if not PersonID >0: 
+            raise RM_Py_Exception(
+                'ERROR: Enter an integer for the PersonID/RIN.')
+        if not PersonID > 0:
             raise RM_Py_Exception('ERROR: Enter an integer larger than 0.')
 
-    SqlStmt="""\
+    SqlStmt = """\
 WITH
   constants(C_Person) AS (
     SELECT   ?   AS C_Person
@@ -260,16 +263,17 @@ ORDER BY SourceTable.Name COLLATE NOCASE;
 """
 
     cur = db_connection.cursor()
-    cur.execute(SqlStmt, (PersonID,) )
+    cur.execute(SqlStmt, (PersonID,))
     rows = cur.fetchall()
 
     report_file.write("PersonID = " + str(PersonID) + "\n")
-    report_file.write (str(len(rows)) + " source citations found \n\n")
+    report_file.write(str(len(rows)) + " source citations found \n\n")
 
     for row in rows:
         report_file.write(row[0] + "\t\t" + row[1] + "\n\n")
 
-    report_file.write("================================================" "\n\n")
+    report_file.write(
+        "================================================" "\n\n")
 
     return
 
