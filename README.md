@@ -1,20 +1,20 @@
 # Genealogy-scripts and utilities
 
-updated: 2024-03-17
+updated: 2024-06-22
 
 These are scripts I've written to help my work with RootsMagic genealogy software. They directly access the SQLite database used by RootsMagic (RM) to store its data.
 
 Some are simple SQL in txt files, there are several Windows command files, and a number of Python
 scripts.
 
-The are tested only on Windows 11 x64 OS with Python 3x. Most have been tested only with RM v9 databases.
+The are tested only on Windows 11 x64 OS with Python 3x. Most have been tested only with RM v10 databases.
 I don't have a MacOS computer to test with, but I'd guess that most could easily be ported. Let me know if you have any results.
 
 
-"Released" means that-
+"Released" scripts means that-
 * I've included an .exe file version of the Python script so Python installation is not required.
-* Each release is version numbered.
-* The ReadMe file is user friendly.
+* The release is version numbered.
+* The ReadMe file has enough guidance for even a novice user.
 * All configuration is done through an ini file so the python code does not need to be changed.
 * All needed files are in a single zip archive for easy download.
 * I've done significant amounts of testing.
@@ -58,13 +58,11 @@ A utility to switch the source template used by one or a set of sources.\
 Preserves all linkages and allows remapping of field data.\
 This is the solution for modifying a SourceTemplate in use.
 
-This makes changes to the RM file when run with the "MAKE_CHANGES" option. Be absolutely sure that a working backup is available. The script works, but you will likely want to re-run it several times to get the exact results that you desire.
-
-My process is to always run the script on a copy of the main database. Then after iterating through fixes to the ini file and I'm satisfied with the results, I backup the main database and then move the copy with the changes done by the script to the main database file location.
+My process is to always run the script on a copy of the main database. Then after iterating through fixes to the configuration file and I'm satisfied with the results, I backup the main database and then move the copy with the changes done by the script to the main database file location.
 
 ### RM -Citation Sort Order
 
-A utility to allow the user to re-order the listing of citations attached to Persons, Names, or Facts. Uses python module RMDate.py in RM -Dates and Sort Dates
+A utility to allow the user to re-order the listing of citations attached to Persons, Names, or Facts.
 
 ### RM -Convert Fact
 
@@ -94,7 +92,7 @@ The Maintenance sql has been run on my production database many times.
 
 ### RM -Lump misc sources
 
-I started in TMG as splitting all sources. Now in RM, I am lumping the sources that make sense to me. So far, Find_a_Grave, Census and Social Security SSDI, and all Ancestry collections. These scripts do that. They will most likely need modification for your circumstances.
+I started in TMG as splitting all sources. Now in RM, I am lumping the sources for which it makes sense to me. So far, Find_a_Grave, Census and Social Security SSDI, and all Ancestry collections. These scripts do that. They will most likely need modification for your circumstances.
 
 
 ## NOTE-
@@ -102,21 +100,25 @@ I started in TMG as splitting all sources. Now in RM, I am lumping the sources t
 I have a Github web site where I have links to these utilities and other RootsMagic related information.\
 https://RichardOtter.github.io
 
+# Python Packages used
 
+## Required packages for running the scripts
 
-# Required packages for building frozen executables (exe files)
+Currently, 2 scripts use the custom "RMpy" python package located in the "RM -RMpy package" folder.
+The exe files have it already included.
+Those scripts using the package will find it if the folder structure is preserved. If the main script is 
+moved elsewhere, copy the RMpy folder to be in the same directory as the main script.
 
-for new install or upgrade of python
+## Required packages for building frozen executables (exe files)
+
+For a new install or each upgrade of python, do the following:
 
 Add to path-
 C:\Users\rotter\AppData\Local\Programs\Python\PythonNNN\Scripts
 (or update existing path to new ver number)
 
-confirm pip is working
-or
-install pip
-https://pip.pypa.io/en/stable/installation/
-
+confirm pip is working or install pip 
+Currently, see:  https://pip.pypa.io/en/stable/installation/
 
 Install these packages:
 
@@ -125,3 +127,4 @@ pip install PyYAML
 pip install pyinstaller
 
 pip install pyinstaller-versionfile
+
