@@ -11,6 +11,11 @@ DistributionFileList:
  - doc\ReadMe.txt
  - doc\Sample report file.txt
 
+PyInstaller_extra_params:
+# note the - for array and -- for param
+ - --hidden-import=sqlite3
+ -  --hidden-import=configparser
+ 
 CompanyName: RJOtter SW
 FileDescription: Utility to work with RootsMagic database files
 LegalCopyright: Open Source
