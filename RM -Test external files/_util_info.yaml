@@ -7,14 +7,15 @@ Version: 1.6.1.0
 
 DistributionFileList:
 # <InternalName>.py amd <InternalName>.exe always included by build script
- - RM-Python-config.ini
- - doc\ReadMe.txt
- - doc\Sample report file.txt
+  - RM-Python-config.ini
+  - doc\ReadMe.txt
+  - doc\Sample report file.txt
 
 PyInstaller_extra_params:
 # note the - for array and -- for param
- - --hidden-import=sqlite3
- -  --hidden-import=configparser
+  - --paths="../../../RM -RMpy package"
+  - --hidden-import=sqlite3
+  - --hidden-import=configparser
  
 CompanyName: RJOtter SW
 FileDescription: Utility to work with RootsMagic database files
