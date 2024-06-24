@@ -61,6 +61,8 @@ def main():
         for item in PyInstaller_extra_params:
             extra_params += (" " + item)
 
+        print(f"{extra_params=}\n\n{normal_params=}\n\n")
+
         py_installer_cmd_line= "pyinstaller " + extra_params + normal_params
 
         # create the exe file
