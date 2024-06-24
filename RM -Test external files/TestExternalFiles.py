@@ -1,13 +1,14 @@
 import os
 import sys
-import sqlite3
 from datetime import datetime
-import configparser
 from pathlib import Path
 import xml.etree.ElementTree as ET
 import hashlib
-import subprocess
-import traceback
+
+sys.path.append( r'..\\RM -RMpy package' )
+import RMpy.launcher # type: ignore
+import RMpy.common as RMpyCom # type: ignore
+
 
 # This script can only read a RootsMagic database file and cannot change it.
 # However, until trust is established:
@@ -18,9 +19,9 @@ import traceback
 #   RM-Python-config.ini
 
 # Last tested with:
-#   RootsMagic database v7, v8 or v9
+#   RootsMagic database v7 through v10
 #   Python for Windows v3.12.3
-#   RootsMagic v7, v8 or v9 installed (only for unref files option)
+#   RootsMagic v7 through v10 installed (only for unref files option)
 
 # Config files fields used
 #    FILE_PATHS  REPORT_FILE_PATH
@@ -46,6 +47,7 @@ import traceback
 
 G_media_directory_path = None
 G_db_file_folder_path = None
+G_DEBUG = False
 
 
 # ===================================================DIV60==
@@ -53,141 +55,14 @@ def main():
 
     # Configuration
     config_file_name = "RM-Python-config.ini"
-    db_connection = None
-    report_display_app = None
     RMNOCASE_required = False
-    allow_db_changes = True
+    allow_db_changes = False
 
-    # ===========================================DIV50==
-    # Errors go to console window
-    # ===========================================DIV50==
-    try:
-        # look for config file in "current directory"
-        # must be encoded as UTF-8 (no BOM).
-        # see   https://docs.python.org/3/library/configparser.html
-        # get_current_directory function works for both script and frozen executable
-        config_file_path = os.path.join(
-            get_current_directory(), config_file_name)
-
-        # confirm that config file is at expected path and that it is readable & valid.
-        if not os.path.exists(config_file_path):
-            raise RM_Py_Exception(
-                f"ERROR: The configuration file, {config_file_name}"
-                f" must be in the same directory as the program file. \n\n")
-
-        config = configparser.ConfigParser(empty_lines_in_values=False,
-                                           interpolation=None)
-        try:
-            config.read(config_file_path, 'UTF-8')
-        except:
-            raise RM_Py_Exception(
-                f"ERROR: The {config_file_name!r}"
-                f" file contains a format error and cannot be parsed. \n\n")
-        try:
-            report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
-        except:
-            raise RM_Py_Exception(
-                f"ERROR: REPORT_FILE_PATH must be defined in"
-                f" the {config_file_name!r}. \n\n")
-        try:
-            # Use UTF-8 encoding for the report file. Test for write-ability
-            open(report_path,  mode='w', encoding='utf-8')
-        except:
-            raise RM_Py_Exception(
-                f"ERROR: Cannot create the report file {report_path} \n\n")
-
-    except RM_Py_Exception as e:
-        pause_with_message(e)
-        return 1
-    except Exception as e:
-        traceback.print_exception(e, file=sys.stdout)
-        pause_with_message(
-            f"ERROR: Application failed. Please email error report: \n"
-            f"{str(e)} \n to the author")
-        return 1
-
-    # open the already tested report file
-    report_file = open(report_path,  mode='w', encoding='utf-8')
-
-    # ===========================================DIV50==
-    # Errors from here forward, go to Report File
-    # ===========================================DIV50==
-    try:
-        try:
-            report_display_app = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
-        except:
-            pass
-        if report_display_app is not None and not os.path.exists(report_display_app):
-            raise RM_Py_Exception(
-                f"ERROR: Path for report file display"
-                f" app not found: {report_display_app}")
-
-        try:
-            database_path = config['FILE_PATHS']['DB_PATH']
-        except:
-            raise RM_Py_Exception('ERROR: DB_PATH must be specified.')
-        if not os.path.exists(database_path):
-            raise RM_Py_Exception(
-                f"ERROR: Path for database not found: {database_path} \n\n"
-                f"Absolute path checked: {os.path.abspath(database_path)}")
-
-        if RMNOCASE_required:
-            try:
-                rmnocase_path = config['FILE_PATHS']['RMNOCASE_PATH']
-            except:
-                raise RM_Py_Exception(
-                    "ERROR: RMNOCASE_PATH must be specified.")
-            if not os.path.exists(rmnocase_path):
-                raise RM_Py_Exception(
-                    f"ERROR: Path for RMNOCASE extension (unifuzz64.dll) not found at: \n"
-                    f"{rmnocase_path} \n\n"
-                    f"Absolute path checked: \n{os.path.abspath(rmnocase_path)}")
-
-        # RM database file info
-        file_modification_time = datetime.fromtimestamp(
-            os.path.getmtime(database_path))
-
-        if RMNOCASE_required:
-            db_connection = create_db_connection(database_path, rmnocase_path)
-        else:
-            db_connection = create_db_connection(database_path, None)
-
-        # write header to report file
-        file_time = file_modification_time.strftime("%Y-%m-%d %H:%M:%S")
-        sqlite_ver =get_SQLite_library_version(db_connection)
-
-        header = (
-            f"Report generated at      = {time_stamp_now()} \n"
-            f"Database processed       = {os.path.abspath(database_path)} \n"
-            f"Database last changed on = {file_time} \n"
-            f"SQLite library version   = {sqlite_ver} \n"
-            f"\n")
-
-        report_file.write(header)
-
-        run_selected_features(config, db_connection, report_file)
-
-    except (sqlite3.OperationalError, sqlite3.ProgrammingError) as e:
-        report_file.write(
-            "ERROR: SQL execution returned an error \n\n{str(e)} \n")
-        return 1
-    except RM_Py_Exception as e:
-        report_file.write(str(e))
-        return 1
-    except Exception as e:
-        traceback.print_exception(e, file=report_file)
-        report_file.write(
-            "\n\n" "ERROR: Application failed. Please email report file to author. ")
-        return 1
-    finally:
-        if db_connection is not None:
-            if allow_db_changes:
-                db_connection.commit()
-            db_connection.close()
-        report_file.close()
-        if report_display_app is not None:
-            subprocess.Popen([report_display_app, report_path])
-    return 0
+    RMpy.launcher.launcher(os.path.dirname(__file__),
+                    config_file_name,
+                    RMNOCASE_required,
+                    allow_db_changes,
+                    run_selected_features)
 
 
 # ===================================================DIV60==
@@ -215,7 +90,7 @@ def run_selected_features(config, db_connection, report_file):
         config['OPTIONS'].getboolean('CASE_SENSITIVE')
 
     except:
-        raise RM_Py_Exception(
+        raise RMpyCom.RM_Py_Exception(
             "One of the OPTIONS values could not be parsed as boolean. \n")
 
     # Run the requested options. Usually multiple options.
@@ -233,10 +108,10 @@ def run_selected_features(config, db_connection, report_file):
         list_folders_feature(config, db_connection, report_file)
 
     if config['OPTIONS'].getboolean('DUP_FILENAMES'):
-        find_duplcate_file_names_feature(db_connection, report_file)
+        find_duplicate_file_names_feature(db_connection, report_file)
 
     if config['OPTIONS'].getboolean('DUP_FILEPATHS'):
-        find_duplcate_file_paths_feature(db_connection, report_file)
+        find_duplicate_file_paths_feature(db_connection, report_file)
 
     if config['OPTIONS'].getboolean('NOT_MEDIA_FLDR'):
         find_file_not_in_media_folder_feature(config, db_connection, report_file)
@@ -258,9 +133,13 @@ def list_missing_files_feature(config, db_connection, report_file):
     # get options
     try:
         show_original_path = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
+    except:
+        show_original_path = False
+
+    try:
         case_sensitive = config['OPTIONS'].getboolean('CASE_SENSITIVE')
     except:
-        pass
+        case_sensitive = True
 
     # First check database for empty paths or filenames
     report_empty_paths(db_connection, report_file)
@@ -342,20 +221,20 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
     try:
         ext_files_folder_path = config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH']
     except:
-        raise RM_Py_Exception(
+        raise RMpyCom.RM_Py_Exception(
             "ERROR: SEARCH_ROOT_FLDR_PATH must be specified for this option. \n")
 
     try:
         case_sensitive = config['OPTIONS'].getboolean('CASE_SENSITIVE')
     except:
-        pass
+        case_sensitive = True
 
     # Validate the folder path
     if not Path(ext_files_folder_path).exists():
-        raise RM_Py_Exception(
+        raise RMpyCom.RM_Py_Exception(
             f"ERROR: Directory path not found: {qtStr(ext_files_folder_path)} \n")
     if not Path(ext_files_folder_path).is_dir():
-        raise RM_Py_Exception(
+        raise RMpyCom.RM_Py_Exception(
             f"ERROR: Path is not a directory: {qtStr(ext_files_folder_path)} \n")
 
     # First check database for empty paths or filenames
@@ -368,23 +247,25 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
         if len(str(row[0])) == 0 or len(str(row[1])) == 0:
             continue
         if row[0][0] == '*':
+            # what's going on here?
             pass
         dirPath = expand_relative_dir_path(row[0])
         file_path = os.path.join(dirPath, row[1])
         db_file_list.append(file_path)
 
-    media_file_list = folder_contents_minus_ignored(
+    filesystem_folder_file_list = folder_contents_minus_ignored(
         report_file, Path(ext_files_folder_path), config)
 
     if (case_sensitive == True):
         # case sensitive
-        unref_files = list(set(media_file_list).difference(db_file_list))
+        unref_files = list(set(filesystem_folder_file_list).difference(db_file_list))
     else:
-        media_file_list_lc = [item.lower() for item in media_file_list]
+        filesystem_folder_file_list_lc = [item.lower() for item in filesystem_folder_file_list]
         db_file_list_lc = [item.lower() for item in db_file_list]
-        unref_files = list(set(media_file_list_lc).difference(db_file_list_lc))
+        unref_files = list(set(filesystem_folder_file_list_lc).difference(db_file_list_lc))
 
     if len(unref_files) > 0:
+        # print the files
         unref_files.sort()
 
         # don't print full path from root folder
@@ -397,11 +278,11 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
     else:
         report_file.write("\n    No unreferenced files were found.\n\n")
 
-    possibly_unexpected = len(db_file_list) - len(media_file_list)
+    possibly_unexpected = len(db_file_list) - len(filesystem_folder_file_list)
     summary = (
         f"\n    Folder processed:  {ext_files_folder_path}"
         f"\n    Number of files in folder: {
-            len(media_file_list)} (exclusive of ignored items)"
+            len(filesystem_folder_file_list)} (exclusive of ignored items)"
         f"\n    Number of database file links: {len(db_file_list)}"
         f"\n    # DB links minus # non-ignored files: {possibly_unexpected} \n")
 
@@ -478,7 +359,7 @@ def list_folders_feature(config, db_connection, report_file):
 
 
 # ===================================================DIV60==
-def find_duplcate_file_paths_feature(db_connection, report_file):
+def find_duplicate_file_paths_feature(db_connection, report_file):
 
     # this currently find exact duplicates as saved in DB path & filename (ignoring case)
     # duplicates *after expansion* of relative paths not found
@@ -504,7 +385,7 @@ def find_duplcate_file_paths_feature(db_connection, report_file):
 
 
 # ===================================================DIV60==
-def find_duplcate_file_names_feature(db_connection, report_file):
+def find_duplicate_file_names_feature(db_connection, report_file):
 
     # this finds exact filename duplicates as saved in DB (ignoring case)
     feature_ame = "Duplicated File Names"
@@ -539,17 +420,17 @@ def file_hash_feature(config, db_connection, report_file):
     try:
         hash_file_folder = config['FILE_PATHS']['HASH_FILE_FLDR_PATH']
     except:
-        raise RM_Py_Exception(
+        raise RMpyCom.RM_Py_Exception(
             "ERROR: HASH_FILE_FLDR_PATH must be specified for this option. \n")
 
     hash_file_path = os.path.join(
         hash_file_folder,
-        "MediaFiles_HASH_" + time_stamp_now("file") + ".txt")
+        "MediaFiles_HASH_" + RMpyCom.time_stamp_now("file") + ".txt")
 
     try:
         hash_file = open(hash_file_path,  mode='w', encoding='utf-8')
     except:
-        raise RM_Py_Exception(
+        raise RMpyCom.RM_Py_Exception(
             f"ERROR: Cannot create the hash file:{qtStr(hash_file_path)} \n\n")
 
     report_file.write(
@@ -750,7 +631,7 @@ def section(pos, name, report_file):
     elif pos == "FINAL":
         text = f"\n{Divider} \n=== End of Report\n"
     else:
-        raise RM_Py_Exception(
+        raise RMpyCom.RM_Py_Exception(
             "INTERNAL ERROR: Section position not correctly defined")
 
     report_file.write(text)
@@ -804,7 +685,7 @@ def get_media_directory():
 
     media_folder_path = "RM8 or later not installed"
 
-#  If xml settings file for RM 8 or 9 not found, return the medaiPath containing the
+#  If xml settings file for RM 8 or 9 not found, return the mediaPath containing the
 #  RM8 or later not installed message. It will never be used because RM 7 and earlier
 #  does not need to know the media folder path.
 
@@ -858,74 +739,10 @@ def folder_contents_minus_ignored(report_file, dir_path, config):
 
     return media_file_list
 
-# ===================================================DIV60==
-def pause_with_message(message=None):
-
-    if (message != None):
-        print(str(message))
-    input("\nPress the <Enter> key to continue...")
-    return
-
-
-# ===================================================DIV60==
-def create_db_connection(db_file_path, db_extension):
-
-    db_connection = None
-    try:
-        db_connection = sqlite3.connect(db_file_path)
-        if db_extension is not None and db_extension != '':
-            # load SQLite extension
-            db_connection.enable_load_extension(True)
-            db_connection.load_extension(db_extension)
-    except Exception as e:
-        raise RM_Py_Exception(
-            f"{e}\n\nCannot open the RM database file. \n")
-    return db_connection
-
-
-# ===================================================DIV60==
-def time_stamp_now(type=""):
-
-    # return a TimeStamp string
-    now = datetime.now()
-    if type == '':
-        dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
-    elif type == 'file':
-        dt_string = now.strftime("%Y-%m-%d_%H%M%S")
-    return dt_string
-
-
-# ===================================================DIV60==
-def get_SQLite_library_version(dbConnection):
-
-    # returns a string like 3.42.0
-    SqlStmt = "SELECT sqlite_version()"
-    cur = dbConnection.cursor()
-    cur.execute(SqlStmt)
-    return cur.fetchone()[0]
-
-
-# ===================================================DIV60==
-def get_current_directory():
-
-    # Determine if application is a script file or frozen exe and get its directory
-    # see   https://pyinstaller.org/en/stable/runtime-information.html
-    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        application_path = os.path.dirname(sys.executable)
-    else:
-        application_path = os.path.dirname(__file__)
-    return application_path
-
 
 # ===================================================DIV60==
 def qtStr(input):
     return f"\"{input!s}\""
-
-
-# ===================================================DIV60==
-class RM_Py_Exception(Exception):
-
-    '''Exceptions thrown for configuration/database issues'''
 
 
 # ===================================================DIV60==
