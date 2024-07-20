@@ -1,7 +1,6 @@
 import os
 import sys
 import xml.etree.ElementTree as ET
-import sqlite3
 
 sys.path.append( r'..\\RM -RMpy package' )
 import RMpy.launcher # type: ignore
@@ -43,7 +42,7 @@ def main():
 
     # Configuration
     config_file_name = "RM-Python-config.ini"
-    RMNOCASE_required = False
+    RMNOCASE_required = True
     allow_db_changes = True
 
     RMpy.launcher.launcher(os.path.dirname(__file__),
@@ -256,6 +255,9 @@ def check_mapping_feature(config, report_file, dbConnection):
 # ===================================================DIV60==
 def make_changes_feature(config, reportF, dbConnection):
 
+    if config['CITATIONS'].getboolean('EMPTY_CIT_NAME'):
+        reindex_RMNOCASE(dbConnection)
+
     try:
         old_template_name = unquote_config_string(
             config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
@@ -282,14 +284,14 @@ def make_changes_feature(config, reportF, dbConnection):
         reportF.write(
             '=====================================================\n')
         reportF.write(str(srcTuple[0]) + "    " + srcTuple[1] + '\n')
-        convert_source(reportF, dbConnection, srcTuple[0],
-                       newTemplateID, field_mapping_source, field_mapping_citation)
+        convert_source(reportF, dbConnection, srcTuple[0], newTemplateID, 
+                       field_mapping_source, field_mapping_citation, config)
     return
 
 
 # ===================================================DIV60==
 def convert_source(reportF, dbConnection, srcID, newTemplateID,
-                   field_mapping_source, field_mapping_citation):
+                   field_mapping_source, field_mapping_citation, config):
 
     root_element = get_root_element(dbConnection, SourceID=srcID)
     fields_element = root_element.find(".//Fields")
@@ -344,7 +346,7 @@ UPDATE SourceTable
         reportF.write(
             "   " + q_str(str(citationTuple[0])) + "    " + citationTuple[1][:70] + '\n')
         convert_citation(
-            dbConnection, citationTuple[0], field_mapping_citation)
+            dbConnection, citationTuple[0], field_mapping_citation, config)
         # end loop for citations
 
     dbConnection.commit()
@@ -352,7 +354,7 @@ UPDATE SourceTable
 
 
 # ===================================================DIV60==
-def convert_citation(dbConnection, citation_ID, field_mapping_citation):
+def convert_citation(dbConnection, citation_ID, field_mapping_citation, config):
 
     root_element = get_root_element(dbConnection, None, citation_ID)
     fields_element = root_element.find(".//Fields")
@@ -414,7 +416,29 @@ UPDATE CitationTable
  WHERE CitationID = ? 
 """
     dbConnection.execute(SqlStmt, (newCitFields, citation_ID))
+    if config['CITATIONS'].getboolean('EMPTY_CIT_NAME'):
+        empty_citation_name(citation_ID, dbConnection)
     return
+
+
+# ===================================================DIV60==
+def reindex_RMNOCASE(dbConnection):
+    SqlStmt = """
+REINDEX RMNOCASE
+"""
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, ())
+
+
+# ===================================================DIV60==
+def empty_citation_name(CitationID, dbConnection):
+    SqlStmt = """
+UPDATE CitationTable
+  SET CitationName = ''
+ WHERE CitationID = ?
+"""
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, (CitationID,))
 
 
 # ===================================================DIV60==
@@ -440,11 +464,13 @@ SELECT Fields
 
     cur = dbConnection.cursor()
     cur.execute(SqlStmt, (ID,))
-    xml_text = cur.fetchone()[0].decode()
+    xml_text = cur.fetchone()[0]
+    if type(xml_text) is not str:
+        xml_text=xml_text.decode('utf-8')
 
     # test for and "fix" old style XML no longer used in RMv>=8
-    xml_real_start_chars = "<Root"
-    root_location = xml_text.find(xml_real_start_chars)
+    xml_real_start_string = "<Root"
+    root_location = xml_text.find(xml_real_start_string)
     xml_text = xml_text[root_location::]
 
     # Extraneous characters are not read into DOM or written back
