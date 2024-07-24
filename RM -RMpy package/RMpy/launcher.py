@@ -13,9 +13,10 @@ import RMpy.common as RMpyCom
 # ===================================================DIV60==
 def launcher(script_path,
             config_file_name,
-            RMNOCASE_required,
-            allow_db_changes,
-            run_features_function):
+            run_features_function,
+            allow_db_changes = False,
+            RMNOCASE_required = False,
+            RegExp_required = False  ):
     
 
     db_connection = None
@@ -104,13 +105,30 @@ def launcher(script_path,
                     + rmnocase_path
                     + '\n\n' 'Absolute path checked:\n"'
                     + os.path.abspath(rmnocase_path) + '"')
+            
+        if RegExp_required:
+            try:
+                regexp_path = config['FILE_PATHS']['REGEXP_PATH']
+            except:
+                raise RMpyCom.RM_Py_Exception(
+                    'ERROR: REGEXP_PATH must be specified.')
+            if not os.path.exists(rmnocase_path):
+                raise RMpyCom.RM_Py_Exception(
+                    'ERROR: Path for REGEXP extension not found: '
+                    + rmnocase_path
+                    + '\n\n' 'Absolute path checked:\n"'
+                    + os.path.abspath(rmnocase_path) + '"')
 
         # RM database file info
         file_modification_time = datetime.fromtimestamp(
             os.path.getmtime(database_path))
 
-        if RMNOCASE_required:
-            db_connection = RMpyCom.create_db_connection(database_path, rmnocase_path)
+        if RMNOCASE_required and not RegExp_required:
+            db_connection = RMpyCom.create_db_connection(database_path, [rmnocase_path])
+        elif not RMNOCASE_required and RegExp_required:
+            db_connection = RMpyCom.create_db_connection(database_path, [regexp_path])
+        elif RMNOCASE_required and RegExp_required:
+            db_connection = RMpyCom.create_db_connection(database_path, [rmnocase_path, regexp_path])
         else:
             db_connection = RMpyCom.create_db_connection(database_path, None)
 

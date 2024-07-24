@@ -6,15 +6,16 @@ from datetime import datetime
 
 
 # ===================================================DIV60==
-def create_db_connection(db_file_path, db_extension_file_path):
+def create_db_connection(db_file_path, db_extension_file_path_list):
 
     dbConnection = None
     try:
         dbConnection = sqlite3.connect(db_file_path)
-        if db_extension_file_path is not None:
-            # load SQLite extension
+        if db_extension_file_path_list is not None:
             dbConnection.enable_load_extension(True)
-            dbConnection.load_extension(db_extension_file_path)
+            # load SQLite extensions
+            for extension in db_extension_file_path_list:
+                dbConnection.load_extension(extension)
     except Exception as e:
         raise RM_Py_Exception(
             e, "\n\n" "Cannot open the RM database file." "\n")
@@ -32,15 +33,29 @@ def get_SQLite_library_version(dbConnection):
 
 
 # ===================================================DIV60==
-def time_stamp_now(type=""):
+def time_stamp_now(type=None):
 
     # return a TimeStamp string
     now = datetime.now()
-    if type == '':
+    if type is None:
         dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
     elif type == 'file':
         dt_string = now.strftime("%Y-%m-%d_%H%M%S")
     return dt_string
+
+
+# ===================================================DIV60==
+def reindex_RMNOCASE(dbConnection):
+    SqlStmt = """
+REINDEX RMNOCASE
+"""
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt, ())
+
+    
+# ===================================================DIV60==
+def q_str(in_str):
+    return '"' + in_str + '"'
 
 
 # ===================================================DIV60==
