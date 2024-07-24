@@ -32,6 +32,11 @@ import RMpy.common as RMpyCom # type: ignore
 #    OPTIONS     MAKE_CHANGES
 
 
+# Is the same code used to arrange the source and citation XML ?
+# current code take existing xml and renames the fields according to the transforms
+
+
+
 # ====================================DIV60==
 #  Global Variables
 G_DEBUG = False
@@ -267,6 +272,7 @@ def make_changes_feature(config, reportF, dbConnection):
             config['SOURCES']['SOURCE_NAME_LIKE'])
         mapping_source = config['SOURCE_TEMPLATES']['MAPPING_SOURCE']
         mapping_citation = config['SOURCE_TEMPLATES']['MAPPING_CITATION']
+        # TODO confirm empty citation name boolean
     except:
         raise RMpyCom.RM_Py_Exception(
             "ERROR: MAKE_CHANGES option requires specification of TEMPLATE_OLD"
@@ -278,6 +284,7 @@ def make_changes_feature(config, reportF, dbConnection):
     field_mapping_source = parse_field_mapping(mapping_source)
     field_mapping_citation = parse_field_mapping(mapping_citation)
 
+    # srcTuples has a subset of sourceTable rows and columns
     srcTuples = get_selected_sources(
         reportF, dbConnection, oldTemplateID, source_names_like)
     for srcTuple in srcTuples:
@@ -294,37 +301,8 @@ def convert_source(reportF, dbConnection, srcID, newTemplateID,
                    field_mapping_source, field_mapping_citation, config):
 
     root_element = get_root_element(dbConnection, SourceID=srcID)
-    fields_element = root_element.find(".//Fields")
-   # change fields in source as per mapping:
-    for transform in field_mapping_source:
-        if transform[0] == transform[1]:
-            continue
-        if transform[0] == "NULL":
-            # check whether field transform[1] exists as a Name
-            if root_element.find("Fields/Field[Name='" + transform[1] + "']") == None:
-                # if it does not exist, create it
-                # create a name and empty value pair.
-                newPair = ET.SubElement(fields_element, "Field")
-                ET.SubElement(newPair, "Name").text = transform[1]
-                ET.SubElement(newPair, "Value")
-            else:
-                raise RMpyCom.RM_Py_Exception(
-                    "Tried to create duplicate Name in source XML.NULL on left")
-            continue
-        for eachField in fields_element.findall('.//Field'):
-            if eachField.find('Name').text == transform[0]:
-                if transform[1] == "NULL":
-                    # delete the unused field
-                    fields_element.remove(eachField)
-                    break
-                if root_element.find("Fields/Field[Name='" + transform[1] + "']") == None:
-                    eachField.find('Name').text = transform[1]
-                else:
-                    raise RMpyCom.RM_Py_Exception(
-                        "Tried to create duplicate Name in source XML.")
-                break
-            # end of for eachField loop
-        # end of for each transform loop
+
+    adjust_xml_fields(field_mapping_source, root_element)
 
     if G_DEBUG:
         print("source XML NEW START ============================")
@@ -346,7 +324,7 @@ UPDATE SourceTable
         reportF.write(
             "   " + q_str(str(citationTuple[0])) + "    " + citationTuple[1][:70] + '\n')
         convert_citation(
-            dbConnection, citationTuple[0], field_mapping_citation, config)
+            citationTuple[0], field_mapping_citation, config, dbConnection)
         # end loop for citations
 
     dbConnection.commit()
@@ -354,10 +332,9 @@ UPDATE SourceTable
 
 
 # ===================================================DIV60==
-def convert_citation(dbConnection, citation_ID, field_mapping_citation, config):
+def convert_citation(citation_ID, field_mapping_citation, config, dbConnection):
 
     root_element = get_root_element(dbConnection, None, citation_ID)
-    fields_element = root_element.find(".//Fields")
 
     if G_DEBUG:
         print("citation XML OLD START ============================")
@@ -365,42 +342,7 @@ def convert_citation(dbConnection, citation_ID, field_mapping_citation, config):
         ET.dump(root_element)
         print("citation XML OLD END ==============================")
 
-    # change fields in citation as per mapping:
-    for transform in field_mapping_citation:
-        if transform[0] == transform[1]:
-            continue
-        if transform[0] == "NULL":
-            # check whether field transform[1] exists as a Name
-            if root_element.find("Fields/Field[Name='" + transform[1] + "']") == None:
-                # if it does not exist, create it
-                # create a name and empty value pair.
-                newPair = ET.SubElement(fields_element, "Field")
-                ET.SubElement(newPair, "Name").text = transform[1]
-                ET.SubElement(newPair, "Value")
-            else:
-                raise RMpyCom.RM_Py_Exception(
-                    "Tried to create duplicate Name in citation XML. NULL on left")
-            continue
-            # create a name and value pair.
-            newPair = ET.SubElement(fields_element, "Field")
-            ET.SubElement(newPair, "Name").text = transform[1]
-            ET.SubElement(newPair, "Value")
-            continue
-
-        for eachField in fields_element.findall('.//Field'):
-            if eachField.find('Name').text == transform[0]:
-                if transform[1] == "NULL":
-                    # delete the unused field
-                    root_element.find(".//Fields").remove(eachField)
-                    break
-                if root_element.find("Fields/Field[Name='" + transform[1] + "']") == None:
-                    eachField.find('Name').text = transform[1]
-                else:
-                    raise RMpyCom.RM_Py_Exception(
-                        "Tried to create duplicate Name in citation XML.")
-                break
-        # end of for eachField loop
-    # end of for each transform loop
+    adjust_xml_fields(field_mapping_citation, root_element)
 
     if G_DEBUG:
         print("citation XML NEW START ============================")
@@ -419,6 +361,54 @@ UPDATE CitationTable
     if config['CITATIONS'].getboolean('EMPTY_CIT_NAME'):
         empty_citation_name(citation_ID, dbConnection)
     return
+
+
+# ===================================================DIV60==
+def adjust_xml_fields(field_mapping, root_element):
+
+    fields_element = root_element.find(".//Fields")
+    # change fields in citation as per mapping:
+    for transform in field_mapping:
+        if transform[0] == transform[1]:
+            continue
+        if transform[0] == "NULL":
+            # check whether field transform[1] exists as a Name
+            if root_element.find("Fields/Field[Name='" + transform[1] + "']") == None:
+                # if it does not exist, create it
+                # create a field with name transform[1] with empty value.
+                newPair = ET.SubElement(fields_element, "Field")
+                ET.SubElement(newPair, "Name").text = transform[1]
+                ET.SubElement(newPair, "Value")
+            else:
+                raise RMpyCom.RM_Py_Exception(
+                    "Tried to create duplicate Name in XML. NULL on left")
+            continue
+        # for each existing field in the XML...
+        fields_in_xml = fields_element.findall('.//Field')
+        for eachField in fields_in_xml:
+            current_xml_field_name = eachField.find('Name').text
+            #current_xml_field_value = eachField.find('Value').text
+            if current_xml_field_name != transform[0]:
+                # not the relevant XML field, continue with the next
+                continue
+            # found the xml field for the transform under consideration
+            # now check if transform 1 is null (already checked for transform 0 is null)
+            if transform[1] == "NULL":
+                # delete the unused field
+                root_element.find(".//Fields").remove(eachField)
+                break
+            # Do the re-name, but first check for existing field with that name
+            # xpath search Fields/Field[Name='name of transform1']
+            field_names_transform1 = root_element.find("Fields/Field[Name='" + transform[1] + "']")
+            if field_names_transform1 == None:
+                # target doesn't exist, so rename source to the target name
+                eachField.find('Name').text = transform[1]
+                break
+            else:
+                raise RMpyCom.RM_Py_Exception(
+                    "Tried to create duplicate Name in citation XML.")
+        # end of for eachField loop
+    # end of for each transform loop
 
 
 # ===================================================DIV60==
