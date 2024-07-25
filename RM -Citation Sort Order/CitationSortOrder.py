@@ -9,7 +9,7 @@ sys.path.append( r'..\\RM -RMpy package' )
 # OR have a copy in the same dir as this script1
 import RMpy.RMDate # type: ignore
 import RMpy.launcher # type: ignore
-import RMpy.common as RMpyCom # type: ignore
+import RMpy.common as RMc # type: ignore
 
 
 # Requirements:
@@ -60,7 +60,7 @@ def change_citation_order_feature(config, db_connection, report_file):
          "\nAre the citations attached to a Fact (f), a name (n) or the Person (p)?:\n")
 
       if attached_to == "":
-        raise RMpyCom.RM_Py_Exception("Cannot interpret response.")
+        raise RMc.RM_Py_Exception("Cannot interpret response.")
 
       if attached_to in "Pp":
         rows = attached_to_person( PersonID, db_connection)
@@ -72,13 +72,13 @@ def change_citation_order_feature(config, db_connection, report_file):
         rows = attached_to_name(PersonID, db_connection)
 
       else:
-        raise RMpyCom.RM_Py_Exception("Cannot interpret response.")
+        raise RMc.RM_Py_Exception("Cannot interpret response.")
 
       rowDict = order_the_local_citations(rows, report_file)
       UpdateDatabase(rowDict, db_connection)
 
     except KeyboardInterrupt:
-      raise RMpyCom.RM_Py_Exception('ERROR: User terminated app with control C')
+      raise RMc.RM_Py_Exception('ERROR: User terminated app with control C')
 
     return 0
 
@@ -102,9 +102,9 @@ def get_PersonID_from_user( dbConnection, report_file ):
     rows = cur.fetchall()
 
     if len(rows) == 0:
-      raise RMpyCom.RM_Py_Exception("That RIN does not exist.")
+      raise RMc.RM_Py_Exception("That RIN does not exist.")
     elif len(rows) > 1:
-      raise RMpyCom.RM_Py_Exception("PersonID index not primary key??. Not unique.")
+      raise RMc.RM_Py_Exception("PersonID index not primary key??. Not unique.")
     elif len(rows) == 1:
       print( "RIN= " + PersonID + "  points to:\n" 
            + rows[0][0], rows[0][1], rows[0][2], rows[0][3], )
@@ -133,12 +133,12 @@ def attached_to_name( PersonID, db_connection):
 
     numberOfNames = len(rows)
     if (numberOfNames == 0):
-      raise RMpyCom.RM_Py_Exception('Either RIN does not exist or no names found. ')
+      raise RMc.RM_Py_Exception('Either RIN does not exist or no names found. ')
     elif (numberOfNames > 1):
-  #    raise RMpyCom.RM_Py_Exception('Found more than 1 name. Try again.')
+  #    raise RMc.RM_Py_Exception('Found more than 1 name. Try again.')
       nameID = select_name_from_list(rows)
     elif (numberOfNames == 1):
-      RMpyCom.pause_with_message('One name found.')
+      RMc.pause_with_message('One name found.')
       #continue ...
 
     NameID = rows[0][0]
@@ -170,7 +170,7 @@ def select_name_from_list( rows ):
     try:
       citation_number = int(input("Which name's citations shall be ordered? ") )
     except ValueError as e:
-      raise RMpyCom.RM_Py_Exception('Type a number')
+      raise RMc.RM_Py_Exception('Type a number')
 
     nameID = rows[citation_number -1][0]
 
@@ -189,7 +189,7 @@ def select_event_from_list(rows):
     try:
       citation_number = int(input("Which event's citations shall be ordered? ") )
     except ValueError as e:
-      raise RMpyCom.RM_Py_Exception('Type a number')
+      raise RMc.RM_Py_Exception('Type a number')
 
     eventID = rows[citation_number -1][0]
 
@@ -246,7 +246,7 @@ def attached_to_fact( PersonID, db_connection):
     if (numberOfEvents > 1):
       EventID = select_event_from_list(rows)
     elif (numberOfEvents == 0):
-      raise RMpyCom.RM_Py_Exception('No events with more than one citation found. Try again.')
+      raise RMc.RM_Py_Exception('No events with more than one citation found. Try again.')
     elif (numberOfEvents == 1):
       EventID = rows[0][0]
       print("Found one event with more than one citation.\n" +
@@ -285,9 +285,9 @@ def attached_to_person( PersonID, db_connection):
     cur.execute( SqlStmt, (PersonID, ) )
     rows = cur.fetchall()
     if len(rows) == 0:
-      raise RMpyCom.RM_Py_Exception( "Person has no citations attached")
+      raise RMc.RM_Py_Exception( "Person has no citations attached")
     if len(rows) == 1:
-      raise RMpyCom.RM_Py_Exception( "Person has only one citation attached")
+      raise RMc.RM_Py_Exception( "Person has only one citation attached")
     return rows
 
 
@@ -327,12 +327,12 @@ def order_the_local_citations( rows, report_file):
             response =  str(input( "\nWhat goes in slot # " + str(j) + " : "))
             if response == '': continue
             elif response in 'S s': break
-            elif response in 'A a': raise RMpyCom.RM_Py_Exception("No changes made to database")
+            elif response in 'A a': raise RMc.RM_Py_Exception("No changes made to database")
             else :
                 try:
                     swapVal = int(response)
                 except ValueError:
-                    raise RMpyCom.RM_Py_Exception('Enter an integer, blank,  or S or s or A or a')
+                    raise RMc.RM_Py_Exception('Enter an integer, blank,  or S or s or A or a')
             rowDict[swapVal], rowDict[j] = rowDict[j], rowDict[swapVal]
             print ("\n\n")
             for i in range( 1, citation_number_limit):
@@ -359,7 +359,7 @@ def order_the_local_citations( rows, report_file):
                 report_file.write( str(i) + "   " + str(rowDict[i][1]) + "\n" )
             Done = True
         elif response  in "Aa":
-            raise RMpyCom.RM_Py_Exception("No changes made to database")
+            raise RMc.RM_Py_Exception("No changes made to database")
         # assume No
         print ("\n\n")
         # End while Done

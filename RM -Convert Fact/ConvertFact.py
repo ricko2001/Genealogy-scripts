@@ -6,6 +6,10 @@ import configparser
 import subprocess
 import traceback
 
+sys.path.append( r'..\\RM -RMpy package' )
+import RMpy.launcher # type: ignore
+import RMpy.common as RMc # type: ignore
+
 # Convert all Facts of one fact type to another fact type
 # A family event type, may be converted to an individual fact type.
 # An individual type fact may *not* be converted to a family type.
@@ -35,138 +39,16 @@ def main():
 
     # Configuration
     config_file_name = "RM-Python-config.ini"
-    db_connection = None
-    report_display_app = None
-    RMNOCASE_required = False
     allow_db_changes = True
+    RMNOCASE_required = False
+    RegExp_required = False
 
-    # ===========================================DIV50==
-    # Errors go to console window
-    # ===========================================DIV50==
-    try:
-        # config file must be in "current directory" and encoded as UTF-8 (no BOM).
-        # see   https://docs.python.org/3/library/configparser.html
-        config_file_path = os.path.join(
-            get_current_directory(), config_file_name)
-
-        # Check that config file is at expected path and that it is readable & valid.
-        if not os.path.exists(config_file_path):
-            raise RM_Py_Exception(
-                "ERROR: The configuration file, " + config_file_name
-                + " must be in the same directory as the .py or .exe file." "\n\n")
-
-        config = configparser.ConfigParser(empty_lines_in_values=False,
-                                           interpolation=None)
-        try:
-            config.read(config_file_path, 'UTF-8')
-        except:
-            raise RM_Py_Exception(
-                "ERROR: The " + config_file_name
-                + " file contains a format error and cannot be parsed." "\n\n")
-        try:
-            report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
-        except:
-            raise RM_Py_Exception(
-                'ERROR: REPORT_FILE_PATH must be defined in the '
-                + config_file_name + "\n\n")
-        try:
-            # Use UTF-8 encoding for the report file. Test for write-ability
-            open(report_path,  mode='w', encoding='utf-8')
-        except:
-            raise RM_Py_Exception('ERROR: Cannot create the report file '
-                                  + report_path + "\n\n")
-
-    except RM_Py_Exception as e:
-        pause_with_message(e)
-        return 1
-    except Exception as e:
-        traceback.print_exception(e, file=sys.stdout)
-        pause_with_message(
-            "ERROR: Application failed. Please email error report:" "\n\n " +
-            str(e)
-            + "\n\n" "to the author")
-        return 1
-
-    # open the already tested report file
-    report_file = open(report_path,  mode='w', encoding='utf-8')
-
-    # ===========================================DIV50==
-    # Errors from here forward, go to Report File
-    # ===========================================DIV50==
-    try:
-        try:
-            report_display_app = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
-        except:
-            pass
-        if report_display_app is not None and not os.path.exists(report_display_app):
-            raise RM_Py_Exception(
-                'ERROR: Path for report file display app not found: '
-                + report_display_app)
-
-        try:
-            database_path = config['FILE_PATHS']['DB_PATH']
-        except:
-            raise RM_Py_Exception('ERROR: DB_PATH must be specified.')
-        if not os.path.exists(database_path):
-            raise RM_Py_Exception(
-                'ERROR: Path for database not found: ' + database_path
-                + '\n\n' 'Absolute path checked:\n"'
-                + os.path.abspath(database_path) + '"')
-
-        if RMNOCASE_required:
-            try:
-                rmnocase_path = config['FILE_PATHS']['RMNOCASE_PATH']
-            except:
-                raise RM_Py_Exception(
-                    'ERROR: RMNOCASE_PATH must be specified.')
-            if not os.path.exists(rmnocase_path):
-                raise RM_Py_Exception(
-                    'ERROR: Path for RMNOCASE extension (unifuzz64.dll) not found: '
-                    + rmnocase_path
-                    + '\n\n' 'Absolute path checked:\n"'
-                    + os.path.abspath(rmnocase_path) + '"')
-
-        # RM database file info
-        file_modification_time = datetime.fromtimestamp(
-            os.path.getmtime(database_path))
-
-        if RMNOCASE_required:
-            db_connection = create_db_connection(database_path, rmnocase_path)
-        else:
-            db_connection = create_db_connection(database_path, None)
-
-        # write header to report file
-        report_file.write("Report generated at      = " + time_stamp_now()
-                          + "\n" "Database processed       = "
-                          + os.path.abspath(database_path)
-                          + "\n" "Database last changed on = "
-                          + file_modification_time.strftime("%Y-%m-%d %H:%M:%S")
-                          + "\n" "SQLite library version   = "
-                          + get_SQLite_library_version(db_connection) + "\n\n\n\n")
-
-        run_selected_features(config, db_connection, report_file)
-
-    except (sqlite3.OperationalError, sqlite3.ProgrammingError) as e:
-        report_file.write(
-            "ERROR: SQL execution returned an error \n\n" + str(e))
-        return 1
-    except RM_Py_Exception as e:
-        report_file.write(str(e))
-        return 1
-    except Exception as e:
-        traceback.print_exception(e, file=report_file)
-        report_file.write(
-            "\n\n" "ERROR: Application failed. Please email report file to author. ")
-        return 1
-    finally:
-        if db_connection is not None:
-            if allow_db_changes:
-                db_connection.commit()
-            db_connection.close()
-        report_file.close()
-        if report_display_app is not None:
-            subprocess.Popen([report_display_app, report_path])
-    return 0
+    RMpy.launcher.launcher(os.path.dirname(__file__),
+                    config_file_name,
+                    run_selected_features,
+                    allow_db_changes,
+                    RMNOCASE_required,
+                    RegExp_required )
 
 
 # ===================================================DIV60==
@@ -185,11 +67,11 @@ def convert_fact(config, db_connection, report_file):
     try:
         facttype_current_name = config['MAPPING']['FACTTYPE_CURRENT']
     except:
-        raise RM_Py_Exception('ERROR: FACTTYPE_CURRENT must be specified.')
+        raise RMc.RM_Py_Exception('ERROR: FACTTYPE_CURRENT must be specified.')
     try:
         facttype_new_name = config['MAPPING']['FACTTYPE_NEW']
     except:
-        raise RM_Py_Exception('ERROR: FACTTYPE_NEW must be specified.')
+        raise RMc.RM_Py_Exception('ERROR: FACTTYPE_NEW must be specified.')
 
     try:
         role_name = config['MAPPING']['ROLE']
@@ -226,7 +108,7 @@ def convert_fact(config, db_connection, report_file):
     list_of_fact_id = get_list_of_events_to_convert(
         facttype_cur_id, facttype_is_fam_cur, desc_sel, date_sel, db_connection)
     if len(list_of_fact_id) == 0:
-        raise RM_Py_Exception("Nothing to convert !\n\n")
+        raise RMc.RM_Py_Exception("Nothing to convert !\n\n")
     report_file.write("Number of facts found to convert: "
                       + str(len(list_of_fact_id)) + '\n\n')
     if facttype_is_fam_cur and not facttype_is_fam_new:
@@ -249,7 +131,7 @@ def convert_fact(config, db_connection, report_file):
                                  facttype_new_id, facttype_is_fam_new,
                                  db_connection)
             else:
-                raise RM_Py_Exception(
+                raise RMc.RM_Py_Exception(
                     "ERROR: Internal, found a empty 0,0 family")
             update_role_in_existing_witnesses(
                 fact_to_convert, facttype_new_id, db_connection)
@@ -285,7 +167,7 @@ def convert_fact(config, db_connection, report_file):
             update_role_in_existing_witnesses(
                 fact_to_convert, facttype_new_id, db_connection)
     else:
-        raise RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "ERROR: Internal. Fact P>F type combo not supported.")
     return
 
@@ -304,10 +186,10 @@ SELECT FactTypeID, OwnerType
     cur.execute(SqlStmt, (facttype_curr_name,))
     rows = cur.fetchall()
     if len(rows) == 0:
-        raise RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "ERROR: The entered Current FactType name could not be found.\n")
     if len(rows) > 1:
-        raise RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "ERROR: The entered Current FactType name is not unique. Fix this.\n")
     facttype_curr_id = rows[0][0]
     if rows[0][1] == 1:
@@ -321,10 +203,10 @@ SELECT FactTypeID, OwnerType
     cur.execute(SqlStmt, (facttype_new_name,))
     rows = cur.fetchall()
     if len(rows) == 0:
-        raise RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "ERROR: The entered New Fact Type name could not be found.\n")
     if len(rows) > 1:
-        raise RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "ERROR: The entered New Fact Type name is not unique. Fix this.\n")
     facttype_new_id = rows[0][0]
     if rows[0][1] == 1:
@@ -338,7 +220,7 @@ SELECT FactTypeID, OwnerType
     if facttype_is_family_curr and not facttype_is_family_new:
         # need to use role name for the new witness
         if role_name is None:
-            raise RM_Py_Exception('ERROR: ROLE must be specified'
+            raise RMc.RM_Py_Exception('ERROR: ROLE must be specified'
                                   ' for this conversion.')
         SqlStmt = """
 SELECT RoleID, EventType
@@ -350,11 +232,11 @@ SELECT RoleID, EventType
         cur.execute(SqlStmt, (role_name, facttype_new_id))
         rows = cur.fetchall()
         if len(rows) == 0:
-            raise RM_Py_Exception(
+            raise RMc.RM_Py_Exception(
                 "ERROR: The entered Role name could not be found"
                 " associated with the new fact type.\n")
         if len(rows) > 1:
-            raise RM_Py_Exception(
+            raise RMc.RM_Py_Exception(
                 "The entered Role name is not unique for the new"
                 " fact type. Fix this.\n")
         role_id = rows[0][0]
@@ -393,7 +275,7 @@ INNER JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
         for row in rows:
             report_file.write(str(row[1]) + "\n")
         report_file.write("\n\n\n")
-        raise RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "ERROR: Roles need to be coordinated between the Current and New Fact Types.\n")
 
     return (facttype_curr_id, facttype_new_id, role_id, facttype_is_family_curr,
@@ -473,7 +355,7 @@ WHERE  et.EventID = ?
     rows = cur.fetchall()
 
     if (len(rows) != 1):
-        raise RM_Py_Exception("More than one owner ID found")
+        raise RMc.RM_Py_Exception("More than one owner ID found")
     return rows[0][0]
 
 
@@ -530,7 +412,7 @@ SELECT EventID
         cur = db_connection.cursor()
         cur.execute(SqlStmt, (ID, OwnerType, date_sel, desc_sel))
     else:
-        raise RM_Py_Exception('Combo search terms not supported')
+        raise RMc.RM_Py_Exception('Combo search terms not supported')
 
     rows = cur.fetchall()
     listOfFactIDs = []
@@ -552,7 +434,7 @@ SELECT FatherID, MotherID
     rows = cur.fetchall()
 
     if (len(rows) != 1):
-        raise RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "ERROR INTERNAL More than one row returned getting family id")
     return rows[0]
 
@@ -590,70 +472,6 @@ INSERT INTO WitnessTable
     cur.execute(SqlStmt, (EventID, OwnerID, RoleID))
     return
 
-
-# ===================================================DIV60==
-def create_db_connection(db_file_path, db_extension_file_path):
-
-    db_connection = None
-    try:
-        db_connection = sqlite3.connect(db_file_path)
-        if db_extension_file_path is not None:
-            # load SQLite extension
-            db_connection.enable_load_extension(True)
-            db_connection.load_extension(db_extension_file_path)
-    except Exception as e:
-        raise RM_Py_Exception(
-            e, "\n\n" "Cannot open the RM database file." "\n")
-    return db_connection
-
-
-# ===================================================DIV60==
-def pause_with_message(message=None):
-
-    if (message != None):
-        print(str(message))
-    input("\n" "Press the <Enter> key to continue...")
-    return
-
-
-# ===================================================DIV60==
-def time_stamp_now(type=""):
-
-    # return a TimeStamp string
-    now = datetime.now()
-    if type == '':
-        dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
-    elif type == 'file':
-        dt_string = now.strftime("%Y-%m-%d_%H%M%S")
-    return dt_string
-
-
-# ===================================================DIV60==
-def get_SQLite_library_version(dbConnection):
-
-    # returns a string like 3.42.0
-    SqlStmt = "SELECT sqlite_version()"
-    cur = dbConnection.cursor()
-    cur.execute(SqlStmt)
-    return cur.fetchone()[0]
-
-
-# ===================================================DIV60==
-def get_current_directory():
-
-    # Determine if application is a script file or frozen exe and get its directory
-    # see   https://pyinstaller.org/en/stable/runtime-information.html
-    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        application_path = os.path.dirname(sys.executable)
-    else:
-        application_path = os.path.dirname(__file__)
-    return application_path
-
-
-# ===================================================DIV60==
-class RM_Py_Exception(Exception):
-
-    '''Exceptions thrown for configuration/database issues'''
 
 
 # ===================================================DIV60==
