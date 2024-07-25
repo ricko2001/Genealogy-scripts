@@ -33,6 +33,13 @@ def get_SQLite_library_version(dbConnection):
 
 
 # ===================================================DIV60==
+def reindex_RMNOCASE(dbConnection):
+
+    SqlStmt = "REINDEX RMNOCASE"
+    cur = dbConnection.cursor()
+    cur.execute(SqlStmt)
+
+# ===================================================DIV60==
 def time_stamp_now(type=None):
 
     # return a TimeStamp string

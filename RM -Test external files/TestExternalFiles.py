@@ -7,7 +7,7 @@ import hashlib
 
 sys.path.append( r'..\\RM -RMpy package' )
 import RMpy.launcher # type: ignore
-import RMpy.common as RMpyCom # type: ignore
+import RMpy.common as RMc # type: ignore
 
 
 # This script can only read a RootsMagic database file and cannot change it.
@@ -55,14 +55,16 @@ def main():
 
     # Configuration
     config_file_name = "RM-Python-config.ini"
-    RMNOCASE_required = False
     allow_db_changes = False
+    RMNOCASE_required = False
+    RegExp_required = False
 
     RMpy.launcher.launcher(os.path.dirname(__file__),
                     config_file_name,
-                    RMNOCASE_required,
+                    run_selected_features,
                     allow_db_changes,
-                    run_selected_features)
+                    RMNOCASE_required,
+                    RegExp_required )
 
 
 # ===================================================DIV60==
@@ -90,7 +92,7 @@ def run_selected_features(config, db_connection, report_file):
         config['OPTIONS'].getboolean('CASE_SENSITIVE')
 
     except:
-        raise RMpyCom.RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "One of the OPTIONS values could not be parsed as boolean. \n")
 
     # Run the requested options. Usually multiple options.
@@ -159,47 +161,47 @@ def list_missing_files_feature(config, db_connection, report_file):
                 found_files += 1
                 report_file.write(
                     f"\n" "Directory path not found:\n"
-                    f"{qtStr(dir_path)} for file: {qtStr(row[1])} \n")
+                    f"{RMc.q_str(dir_path)} for file: {RMc.q_str(row[1])} \n")
                 if show_original_path:
-                    report_file.write(f"{label_original_path} {qtStr(dir_path_original)} \n")
+                    report_file.write(f"{label_original_path} {RMc.q_str(dir_path_original)} \n")
             else:
                 if file_path.exists():
                     if not file_path.is_file():
                         found_files += 1
                         report_file.write(
                             f"\nFile path is not a file: \n"
-                            f"{qtStr(file_path)} \n")
+                            f"{RMc.q_str(file_path)} \n")
                         if show_original_path:
-                            report_file.write(f"{label_original_path} {qtStr(row[0])} \n")
+                            report_file.write(f"{label_original_path} {RMc.q_str(row[0])} \n")
                 else:
                     found_files += 1
                     report_file.write(f"\nFile path not found: \n{file_path} \n")
                     if show_original_path:
                         report_file.write(
-                            f"{label_original_path} {qtStr(dir_path_original)} \n")
+                            f"{label_original_path} {RMc.q_str(dir_path_original)} \n")
         else:
             # use case sensitive compare
             if str(dir_path) != str(os.path.realpath(dir_path)):
                 found_files += 1
                 report_file.write(
                     f"\n" "Directory path with correct case not found:\n"
-                    f"{qtStr(dir_path)} for file: {qtStr(row[1])} \n")
+                    f"{RMc.q_str(dir_path)} for file: {RMc.q_str(row[1])} \n")
                 if show_original_path:
-                    report_file.write(f"{label_original_path} {qtStr(dir_path_original)} \n")
+                    report_file.write(f"{label_original_path} {RMc.q_str(dir_path_original)} \n")
             else:
                 if file_path.exists():
                     if not file_path.is_file():
                         found_files += 1
                         report_file.write(
-                            f"\nPath is not a file: \n{qtStr(file_path)} \n")
+                            f"\nPath is not a file: \n{RMc.q_str(file_path)} \n")
                         if show_original_path:
-                            report_file.write(f"{label_original_path} {qtStr(row[0])} \n")
+                            report_file.write(f"{label_original_path} {RMc.q_str(row[0])} \n")
                 else:
                     found_files += 1
                     report_file.write(f"\nFile name with correct case not found at path: \n{file_path} \n")
                     if show_original_path:
                         report_file.write(
-                            f"{label_original_path} {qtStr(dir_path_original)} \n")
+                            f"{label_original_path} {RMc.q_str(dir_path_original)} \n")
 
     if found_files > 0:
         report_file.write(f"\nNumber of file links in "
@@ -221,7 +223,7 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
     try:
         ext_files_folder_path = config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH']
     except:
-        raise RMpyCom.RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "ERROR: SEARCH_ROOT_FLDR_PATH must be specified for this option. \n")
 
     try:
@@ -231,11 +233,11 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
 
     # Validate the folder path
     if not Path(ext_files_folder_path).exists():
-        raise RMpyCom.RM_Py_Exception(
-            f"ERROR: Directory path not found: {qtStr(ext_files_folder_path)} \n")
+        raise RMc.RM_Py_Exception(
+            f"ERROR: Directory path not found: {RMc.q_str(ext_files_folder_path)} \n")
     if not Path(ext_files_folder_path).is_dir():
-        raise RMpyCom.RM_Py_Exception(
-            f"ERROR: Path is not a directory: {qtStr(ext_files_folder_path)} \n")
+        raise RMc.RM_Py_Exception(
+            f"ERROR: Path is not a directory: {RMc.q_str(ext_files_folder_path)} \n")
 
     # First check database for empty paths or filenames
     report_empty_paths(db_connection, report_file)
@@ -313,7 +315,7 @@ def files_with_no_tags_feature(config, db_connection, report_file):
         report_file.write(f"{file_path} \n")
         if show_orig_path:
             report_file.write(label_orig_path
-                              + qtStr(dir_path_orig) + "\n")
+                              + RMc.q_str(dir_path_orig) + "\n")
 
     if not found_no_tag_files:
         report_file.write("\n    No files with no tags were found.\n")
@@ -345,7 +347,7 @@ def list_folders_feature(config, db_connection, report_file):
         found_some_folders = True
         report_file.write(str(expand_relative_dir_path(row[0])) + "\n")
         if show_orig_path:
-            report_file.write(f"{label_orig_path} {qtStr(row[0])} \n")
+            report_file.write(f"{label_orig_path} {RMc.q_str(row[0])} \n")
 
     if found_some_folders:
         report_file.write(f"\n Folders referenced in database: {len(rows)} \n")
@@ -374,7 +376,7 @@ def find_duplicate_file_paths_feature(db_connection, report_file):
         dirPathOrig = row[0]
         dir_path = expand_relative_dir_path(row[0])
         file_path = Path(os.path.join(dir_path, row[1]))
-        report_file.write(qtStr(file_path) + "\n")
+        report_file.write(RMc.q_str(file_path) + "\n")
 
     if not found_some_dup_files:
         report_file.write(
@@ -397,7 +399,7 @@ def find_duplicate_file_names_feature(db_connection, report_file):
     for row in cur:
         found_some_dup_files = True
         file_name = row[0]
-        report_file.write(qtStr(file_name) + "\n")
+        report_file.write(RMc.q_str(file_name) + "\n")
 
     if not found_some_dup_files:
         report_file.write(
@@ -420,18 +422,18 @@ def file_hash_feature(config, db_connection, report_file):
     try:
         hash_file_folder = config['FILE_PATHS']['HASH_FILE_FLDR_PATH']
     except:
-        raise RMpyCom.RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "ERROR: HASH_FILE_FLDR_PATH must be specified for this option. \n")
 
     hash_file_path = os.path.join(
         hash_file_folder,
-        "MediaFiles_HASH_" + RMpyCom.time_stamp_now("file") + ".txt")
+        "MediaFiles_HASH_" + RMc.time_stamp_now("file") + ".txt")
 
     try:
         hash_file = open(hash_file_path,  mode='w', encoding='utf-8')
     except:
-        raise RMpyCom.RM_Py_Exception(
-            f"ERROR: Cannot create the hash file:{qtStr(hash_file_path)} \n\n")
+        raise RMc.RM_Py_Exception(
+            f"ERROR: Cannot create the hash file:{RMc.q_str(hash_file_path)} \n\n")
 
     report_file.write(
         f"MD5 hash of files saved in file:\n"
@@ -447,7 +449,7 @@ def file_hash_feature(config, db_connection, report_file):
             found_some_missing_files = True
             report_file.write(
                 f"Directory path not found: \n{dir_path} \n"
-                f" for file: {qtStr(row[1])} \n")
+                f" for file: {RMc.q_str(row[1])} \n")
 
         else:
             if file_path.exists():
@@ -505,7 +507,7 @@ def find_file_not_in_media_folder_feature(config, db_connection, report_file):
             file_path = Path(os.path.join(dir_path, row[1]))
             report_file.write(f"\n{file_path} \n")
             if show_original_path:
-                report_file.write(f"{label_orig_path} {qtStr(row[0])} \n")
+                report_file.write(f"{label_orig_path} {RMc.q_str(row[0])} \n")
 
     if found_files > 0:
         report_file.write(f"\nNumber of file links in database not in Media Folder: {found_files} \n")
@@ -625,13 +627,13 @@ def section(pos, name, report_file):
 
     Divider = "="*60 + "===DIV70==\n"
     if pos == "START":
-        text = f"\n{Divider}\n=== Start of {qtStr(name)} listing\n\n"
+        text = f"\n{Divider}\n=== Start of {RMc.q_str(name)} listing\n\n"
     elif pos == "END":
-        text = f"\n=== End of {qtStr(name)} listing\n"
+        text = f"\n=== End of {RMc.q_str(name)} listing\n"
     elif pos == "FINAL":
         text = f"\n{Divider} \n=== End of Report\n"
     else:
-        raise RMpyCom.RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "INTERNAL ERROR: Section position not correctly defined")
 
     report_file.write(text)
@@ -738,11 +740,6 @@ def folder_contents_minus_ignored(report_file, dir_path, config):
             media_file_list.append(str(os.path.join(dir_name, filename)))
 
     return media_file_list
-
-
-# ===================================================DIV60==
-def qtStr(input):
-    return f"\"{input!s}\""
 
 
 # ===================================================DIV60==

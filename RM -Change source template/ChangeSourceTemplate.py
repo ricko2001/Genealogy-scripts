@@ -11,7 +11,7 @@ import RMpy.common as RMpyCom # type: ignore
 #   RM-Python-config.ini
 
 # Tested with:
-#   RootsMagic database file v10.0.0
+#   RootsMagic database file v10.1.0
 #   Python for Windows v3.12.3
 
 # Config file fields used
@@ -32,11 +32,6 @@ import RMpy.common as RMpyCom # type: ignore
 #    OPTIONS     MAKE_CHANGES
 
 
-# Is the same code used to arrange the source and citation XML ?
-# current code take existing xml and renames the fields according to the transforms
-
-
-
 # ====================================DIV60==
 #  Global Variables
 G_DEBUG = False
@@ -49,12 +44,14 @@ def main():
     config_file_name = "RM-Python-config.ini"
     RMNOCASE_required = True
     allow_db_changes = True
+    RegExp_required = False
 
     RMpy.launcher.launcher(os.path.dirname(__file__),
                     config_file_name,
-                    RMNOCASE_required,
+                    run_selected_features,
                     allow_db_changes,
-                    run_selected_features)
+                    RMNOCASE_required,
+                    RegExp_required )
 
 
 # ===================================================DIV60==
@@ -68,7 +65,7 @@ def run_selected_features(config, db_connection, report_file):
         config['OPTIONS'].getboolean('CHECK_MAPPING_DETAILS')
         config['OPTIONS'].getboolean('MAKE_CHANGES')
     except:
-        raise RMpyCom.RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             'ERROR: One of the OPTIONS values could not be parsed as boolean. \n')
 
     # run active options
@@ -94,7 +91,7 @@ def check_template_names_feature(config, report_file, dbConnection):
         new_template_name = unquote_config_string(
             config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
     except:
-        raise RMpyCom.RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "ERROR: CHECK_TEMPLATE_NAMES option requires specification"
             " of both TEMPLATE_OLD and TEMPLATE_NEW.")
     check_source_templates(report_file, dbConnection,
@@ -115,7 +112,7 @@ def list_template_details_feature(config, reportF, dbConnection, include_mapping
         mapping_citation = config['SOURCE_TEMPLATES']['MAPPING_CITATION']
 
     except:
-        raise RMpyCom.RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "ERROR: LIST_TEMPLATE_DETAILS option requires specification"
             " of TEMPLATE_OLD and TEMPLATE_NEW, MAPPING_SOURCE & MAPPING_CITATION.")
 
@@ -154,7 +151,7 @@ def list_sources_feature(config, reportF, dbConnection):
         source_names_like = unquote_config_string(
             config['SOURCES']['SOURCE_NAME_LIKE'])
     except:
-        raise RMpyCom.RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "ERROR: LIST_SOURCES option requires specification of"
             " both TEMPLATE_OLD and SOURCE_NAME_LIKE.")
 
@@ -186,7 +183,7 @@ def check_mapping_feature(config, report_file, dbConnection):
         mapping_citation = config['SOURCE_TEMPLATES']['MAPPING_CITATION']
 
     except:
-        raise RMpyCom.RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "ERROR: LIST_TEMPLATE_DETAILS option requires specification"
             " of TEMPLATE_OLD and TEMPLATE_NEW, MAPPING_SOURCE & MAPPING_CITATION.")
 
@@ -229,27 +226,27 @@ def check_mapping_feature(config, report_file, dbConnection):
     # Confirm that the entered mapping uses correct fields
     for each in field_mapping_source:
         if each[0] not in old_src_fields:
-            raise RMpyCom.RM_Py_Exception(q_str(each[0])
+            raise RMc.RM_Py_Exception(q_str(each[0])
                                   + ' is not among the source fields in the existing source template.')
         if each[1] not in new_src_fields:
-            raise RMpyCom.RM_Py_Exception(q_str(each[1])
+            raise RMc.RM_Py_Exception(q_str(each[1])
                                   + ' is not among the citation fields in the new source template.')
 
     for each in field_mapping_citation:
         if each[0] not in old_cit_fields:
-            raise RMpyCom.RM_Py_Exception(q_str(each[0])
+            raise RMc.RM_Py_Exception(q_str(each[0])
                                   + ' is not among the source fields in the existing source template.')
         if each[1] not in new_cit_fields:
-            raise RMpyCom.RM_Py_Exception(q_str(each[1])
+            raise RMc.RM_Py_Exception(q_str(each[1])
                                   + ' is not among the citation fields in the new source template.')
 
     for each in field_mapping_source:
         if each[0] == 'NULL' and each[1] == 'NULL':
-            raise RMpyCom.RM_Py_Exception(
+            raise RMc.RM_Py_Exception(
                 'ERROR: A NULL NULL field mapping is not allowed.')
     for each in field_mapping_citation:
         if each[0] == 'NULL' and each[1] == 'NULL':
-            raise RMpyCom.RM_Py_Exception(
+            raise RMc.RM_Py_Exception(
                 'ERROR: A NULL NULL field mapping is not allowed.')
 
     report_file.write(
@@ -261,7 +258,7 @@ def check_mapping_feature(config, report_file, dbConnection):
 def make_changes_feature(config, reportF, dbConnection):
 
     if config['CITATIONS'].getboolean('EMPTY_CIT_NAME'):
-        reindex_RMNOCASE(dbConnection)
+        RMc.reindex_RMNOCASE(dbConnection)
 
     try:
         old_template_name = unquote_config_string(
@@ -274,7 +271,7 @@ def make_changes_feature(config, reportF, dbConnection):
         mapping_citation = config['SOURCE_TEMPLATES']['MAPPING_CITATION']
         # TODO confirm empty citation name boolean
     except:
-        raise RMpyCom.RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "ERROR: MAKE_CHANGES option requires specification of TEMPLATE_OLD"
             " TEMPLATE_NEW, SOURCE_NAME_LIKE, MAPPING_SOURCE & MAPPING_CITATION.")
 
@@ -380,7 +377,7 @@ def adjust_xml_fields(field_mapping, root_element):
                 ET.SubElement(newPair, "Name").text = transform[1]
                 ET.SubElement(newPair, "Value")
             else:
-                raise RMpyCom.RM_Py_Exception(
+                raise RMc.RM_Py_Exception(
                     "Tried to create duplicate Name in XML. NULL on left")
             continue
         # for each existing field in the XML...
@@ -405,19 +402,10 @@ def adjust_xml_fields(field_mapping, root_element):
                 eachField.find('Name').text = transform[1]
                 break
             else:
-                raise RMpyCom.RM_Py_Exception(
+                raise RMc.RM_Py_Exception(
                     "Tried to create duplicate Name in citation XML.")
         # end of for eachField loop
     # end of for each transform loop
-
-
-# ===================================================DIV60==
-def reindex_RMNOCASE(dbConnection):
-    SqlStmt = """
-REINDEX RMNOCASE
-"""
-    cur = dbConnection.cursor()
-    cur.execute(SqlStmt, ())
 
 
 # ===================================================DIV60==
@@ -450,7 +438,7 @@ SELECT Fields
  WHERE CitationID = ?
 """
     else:
-        raise RMpyCom.RM_Py_Exception("ERROR internal: both inputs None")
+        raise RMc.RM_Py_Exception("ERROR internal: both inputs None")
 
     cur = dbConnection.cursor()
     cur.execute(SqlStmt, (ID,))
@@ -643,7 +631,7 @@ SELECT st.SourceID, st.Name
     cur.execute(SqlStmt, (oldTemplateID, SourceNamesLike))
     srcTuples = cur.fetchall()
     if len(srcTuples) == 0:
-        raise RMpyCom.RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "No sources found with specified search criteria.\n")
     return srcTuples
 

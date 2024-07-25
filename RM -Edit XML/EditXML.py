@@ -1,17 +1,18 @@
 import os
 import sys
 import xml.etree.ElementTree as ET
+import re
 
 sys.path.append( r'..\\RM -RMpy package' )
 import RMpy.launcher # type: ignore
-import RMpy.common as RMpyCom # type: ignore
+import RMpy.common as RMc # type: ignore
 
 # Requirements:
 #   RootsMagic database file
 #   RM-Python-config.ini
 
 # Tested with:
-#   RootsMagic database file v10.0.0
+#   RootsMagic database file v10.0.1,0
 #   Python for Windows v3.12.3
 
 
@@ -25,8 +26,8 @@ def main():
 
     # Configuration
     config_file_name = "RM-Python-config.ini"
-    RMNOCASE_required = True
-    RegExp_required = True
+    RMNOCASE_required = False
+    RegExp_required = False
     allow_db_changes = True
 
     RMpy.launcher.launcher(os.path.dirname(__file__),
@@ -49,19 +50,19 @@ def edit_the_xml(config, db_connection, report_file):
         table_to_edit = config['OPTIONS']['TABLE']
         field_name = config['OPTIONS']['FIELD_NAME']
     except:
-        raise RMpyCom.RM_Py_Exception(
+        raise RMc.RM_Py_Exception(
             "ERROR: Check Options for errors")
 
 #  Get the table name
+# for now, hard code all params
+
 # get the list of rows by using 
 # for source  select with like source name or template id
 # for citation  select with like  citation name or source id
 # for src_template select with like  template name
 
-    report_file.write(
-        "\n\n" "No problems detected." '\n\n')
-
     table = "CitationTable"
+
     field_name = "MemorialID"
 
     SqlStmt = """
@@ -70,16 +71,58 @@ FROM CitationTable as ct
 WHERE ct.SourceID = 828
 """
 
+    # compile the regular expressions
+    ok_as_is = re.compile(r"^\d+$")
+    isolate_id = re.compile(r"(\d+)")
 
     for row in  get_list_of_rows(db_connection, SqlStmt):
+        # def get_root_element(dbConnection, SourceID=None, CitationID=None):
         root_element = get_root_element(db_connection, None, row)
 
+        # test and if needed, edit the XML in the DOM
+        field_found = root_element.find("Fields/Field[Name='" + field_name + "']")
+        if field_found is None:
+            report_file.write(str(row) + "     " + "null field_found"  + "\n ")
+            print(str(row) + "source XML OLD START ============================")
+            ET.indent(root_element)
+            ET.dump(root_element)
+            print("source XML OLD END ==============================")
+
+            continue
+
+        field_value = field_found.find('Value')
+        old_text = field_value.text
+
+        if old_text is None:
+            report_file.write(str(row) + "     " + "null old_text"  + "\n ")
+            continue
+
+        if  ok_as_is.search( old_text ):
+            report_file.write(str(row) + "     " + old_text  + "\n ")
+            continue
+
+        if G_DEBUG:
+            print("source XML OLD START ============================")
+            ET.indent(root_element)
+            ET.dump(root_element)
+            print("source XML OLD END ==============================")
+
+        id_match = isolate_id.search(old_text)
+        id = id_match.group(1)
+
+        #    Find A Grave Memorial# 149361756
+        #    Grave Memorial# 191562772</A>
+
+        report_file.write(str(row) + "     " + old_text + "     " + id + "\n ")
+
+        field_value.text = id
 
         if G_DEBUG:
             print("source XML NEW START ============================")
             ET.indent(root_element)
             ET.dump(root_element)
             print("source XML NEW END ==============================")
+
 
         # Update the source with new XML and new templateID
         newXML = ET.tostring(root_element, encoding="unicode")
@@ -91,10 +134,6 @@ UPDATE CitationTable
 """
         db_connection.execute(SqlStmt_src_w, (newXML, row))
         db_connection.commit()
-
-
-
-
 
 # ===================================================DIV60==
 def adjust_xml_fields(field_mapping, root_element):
@@ -113,7 +152,7 @@ def adjust_xml_fields(field_mapping, root_element):
                 ET.SubElement(newPair, "Name").text = transform[1]
                 ET.SubElement(newPair, "Value")
             else:
-                raise RMpyCom.RM_Py_Exception(
+                raise RMc.RM_Py_Exception(
                     "Tried to create duplicate Name in XML. NULL on left")
             continue
         # for each existing field in the XML...
@@ -138,7 +177,7 @@ def adjust_xml_fields(field_mapping, root_element):
                 eachField.find('Name').text = transform[1]
                 break
             else:
-                raise RMpyCom.RM_Py_Exception(
+                raise RMc.RM_Py_Exception(
                     "Tried to create duplicate Name in citation XML.")
         # end of for eachField loop
     # end of for each transform loop
@@ -165,7 +204,7 @@ SELECT Fields
  WHERE CitationID = ?
 """
     else:
-        raise RMpyCom.RM_Py_Exception("ERROR internal: both inputs None")
+        raise RMc.RM_Py_Exception("ERROR internal: both inputs None")
 
     cur = dbConnection.cursor()
     cur.execute(SqlStmt, (ID,))
