@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 
 sys.path.append( r'..\\RM -RMpy package' )
 import RMpy.launcher # type: ignore
-import RMpy.common as RMpyCom # type: ignore
+import RMpy.common as RMc # type: ignore
 
 # Requirements:
 #   RootsMagic database file

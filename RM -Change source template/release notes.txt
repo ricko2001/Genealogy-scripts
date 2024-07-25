@@ -8,3 +8,7 @@ Better error handling
 Change in the config file format- now need a > between mapping columns
 
 Refactored out common code into a python package.
+
+
+
+Added option to empty the source-citationNames
