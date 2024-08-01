@@ -89,8 +89,8 @@ def launcher(script_path,
             raise RMc.RM_Py_Exception('ERROR: DB_PATH must be specified.')
         if not os.path.exists(database_path):
             raise RMc.RM_Py_Exception(
-                'ERROR: Path for database not found: ' + database_path
-                + '\n\n' 'Absolute path checked:\n"'
+                'ERROR: Database path not found: ' + database_path
+                + '\n\n\n' 'Absolute path checked:\n"'
                 + os.path.abspath(database_path) + '"')
 
         if RMNOCASE_required:

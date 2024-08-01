@@ -184,7 +184,7 @@ def list_missing_files_feature(config, db_connection, report_file):
             if str(dir_path) != str(os.path.realpath(dir_path)):
                 found_files += 1
                 report_file.write(
-                    f"\n" "Directory path with correct case not found:\n"
+                    f"\n" "Directory path not found (case sensitive):\n"
                     f"{RMc.q_str(dir_path)} for file: {RMc.q_str(row[1])} \n")
                 if show_original_path:
                     report_file.write(f"{label_original_path} {RMc.q_str(dir_path_original)} \n")
@@ -198,7 +198,7 @@ def list_missing_files_feature(config, db_connection, report_file):
                             report_file.write(f"{label_original_path} {RMc.q_str(row[0])} \n")
                 else:
                     found_files += 1
-                    report_file.write(f"\nFile name with correct case not found at path: \n{file_path} \n")
+                    report_file.write(f"\nFile path not found (case sensitive): \n{file_path} \n")
                     if show_original_path:
                         report_file.write(
                             f"{label_original_path} {RMc.q_str(dir_path_original)} \n")
