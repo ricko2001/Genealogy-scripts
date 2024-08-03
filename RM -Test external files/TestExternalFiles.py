@@ -5,9 +5,10 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 import hashlib
 
-sys.path.append( r'..\\RM -RMpy package' )
-import RMpy.launcher # type: ignore
-import RMpy.common as RMc # type: ignore
+
+sys.path.append(r'..\\RM -RMpy package')
+import RMpy.launcher  # type: ignore
+import RMpy.common as RMc  # type: ignore
 
 
 # This script can only read a RootsMagic database file and cannot change it.
@@ -60,11 +61,11 @@ def main():
     RegExp_required = False
 
     RMpy.launcher.launcher(os.path.dirname(__file__),
-                    config_file_name,
-                    run_selected_features,
-                    allow_db_changes,
-                    RMNOCASE_required,
-                    RegExp_required )
+                           config_file_name,
+                           run_selected_features,
+                           allow_db_changes,
+                           RMNOCASE_required,
+                           RegExp_required)
 
 
 # ===================================================DIV60==
@@ -72,7 +73,7 @@ def run_selected_features(config, db_connection, report_file):
 
     global G_db_file_folder_path
     # used only in function expand_relative_dir_path, but no access to config there.
-    parent_dir= Path(config['FILE_PATHS']['DB_PATH']).parent
+    parent_dir = Path(config['FILE_PATHS']['DB_PATH']).parent
     # get the absolute path in case the DB_PATH was relative
     G_db_file_folder_path = parent_dir.resolve()
 
@@ -89,15 +90,15 @@ def run_selected_features(config, db_connection, report_file):
         config['OPTIONS'].getboolean('HASH_FILE')
         config['OPTIONS'].getboolean('NOT_MEDIA_FLDR')
         config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
-        config['OPTIONS'].getboolean('CASE_SENSITIVE')
+        config['OPTIONS'].getboolean('CASE_INSENSITIVE')
 
     except:
         raise RMc.RM_Py_Exception(
             "One of the OPTIONS values could not be parsed as boolean. \n")
 
-    # Run the requested options. Usually multiple options.
+    # Run all of the requested options.
     if config['OPTIONS'].getboolean('CHECK_FILES'):
-        list_missing_files_feature(config, db_connection, report_file)
+        missing_files_feature(config, db_connection, report_file)
 
     if config['OPTIONS'].getboolean('UNREF_FILES'):
         list_unreferenced_files_feature(
@@ -110,13 +111,13 @@ def run_selected_features(config, db_connection, report_file):
         list_folders_feature(config, db_connection, report_file)
 
     if config['OPTIONS'].getboolean('DUP_FILENAMES'):
-        find_duplicate_file_names_feature(db_connection, report_file)
+        duplicate_file_names_feature(db_connection, report_file)
 
     if config['OPTIONS'].getboolean('DUP_FILEPATHS'):
-        find_duplicate_file_paths_feature(db_connection, report_file)
+        duplicate_file_paths_feature(db_connection, report_file)
 
     if config['OPTIONS'].getboolean('NOT_MEDIA_FLDR'):
-        find_file_not_in_media_folder_feature(config, db_connection, report_file)
+        files_not_in_media_folder_feature(config, db_connection, report_file)
 
     if config['OPTIONS'].getboolean('HASH_FILE'):
         file_hash_feature(config, db_connection, report_file)
@@ -125,89 +126,74 @@ def run_selected_features(config, db_connection, report_file):
 
 
 # ===================================================DIV60==
-def list_missing_files_feature(config, db_connection, report_file):
+def missing_files_feature(config, db_connection, report_file):
 
     feature_name = "Files Not Found"
-    label_original_path = "Path in database:  "
-    found_files = 0
+    label_original_path = "Path stored in database:  "
+    missing_items = 0
 
-    section("START", feature_name, report_file)
     # get options
     try:
         show_original_path = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
     except:
         show_original_path = False
-
     try:
-        case_sensitive = config['OPTIONS'].getboolean('CASE_SENSITIVE')
+        case_insensitive = config['OPTIONS'].getboolean('CASE_INSENSITIVE')
     except:
         case_sensitive = True
+
+    section("START", feature_name, report_file)
+    if case_insensitive:
+        report_file.write("Case-insensitive search\n")
 
     # First check database for empty paths or filenames
     report_empty_paths(db_connection, report_file)
 
+    # for each file link in the multimedia table
     cur = get_db_file_list(db_connection)
     for row in cur:
         if len(str(row[0])) == 0 or len(str(row[1])) == 0:
             continue
         dir_path_original = row[0]
+        file_name = row[1]
         dir_path = expand_relative_dir_path(dir_path_original)
-        file_path = Path(os.path.join(dir_path, row[1]))
+        file_path = Path(os.path.join(dir_path, file_name))
 
-
-        if not case_sensitive:
-            # Case in-sensitive
-            if not os.path.exists(dir_path):
-                found_files += 1
+        # use case sensitive compare (normal usage)
+        if file_path.is_file():
+            if not case_insensitive and str(file_path) != str(file_path.resolve()):
+                missing_items += 1
+                report_file.write(
+                    f"\n" "Directory path with correct case not found:\n"
+                    f"{RMc.q_str(dir_path)} for file: {RMc.q_str(file_name)} \n")
+                if show_original_path:
+                    report_file.write(f"{label_original_path} {
+                                    RMc.q_str(dir_path_original)} \n")
+            else:
+                # found the file, on to the next one
+                continue
+        else:
+            if not file_path.is_file():
+                missing_items += 1
+                report_file.write(
+                    f"\nPath is not a file: \n{RMc.q_str(file_path)} \n")
+                if show_original_path:
+                    report_file.write(f"{label_original_path} {
+                                        RMc.q_str(row[0])} \n")
+            else:
+                missing_items += 1
                 report_file.write(
                     f"\n" "Directory path not found:\n"
-                    f"{RMc.q_str(dir_path)} for file: {RMc.q_str(row[1])} \n")
+                    f"{RMc.q_str(dir_path)} for file: {RMc.q_str(file_name)} \n")
                 if show_original_path:
-                    report_file.write(f"{label_original_path} {RMc.q_str(dir_path_original)} \n")
-            else:
-                if file_path.exists():
-                    if not file_path.is_file():
-                        found_files += 1
-                        report_file.write(
-                            f"\nFile path is not a file: \n"
-                            f"{RMc.q_str(file_path)} \n")
-                        if show_original_path:
-                            report_file.write(f"{label_original_path} {RMc.q_str(row[0])} \n")
-                else:
-                    found_files += 1
-                    report_file.write(f"\nFile path not found: \n{file_path} \n")
-                    if show_original_path:
-                        report_file.write(
-                            f"{label_original_path} {RMc.q_str(dir_path_original)} \n")
-        else:
-            # use case sensitive compare
-            if str(dir_path) != str(os.path.realpath(dir_path)):
-                found_files += 1
-                report_file.write(
-                    f"\n" "Directory path not found (case sensitive):\n"
-                    f"{RMc.q_str(dir_path)} for file: {RMc.q_str(row[1])} \n")
-                if show_original_path:
-                    report_file.write(f"{label_original_path} {RMc.q_str(dir_path_original)} \n")
-            else:
-                if file_path.exists():
-                    if not file_path.is_file():
-                        found_files += 1
-                        report_file.write(
-                            f"\nPath is not a file: \n{RMc.q_str(file_path)} \n")
-                        if show_original_path:
-                            report_file.write(f"{label_original_path} {RMc.q_str(row[0])} \n")
-                else:
-                    found_files += 1
-                    report_file.write(f"\nFile path not found (case sensitive): \n{file_path} \n")
-                    if show_original_path:
-                        report_file.write(
-                            f"{label_original_path} {RMc.q_str(dir_path_original)} \n")
+                    report_file.write(f"{label_original_path} {
+                                    RMc.q_str(dir_path_original)} \n")
 
-    if found_files > 0:
+    if missing_items > 0:
         report_file.write(f"\nNumber of file links in "
-                          f"database not found on disk: {found_files} \n")
+                          f"database not found on disk: {missing_items} \n")
 
-    if found_files == 0:
+    if missing_items == 0:
         report_file.write("\n    No files were found missing.\n")
     section("END", feature_name, report_file)
     return
@@ -227,9 +213,9 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
             "ERROR: SEARCH_ROOT_FLDR_PATH must be specified for this option. \n")
 
     try:
-        case_sensitive = config['OPTIONS'].getboolean('CASE_SENSITIVE')
+        case_insensitive = config['OPTIONS'].getboolean('CASE_INSENSITIVE')
     except:
-        case_sensitive = True
+        case_insensitive = False
 
     # Validate the folder path
     if not Path(ext_files_folder_path).exists():
@@ -256,15 +242,18 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
         db_file_list.append(file_path)
 
     filesystem_folder_file_list = folder_contents_minus_ignored(
-        report_file, Path(ext_files_folder_path), config)
+        Path(ext_files_folder_path), config, report_file)
 
-    if (case_sensitive == True):
+    if (case_insensitive == False):
         # case sensitive
-        unref_files = list(set(filesystem_folder_file_list).difference(db_file_list))
+        unref_files = list(
+            set(filesystem_folder_file_list).difference(db_file_list))
     else:
-        filesystem_folder_file_list_lc = [item.lower() for item in filesystem_folder_file_list]
+        filesystem_folder_file_list_lc = [
+            item.lower() for item in filesystem_folder_file_list]
         db_file_list_lc = [item.lower() for item in db_file_list]
-        unref_files = list(set(filesystem_folder_file_list_lc).difference(db_file_list_lc))
+        unref_files = list(
+            set(filesystem_folder_file_list_lc).difference(db_file_list_lc))
 
     if len(unref_files) > 0:
         # print the files
@@ -361,7 +350,7 @@ def list_folders_feature(config, db_connection, report_file):
 
 
 # ===================================================DIV60==
-def find_duplicate_file_paths_feature(db_connection, report_file):
+def duplicate_file_paths_feature(db_connection, report_file):
 
     # this currently find exact duplicates as saved in DB path & filename (ignoring case)
     # duplicates *after expansion* of relative paths not found
@@ -387,7 +376,7 @@ def find_duplicate_file_paths_feature(db_connection, report_file):
 
 
 # ===================================================DIV60==
-def find_duplicate_file_names_feature(db_connection, report_file):
+def duplicate_file_names_feature(db_connection, report_file):
 
     # this finds exact filename duplicates as saved in DB (ignoring case)
     feature_ame = "Duplicated File Names"
@@ -483,7 +472,7 @@ def file_hash_feature(config, db_connection, report_file):
 
 
 # ===================================================DIV60==
-def find_file_not_in_media_folder_feature(config, db_connection, report_file):
+def files_not_in_media_folder_feature(config, db_connection, report_file):
 
     feature_name = "Files Not in Media Folder"
     label_orig_path = "Path in database:  "
@@ -510,18 +499,21 @@ def find_file_not_in_media_folder_feature(config, db_connection, report_file):
                 report_file.write(f"{label_orig_path} {RMc.q_str(row[0])} \n")
 
     if found_files > 0:
-        report_file.write(f"\nNumber of file links in database not in Media Folder: {found_files} \n")
+        report_file.write(
+            f"\nNumber of file links in database not in Media Folder: {found_files} \n")
 
     if found_files == 0:
         report_file.write(
             "\n    All file links in the database "
-             "point to the Media Folder.\n")
+            "point to the Media Folder.\n")
 
     section("END", feature_name, report_file)
 
     return
 
 # ===================================================DIV60==
+
+
 def get_db_folder_list(dbConnection):
 
     SqlStmt = """
@@ -644,7 +636,7 @@ def section(pos, name, report_file):
 # ===================================================DIV60==
 def expand_relative_dir_path(in_path):
 
-    # deal with relative paths in RootsMagic 8 + 9 databases
+    # deal with relative paths in RootsMagic v8 and later databases
     # RM7 path are always absolute and will never be processed here
 
     global G_media_directory_path
@@ -682,25 +674,28 @@ def get_media_directory():
 
     #  Relies on the RM installed xml file containing application preferences
     #  File location set by RootsMagic installer
+    RM_Config_FilePath_10 = r"~\AppData\Roaming\RootsMagic\Version 10\RootsMagicUser.xml"
     RM_Config_FilePath_9 = r"~\AppData\Roaming\RootsMagic\Version 9\RootsMagicUser.xml"
     RM_Config_FilePath_8 = r"~\AppData\Roaming\RootsMagic\Version 8\RootsMagicUser.xml"
 
     media_folder_path = "RM8 or later not installed"
 
-#  If xml settings file for RM 8 or 9 not found, return the mediaPath containing the
-#  RM8 or later not installed message. It will never be used because RM 7 and earlier
-#  does not need to know the media folder path.
+#  If xml settings file for RM 8 - 10 not found, return the mediaPath containing the
+#  error message. It will never be used for RM 7 because RM 7 and earlier
+#  do not need to know the media folder path.
 
-#  Potential problem if RM 8 and 9 both installed and they have different
-#  media folders specified. The highest version number path is found here.
+#  Potential problem if RM 8, 9 or 10 both installed and they have different
+#  media folders specified. The highest version number path found is used here.
 
-#  Could base this off of the database version number, but that's not readily available.
+#  TODO Could base this off of the database version number, but that's not readily available.
 
-    xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_9))
+    xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_10))
     if not xmlSettingsPath.exists():
-        xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_8))
+        xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_9))
         if not xmlSettingsPath.exists():
-            return media_folder_path
+            xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_8))
+            if not xmlSettingsPath.exists():
+                return media_folder_path
 
     root = ET.parse(xmlSettingsPath)
     media_folder_path_ele = root.find("./Folders/Media")
@@ -710,10 +705,20 @@ def get_media_directory():
 
 
 # ===================================================DIV60==
-def folder_contents_minus_ignored(report_file, dir_path, config):
+def folder_contents_minus_ignored(dir_path, config, report_file):
+    # dir_path  absolute folder path containing the files & folder that
+    # should be referenced by the database.
+    # Ideally, this is also the "RM Media folder"
+    # coded so case_sensitive is normal
 
     ignored_folder_names = []
     ignored_file_names = []
+
+    # TOD implement
+    try:
+        case_insensitive = config['OPTIONS'].getboolean('CASE_INSENSITIVE')
+    except:
+        case_insensitive = False
     try:
         ignored_folder_names = config['IGNORED_OBJECTS'].get(
             'FOLDERS').split('\n')
