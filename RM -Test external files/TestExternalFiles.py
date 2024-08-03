@@ -132,6 +132,8 @@ def missing_files_feature(config, db_connection, report_file):
     label_original_path = "Path stored in database:  "
     missing_items = 0
 
+    section("START", feature_name, report_file)
+
     # get options
     try:
         show_original_path = config['OPTIONS'].getboolean('SHOW_ORIG_PATH')
@@ -142,7 +144,6 @@ def missing_files_feature(config, db_connection, report_file):
     except:
         case_sensitive = True
 
-    section("START", feature_name, report_file)
     if case_insensitive:
         report_file.write("Case-insensitive search\n")
 
@@ -201,21 +202,23 @@ def missing_files_feature(config, db_connection, report_file):
 
 # ===================================================DIV60==
 def list_unreferenced_files_feature(config, db_connection, report_file):
-    feature_name = "Unreferenced Files"
 
+    feature_name = "Unreferenced Files"
     section("START", feature_name, report_file)
 
-    # get option
+    # get options
     try:
         ext_files_folder_path = config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH']
     except:
         raise RMc.RM_Py_Exception(
             "ERROR: SEARCH_ROOT_FLDR_PATH must be specified for this option. \n")
-
     try:
         case_insensitive = config['OPTIONS'].getboolean('CASE_INSENSITIVE')
     except:
         case_insensitive = False
+
+    if case_insensitive:
+        report_file.write("Case-insensitive search\n\n")
 
     # Validate the folder path
     if not Path(ext_files_folder_path).exists():
@@ -234,11 +237,9 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
     for row in cur:
         if len(str(row[0])) == 0 or len(str(row[1])) == 0:
             continue
-        if row[0][0] == '*':
-            # what's going on here?
-            pass
-        dirPath = expand_relative_dir_path(row[0])
-        file_path = os.path.join(dirPath, row[1])
+        dir_path = expand_relative_dir_path(row[0])
+        file_name = row[1]
+        file_path = os.path.join(dir_path, file_name)
         db_file_list.append(file_path)
 
     filesystem_folder_file_list = folder_contents_minus_ignored(
@@ -252,8 +253,19 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
         filesystem_folder_file_list_lc = [
             item.lower() for item in filesystem_folder_file_list]
         db_file_list_lc = [item.lower() for item in db_file_list]
+
         unref_files = list(
             set(filesystem_folder_file_list_lc).difference(db_file_list_lc))
+        
+        # tried to deal with the output being all lower case, leave it alone
+        # find the unrefed files lower case, in the original case list, and then print the original case item
+        # unref_files_lc is lower case, find each in db_file_list and create a new list 
+#        unref_files = []
+#        for lc_unref in unref_files_lc:
+#            for orig_item in filesystem_folder_file_list:
+#                if orig_item.lower() == lc_unref:
+#        db_file_list_lc = [item.lower() for item in db_file_list]
+#                    unref_files.append(orig_item)
 
     if len(unref_files) > 0:
         # print the files
@@ -672,8 +684,12 @@ def expand_relative_dir_path(in_path):
 # ===================================================DIV60==
 def get_media_directory():
 
+    # TODO make this work for future releases of RM
+    # Maybe get a dir listing of rm folders
+
     #  Relies on the RM installed xml file containing application preferences
     #  File location set by RootsMagic installer
+    RM_Config_FilePath_11 = r"~\AppData\Roaming\RootsMagic\Version 11\RootsMagicUser.xml"
     RM_Config_FilePath_10 = r"~\AppData\Roaming\RootsMagic\Version 10\RootsMagicUser.xml"
     RM_Config_FilePath_9 = r"~\AppData\Roaming\RootsMagic\Version 9\RootsMagicUser.xml"
     RM_Config_FilePath_8 = r"~\AppData\Roaming\RootsMagic\Version 8\RootsMagicUser.xml"
@@ -689,13 +705,16 @@ def get_media_directory():
 
 #  TODO Could base this off of the database version number, but that's not readily available.
 
-    xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_10))
+
+    xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_11))
     if not xmlSettingsPath.exists():
-        xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_9))
+        xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_10))
         if not xmlSettingsPath.exists():
-            xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_8))
+            xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_9))
             if not xmlSettingsPath.exists():
-                return media_folder_path
+                xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_8))
+                if not xmlSettingsPath.exists():
+                    return media_folder_path
 
     root = ET.parse(xmlSettingsPath)
     media_folder_path_ele = root.find("./Folders/Media")
@@ -709,12 +728,12 @@ def folder_contents_minus_ignored(dir_path, config, report_file):
     # dir_path  absolute folder path containing the files & folder that
     # should be referenced by the database.
     # Ideally, this is also the "RM Media folder"
-    # coded so case_sensitive is normal
+    # ignored objects are always case sensitive
 
     ignored_folder_names = []
     ignored_file_names = []
 
-    # TOD implement
+    # TODO implement
     try:
         case_insensitive = config['OPTIONS'].getboolean('CASE_INSENSITIVE')
     except:
@@ -731,6 +750,7 @@ def folder_contents_minus_ignored(dir_path, config, report_file):
         report_file.write("No ignored files specified. \n\n")
 
     media_file_list = []
+
     for (dir_name, dir_names, file_names) in os.walk(dir_path, topdown=True):
 
         for igFldrName in ignored_folder_names:
@@ -743,6 +763,7 @@ def folder_contents_minus_ignored(dir_path, config, report_file):
 
         for filename in file_names:
             media_file_list.append(str(os.path.join(dir_name, filename)))
+
 
     return media_file_list
 
