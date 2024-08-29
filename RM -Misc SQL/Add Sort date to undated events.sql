@@ -35,7 +35,12 @@ SET SortDate = 7937594360419319820
 WHERE SortDate = 9223372036854775807
 AND EventType = 1090;
 
--- Research Data
+-- Religion  29  4100 = 7937594360419319820
+UPDATE EventTable as et
+SET SortDate = 7937594360419319820
+WHERE EventType = 28;
+
+-- Research Data  4400-4500
 
 -- ResearchNote       1096  4400 = 8106479346445713420
 UPDATE EventTable as et
@@ -47,7 +52,7 @@ UPDATE EventTable as et
 SET SortDate = 8162774341787844620
 WHERE EventType = 1100;
 
--- Misc facts
+-- Misc facts  4600
 
 -- MetWithRJO   1099  4600 = 8219069337129975820
 UPDATE EventTable as et

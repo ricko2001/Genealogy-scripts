@@ -19,10 +19,11 @@ order by pt.PersonID desc
 
 
 -- Or
-select a.* from a
-left outer join b on a.id = b.a_id
-where b.a_id is null
-
-https://stackoverflow.com/questions/38549/what-is-the-difference-between-inner-join-and-outer-join
-
-add test for fag citation
+-- select a.* from a
+-- left outer join b on a.id = b.a_id
+-- where b.a_id is null
+-- 
+-- https://stackoverflow.com/questions/38549/what-is-the-difference-between-inner-join-and-outer-join
+-- 
+-- add test for fag citation
+-- 
