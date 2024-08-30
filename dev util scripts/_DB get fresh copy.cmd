@@ -15,10 +15,10 @@ for %%I in (.) do set CurrDirName=%%~nxI
 cd "%DB_DIR%"
 
 SET DEV_DB_NAME=TEST-%CurrDirName%
-SET DEV_DB_BACKUP=TEST_BACKUP_dev-%CurrDirName%
+SET DEV_DB_BACKUP=BACKUP_TEST_-%CurrDirName%
 
 REM delete existing dev test database and local backup
-del "%DEV_DB_PATH%\%DEV_DB_NAME%.%DB_EXTEN%" 
+del "%DEV_DB_PATH%\%DEV_DB_NAME%.%DB_EXTEN%"
 del "%DEV_DB_PATH%\%DEV_DB_BACKUP%.%DB_EXTEN%"
 
 REM This is the only reference to the production database environment
@@ -29,3 +29,4 @@ copy "%DEV_DB_PATH%\%DEV_DB_NAME%.%DB_EXTEN%" "%DEV_DB_PATH%\%DEV_DB_BACKUP%.%DB
 
 REM pause and request input to close window - optional
 REM pause
+
