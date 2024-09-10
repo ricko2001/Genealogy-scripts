@@ -11,7 +11,7 @@ import RMpy.common as RMc # type: ignore
 #   RM-Python-config.ini
 
 # Tested with:
-#   RootsMagic database file v10.1.0
+#   RootsMagic database file v10.0.1
 #   Python for Windows v3.12.3
 
 # Config file fields used
