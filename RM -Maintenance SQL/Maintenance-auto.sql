@@ -220,6 +220,21 @@ SET SortDate = 8395835622504267788
 WHERE EventType = 1050;
 
 --===========================================DIV50==
+--REF from Citation sort order.sql
+
+--===========================================DIV50==
+-- Update all SortOrder values in CitationLinkTable
+
+UPDATE CitationLinkTable AS clt1
+SET SortOrder= ( SELECT SUBSTR(st.Name, 1,25) || SUBSTR(ct.CitationName, 1,10) 
+    FROM CitationLinkTable AS clt2
+    JOIN CitationTable AS ct USING (CitationID)
+    JOIN SourceTable AS st USING (SourceID)
+    WHERE clt1.LinkID = clt2.LinkID
+    );
+
+
+--===========================================DIV50==
 
 
 --===========================================DIV50==
