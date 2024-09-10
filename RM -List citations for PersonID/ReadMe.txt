@@ -11,7 +11,7 @@ until you have confidence that your data is OK.
 Input is a single RIN number. Also called a PersonID
 The RIN can be entered at the console window as the script runs, or it can be specified in the RM-Python-config.ini file.
 
-Output is a alphabetically sorted list of source names and citation names attached -
+Output is an alphabetically sorted list of source names and citation names attached -
     to the specified person
     to facts attached to the person
     to names attached to the person
@@ -23,7 +23,7 @@ the output also includes the number of citations found.
 
 (citations to witnessed fact not yet included)
 
-The results will be saved in a report file which is automatically displayed.
+The results are saved to a report file which is automatically displayed.
 
 
 ======================================================================
@@ -47,7 +47,7 @@ To use it:
 
 ======================================================================
 Tested with:
-       RootsMagic database file v9.1.6		(RM v7 no longer supported)
+       RootsMagic database file v10.0.1		(RM v7 no longer supported)
        Python for Windows v3.12.3   64bit 
        Operating system= Window 11, 64bit
 
@@ -88,7 +88,6 @@ To install and use the exe single file version:
 *  Examine the generated report text file that is now opened in Notepad.
 
 
-
 --- OR ---
 
 Use the py script file.  See section below, after the Notes section, entitled-
@@ -118,10 +117,6 @@ NOTES
     Error message- ... RM-Python-config.ini file contains a format error ...
     The problem is as stated, the solution may be harder to determine.
     You may want to look at- https://en.wikipedia.org/wiki/INI_file
-    Probably the trickiest part of the ini file is the IGNORED_OBJECTS section.
-    The FOLDERS and FILENAMES keys can have multiple values. 
-    Each value should be on a separate line indented with at least one blank.
-    An empty line generates an error.
 
 ======================================================================
 ======================================================================
@@ -218,8 +213,8 @@ Run the Python installer selecting all default options.
 
 ======================================================================
 TODO
-*   include Association source/citations
-*	citations to witnessed fact not yet included)
+*	citations to witnessed fact
+*   consider alternate output formats
 
 
 ======================================================================
