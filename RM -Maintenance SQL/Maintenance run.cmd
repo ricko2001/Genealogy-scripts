@@ -4,10 +4,13 @@ REM  File paths must use doubled back slash due to Sqlite3.exe limitation
 
 REM file locations
 
-SET DATABASE=.\\DB\\TEST.rmtree
+SET DATABASE=C:\\Users\\me\\Genealogy\\TEST.rmtree
 
 SET RMNOCASE=C:\\Users\\me\\Genealogy\\SW\\unifuzz64.dll
-REM see "Notes on collation RMNOCASE.txt" in root of repo
+REM see: https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2018/05/unifuzz64.dll
+SET REGEXP=C:\\Users\\me\\Genealogy\\SW\\regexp.dll
+REM see: https://github.com/nalgeon/sqlean
+
 
 SET SQL_FILE=.\\Maintenance-auto.sql
 
@@ -29,6 +32,7 @@ echo .changes on             >> "%TEMPFILE%"
 echo .bail on                >> "%TEMPFILE%"
 echo .open "%DATABASE%"      >> "%TEMPFILE%"
 echo .load "%RMNOCASE%"      >> "%TEMPFILE%"
+REM echo .load "%REGEXP%"        >> "%TEMPFILE%"
 echo .echo on                >> "%TEMPFILE%"
 echo .version                >> "%TEMPFILE%"
 echo .                       >> "%TEMPFILE%"
