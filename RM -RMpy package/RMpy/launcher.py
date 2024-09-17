@@ -138,6 +138,8 @@ def launcher(script_path,
                           + os.path.abspath(database_path)
                           + "\n" "Database last changed on = "
                           + file_modification_time.strftime("%Y-%m-%d %H:%M:%S")
+                          + "\n" "Python version           = "
+                          + sys.version
                           + "\n" "SQLite library version   = "
                           + RMc.get_SQLite_library_version(db_connection) + "\n\n\n\n")
 

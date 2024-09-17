@@ -3,16 +3,16 @@ Utility application for use with RootsMagic databases
 
 
 RootsMagic (RM) software uses a SQLite relational database as its main storage.
-This utility uses SQL to query the database file and create a RM group in the 
+This utility uses SQL to query the database file and create a RM group in the
 RM database independently of RM. Groups may be created with RootsMagic software,
-of course, but the types of queries are limited.
+of course, but the types of queries are more limited.
 
-This utility will create and/or update a RM group from any SQL query that returns 
+This utility will create and/or update a RM group from any SQL query that returns
 a list of PersonIDs (RINs).
 
-Also remember, that groups in RM, are always groups of Persons. So if you want 
-to find all facts with a certain characteristic, you need to create a group of 
-the people that have that fact attached. Once the group is created, you will 
+Also remember, that groups in RM, are always groups of Persons. So if you want
+to find all RM facts with a certain characteristic, you need to create a group of
+the people that have that fact attached. Once the group is created, you will
 need to search each person's edit window for the fact you are interested in.
 
 
@@ -23,35 +23,27 @@ This program is what is called a "command line utility".
 
 To use it:
 
-1:  Create or find a SQL statement that returns the RINs of the people you are 
+1:  Create or find a SQL statement that returns the RINs of the people you are
 interested in putting in a group.
 
-2:  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter 
-referred to as the "ini file".) The utility needs to know where the RM database 
-file is located, the location of the database extension dll file, what SQL to 
-use for the query, and the name for the group. Editing the ini file can be done 
-using the Windows NotePad app.
+2:  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
+referred to as the "config file".) The utility needs to know where the RM database
+file is located, what SQL to use for the query, and the name for the group.
+Editing the config file can be done using the Windows NotePad app.
 
-2:  Double click the GroupFromSQL file. This momentarily displays the black 
-command console window and at the same time, generates the group within the database.
-The console window displays:
-      * full path of the database operated on,
-      * number of people selected by the SQL
-      * status of the group
-and then prompts the user to hit the enter key to close the console window. It 
-will also display any warning/error messages. Read the console window messages
-carefully before closing it.
+2:  Double click the GroupFromSQL file. This momentarily displays the black
+command console window and then displays a report file in Notepad.
+At the same time, the group within the database is updated.
 
-3:  Return to the RootsMagic window and examine the group membership.
+3:  Return to RootsMagic and examine the group membership.
 
 
 ======================================================================
 Compatibility
-Tested with 
-       RootsMagic v9.   Not tested with RM 7 or 8.
-       unifuzz64.dll (file has no version number defined. see MD5 and file size below)
+Tested with
+       RootsMagic v10
        Operating system Window 11, 64bit  (Windows 10 most probably OK)
-       Python for Windows v3.11.4   64bit  (when using the py version)
+       Python for Windows v3.12    64bit  (when using the py version)
 
 The py script file could be modified to work on MacOS with Python ver 3 installed.
 
@@ -60,9 +52,9 @@ The py script file could be modified to work on MacOS with Python ver 3 installe
 Backups
 
 IMPORTANT: You should run this script on a copy of your database file until you
-have confidence using it and confidence in its results. Or at least have a 
+have confidence using it and confidence in its results. Or at least have a
 current known-good backup.
-Assume software developers are fallible and make mistakes, but are not 
+Assume software developers are fallible and make mistakes, but are not
 malevolent.
 
 Similarly, always use a database copy when you are developing your SQL. It's
@@ -74,24 +66,28 @@ Getting Started
 
 To install and use the single .exe file version:
 
-*  Create a working folder on your disk, perhaps in the same folder
-   that contains your RM database.
+*  Create a new folder on your disk.
+   This will be called the working folder.
 
 *  Copy these files from downloaded zip file to the working folder-
       GroupFromSQL.exe
       RM-Python-config.ini
 
-*  Download the SQLite extension file: unifuzz64.dll   -see below
+*  Make a copy of your database, move it into the working folder.
+   Rename it TEST.rmtree
 
-*  Move the unifuzz64.dll file to the working folder
+*  Open the TEST database and create an empty group with the name of your choice
+   of Type=Simple. Its contents are not important and as they will be cleared and
+   re-populated by the utility.
 
-*  Edit the RM-Python-config.ini in the working folder to specify the location 
-   of the RM file and the unifuzz64.dll file. 
-   To edit, Open NotePad and drag the ini file onto the NotePad window.
+*  Edit the config file in the working folder to specify the location
+   of the RM file, the name of the group and the SQL statement to run.
+   See section "config file structure" below for more details.
+   To edit, Open NotePad and drag the config file onto the NotePad window.
 
 *  Double click the GroupFromSQL.exe file to run the utility.
 
-*  Examine the console window text and press the enter key to close it.
+*  Examine the report file to confirm success.
 
 *  Open the database in RM, open the People view window and select the created
    group as filter to see the results.
@@ -103,129 +99,106 @@ Use the py script file.  See section below, after the Notes section, entitled-
 
 
 ======================================================================
-unifuzz64.dll download-
+config file structure
 
-direct download:
-https://sqlitetoolsforrootsmagic.com/wp-content/uploads/2018/05/unifuzz64.dll
-
-the link above is found in this context-
-https://sqlitetoolsforrootsmagic.com/rmnocase-faking-it-in-sqlite-expert-command-line-shell-et-al/
-
-The SQLiteToolsforRootsMagic website has been around for many years and is run 
-by a trusted RM user. Many posts to public RootsMagic user forums mention use 
-of unifuzz64.dll from the SQLiteToolsforRootsMagic website.
-
-
-======================================================================
-ini file configuration
-
-First, some nomenclature. An ini file is made up of Sections, Keys, Values and 
+First, some nomenclature. The config file is made up of Sections, Keys, Values and
 Comments. The names in square brackets are Section Names that identify the start
-of a section. A Section contains Key = Value pairs. Names on the left of 
-the = sign are Keys. Text on the right side of the = is the Value of the Key 
-at the left. Comment lines start with # and are only included to help the user 
-read and understand the file.
+of a section. A Section contains Key = Value pairs. Names on the left of
+the = sign are Keys. Text on the right side of the = is the Value of the Key.
+Comment lines start with # and are only included to help the user read and
+understand the file.
 
 For example-
 
-#-----------------------------------------------
-[OptSet_Sm]
-RM_GROUP_NAME = GroupSmith
-UPDATE_GROUP  = yes
-#-----------------------------------------------
-
-
-The lines starting with #----- are comments and are only seen by the human 
-reader. This is section OptSet_Sm there are 2 keys-RM_GROUP_NAME and UPDATE_GROUP.
-key RM_GROUP_NAME has value GroupSmith, key UPDATE_GROUP has value yes.
-
-The example values shown below are from the supplied sample RM-Python-config.ini file
-The Section Names and Values with mixed case characters are all examples. Use 
-names that make sense to you.  
-
 [OPTIONS]
-GROUP_FROM_SQL_OPTION_SET = OptSet_Jones
+GROUP_NANE = GroupEveryone
 
-    The name of the INI file section that contains Key/Values that will be used 
-    by this utility to generate the group.
+#-----------------------------------------------
+[GroupEveryone]
+SQL_QUERY = SELECT PersonID FROM PersonTable
 
+#-----------------------------------------------
 
-[OptSet_Sm]
-RM_GROUP_NAME = OptSet_Jones
+Shown are two sections: "OPTIONS" and "GroupEveryone".
 
-    The name of the RM group to store the results.
+Section "OPTIONS" has one key :"GROUP_NAME" which has the value "GroupEveryone".
 
+Section "GroupEveryone" has one key: SQL_QUERY which has the
+value "SELECT PersonID FROM PersonTable".
 
-UPDATE_GROUP = yes
+This example, if run with the utility, will update the group GroupEveryone, already existing
+in the database, using the SQL statement show.
+The example SQL_QUERY is very simple and fits on the same line as the key name.
+Real SQL will be much more complex and require multiple lines.
+Each line of a multi line Value must be indented at least one space.
 
-    The group name may be new or preexisting. If it is new, it will be created.
-    If it is preexisting, the group will be updated only if UPDATE_GROUP is set
-    to yes. If UPDATE_GROUP is set to no, the utility does not make any changes.
-
+for example:
 
 SQL_QUERY =
+   --
    -- selects person whose married name starts with 'sm'
-   select pt.personid
-   from persontable as pt
-   inner join nametable as nt on pt.personid = nt.ownerid
-   where nt.nametype = 5 -- married name
-   and nt.surname like 'sm%'
+   SELECT pt.personid
+   FROM persontable AS pt
+   INNER JOIN nametable AS nt ON pt.personid = nt.ownerid
+   WHERE nt.nametype = 5    -- married name
+   AND nt.surname LIKE 'sm%'
 
+The SQL_QUERY key specifies the SQL statement that will be run.
+It must return a set of PersonID's. The statement may begin on the next line,
+as above, as long as the SQL lines are all
+indented with white space. Blank lines are not allowed.
+Use indented SQL comments (--) to add spacing for readability.
+# style comments are not allowed in multi line values.
 
-The SQL statement that will be run. It must return a set of PersonID's. The 
-statement may begin on the next line, as above, as long as the SQL lines are all
-indented with white space. Either blanks or tabs. Blank lines are not allowed. 
-Use indented SQL comments (--) to add spacing.
-
-Your ini file can contain multiple Sections each with group names and SQL 
-statements. Only the option set specified by GROUP_FROM_SQL_OPTION_SET will be used.
+Your config file can contain multiple Sections each with SQL statements.
+Only the Section specified by [OPTIONS] GROUP_NANE will be used.
 
 
 ======================================================================
 NOTES
 
-*    This utility will not help you write the SQL statement and is not a good 
-working environment in which to create your SQL statement. 
+*    This utility will not help you write the SQL statement and is not a good
+working environment in which to create your SQL statement.
 Confirm you query works before running it in this utility. (Or get the SQL from
-a source that has confirmed its results. This app is written so that incorrect 
+a source that has confirmed its results. This app is written so that incorrect
 SQL will not damage your database, only give groups with unwanted members.)
 It is suggested that you write and debug your SQL in a GUI SQLite manager app,
-such as "SQLite Expert Personal", the 64bit version, a free app. Several others 
-are also available. 
+such as "SQLite Expert Personal", the 64bit version, a free app. Several others
+are also available.
 
-When opening a RM database in a SQL manager app, many of your queries will
-require loading the same database extension used by this utility. Use the 64 bit
- version of the extension and the 64 bit version of the SQL manager app. This 
-utility is also 64 bit.
+Note that the SQL statement is run in an environment that does not have the
+RMNOCASE collation used by RM for most name type columns. Use "COLLATE NOCASE"
+to avoid errors.
 
-*    Not all RM windows will not automatically recognize a new group created by
-this utility while the database is loaded. So if you are creating a new group, 
-the most straight forward approach is to restart RM or run the utility while the
-database is not loaded.
-In practice, it is the People list that does not recognize the new group. 
-Workaround: open the "Group" tab (in the same panel as the main "Index"), and click
-the "Pencil" icon to display the New, Edit, Delete window. Close the window.
-This nudges the People list window into seeing the new group.
-No issues have been see with updating an existing group. The group always shows 
-the current members (unless it is already in use for filtering a list. In that 
-case, switch to a different group, and then back.)
+*    Due to technical issue regarding RMNOCASE, this utility will not create a new group.
+Instead use RM to create the group name before using this utility.
+The process is simple-
+Open the database in RM,
+Click the Command palette icon in the top right corner of the RM window.
+Type "Group" and select the "Groups" command.
+In the Add New Group window, type the name of the new group and hit Save.
+Be sure the name is unique among group names.
+Leave the Type set to "Simple" as is the default.
 
-*    Updating the contents of a group while the database is open in RM works OK. 
-However, RM lists using group filters do not have a refresh button, so, for 
-example, if you displaying People view filtered by the group that has been 
-updated, you'll need to switch to another group and then back again to see the 
+The same Add New Group window can be accessed by clicking the large plus icon in the groups tab
+in the "Side View" which by default is on the left.
+
+*    Updating the contents of a group while the database is open in RM works OK.
+However, RM lists using group filters do not have a refresh button, so, for
+example, if you displaying People view filtered by the group that has been
+updated, you'll need to switch to another group and then back again to see the
 effect of the group having been updated.
 
-*    On some occasions, the utility console window will display a "Database 
-Locked" message. In that case. close the console window, close RM and re-run the
- utility, then re-open RM. It's not clear why this sometimes happens, but it is
- rare. No database damage has ever been seem after many hundreds of uses (as 
-expected. "Database locked" is a normal message encountered with SQLite.)
+*    On some occasions, the utility report file will display a "Database
+Locked" message. In that case, close RM and re-run the  utility, then re-open 
+RM. It's not clear why this sometimes happens, but it is  rare. No database
+damage has ever been seem after many hundreds of uses as expected. 
+"Database locked" is a normal message encountered from SQLite.
 
 
-Less important notes included for completeness..
+Less important notes.
 
-*    RM-Python-config.ini, the ini file.
+*    RM-Python-config.ini, the config file.
 If there are any non-ASCII characters in the RM-Python-config.ini file,
 perhaps in a database path, then the file must be saved in UTF-8 format, with no
 byte order mark (BOM). This is an option in the save dialog box in NotePad.
@@ -235,21 +208,17 @@ The utility takes the input SQL and creates a temporary view based on it. If tha
 fails, an appropriate error is returned. That should protect against SQL that
 modifies/deletes data. (This is not tested beyond simple cases.)
 
-*    This utility only changes the database tables: TagTable and GroupsTable.
+*    This utility only changes the GroupsTable in the database
 
 *    This utility creates a temporary view named: PersonIdList_RJO_utils and
 deletes it when done.
 
-*    This utility could, if configured to, modify a pre-existing group that is
-important to you. Take care when assigning the group name: QUERY_GROUP_NAME.
+*    This utility will, if so configured, modify a pre-existing group that is
+important to you. Take care when assigning the group name: [OPTIONS] GROUP_NAME.
 
-*     (For testing) To create a "database locked" situation, in SQLite Expert, start a 
+*     (For testing) To create a "database locked" situation, in SQLite Expert, start a
 transaction, try to run this utility. Will get locked message until transaction
 in SQLite Expert is either committed or RolledBack.
-
-*    MD5 hash values are used to confirm the identity of files.
-        MD5 hash							File size		File name
-        06a1f485b0fae62caa80850a8c7fd7c2	256,406 bytes	unifuzz64.dll
 
 
 ======================================================================
@@ -262,7 +231,7 @@ Using one does not preclude using the other.
 
 Pro's and Con's
 
-*   The .exe Executable File Version 
+*   The .exe Executable File Version
   Pro:
    The single exe file is all you need. No need to install Python.
   Con:
@@ -293,13 +262,11 @@ To install and use the script file version:
 *  Copy these files from downloaded zip file to the above folder-
       GroupFromSQL.py
       RM-Python-config.ini
-*  Download the SQLite extension file: unifuzz64.dll   -see above
-*  Move the unifuzz64.dll file to the working folder
-*  Edit the RM-Python-config.ini in the working folder to specify the location 
-   of the RM file and the unifuzz64.dll file. 
-   To edit, Open NotePad and drag the ini file onto the NotePad window.
+*  Edit the RM-Python-config.ini in the working folder to specify the location
+   of the RM file
+   To edit, Open NotePad and drag the config file onto the NotePad window.
 *  Double click the GroupFromSQL.exe file to run the utility.
-*  Examine the console window text and press the enter key to close it.
+*  Examine the report file text to confirm the successful run.
 *  Open the database in RM, open the People view window and select the created
    group as filter to see the results.
 
@@ -336,15 +303,6 @@ Run the Python installer selecting all default options.
 TODO
 COLOR:  Consider adding color coding functions.
 
-COLLATION: Do some comparison testing on running queries using unifuzz64.dll's version of
-RMNOCASE on a database indexed using RM's version of RMNOCASE. 
-
-COLLATION: Due to RMNOCASE issue, should queries include COLLATE NOCASE override as in-
-SELECT Surname FROM NameTable  
-WHERE Surname = 'Öhring'  COLLATE NOCASE
-
-COLLATION: Look at possibility of fully populating the new SurnameMP, GivenMP & NicknameMP 
-columns and using them in queries to eliminate RMNOCASE.
 
 ======================================================================
 Feedback
