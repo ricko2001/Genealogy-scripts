@@ -13,8 +13,8 @@
   INNER JOIN FactTypeTable AS ftt ON et.EventType = ftt.FactTypeID
   WHERE
       et.OwnerType = 0
-  AND et.Details LIKE ('1950%')
-  AND ftt.Name = 'Census'
+  AND et.Details LIKE ('1950%') COLLATE NOCASE
+  AND ftt.Name = 'Census' COLLATE NOCASE
   )
   --
   SELECT personID
