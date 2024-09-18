@@ -16,8 +16,18 @@ def main():
             version_number_full = doc["Version"]
             util_name = doc["InternalName"]
             util_file_name = doc["OriginalFilename"]
-            distribution_file_list = doc["DistributionFileList"]
-            PyInstaller_extra_params = doc["PyInstaller_extra_params"]
+            try:
+                distribution_file_list = doc["DistributionFileList"]
+            except:
+                distribution_file_list = []
+            try:
+                distribution_folder_list = doc["DistributionFolderList"]
+            except:
+                distribution_folder_list = []
+            try:
+                PyInstaller_extra_params = doc["PyInstaller_extra_params"]
+            except:
+                PyInstaller_extra_params = []
 
         version_number_short = version_number_full[0:-2]
         distribution_dir_name = util_name + ' v' + version_number_short
@@ -38,15 +48,20 @@ def main():
         distribution_dir_path = os.path.join(
             ".", release_dir_name, distribution_dir_name)
 
-        # copy the files to the distribution folder to prepare for pyinstaller run
-        for file in distribution_file_list:
-            shutil.copy(file, distribution_dir_path)
-        # can't get this easily from the yaml list
+        # copy files to distribution folder
+        # can't get these easily from the yaml list
         shutil.copy(util_name + ".py",     distribution_dir_path)
         shutil.copy("_util_info.yaml",     distribution_dir_path)
 
-        os.chdir(distribution_dir_path)
+        # copy more files to the distribution folder
+        for file in distribution_file_list:
+            shutil.copy(file, distribution_dir_path)
 
+        # copy the folders to the distribution folder
+        for folder in distribution_folder_list:
+            shutil.copytree(folder, os.path.join(distribution_dir_path, os.path.basename(folder) ))
+
+        os.chdir(distribution_dir_path)
         # create the Version_rc.txt file for pyinstaller from _util_info.yaml
         subprocess.run(
             "create-version-file _util_info.yaml --outfile Version_rc.txt")
