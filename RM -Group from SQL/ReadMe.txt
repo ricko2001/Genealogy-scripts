@@ -259,9 +259,10 @@ To install and use the script file version:
 *  Install Python for Windows x64  -see immediately below
 *  Create a working folder on your disk, perhaps in the same folder
    that contains your RM database.
-*  Copy these files from downloaded zip file to the above folder-
+*  Copy these files and folder from downloaded zip file to the above folder-
       GroupFromSQL.py
       RM-Python-config.ini
+      RMpy
 *  Edit the RM-Python-config.ini in the working folder to specify the location
    of the RM file
    To edit, Open NotePad and drag the config file onto the NotePad window.
