@@ -112,37 +112,35 @@ See section below, after the Notes section, entitled-
 =========================================================================DIV80==
 Running the utility in detail
 
-=============DIV20==
+==========-
 Create a folder on your computer that you will not confuse with other
 folders. It will be referred to as the "working folder".
 
-=============DIV20==
+==========-
 Copy these two required files from the downloaded zip file to the working folder-
       ChangeSourceTemplate.exe
       RM-Python-config.ini
 
-=============DIV20==
+==========-
 Close RM if it's open (did you make a backup?) and make a copy of your main
 database file using file manager.
 Rename the database copy file so that there will not be any chance of confusion.
 Suggestion: name it "TEST.rmtree"
 
-=============DIV20==
+==========-
 Move the copy into the working folder that you created above.
 
-=============DIV20==
+==========-
 Edit the RM-Python-config.ini file in the working folder by opening NotePad and then
 dragging the RM-Python-config.ini file onto the opened NotePad application window.
 
 Look for the section at the top-
 [FILE_PATHS]
 DB_PATH                  = TEST.rmtree
-REPORT_FILE_PATH         = Report_ChangeSourceTemplate.txt
 
 Change the name of the roots magic database file in the line starting with
 DB_PATH to that of the file you placed in the working folder.
 If you named it TEST, you're done.
-The other line should be OK as is.
 
 Look at the section of the config file containing options:
 [OPTIONS]
@@ -160,7 +158,7 @@ Save the config file, and leave the file open in the editor.
 NOTE: only the first "on" action will be performed when the utility is run, the 
 remaining options are ignored. So always check that only one action is set to on.
 
-=============DIV20==
+==========-
 STEP 0		Option    All options = off
 
 Double click the SwitchSourceTemplate.exe file to run it. A black console window
@@ -174,7 +172,7 @@ the utility until you get it right.
 If the report file did not open in NotePad, read the troubleshooting
 section in the NOTES below.
 
-=============DIV20==
+==========-
 STEP 1		Option CHECK_TEMPLATE_NAMES = on
 
 Now you know what to expect when running the utility and how to configure the
@@ -196,9 +194,9 @@ the exact name of the not-quite-right template The easiest way is to do this is
 to find the template in the Source Template List in RM, click the edit button,
 and copy the name into the clipboard, then paste into the config file.
 
-There should also be another source template, that is similar to the not-quite-right
-template, but that has the corrections that you want. Find its exact name, as
-above, and paste the name into the config file.
+There should also be another source template, that is similar to the 
+not-quite-right template, but that has the corrections that you want. Find its 
+exact name, as above, and paste the name into the config file.
 Your config file in NotePad should now have the new names.
 
 [SOURCE_TEMPLATES]
@@ -215,12 +213,12 @@ run it. A black console window should momentarily open and then close.
 The Report_ChangeSourceTemplate.txt file should automatically open in NotePad.
 
 Check that there are no error messages listed in the Report file.
-If a source template name couldn't be found, fix the config file, save it and re-run
-the utility until you get it right.
-A common issue is that template names may an embedded space, a leading or
-trailing space.  See NOTES section for details on how to use quote characters to fix.
+If a source template name couldn't be found, fix the config file, save it and 
+re-run the utility until you get it right.
+A common issue is that template names may an embedded space, a leading or trailing
+space.  See NOTES section for details on how to use quote characters to fix.
 
-=============DIV20==
+==========-
 STEP 2		Option LIST_SOURCES = on
 
 Now comes the question of which sources should have their SourceTemplate switched.
@@ -253,20 +251,21 @@ Any or all of these listed sources may be converted to the new template.
 
 If you want to convert all of them, you can go to the next step. If only some
 are to be converted, you will need to edit the line SOURCE_NAME_LIKE = % and
-rerun the utility to confirm that the correct sources are listed..
+rerun the utility to confirm that the correct sources are listed.
 
 Note that SOURCE_NAME_LIKE can specify an exact match or a wildcard match.
 The wildcard match may use the two SQL LIKE wildcard characters "%" and "_".
 Note that the search is not case sensitive and more than one wildcard character
 can be used in a search.
-( for additional help, see, for instance:  https://www.sqlitetutorial.net/sqlite-like/ )
+(for additional help, see, for instance: 
+https://www.sqlitetutorial.net/sqlite-like/ )
 
 
-=============DIV20==
+==========-
 STEP 3		Option LIST_TEMPLATE_DETAILS = on
 
 Now the utility has to be told how the old template relates to the new one.
-This is done with the MAPPING key in the config file.
+This is done with the FIELD_MAPPING section of the config file.
 Remember, many changes can be made to source templates that do not require this utility.
 See the Notes section starting with "All possible Source Template changes".
 
@@ -289,7 +288,7 @@ You should see a list of all the fields in the old and new templates.
 
 As part of the process of designing a new template that fixes an old one, it's
 a good idea to map out how field names correspond. That is what the mapping
-value is.
+values are for.
 We'll create the mapping from the information in the report file just created.
 
 Using the built-in source template "Birth Registration, state level" as an example-
@@ -314,8 +313,8 @@ citation   Text     "CertificateNo"
 citation   Date     "Date"
 citation   Text     "ID-number"
 
-The quotation marks are optional for most names. However names with spaces- either embedded, 
-leading or trailing, must be enclosed in double quotes as shown.
+The quotation marks are optional for most names. However names with spaces- 
+either embedded, leading or trailing, must be enclosed in double quotes as shown.
 
 First, I'll take the old template and copy it here, eliminating the type column
 
@@ -341,7 +340,7 @@ Now I'll take the field names from the New template listing and place them
 on the corresponding line to the right of the old field.
 
 
-source        "Repository"     "RepositoryName"
+source        "Repository"      "RepositoryName"
 source        "RepositoryLoc"   "RepositoryLoc"
 source        "Jurisdiction"
 citation      "Name"             "PersonName"
@@ -361,7 +360,7 @@ citation      "Name"           "PersonName"
 citation      "Form"           "Form"
 citation      "CertificateNo"  "CertificateNo"
 citation      "Date"           "Date"
-citation      NULL           "ID-number"
+citation      NULL             "ID-number"
 
 
 Add the KEY names above each category of field names
@@ -383,8 +382,8 @@ Insert a ">" character between the columns.
 The rows with the field names must be indented with at least 1 space.
 All the rows in a value must have the same indentation.
 The space between the columns and the ">" is flexible.
-There is one or more blank lines at the end of a value (MAPPING_SOURCE
-and MAPPING_CITATION) separating it from the next item.
+There is one or more blank lines at the end of a value (MAPPING_SOURCE and
+MAPPING_CITATION) separating it from the next item.
 
 This is the text that has to go into the config file:
 
@@ -402,7 +401,7 @@ MAPPING_CITATION =
   NULL            >  "ID-number"
 
 
-=============DIV20==
+==========-
 STEP 4		Option CHECK_MAPPING_DETAILS = on
 
 Look at the OPTIONS section of the config file still open in NotePad, edit these
@@ -423,7 +422,11 @@ If so, make the fix in the Mapping and rerun.
 
 If everything checks out, you're ready to make the changes.
 
-=============DIV20==
+This error checking step will not detect some common problems with mappings.
+See troubleshooting below.
+
+
+==========-
 STEP 5		Option MAKE_CHANGES = on
 
 Look at the OPTIONS section of the config file still open in NotePad, edit these
@@ -436,6 +439,8 @@ run it, etc. The Report_ChangeSourceTemplate.txt file should automatically
 open in NotePad.
 
 Check that there are no error messages listed in the Report file.
+If you see a message- Tried to create duplicate Name in XML., read the
+troubleshooting section below.
 
 Open the database in RootsMagic and confirm that the desired changes have been made.
 
@@ -589,6 +594,13 @@ Rename a Key
 Delete a Key-Value pair
 Add a new, Key-Value pair with a particular Key and an empty value.-
 
+
+===========================================DIV50==
+EMPTY_CIT_NAME = off
+
+If ON, the affected sources will have their citations changed by making their
+Citation Name blank.
+
 ===========================================DIV50==
 RM-Python-config.ini  (the config file)
 If there are any non-ASCII characters in the config file then the file must be
@@ -617,19 +629,13 @@ NotePad as the display app. Your favorite editor may be substituted.
 It can be deactivated by inserting a # character
 at the start of the line.
 
-===========================================DIV50==
-Directory structure (optional)
-My directory structure, which of course, I recommend 🙂, is-
-
-Genealogy          (top level folder, mine is in my Home folder)
-  myRM-DB.rmtree   (my main database file)
-  Misc Databases   (folder for other databases I frequently use)
-  Exhibits         (folder containing all media files in a folder hierarchy)
-  SW               (folder containing various utility apps and the config file)
-
 
 ===========================================DIV50==
 Troubleshooting:
+
+=========-
+No Report File
+
 If no report file is generated, look at the black command
 console window for error messages that will help you fix the problem.
 
@@ -648,6 +654,30 @@ before you can read it, try first opening a command line console and then
 running the exe or py file from the command line. The window will not close
 and you'll be able to read any error messages.
 
+=========-
+Message: Tried to create duplicate Name in XML. 
+
+This will be generated when the first source is processed. It is generated
+before any database change is made. 
+
+This problem can usually be avoided by reordering the lines in the mapping.
+
+Example:
+CITATION_MAPPING =
+  Field_1     >     Field_2
+  Field_2     >     Field_1
+
+In this case, existing field 1 is attempted to be renamed to field 2. However,
+there is already an existing field 2. That is not allowed and will stop
+processing and generate the error message.
+
+This can be avoided by using a temporary field, say "temp"
+
+CITATION_MAPPING =
+  Field_1     >     temp
+  temp        >     Field_2
+  Field_2     >     Field_1
+  temp        >     NULL
 
 =========================================================================DIV80==
 Development Notes   (not needed to use utility)
@@ -782,6 +812,8 @@ Run the Python installer selecting all default options.
 
 =========================================================================DIV80==
 TODO
+*  consider allowing text to be used in the left side of a mapping instead of
+   existing text in an existing field.
 *  ?? what would you find useful?
 
 

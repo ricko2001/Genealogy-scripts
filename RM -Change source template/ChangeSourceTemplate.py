@@ -108,8 +108,8 @@ def list_template_details_feature(config, reportF, dbConnection, include_mapping
         newTemplateName = unquote_config_string(
             config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
 
-        mapping_source = config['SOURCE_TEMPLATES']['MAPPING_SOURCE']
-        mapping_citation = config['SOURCE_TEMPLATES']['MAPPING_CITATION']
+        mapping_source = config['FIELD_MAP']['MAPPING_SOURCE']
+        mapping_citation = config['FIELD_MAP']['MAPPING_CITATION']
 
     except:
         raise RMc.RM_Py_Exception(
@@ -179,8 +179,8 @@ def check_mapping_feature(config, report_file, dbConnection):
             config['SOURCE_TEMPLATES']['TEMPLATE_OLD'])
         new_template_name = unquote_config_string(
             config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
-        mapping_source = config['SOURCE_TEMPLATES']['MAPPING_SOURCE']
-        mapping_citation = config['SOURCE_TEMPLATES']['MAPPING_CITATION']
+        mapping_source = config['FIELD_MAP']['MAPPING_SOURCE']
+        mapping_citation = config['FIELD_MAP']['MAPPING_CITATION']
 
     except:
         raise RMc.RM_Py_Exception(
@@ -267,8 +267,8 @@ def make_changes_feature(config, reportF, dbConnection):
             config['SOURCE_TEMPLATES']['TEMPLATE_NEW'])
         source_names_like = unquote_config_string(
             config['SOURCES']['SOURCE_NAME_LIKE'])
-        mapping_source = config['SOURCE_TEMPLATES']['MAPPING_SOURCE']
-        mapping_citation = config['SOURCE_TEMPLATES']['MAPPING_CITATION']
+        mapping_source = config['FIELD_MAP']['MAPPING_SOURCE']
+        mapping_citation = config['FIELD_MAP']['MAPPING_CITATION']
         # TODO confirm empty citation name boolean
     except:
         raise RMc.RM_Py_Exception(
@@ -307,6 +307,14 @@ def convert_source(reportF, dbConnection, srcID, newTemplateID,
         ET.dump(root_element)
         print("source XML NEW END ==============================")
 
+    # deal with this source's citations
+    for citationTuple in get_citations_of_source(dbConnection, srcID):
+        reportF.write(
+            "   " + q_str(str(citationTuple[0])) + "    " + citationTuple[1][:70] + '\n')
+        convert_citation(
+            citationTuple[0], field_mapping_citation, config, dbConnection)
+        # end loop for citations
+
     # Update the source with new XML and new templateID
     newSrcFields = ET.tostring(root_element, encoding="unicode")
     SqlStmt_src_w = """
@@ -315,14 +323,6 @@ UPDATE SourceTable
  WHERE SourceID = ?
 """
     dbConnection.execute(SqlStmt_src_w, (newSrcFields, newTemplateID, srcID))
-
-    # deal with this source's citations
-    for citationTuple in get_citations_of_source(dbConnection, srcID):
-        reportF.write(
-            "   " + q_str(str(citationTuple[0])) + "    " + citationTuple[1][:70] + '\n')
-        convert_citation(
-            citationTuple[0], field_mapping_citation, config, dbConnection)
-        # end loop for citations
 
     dbConnection.commit()
     return
@@ -364,12 +364,13 @@ UPDATE CitationTable
 def adjust_xml_fields(field_mapping, root_element):
 
     fields_element = root_element.find(".//Fields")
-    # change fields in citation as per mapping:
+    # change fields in XML as per mapping:
     for transform in field_mapping:
+        # transform[0] is the From, transform[1] is the To.
         if transform[0] == transform[1]:
             continue
         if transform[0] == "NULL":
-            # check whether field transform[1] exists as a Name
+            # check whether transform[1] already exists as a Name
             if root_element.find("Fields/Field[Name='" + transform[1] + "']") == None:
                 # if it does not exist, create it
                 # create a field with name transform[1] with empty value.
@@ -388,13 +389,13 @@ def adjust_xml_fields(field_mapping, root_element):
             if current_xml_field_name != transform[0]:
                 # not the relevant XML field, continue with the next
                 continue
-            # found the xml field for the transform under consideration
-            # now check if transform 1 is null (already checked for transform 0 is null)
+            # found the xml field for the From field of the transform  under consideration
+            # now check if transform 1 (To field) is null (already checked for transform 0 is null)
             if transform[1] == "NULL":
-                # delete the unused field
+                # delete the field
                 root_element.find(".//Fields").remove(eachField)
                 break
-            # Do the re-name, but first check for existing field with that name
+            # Do the rename, but first check for existing field with that name
             # xpath search Fields/Field[Name='name of transform1']
             field_names_transform1 = root_element.find("Fields/Field[Name='" + transform[1] + "']")
             if field_names_transform1 == None:
@@ -403,7 +404,7 @@ def adjust_xml_fields(field_mapping, root_element):
                 break
             else:
                 raise RMc.RM_Py_Exception(
-                    "Tried to create duplicate Name in citation XML.")
+                    "Tried to create duplicate Name in XML.")
         # end of for eachField loop
     # end of for each transform loop
 

@@ -131,21 +131,23 @@ UPDATE EventTable
 --===========================================DIV50==
 -- Add Sort date to undated events
 
+-- No sort date = 9223372036854775807
 -- Family data and Names  4000
 
--- CildParent  1065  4000 = 7881299365077188620
-UPDATE EventTable as et
+-- ChildParent  1065  4000 = 7881299365077188620
+UPDATE EventTable
 SET SortDate = 7881299365077188620
-WHERE EventType = 1065;
+WHERE EventType = 1065
+AND SortDate <> 7881299365077188620;
 
 -- PrimaryName  4001 = 7881862315030609932
-UPDATE NameTable as et
+UPDATE NameTable
 SET SortDate = 7881862315030609932
 WHERE SortDate = 9223372036854775807
 AND IsPrimary = 1;
 
 -- Alternate-Name  4010 = 7886928864611401740
-UPDATE NameTable as et
+UPDATE NameTable
 SET SortDate = 7886928864611401740
 WHERE SortDate = 9223372036854775807
 AND IsPrimary <> 1;
@@ -153,71 +155,82 @@ AND IsPrimary <> 1;
 -- Person Attributes  4100
 
 -- NeverMarried  1090  4100 = 7937594360419319820
-UPDATE EventTable as et
+UPDATE EventTable
 SET SortDate = 7937594360419319820
-WHERE EventType = 1090;
+WHERE EventType = 1090
+AND SortDate <> 7937594360419319820;
 
 -- Medical   1054  4100 = 7937594360419319820
-UPDATE EventTable as et
+UPDATE EventTable
 SET SortDate = 7937594360419319820
-WHERE EventType = 1054;
+WHERE EventType = 1054
+AND SortDate <> 7937594360419319820;
 
 -- Anecdote  1090  4100 = 7937594360419319820
-UPDATE EventTable as et
+UPDATE EventTable
 SET SortDate = 7937594360419319820
 WHERE SortDate = 9223372036854775807
 AND EventType = 1090;
 
 -- Religion  29  4100 = 7937594360419319820
-UPDATE EventTable as et
-SET SortDate = 7937594360419319820
-WHERE EventType = 28;
+UPDATE EventTable
+SET SortDate = 9223372036854775807
+WHERE SortDate = 7937594360419319820
+AND EventType = 28;
 
 -- Research Data
 
 -- ResearchNote       1096  4400 = 8106479346445713420
-UPDATE EventTable as et
+UPDATE EventTable
 SET SortDate = 8106479346445713420
-WHERE EventType = 1096;
+WHERE EventType = 1096
+AND SortDate <> 8106479346445713420;
 
 -- Evidence-Summary   1100  4500 = 8162774341787844620
-UPDATE EventTable as et
+UPDATE EventTable
 SET SortDate = 8162774341787844620
-WHERE EventType = 1100;
+WHERE EventType = 1100
+AND SortDate <> 8106479346445713420;
 
 -- Misc facts
 
 -- MetWithRJO   1099  4600 = 8219069337129975820
-UPDATE EventTable as et
+UPDATE EventTable
 SET SortDate = 8219069337129975820
-WHERE EventType = 1099;
+WHERE EventType = 1099
+AND SortDate <> 8219069337129975820;
 
 -- Links to other systems  4900
 
 -- ID_TMG  1064  4901 = 8388517273109790732
-UPDATE EventTable as et
+UPDATE EventTable
 SET SortDate = 8388517273109790732
-WHERE EventType = 1064;
+WHERE EventType = 1064
+AND SortDate <> 8388517273109790732;
 
 -- ID_ANC  1098  4911 = 8394146772644003852
-UPDATE EventTable as et
+UPDATE EventTable
 SET SortDate = 8394146772644003852
-WHERE EventType = 1098;
+WHERE EventType = 1098
+AND SortDate <> 8394146772644003852;
 
 -- ID_FG  1094  4912 = 8394709722597425164 
-UPDATE EventTable as et
+UPDATE EventTable
 SET SortDate = 8394709722597425164
-WHERE EventType = 1094;
+WHERE EventType = 1094
+AND SortDate <> 8394709722597425164;
 
 -- ID_FSFT  1063  4913 = 8395272672550846476
-UPDATE EventTable as et
+UPDATE EventTable
 SET SortDate = 8395272672550846476
-WHERE EventType = 1063;
+WHERE EventType = 1063
+AND SortDate <> 8395272672550846476;
 
  -- ID_WIKTR  1050  4914 = 8395835622504267788
-UPDATE EventTable as et
+UPDATE EventTable
 SET SortDate = 8395835622504267788
-WHERE EventType = 1050;
+WHERE EventType = 1050
+AND SortDate <> 8395835622504267788;
 
 --===========================================DIV50==
 --REF from Citation sort order.sql

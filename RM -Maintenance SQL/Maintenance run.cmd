@@ -16,6 +16,9 @@ SET SQL_FILE=.\\Maintenance-auto.sql
 
 SET REPORT_FILE=..\\Report_Maintenance_Run.txt
 
+REM SET DISPLAY_APP=C:\\Program Files\\NotePad++\\NotePad++.exe
+SET DISPLAY_APP=C:\\Windows\\System32\\Notepad.exe
+
 REM Generate time stamp
 FOR /F %%A IN ('WMIC OS GET LocalDateTime ^| FINDSTR \.') DO @SET B=%%A
 SET TIMESTAMP=%B:~0,4%-%B:~4,2%-%B:~6,2%-%B:~8,2%%B:~10,2%%B:~12,2%
@@ -57,6 +60,5 @@ SQLite3 < "%TEMPFILE%"
 REM delete the temp file
 del "%TEMPFILE%"
 
-REM Display the report file in NotePad
-REM "%PROGRAMFILES%\notepad++\notepad++.exe" "%REPORT_FILE%"
-C:\Windows\system32\notepad.exe "%REPORT_FILE%"
+REM Display the report file
+"%DISPLAY_APP%" "%REPORT_FILE%"
