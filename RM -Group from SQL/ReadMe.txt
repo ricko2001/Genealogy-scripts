@@ -73,7 +73,7 @@ To install and use the single .exe file version:
       GroupFromSQL.exe
       RM-Python-config.ini
 
-*  Make a copy of your database, move it into the working folder.
+*  Make a copy of your database, move the copy into the working folder.
    Rename it TEST.rmtree
 
 *  Open the TEST database and create an empty group with the name of your choice
@@ -195,13 +195,27 @@ RM. It's not clear why this sometimes happens, but it is  rare. No database
 damage has ever been seem after many hundreds of uses as expected. 
 "Database locked" is a normal message encountered from SQLite.
 
+*   Troubleshooting:
+If no report file is generated, look at the black command
+console window for error messages that will help you fix the problem.
+If no report file is generated and the black command console window closes
+before you can read it, try first opening a command line console and then
+running the exe or py file from the command line. The window will not close
+and you'll be able to read any error messages.
+
+*   Troubleshooting:
+Error message- ... RM-Python-config.ini file contains a format error ...
+The problem is as stated, the solution may be harder to determine.
+You may want to look at- https://en.wikipedia.org/wiki/INI_file
 
 Less important notes.
 
-*    RM-Python-config.ini, the config file.
-If there are any non-ASCII characters in the RM-Python-config.ini file,
-perhaps in a database path, then the file must be saved in UTF-8 format, with no
-byte order mark (BOM). This is an option in the save dialog box in NotePad.
+*   RM-Python-config.ini  (the config file)
+If there are any non-ASCII characters in the config file then the file must be
+saved in UTF-8 format, with no byte order mark (BOM).
+The included sample ini file has an accented ä in the first line comment to
+force it to be in the correct format.
+File format is an option in the "Save file" dialog box in NotePad.
 
 *    I have not tested all SQL statements :)
 The utility takes the input SQL and creates a temporary view based on it. If that
@@ -259,7 +273,7 @@ To install and use the script file version:
 *  Install Python for Windows x64  -see immediately below
 *  Create a working folder on your disk, perhaps in the same folder
    that contains your RM database.
-*  Copy these files and folder from downloaded zip file to the above folder-
+*  Copy these files and folder from downloaded zip file to the working folder-
       GroupFromSQL.py
       RM-Python-config.ini
       RMpy

@@ -1,10 +1,7 @@
 import os
 import sys
 import sqlite3
-import configparser
 from datetime import datetime
-import subprocess
-import traceback
 
 sys.path.append( r'..\\RM -RMpy package' )
 import RMpy.launcher # type: ignore
@@ -24,7 +21,7 @@ import RMpy.common as RMc # type: ignore
 #    FILE_PATHS  REPORT_FILE_PATH
 #    FILE_PATHS  REPORT_FILE_DISPLAY_APP
 #    FILE_PATHS  DB_PATH
-#    RIN         PERSON_RIN
+#    RIN         PERSON_RIN (optional)
 
 # ===================================================DIV60==
 
@@ -78,70 +75,79 @@ WITH
     SELECT   ?   AS C_Person
     )
 --      person citations
-SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
-  FROM SourceTable
-  JOIN CitationTable     ON CitationTable.SourceID = SourceTable.SourceID
-  JOIN CitationLinkTable ON CitationLinkTable.LinkID = CitationTable.CitationID
-  WHERE CitationLinkTable.OwnerID=(SELECT C_Person FROM constants)
-    AND CitationLinkTable.OwnerType=0
+SELECT DISTINCT st.Name COLLATE NOCASE, ct.CitationName COLLATE NOCASE
+  FROM SourceTable        AS st
+  INNER JOIN CitationTable      AS ct    ON ct.SourceID = st.SourceID
+  INNER JOIN CitationLinkTable  AS clt   ON clt.CitationID = ct.CitationID
+ WHERE clt.OwnerID=(SELECT C_Person FROM constants)
+    AND clt.OwnerType=0
 
 UNION
 --      name citations
-SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
-  FROM SourceTable
-  JOIN CitationTable     ON CitationTable.SourceID = SourceTable.SourceID
-  JOIN CitationLinkTable ON CitationLinkTable.CitationID = CitationTable.CitationID
-  JOIN NameTable         ON NameTable.NameID = CitationLinkTable.OwnerID 
-  WHERE NameTable.OwnerID=(SELECT C_Person FROM constants)
-    AND CitationLinkTable.OwnerType=7
+SELECT DISTINCT st.Name COLLATE NOCASE, ct.CitationName COLLATE NOCASE
+  FROM SourceTable        AS st
+  INNER JOIN CitationTable      AS ct    ON ct.SourceID = st.SourceID
+  INNER JOIN CitationLinkTable  AS clt   ON clt.CitationID = ct.CitationID
+  INNER JOIN NameTable          AS nt    ON nt.NameID = clt.OwnerID
+ WHERE nt.OwnerID=(SELECT C_Person FROM constants)
+    AND clt.OwnerType=7
 
 UNION
 --      fact-person citations
-SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
-  FROM SourceTable
-  JOIN CitationTable     ON CitationTable.SourceID = SourceTable.SourceID
-  JOIN CitationLinkTable ON CitationLinkTable.CitationID = CitationTable.CitationID
-  JOIN EventTable ON EventTable.EventID = CitationLinkTable.OwnerID
-  WHERE EventTable.OwnerID=(SELECT C_Person FROM constants)
-    AND CitationLinkTable.OwnerType=2
-    AND EventTable.OwnerType=0
+SELECT DISTINCT st.Name COLLATE NOCASE, ct.CitationName COLLATE NOCASE
+  FROM SourceTable        AS st
+  INNER JOIN CitationTable      AS ct    ON ct.SourceID = st.SourceID
+  INNER JOIN CitationLinkTable  AS clt   ON clt.CitationID = ct.CitationID
+  INNER JOIN EventTable         AS et    ON et.EventID = clt.OwnerID
+ WHERE et.OwnerID=(SELECT C_Person FROM constants)
+    AND clt.OwnerType=2
+    AND et.OwnerType=0
 
 UNION
 --      fact-family citations
-SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
-  FROM SourceTable
-  JOIN CitationTable     ON CitationTable.SourceID = SourceTable.SourceID
-  JOIN CitationLinkTable ON CitationLinkTable.CitationID = CitationTable.CitationID
-  JOIN EventTable        ON EventTable.EventID = CitationLinkTable.OwnerID
-  JOIN FamilyTable       ON FamilyTable.FamilyID = EventTable.OwnerID
-  WHERE (FamilyTable.FatherID=(SELECT C_Person FROM constants) OR FamilyTable.MotherID=(SELECT C_Person FROM constants))
-    AND CitationLinkTable.OwnerType=2
-    AND EventTable.OwnerType=1
+SELECT DISTINCT st.Name COLLATE NOCASE, ct.CitationName COLLATE NOCASE
+  FROM SourceTable        AS st
+  INNER JOIN CitationTable      AS ct    ON ct.SourceID = st.SourceID
+  INNER JOIN CitationLinkTable  AS clt   ON clt.CitationID = ct.CitationID
+  INNER JOIN EventTable         AS et    ON et.EventID = clt.OwnerID
+  INNER JOIN FamilyTable        AS ft    ON ft.FamilyID = et.OwnerID
+ WHERE (ft.FatherID=(SELECT C_Person FROM constants) OR ft.MotherID=(SELECT C_Person FROM constants))
+    AND clt.OwnerType=2
+    AND et.OwnerType=1
 
 UNION
 --      family citations
-SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
-  FROM SourceTable
-  JOIN CitationTable     ON CitationTable.SourceID = SourceTable.SourceID
-  JOIN CitationLinkTable ON CitationLinkTable.CitationID = CitationTable.CitationID
-  JOIN FamilyTable       ON FamilyTable.FamilyID = CitationLinkTable.OwnerID
-  WHERE (FamilyTable.FatherID=(SELECT C_Person FROM constants) OR FamilyTable.MotherID=(SELECT C_Person FROM constants))
-    AND CitationLinkTable.OwnerType=1
+SELECT DISTINCT st.Name COLLATE NOCASE, ct.CitationName COLLATE NOCASE
+  FROM SourceTable        AS st
+  INNER JOIN CitationTable      AS ct    ON ct.SourceID = st.SourceID
+  INNER JOIN CitationLinkTable  AS clt   ON clt.CitationID = ct.CitationID
+  INNER JOIN FamilyTable        AS ft    ON ft.FamilyID = clt.OwnerID
+ WHERE (ft.FatherID=(SELECT C_Person FROM constants) OR ft.MotherID=(SELECT C_Person FROM constants))
+    AND clt.OwnerType=1
 
 UNION
 --      association citations
-SELECT DISTINCT SourceTable.Name COLLATE NOCASE, CitationTable.CitationName COLLATE NOCASE
-  FROM SourceTable
-  JOIN CitationTable     ON CitationTable.SourceID = SourceTable.SourceID
-  JOIN CitationLinkTable ON CitationLinkTable.CitationID = CitationTable.CitationID
-  JOIN FANTable          ON FANTable.FanID = CitationLinkTable.OwnerID
-  WHERE (FANTable.ID1=(SELECT C_Person FROM constants) OR FANTable.ID2=(SELECT C_Person FROM constants))
-    AND CitationLinkTable.OwnerType=19
+SELECT DISTINCT st.Name COLLATE NOCASE, ct.CitationName COLLATE NOCASE
+  FROM SourceTable              AS st
+  INNER JOIN CitationTable      AS ct   ON ct.SourceID = st.SourceID
+  INNER JOIN CitationLinkTable  AS clt  ON clt.CitationID = ct.CitationID
+  INNER JOIN FANTable           AS ft   ON ft.FanID = clt.OwnerID
+ WHERE (ft.ID1=(SELECT C_Person FROM constants) OR ft.ID2=(SELECT C_Person FROM constants))
+    AND clt.OwnerType=19
 
+UNION
 --      shared fact citations
+SELECT DISTINCT st.Name COLLATE NOCASE, ct.CitationName COLLATE NOCASE
+  FROM SourceTable             AS st
+  INNER JOIN CitationTable     AS ct  ON ct.SourceID = st.SourceID
+  INNER JOIN CitationLinkTable AS clt ON clt.CitationID = ct.CitationID
+  INNER JOIN EventTable        AS et  ON et.EventID = clt.OwnerID
+  INNER JOIN WitnessTable      AS wt  ON et.EventID = wt.EventID
+ WHERE wt.PersonID=(SELECT C_Person FROM constants)
+    AND clt.OwnerType=2
+    AND et.OwnerType=0
 
-    
-ORDER BY SourceTable.Name COLLATE NOCASE;
+ORDER BY st.Name COLLATE NOCASE;
 """
 
     cur = db_connection.cursor()
