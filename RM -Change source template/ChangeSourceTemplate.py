@@ -42,7 +42,7 @@ def main():
 
     # Configuration
     config_file_name = "RM-Python-config.ini"
-    RMNOCASE_required = True
+    RMNOCASE_required = False
     allow_db_changes = True
     RegExp_required = False
 
@@ -257,8 +257,9 @@ def check_mapping_feature(config, report_file, dbConnection):
 # ===================================================DIV60==
 def make_changes_feature(config, reportF, dbConnection):
 
-    if config['CITATIONS'].getboolean('EMPTY_CIT_NAME'):
-        RMc.reindex_RMNOCASE(dbConnection)
+    # TODO requires RMNOCASE. Do this in another utility.
+    # if config['CITATIONS'].getboolean('EMPTY_CIT_NAME'):
+    #     RMc.reindex_RMNOCASE(dbConnection)
 
     try:
         old_template_name = unquote_config_string(
@@ -355,8 +356,9 @@ UPDATE CitationTable
  WHERE CitationID = ? 
 """
     dbConnection.execute(SqlStmt, (newCitFields, citation_ID))
-    if config['CITATIONS'].getboolean('EMPTY_CIT_NAME'):
-        empty_citation_name(citation_ID, dbConnection)
+    #  requires RMNOCASE. Do this in a different utility. TODO
+    #  if config['CITATIONS'].getboolean('EMPTY_CIT_NAME'):
+    #      empty_citation_name(citation_ID, dbConnection)
     return
 
 
