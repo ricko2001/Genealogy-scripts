@@ -115,52 +115,6 @@ Space characters between the = and the value are ignored.
 
 
 ===========================================DIV50==
-Limiting which Facts are changed
-
-There maybe situations in which only a subset of Facts should be changed to a new fact type.
-One can limit the facts by fields that describe them- the Date and the Description.
-
-Some examples-
-
-[SOURCE_FILTER]
-DESC              = %New York%
-DATE              = 1930
-
-if you want to convert only facts whose descriptions start with the
-words "New York", then enter-
-
-[SOURCE_FILTER]
-DESC              = New York%
-DATE              =
-
-notice the trailing percent sign.
-If the fact descriptions should only contain "New York" somewhere in the text,
-enter-
-
-[SOURCE_FILTER]
-DESC              = %New York%
-DATE              =
-
-The percent sign % wildcard matches any sequence of zero or more characters.
-The underscore _ wildcard matches any single character.
-
-To limit the facts converted by their Date, use the DATE value.
-The DATE value is always a four digit year.
-For example-
-
-[SOURCE_FILTER]
-DESC              = 
-DATE              = 1930
-
-The values for DESC and DATE are optional. If all facts of a certain type are to be converted,
-leave these fields blank-
-
-[SOURCE_FILTER]
-DESC              = 
-DATE              = 
-
-
-===========================================DIV50==
 Fact Type name lists
 
 Fact Type full names are listed in RM by the "Fact types" window found in
@@ -225,6 +179,52 @@ FACTTYPE_CURRENT
 FACTTYPE_NEW
 (ROLE is ignored)
 DESC and DATE are optionally used to limit which facts are to be converted
+
+
+===========================================DIV50==
+Limiting which Facts are changed
+
+There maybe situations in which only a subset of Facts should be changed to a new fact type.
+One can limit the facts by fields that describe them- the Date and the Description.
+
+Some examples-
+
+[SOURCE_FILTER]
+DESC              = %New York%
+DATE              = 1930
+
+if you want to convert only facts whose descriptions start with the
+words "New York", then enter-
+
+[SOURCE_FILTER]
+DESC              = New York%
+DATE              =
+
+notice the trailing percent sign.
+If the fact descriptions should only contain "New York" somewhere in the text,
+enter-
+
+[SOURCE_FILTER]
+DESC              = %New York%
+DATE              =
+
+The percent sign % wildcard matches any sequence of zero or more characters.
+The underscore _ wildcard matches any single character.
+
+To limit the facts converted by their Date, use the DATE value.
+The DATE value is always a four digit year.
+For example-
+
+[SOURCE_FILTER]
+DESC              = 
+DATE              = 1930
+
+The values for DESC and DATE are optional. If all facts of a certain type are to be converted,
+leave these fields blank-
+
+[SOURCE_FILTER]
+DESC              = 
+DATE              = 
 
 
 ===========================================DIV50==
