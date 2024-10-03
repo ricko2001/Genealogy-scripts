@@ -120,6 +120,7 @@ for example-
 Note that the value can have embedded spaces.
 Space characters between the = and the value are ignored.
 
+
 ===========================================DIV50==
 Fact Type name lists
 
@@ -134,6 +135,7 @@ This window also displays, in the right side panel -
 * The full fact type name and its assigned abbreviation.
 The specification of fact types in the config file uses the full fact type name,
 not the abbreviation.
+
 
 ===========================================DIV50==
 Fact Type fields used
@@ -152,6 +154,7 @@ An RM database family consists either 2 or 1 persons, labeled internally as
 Father and Mother. Either the father or mother may be "unknown"
 (and thus set to 0 in the database). Database families, by design, do not
 include any offspring.
+
 
 ===========================================DIV50==
 Supported fact type conversions:
@@ -186,7 +189,7 @@ DESC and DATE are optionally used to limit which facts are to be converted
 
 
 ===========================================DIV50==
-Complications dealt with by this utility
+Complications handled by this utility
 
 The first complication comes with converting a Family fact to a personal fact.
 
@@ -208,7 +211,7 @@ to each of the roles are probably different.
 
 If the original fact type, say Census (fam) had a role named "Spouse", and that
 fact type is to be converted to "Census", then the fact of type census will
-have the former witness transfered to it maintaining the former role, in this
+have the former witness transferred to it maintaining the former role, in this
 case "Spouse". If "Census" does not have already have a role named Spouse,
 the utility will complain and request that you create such a role for "Census"
 before the conversion can be completed.
@@ -256,9 +259,11 @@ saved in UTF-8 format, with no byte order mark (BOM).
 The included sample config file has an accented ä in the first line comment to
 force it to be in the correct format.
 File format is an option in the "Save file" dialog box in NotePad.
-The [END] section is entirely optional.
 
-===========================================DIV50==
+
+=========================================================================DIV80==
+=========================================================================DIV80==
+=========================================================================DIV80==
 Troubleshooting:
 
 =========-

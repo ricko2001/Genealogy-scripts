@@ -1,10 +1,10 @@
 Fixed a bug seen when old field had a trailing space in name,
 Couldn't map it to a new name.
 
+Better parsing of mapping fields.
+Change in the config file format-
+Separate ou the source and citation mappings into a new section.
+Now need a > between mapping columns
+
 Better error handling
-
-Change in the config file format- now need a > between mapping columns
-
 Refactored out common code into a python package.
-
-Added option to empty the source-citationNames
