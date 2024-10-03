@@ -11,6 +11,9 @@ DistributionFileList:
   - doc\ReadMe.txt
   - doc\Sample report file.txt
 
+DistributionFolderList:
+  - ..\RM -RMpy package\RMpy
+  
 PyInstaller_extra_params:
 # note the - for array and -- for param
   - --paths="../../../RM -RMpy package"

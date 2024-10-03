@@ -8,20 +8,20 @@ It only reads the database and makes no changes.
 Make a backup of your database before using this script
 until you have confidence that your data is OK.
 
-Input is a single RIN number. Also called a PersonID
-The RIN can be entered at the console window as the script runs, or it can be specified in the RM-Python-config.ini file.
+Input is a single RIN number (also called a PersonID).
+The RIN can be entered at the console window as the script runs, or it can be 
+specified in the RM-Python-config.ini file.
 
 Output is an alphabetically sorted list of source names and citation names attached -
     to the specified person
     to facts attached to the person
+    to facts shared to the person
     to names attached to the person
     to "family" objects that the person is in
     to facts attached to "family" objects that the person is in
     to associations that the person is a member of
 
 the output also includes the number of citations found.
-
-(citations to witnessed fact not yet included)
 
 The results are saved to a report file which is automatically displayed.
 
@@ -34,7 +34,7 @@ This program is what is called a "command line utility".
 To use it:
 
 1:  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
-    referred to, simply, as the "config file".)
+    referred to as the "config file".)
 
 2:  Double click the ListCitationsForPersonID file. This displays the
     black command console window.
@@ -47,7 +47,7 @@ To use it:
 
 ======================================================================
 Tested with:
-       RootsMagic database file v10.0.1		(RM v7 no longer supported)
+       RootsMagic database file v10		(RM v7 no longer supported)
        Python for Windows v3.12.3   64bit 
        Operating system= Window 11, 64bit
 
@@ -66,20 +66,22 @@ Getting Started
 
 To install and use the exe single file version:
 
-*  Create a working folder on your disk, perhaps in the same folder
-   that contains your RM database.
+*  Create a new folder on your disk.
+   This will be called the "working folder".
 
 *  Copy these files from the downloaded zip file to the working folder-
       ListCitationsForPersonID.exe
       RM-Python-config.ini
 
-*  Edit the config file in the working folder to specify the location of the RM
-   database file.
-   Editing the config file can be done using the Windows NotePad app. Open Notepad
-   and drag the config file into the open NotePad window.
-   The other items in the config file do not need customization.
+*  Make a copy of your database, move the copy into the working folder.
+   Rename the copy to TEST.rmtree
 
-*   Double click the ListCitationsForPersonID.py file. This displays the
+*  Edit the config file in the working folder to specify the location of the RM
+   database file. If you've followed the above suggestions, no editing is required.
+   Editing the config file can be done using the Windows NotePad app.
+   Open Notepad and drag the config file into the open NotePad window.
+
+*   Double click the ListCitationsForPersonID.exe file. This displays the
     black command console window.
 
 *  Enter the RIN for the desired report and hit the Enter key. The command 
@@ -98,25 +100,35 @@ Use the py script file.  See section below, after the Notes section, entitled-
 NOTES
 
 *   RM-Python-config.ini  (the config file)
-    If there are any non-ASCII characters in the config file then the file must be
-    saved in UTF-8 format, with no byte order mark (BOM).
-    The included sample ini file has an accented ä in the first line comment to
-    force it to be in the correct format.
-    File format is an option in the "Save file" dialog box in NotePad.
-    The [END] section is entirely optional.
+If there are any non-ASCII characters in the config file then the file must be
+saved in UTF-8 format, with no byte order mark (BOM).
+The included sample ini file has an accented ä in the first line comment to
+force it to be in the correct format.
+File format is an option in the "Save file" dialog box in NotePad.
+
 
 *   Troubleshooting:
-    If no report file is generated, look at the black command
-    console window for error messages that will help you fix the problem.
-    If no report file is generated and the black command console window closes
-    before you can read it, try first opening a command line console and then
-    running the exe or py file from the command line. The window will not close
-    and you'll be able to read any error messages.
+=========-
+No Report File
 
-*   Troubleshooting:
-    Error message- ... RM-Python-config.ini file contains a format error ...
-    The problem is as stated, the solution may be harder to determine.
-    You may want to look at- https://en.wikipedia.org/wiki/INI_file
+If no report file is generated, look at the black command
+console window for error messages that will help you fix the problem.
+If no report file is generated and the black command console window closes
+before you can read it, try first opening a command line console and then
+running the exe or py file from the command line. The window will not close
+and you'll be able to read any error messages.
+
+
+=========-
+Error message- ... RM-Python-config.ini file contains a format error ...
+The problem is as stated, the solution may be harder to determine.
+You may want to look at- https://en.wikipedia.org/wiki/INI_file
+
+=========-
+If no report file is generated and the black command console window closes
+before you can read it, try first opening a command line console and then
+running the exe or py file from the command line. The window will not close
+and you'll be able to read any error messages.
 
 ======================================================================
 ======================================================================
@@ -156,18 +168,21 @@ To use the py script version of the app
 To install and use the script file version:
 *  Install Python for Windows x64  -see immediately below
 
-*  Create a working folder on your disk, perhaps in the same folder
-   that contains your RM database.
+*  Create a new folder on your disk.
+   This will be called the "working folder".
 
-*  Copy these files from the downloaded zip file to the working folder-
-      ListCitationsForPersonID.exe
+*  Copy these files and the folder from the downloaded zip file to the working folder-
+      ListCitationsForPersonID.y
       RM-Python-config.ini
+      RMpy
+
+*  Make a copy of your database, move the copy into the working folder.
+   Rename the copy to TEST.rmtree
 
 *  Edit the config file in the working folder to specify the location of the RM
-   database file.
-   Editing the config file can be done using the Windows NotePad app. Open Notepad
-   and drag the config file into the open NotePad window.
-   The other items in the config file do not need customization.
+   database file. If you've followed the above suggestions, no editing is required.
+   Editing the config file can be done using the Windows NotePad app.
+   Open Notepad and drag the config file into the open NotePad window.
 
 *   Double click the ListCitationsForPersonID.py file. This displays the
     black command console window.
@@ -176,7 +191,6 @@ To install and use the script file version:
     window is closed.
 
 *  Examine the generated report text file that is now opened in Notepad.
-
 
 
 ======================================================================
@@ -213,7 +227,6 @@ Run the Python installer selecting all default options.
 
 ======================================================================
 TODO
-*	citations to witnessed fact
 *   consider alternate output formats
 
 

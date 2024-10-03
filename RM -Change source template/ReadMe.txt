@@ -6,6 +6,7 @@ RootsMagic (RM) software uses a SQLite relational database as its data storage
 file. Having access to that file via third party tools is a major advantage
 to using RM.
 
+=========================================================================DIV80==
 Purpose
 This utility works with structured sources and citations as well as the source
 templates that define them. "Structured" meaning having defined data fields
@@ -70,6 +71,7 @@ Not compatible with ver 7.
        Tested with Python for Windows v3.12   64bit
        The py file has not been tested on MacOS but could probably be easily
        modified to work on MacOS with Python version 3 installed.
+
 
 =========================================================================DIV80==
 Overview
