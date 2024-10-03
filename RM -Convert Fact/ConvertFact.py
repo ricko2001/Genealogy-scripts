@@ -25,8 +25,8 @@ import RMpy.common as RMc # type: ignore
 #    MAPPING     FACTTYPE_CURRENT
 #    MAPPING     FACTTYPE_NEW
 #    MAPPING     ROLE
-#    MAPPING     DESC
-#    MAPPING     DATE
+#    SOURCE_FILTER     DESC
+#    SOURCE_FILTER     DATE
 
 
 # ===================================================DIV60==
@@ -73,11 +73,11 @@ def convert_fact(config, db_connection, report_file):
     except:
         pass
     try:
-        desc_sel = config['MAPPING']['DESC']
+        desc_sel = config['SOURCE_FILTER']['DESC']
     except:
         pass
     try:
-        date_sel = config['MAPPING']['DATE']
+        date_sel = config['SOURCE_FILTER']['DATE']
     except:
         pass
 

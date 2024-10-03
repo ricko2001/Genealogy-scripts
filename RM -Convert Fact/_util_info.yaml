@@ -3,7 +3,7 @@ OriginalFilename: ConvertFact.exe
 
 # Use 4 place version here. Last dot and zero will be truncated for folder name.
 # Last Release v1.0.0.0
-Version: 1.0.1.0
+Version: 1.1.0.0
 
 DistributionFileList:
 # <InternalName>.py amd <InternalName>.exe always included by build script

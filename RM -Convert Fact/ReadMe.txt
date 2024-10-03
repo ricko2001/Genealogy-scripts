@@ -103,22 +103,61 @@ NOTES
 ===========================================DIV50==
 The config file must be edited to indicate the conversion that should be done.
 
-The task is specified by the key value pairs-
-    FACTTYPE_CURRENT  =
-    FACTTYPE_NEW      =
-    ROLE              =
-    DESC              =
-    DATE              =
+The task is specified by the key value pairs. or example-
 
-for example-
-    FACTTYPE_CURRENT  = Census (family)
-    FACTTYPE_NEW      = Census
-    ROLE              = Spouse
-    DESC              = %Federal%
-    DATE              = 1930
+[MAPPING]
+FACTTYPE_CURRENT  = Census (family)
+FACTTYPE_NEW      = Census
+ROLE              = Spouse
 
 Note that the value can have embedded spaces.
 Space characters between the = and the value are ignored.
+
+
+===========================================DIV50==
+Limiting which Facts are changed
+
+There maybe situations in which only a subset of Facts should be changed to a new fact type.
+One can limit the facts by fields that describe them- the Date and the Description.
+
+Some examples-
+
+[SOURCE_FILTER]
+DESC              = %New York%
+DATE              = 1930
+
+if you want to convert only facts whose descriptions start with the
+words "New York", then enter-
+
+[SOURCE_FILTER]
+DESC              = New York%
+DATE              =
+
+notice the trailing percent sign.
+If the fact descriptions should only contain "New York" somewhere in the text,
+enter-
+
+[SOURCE_FILTER]
+DESC              = %New York%
+DATE              =
+
+The percent sign % wildcard matches any sequence of zero or more characters.
+The underscore _ wildcard matches any single character.
+
+To limit the facts converted by their Date, use the DATE value.
+The DATE value is always a four digit year.
+For example-
+
+[SOURCE_FILTER]
+DESC              = 
+DATE              = 1930
+
+The values for DESC and DATE are optional. If all facts of a certain type are to be converted,
+leave these fields blank-
+
+[SOURCE_FILTER]
+DESC              = 
+DATE              = 
 
 
 ===========================================DIV50==
@@ -218,30 +257,6 @@ before the conversion can be completed.
 You don't have to recreate all of the roles that exist for the FACTTYPE_CURRENT,
 only the ones that are in use. ConvertFact will tell you which ones.
 
-===========================================DIV50==
-The config file values for DESC and DATE are optionally used to limit which
-facts are to be converted.
-
-Some examples-
-if you want to convert only facts whose descriptions start with the
-words "New York", then enter-
-DESC = New York%
-notice the trailing percent sign.
-If the fact descriptions should only contain "New York" somewhere in the text,
-enter-
-DESC = %New York%
-
-The percent sign % wildcard matches any sequence of zero or more characters.
-The underscore _ wildcard matches any single character.
-
-To limit the facts converted by their Date, use the DATE value.
-The DATE value is always a four digit year.
-For example-
-DATE = 1930
-
-If DESC or DATE is not used, just remove the text on the right of the = sign,
-or comment out the line.
-The DESC and DATE may be used in any combination.
 
 ===========================================DIV50==
 REPORT_FILE_DISPLAY_APP
