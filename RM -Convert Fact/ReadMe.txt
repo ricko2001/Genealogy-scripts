@@ -166,19 +166,16 @@ Configuration items in config file required for each type conversion:
 FACTTYPE_CURRENT (full name of the fact type of the facts that that should be converted)
 FACTTYPE_NEW (full name of the fact type that existing facts should be converted to)
 (ROLE is ignored)
-DESC and DATE are optionally used to limit which facts are to be converted
 
 * Family => Personal
 FACTTYPE_CURRENT
 FACTTYPE_NEW
 ROLE (name of an existing role associated with the FACTTYPE_NEW)
-DESC and DATE are optionally used to limit which facts are to be converted
 
 * Family => Family
 FACTTYPE_CURRENT
 FACTTYPE_NEW
 (ROLE is ignored)
-DESC and DATE are optionally used to limit which facts are to be converted
 
 
 ===========================================DIV50==
