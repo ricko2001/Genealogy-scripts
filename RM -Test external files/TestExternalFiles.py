@@ -25,20 +25,21 @@ import RMpy.common as RMc  # type: ignore
 #   RootsMagic v7 through v10 installed (only for unref files option)
 
 # Config files fields used
-#    FILE_PATHS  REPORT_FILE_PATH
-#    FILE_PATHS  REPORT_FILE_DISPLAY_APP
-#    FILE_PATHS  DB_PATH
-#    FILE_PATHS  SEARCH_ROOT_FLDR_PATH
-#    OPTIONS    CHECK_FILES
-#    OPTIONS    UNREF_FILES
-#    OPTIONS    FOLDER_LIST
-#    OPTIONS    NO_TAG_FILES
-#    OPTIONS    DUP_FILENAMES
-#    OPTIONS    DUP_FILEPATHS
-#    OPTIONS    HASH_FILE
-#    OPTIONS    NOT_MEDIA_FLDR
-#    OPTIONS    SHOW_ORIG_PATH
-#    OPTIONS    CASE_SENSITIVE
+#    FILE_PATHS       DB_PATH
+#    FILE_PATHS       REPORT_FILE_PATH
+#    FILE_PATHS       REPORT_FILE_DISPLAY_APP
+#    FILE_PATHS       SEARCH_ROOT_FLDR_PATH
+#    FILE_PATHS       HASH_FILE_FLDR_PATH
+#    OPTIONS          CHECK_FILES
+#    OPTIONS          UNREF_FILES
+#    OPTIONS          FOLDER_LIST
+#    OPTIONS          NO_TAG_FILES
+#    OPTIONS          DUP_FILENAMES
+#    OPTIONS          DUP_FILEPATHS
+#    OPTIONS          HASH_FILE
+#    OPTIONS          NOT_MEDIA_FLDR
+#    OPTIONS          SHOW_ORIG_PATH
+#    OPTIONS          CASE_INSENSITIVE
 #    IGNORED_OBJECTS  FOLDERS
 #    IGNORED_OBJECTS  FILES
 
@@ -142,7 +143,7 @@ def missing_files_feature(config, db_connection, report_file):
     try:
         case_insensitive = config['OPTIONS'].getboolean('CASE_INSENSITIVE')
     except:
-        case_sensitive = True
+        case_insensitive = False
 
     if case_insensitive:
         report_file.write("Case-insensitive search\n")
@@ -160,13 +161,25 @@ def missing_files_feature(config, db_connection, report_file):
         dir_path = expand_relative_dir_path(dir_path_original)
         file_path = Path(os.path.join(dir_path, file_name))
 
-        # use case sensitive compare (normal usage)
+        # First consider just the dir path (separate column in database)
+        if dir_path.is_file():
+                missing_items += 1
+                report_file.write(
+                    f"\n" "Directory path points to a file, not a folder:\n"
+                    f"{RMc.q_str(dir_path)}\nfor file: {RMc.q_str(file_name)} \n")
+                continue
+        if not dir_path.is_dir():
+                missing_items += 1
+                report_file.write(
+                    f"\n" "Directory path cannot be found:\n"
+                    f"{RMc.q_str(dir_path)}\nfor file: {RMc.q_str(file_name)} \n")
+                continue
         if file_path.is_file():
             if not case_insensitive and str(file_path) != str(file_path.resolve()):
                 missing_items += 1
                 report_file.write(
                     f"\n" "Directory path with correct case not found:\n"
-                    f"{RMc.q_str(dir_path)} for file: {RMc.q_str(file_name)} \n")
+                    f"{RMc.q_str(dir_path)}\nfor file: {RMc.q_str(file_name)} \n")
                 if show_original_path:
                     report_file.write(f"{label_original_path} {
                                     RMc.q_str(dir_path_original)} \n")
@@ -174,18 +187,18 @@ def missing_files_feature(config, db_connection, report_file):
                 # found the file, on to the next one
                 continue
         else:
-            if not file_path.is_file():
+            if file_path.is_dir():
                 missing_items += 1
                 report_file.write(
-                    f"\nPath is not a file: \n{RMc.q_str(file_path)} \n")
+                    f"\nPath is not a file:\n{RMc.q_str(file_path)} \n")
                 if show_original_path:
                     report_file.write(f"{label_original_path} {
                                         RMc.q_str(row[0])} \n")
             else:
                 missing_items += 1
                 report_file.write(
-                    f"\n" "Directory path not found:\n"
-                    f"{RMc.q_str(dir_path)} for file: {RMc.q_str(file_name)} \n")
+                    f"\n" "File path not found:\n"
+                    f"{RMc.q_str(dir_path)}\nfor file: {RMc.q_str(file_name)} \n")
                 if show_original_path:
                     report_file.write(f"{label_original_path} {
                                     RMc.q_str(dir_path_original)} \n")
@@ -217,8 +230,8 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
     except:
         case_insensitive = False
 
-    if case_insensitive:
-        report_file.write("Case-insensitive search\n\n")
+    #  if case_insensitive:
+    #      report_file.write("Case-insensitive search\n\n")
 
     # Validate the folder path
     if not Path(ext_files_folder_path).exists():
@@ -274,7 +287,7 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
         # don't print full path from root folder
         cutoff = len(ext_files_folder_path)
         for i in range(len(unref_files)):
-            report_file.write("." + str(unref_files[i])[cutoff:] + "\n")
+            report_file.write(RMc.q_str("." + str(unref_files[i])[cutoff:]) + "\n")
 
         report_file.write("\nFiles in processed folder not referenced by the database: "
                           + str(len(unref_files)) + "\n")
@@ -313,7 +326,7 @@ def files_with_no_tags_feature(config, db_connection, report_file):
         dir_path_orig = row[0]
         dir_path = expand_relative_dir_path(row[0])
         file_path = Path(os.path.join(dir_path, row[1]))
-        report_file.write(f"{file_path} \n")
+        report_file.write(f'"{file_path}" \n')
         if show_orig_path:
             report_file.write(label_orig_path
                               + RMc.q_str(dir_path_orig) + "\n")
@@ -629,13 +642,13 @@ def get_duplicate_file_paths_list(db_connection):
 # ===================================================DIV60==
 def section(pos, name, report_file):
 
-    Divider = "="*60 + "===DIV70==\n"
+    Divider = "="*60 + "===DIV70=="
     if pos == "START":
         text = f"\n{Divider}\n=== Start of {RMc.q_str(name)} listing\n\n"
     elif pos == "END":
         text = f"\n=== End of {RMc.q_str(name)} listing\n"
     elif pos == "FINAL":
-        text = f"\n{Divider} \n=== End of Report\n"
+        text = f"\n{Divider}\n=== End of Report\n"
     else:
         raise RMc.RM_Py_Exception(
             "INTERNAL ERROR: Section position not correctly defined")

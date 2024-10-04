@@ -6,9 +6,12 @@ RootsMagic (RM) software uses a SQLite relational database as its data storage
 file. Having access to that file via third part tools is a major advantage
 to using RM.
 
+
+=========================================================================DIV80==
 Purpose
+
 The database includes links to external files which RM calls "media files".
-These files appear under the RM version 9 Media tab.
+These files appear in the RM Media tab.
 
 As the number of linked files increases, user errors become more likely.
 * A file on disk may get renamed or moved, breaking the link from the database.
@@ -20,46 +23,87 @@ As the number of linked files increases, user errors become more likely.
     leaving it "un-tagged". No harm in leaving it, but de-cluttering may be
     desirable.
 * A file may be added to the database more than once.
+* A file from a far-flung folder may be added and it's location forgotten.
 * A file may be renamed, or misplaced or its contents altered. One will not be
-  able to verify the original file's contents is in the current file.
+  able to verify the original file's contents are the same as in the current file.
 
 This utility will identify these issues.
 It is recommended to run this script daily as part of your backup routine.
 
-A Hash file might be generated semiannually and archived with the full dataset.
+A Hash file might be generated annually and archived with the full dataset.
 
 
-======================================================================
+=========================================================================DIV80==
+Backups
+
+IMPORTANT: This utility ONLY reads the RM database file. This utility cannot
+change your RM file. However, until you trust that this statement is true,
+you should run this script on a copy of your database file or at least
+have several known-good backups.
+
+
+=========================================================================DIV80==
+Compatibility
+
+Works with RootsMagic v7 through v10
+
+.exe file version
+       Windows 64bit only. Tested with Window 11.
+
+.py file version
+       Tested with Python for Windows v3.12   64bit
+       The py file has not been tested on MacOS but could probably be easily
+       modified to work on MacOS with Python version 3 installed.
+
+
+=========================================================================DIV80==
+Performance
+
+A database with 7,000 media files requires about 3 seconds run time for 5
+features turned on without hash file.
+Generating a hash file for 7,000 image files takes roughly a minute.
+
+
+=========================================================================DIV80==
 Overview
 
 This program is what is called a "command line utility". To install and use
 the exe single file version:
 
-To use it:
-*  Create a working folder on your disk.
+*  Create a new folder on your disk.
+   This will be called the "working folder".
 
 *  Copy these files from the downloaded zip file to the working folder-
       TestExternalFiles.exe
       RM-Python-config.ini
 
-*   Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
-    referred to, simply, as the "config file".)
-    The utility needs to know where the RM database file is located, which
-    functions to perform, and where to create the report file.
-    Editing the ini file can be done using the Windows NotePad app.
+*  Make a copy of your database, move the copy into the working folder.
+   Rename the copy to TEST.rmtree
 
-*   Double click the TestExternalFiles file. This momentarily displays the
-    black command console window and at the same time, generates the report
-    text file.
+*  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
+   referred to, as the "config file".)
+   The utility needs to know where the RM database file is located, the output
+   report file name and location, and the various configuration parameters
+   needed to tell the utility what to do
+
+*  Double click the TestExternalFiles file to run the utility and
+   generate the report text file.
 
 3:  Examine the generated report text file that was opened in Notepad.
     The file will contain the analysis results.
 
+--- OR ---
 
-======================================================================
+Use the py script file.
+
+See section below, after the Notes section, entitled-
+   "Which to use? Standalone .exe file or .py file"
+
+
+=========================================================================DIV80==
 Capabilities
 
-The utility can perform several functions, as configured in the ini file's
+The utility can perform several functions, as configured in the config file's
 OPTIONS section, either separately or in combination:
 
 CHECK_FILES
@@ -69,8 +113,8 @@ CHECK_FILES
 
 UNREF_FILES
     Lists all files found in the folder specified by SEARCH_ROOT_FLDR_PATH in
-    the ini file (see below) that are NOT referenced in the RM database.
-    This will find files that were perhaps added to the folder, but were
+    the config file (see below) that are NOT referenced in the RM database.
+    This will find files that were perhaps added to the folder but were
     mistakenly never added to the database.
     This feature is designed for use when media files referenced by RM are all
     under a single folder hierarchy.
@@ -96,82 +140,14 @@ HASH_FILE
     location and HASH value, currently set to use MD5.
     https://en.wikipedia.org/wiki/MD5
     The HASH text file, when requested, is generated at the location
-    specified in the ini file.
+    specified in the config file.
     While MD5 is no longer considered secure for cryptography, it serves well
     for this purpose.
 
 
-======================================================================
-Performance
-
-    A database with 7,000 media files requires about 3 seconds run time for 5
-    features turned on without hash file.
-    Generating a hash file for 7,000 files takes about a minute.
-
-
-======================================================================
-Compatibility
-
-Works with RootsMagic v7 through v10
-
-.exe file version
-       Windows 64bit only. Tested with Window 11.
-
-.py file version
-       Python for Windows v3.11.4   64bit
-       The py file has not been tested on MacOS.
-       The script could probably be modified to work on MacOS with Python
-       version 3 installed.
-
-
-======================================================================
-Backups
-
-IMPORTANT: This utility ONLY reads the RM database file. This utility cannot
-change your RM file. However, until you trust that this statement is true,
-you should run this script on a copy of your database file or at least
-have several known-good backups.
-
-
-======================================================================
-Getting Started
-
-To install and use the exe single file version:
-
-*  Create a working folder on your disk, perhaps in the same folder
-   that contains your RM database.
-
-*  Copy these files from the downloaded zip file to the working folder-
-      TestExternalFiles.exe
-      RM-Python-config.ini
-
-*  Edit the ini file in the working folder to specify the location of the RM
-   database file and the output report file.
-   Utility features may be turned on or off. The required edits should
-   be obvious. The sample ini file is already configured with the most useful
-   options turned on. (To edit, Open NotePad and drag the ini file onto the
-   NotePad window.)
-
-*  Double click the TestExternalFiles.exe file to run the utility and
-   generate the report file.
-
-*  Examine the report output file.
-
-
---- OR ---
-
-Use the py script file.  See section below, after the Notes section, entitled-
-   "Which to use? Standalone .exe file or .py file"
-
-
-======================================================================
+=========================================================================DIV80==
+=========================================================================DIV80==
 NOTES
-
-*   REPORT_FILE_DISPLAY_APP
-    Option to automatically open the report file in a display application.
-    The included ini sample file has this option activated and set to use Windows
-    NotePad as the display app. It can be deactivated by inserting a # character
-    at the start of the line. Your favorite editor may be substituted.
 
 *   CHECK_FILES feature: file path capitalization in the database and in the
     file system path name is ignored.
@@ -193,7 +169,7 @@ NOTES
 *   UNREF_FILES
     The folder specified in RM's preferences as the Media folder is not 
     necessarily the same as the folder specified by the SEARCH_ROOT_FLDR_PATH
-    variable in the ini file  (but I recommended that they be the same).
+    variable in the config file  (but I recommended that they be the same).
 
 *   IGNORED_OBEJECTS
 
@@ -231,48 +207,46 @@ NOTES
     organizational tool. This feature does not check the file contents,
     only the names. Use the HASH_File feature to distinguish file contents.
 
-*   CASE_SENSITIVE
-    Used only for the features- CHECK_FILES and UNREF_FILES
-    when set to "on", uses case sensitive file and path name comparisons. This is 
-    clear for ASCII characters, not clear how non ASCII in Unicode is handled.
+*   CASE_INSENSITIVE
+    Used only for the feature- CHECK_FILES
+    when set to "on", uses case insensitive file and path name comparisons. This is 
+    clear for ASCII characters, not clear how non-ASCII characters in Unicode
+    are handled.
 
 *   SHOW_ORIG_PATH (RM v8 through v10 only)
     A display option is available for files found by either the CHECK_FILES or
     NO_TAG_FILES or DUP_FILES
-    The option is turned on with the option SHOW_ORIG_PATH in the ini file.
+    The option is turned on with the option SHOW_ORIG_PATH in the config file.
     With this option on, the path for each file is shown twice,
     - the path on disk, that is, after any RM8-9 token in the path has been expanded.
     - the path as saved in the database with the token not expanded.
     See the note below "Background information" regarding relative paths in RM.
 
+*   REPORT_FILE_DISPLAY_APP
+    Option to automatically open the report file in a display application.
+    The included ini sample file has this option activated and set to use Windows
+    NotePad as the display app. It can be deactivated by inserting a # character
+    at the start of the line. Your favorite editor may be substituted.
+
 *   RM-Python-config.ini  (the config file)
     If there are any non-ASCII characters in the config file then the file must be
     saved in UTF-8 format, with no byte order mark (BOM).
-    The included sample ini file has an accented ä in the first line comment to
+    The included sample config file has an accented ä in the first line comment to
     force it to be in the correct format.
     File format is an option in the "Save file" dialog box in NotePad.
     The [END] section is entirely optional.
 
-*   IGNORED_OBJECTS section of the ini file
-    Due to how the ini file is parsed by the python library, files and folders
+*   IGNORED_OBJECTS section of the config file
+    Due to how the config file is parsed by the python library, files and folders
     whose names start with the # character cannot be added to the FILES or FOLDERS.
     Instead, they are considered comments. There is a way to overcome this
     limitation but the explanation of how is not worth the confusion it would
-    create. Bottom line- if you really want to add the name, change the name
-    so it doesn't start with a #.
+    create. Bottom line- if you really want to add the file or folder, change
+    its name so it doesn't start with a #.
 
 *   A listing of "entires with blank filename or path found" is displayed when a
     media item in the database has a blank file path or file name. These items
     should be fixed first.
-
-*   Directory structure (optional)
-    My directory structure, which of course, I recommend 🙂, is-
-
-    Genealogy          (top level folder, mine is in my Home folder)
-      myRD-DB.rmtree   (my main database file)
-      Misc Databases   (folder for other databases I frequently use)
-      Exhibits         (folder containing all media files in a folder hierarchy)
-      SW               (folder containing various utility apps and the ini file)
 
 *   Background information: File paths pointing to external files
     in RM 7:   all paths are absolute starting with a drive letter
@@ -300,25 +274,49 @@ NOTES
     XML file is not referenced, so switching  between ver 7 and ver 10 will not
     be an issue.
 
-*   Troubleshooting:
-    If no report file is generated, look at the black command
-    console window for error messages that will help you fix the problem.
-    If no report file is generated and the black command console window closes
-    before you can read it, try first opening a command line console and then
-    running the exe or py file from the command line. The window will not close
-    and you'll be able to read any error messages.
+*  Files attached to RM Tasks are not analyzed by this utility and they do not 
+   appear in the RM Media tab.
 
-*   Troubleshooting:
-    Error message- ... RM-Python-config.ini file contains a format error ...
-    The problem is as stated, the solution may be harder to determine.
-    You may want to look at- https://en.wikipedia.org/wiki/INI_file
-    Probably the trickiest part of the ini file is the IGNORED_OBJECTS section.
-    The FOLDERS and FILENAMES keys can have multiple values. 
-    Each value should be on a separate line indented with at least one blank.
-    An empty line generates an error.
-    Multi line values may not contain comment lines (lines starting with a #).
 
-     examples-
+=========================================================================DIV80==
+=========================================================================DIV80==
+Troubleshooting:
+
+=========-
+No Report File displayed
+
+If the report is created, but not displayed, check the config
+file line- REPORT_FILE_DISPLAY_APP
+
+If no report file is generated, look at the black command
+console window for error messages that will help you fix the problem.
+There may be something wrong with the config file line- REPORT_FILE_PATH
+
+If the black console windows displays the message-
+RM-Python-config.ini file contains a format error
+See the section below.
+
+If no report file is generated and the black command console window closes
+before you can read it, try first opening a command line console and then
+running the exe or py file from the command line. The window will not close
+and you'll be able to read any error messages.
+
+=========-
+Error message:
+RM-Python-config.ini file contains a format error
+
+Start over with the supplied config file and make sure that works, Then make your
+edits one by one to identify the problem.
+You may want to look at- https://en.wikipedia.org/wiki/INI_file
+
+Probably the trickiest part of the config file is the IGNORED_OBJECTS section.
+The FOLDERS and FILENAMES keys are multi-line values.
+Each line of the value should be on a separate line indented with at least 
+one blank. An empty line generates an error.
+Multi-line values may not contain comment lines (lines starting with a #).
+
+examples-
+
 correct format-
 
 [IGNORED_OBJECTS]
@@ -328,7 +326,7 @@ FOLDERS =
   Folder3
 
 
-incorrect format (empty line)
+incorrect format- (empty line not allowed)
 
 [IGNORED_OBJECTS]
 FOLDERS =
@@ -347,13 +345,14 @@ Folder2
   Folder3
 
 
-incorrect format (no comments)
+incorrect format- (no comments allowed)
 
 [IGNORED_OBJECTS]
 FOLDERS =
   Folder1
 # Folder2
   Folder3
+
 
 incorrect format (no empty lines)
 
@@ -364,8 +363,9 @@ FOLDERS =
   Folder2
   Folder3
 
-======================================================================
-======================================================================
+
+=========================================================================DIV80==
+=========================================================================DIV80==
 Which to use? Standalone .exe file or .py file
 
 Decide whether you wish to use the script file (.py) or the executable
@@ -396,29 +396,28 @@ Pro's and Con's
    This is a 100 MB investment in disk space. (Not big for modern day hard disks)
 
 
-======================================================================
+=========================================================================DIV80==
 To use the py script version of the app
 
 To install and use the script file version:
+
 *  Install Python for Windows x64  -see immediately below
-*  Create a working folder on your disk, perhaps in the same folder
-   that contains your RM database.
-*  Copy these files from downloaded zip file to the working folder-
+
+*  Create a new folder on your disk.
+   This will be called the "working folder".
+
+*  Make a copy of your database, move the copy into the working folder.
+   Rename the copy to TEST.rmtree
+
+*  Copy these files and the folder from the downloaded zip file to the working folder-
       TestExternalFiles.py
       RM-Python-config.ini
-*  Edit the ini file in the working folder to specify the location
-   of the RM file and the output report file.
-   Some utility functions may be turned on or off. The required edits should
-   be obvious. The sample ini file is already configured with the most useful
-   options turned on. (To edit, Open NotePad and drag the ini file onto the NotePad
-   window.)
-   The same ini file may be used with either the .exe or .py version of the utility.
-*  Double click the TestExternalFiles.py file to run the utility and
-   generate the report file.
-*  Examine the report output file.
+      RMpy
+
+See the Overview section for the subsequent tasks.
 
 
-======================================================================
+=========================================================================DIV80==
 Python install-
 Install Python from the Microsoft Store
 or download and install from Python.org web site
@@ -450,14 +449,14 @@ Windows=>Settings
 Run the Python installer selecting all default options.
 
 
-======================================================================
+=========================================================================DIV80==
 TODO
 *  Add code to find duplicate files represented by different relative paths
    in database.
 *  ?? what would you find useful?
 
 
-======================================================================
+=========================================================================DIV80==
 Feedback
 The author appreciates comments and suggestions regarding this software.
 Richard.J.Otter@gmail.com
@@ -474,10 +473,10 @@ My Linked-In profile at-
 https://www.linkedin.com/in/richardotter/
 
 
-======================================================================
+=========================================================================DIV80==
 Distribution
 Everyone is free to use this utility. However, instead of
 distributing it yourself, please instead distribute the URL
 of my website where I describe it- https://RichardOtter.github.io
 
-======================================================================
+=========================================================================DIV80==
