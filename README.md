@@ -43,8 +43,8 @@ I find use of this app invaluable as part of my backup routine.
 
 ### RM -Group from SQL
 
-A utility to quickly update a RM group by running an SQL query.
-Makes changes to GroupTable and TagTable.
+A utility to quickly update a RM group by running an SQL query.\
+Makes changes only to GroupTable.
 
 ### RM -Change Source for a Citation
 
@@ -62,7 +62,8 @@ My process is to always run the script on a copy of the main database. Then afte
 
 ### RM -Citation Sort Order
 
-A utility to allow the user to re-order the listing of citations attached to Persons, Names, or Facts.
+A utility to allow the user to re-order the listing of citations attached to Persons, Names, or Facts.\
+See [SQLiteTools site](https://sqlitetoolsforrootsmagic.com/forum/topic/sorting-the-order-of-rm9-citations/) for a compatible SQL script that will update a  citations ordering in one step based on selected criteria.
 
 ### RM -Convert Fact
 
@@ -86,13 +87,13 @@ Consists of a Windows cmd script that runs a SQL file containing SQL updates
 that fix reoccurring problems in my database caused by user errors during
 data entry. The cmd script generates a report file which is then
 automatically displayed in NotePad.\
-The Maintenance sql has been run on my production database many times.
+The Maintenance SQL has been run on my production database many times.
 
 ## NOT RELEASED
 
 ### RM -Lump misc sources
 
-I started in TMG as splitting all sources. Now in RM, I am lumping the sources for which it makes sense to me. So far, Find_a_Grave, Census and Social Security SSDI, and all Ancestry collections. These scripts do that. They will most likely need modification for your circumstances.
+I started in TMG as splitting all sources. Now in RM, I am lumping the sources for which it makes sense to me. So far, Find_a_Grave, Census and Social Security SSDI, and all Ancestry collections. These scripts do that. They will need modification for your circumstances. These are not released and require Python development to run.
 
 
 ## NOTE-
@@ -104,10 +105,10 @@ https://RichardOtter.github.io
 
 ## Required packages for running the scripts
 
-Currently, 2 scripts use the custom "RMpy" python package located in the "RM -RMpy package" folder.
+My leter releases use the custom "RMpy" python package located in the "RM -RMpy package" folder.
 The exe files have it already included.
 Those scripts using the package will find it if the folder structure is preserved. If the main script is 
-moved elsewhere, copy the RMpy folder to be in the same directory as the main script.
+moved elsewhere, copy the "RMpy" folder to be in the same directory as the main script.
 
 ## Required packages for building frozen executables (exe files)
 
