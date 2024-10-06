@@ -1,35 +1,40 @@
-import os
 import sys
+sys.path.append(r'..\RM -RMpy package')
+import RMpy.launcher          # type: ignore
+import RMpy.common as RMc     # type: ignore
+from RMpy.common import q_str # type: ignore
+
+import os
 import xml.etree.ElementTree as ET
 
-sys.path.append( r'..\\RM -RMpy package' )
-import RMpy.launcher # type: ignore
-import RMpy.common as RMc # type: ignore
 
 # Requirements:
 #   RootsMagic database file
 #   RM-Python-config.ini
 
 # Tested with:
-#   RootsMagic database file v10.0.1
-#   Python for Windows v3.12.3
+#   RootsMagic database file v10
+#   Python for Windows v3.12
 
 # Config file fields used
+#    FILE_PATHS  DB_PATH
 #    FILE_PATHS  REPORT_FILE_PATH
 #    FILE_PATHS  REPORT_FILE_DISPLAY_APP
-#    FILE_PATHS  DB_PATH
-#
-#    SOURCE_TEMPLATES   TEMPLATE_OLD
-#    SOURCE_TEMPLATES   TEMPLATE_NEW
-#    SOURCE_TEMPLATES   MAPPING_SOURCE
-#    SOURCE_TEMPLATES   MAPPING_CITATION
-#    SOURCES            SOURCE_NAME_LIKE
 #
 #    OPTIONS     CHECK_TEMPLATE_NAMES
 #    OPTIONS     LIST_SOURCES
 #    OPTIONS     LIST_TEMPLATE_DETAILS
 #    OPTIONS     CHECK_MAPPING_DETAILS
 #    OPTIONS     MAKE_CHANGES
+#
+#    SOURCE_TEMPLATES   TEMPLATE_OLD
+#    SOURCE_TEMPLATES   TEMPLATE_NEW
+#
+#    SOURCES            SOURCE_NAME_LIKE
+#
+#    FIELD_MAP          MAPPING_SOURCE
+#    FIELD_MAP          MAPPING_CITATION
+
 
 
 # ====================================DIV60==
@@ -509,9 +514,6 @@ def unquote_config_string(instr):
         elif instr[0] == "'":
             return instr.replace("'", '')
 
-# ===================================================DIV60==
-def q_str(in_str):
-    return '"' + in_str + '"'
 
 # ===================================================DIV60==
 def get_list_of_rows(dbConnection, SqlStmt):

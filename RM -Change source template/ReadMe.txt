@@ -6,8 +6,10 @@ RootsMagic (RM) software uses a SQLite relational database as its data storage
 file. Having access to that file via third party tools is a major advantage
 to using RM.
 
+
 =========================================================================DIV80==
 Purpose
+
 This utility works with structured sources and citations as well as the source
 templates that define them. "Structured" meaning having defined data fields
 used to create footnotes using the sentence language, as opposed to "free form"
@@ -379,7 +381,7 @@ citation    Text  "CertificateNo"    "CertificateNo"
 citation    Date  "Date"             "Date"
 citation                             "ID-number"
 
-For a field that is to be created, buth which will be empty becasue there is no
+For a field that is to be created, but which will be empty because there is no
 existing data, use the word NULL in the source, as shown here:
 
 source      Text   "Repository"      "RepositoryName"
@@ -679,7 +681,9 @@ Automatic display can be deactivated by inserting a # character
 at the start of the line.
 
 
-===========================================DIV50==
+=========================================================================DIV80==
+=========================================================================DIV80==
+=========================================================================DIV80==
 Troubleshooting:
 
 =========-
@@ -789,7 +793,8 @@ least one entry had an empty Root element encoded by: <Root />
 So look for "<Root"
 
 ===========================================DIV50==
-LIKE note from SQLite doc-
+LIKE (extract from SQLite doc- https://www.sqlite.org/lang_expr.html )
+
 The LIKE operator does a pattern matching comparison. The operand to the right
 of the LIKE operator contains the pattern and the left hand operand contains the
 string to match against the pattern. A percent symbol ("%") in the LIKE pattern
