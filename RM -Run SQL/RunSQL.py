@@ -25,6 +25,8 @@ import os
 #    FILE_PATHS  REPORT_FILE_DISPLAY_APP
 #    SQL  SQL_STATEMENT_1
 #    SQL  SQL_STATEMENT_99
+#    SQL  SQL_SCRIPT_1
+#    SQL  SQL_SCRIPT_99
 
 # ===================================================DIV60==
 def main():
@@ -55,12 +57,7 @@ def RunSQLFeature(config, db_connection, report_file):
 
     Divider = "="*60 + "===DIV70=="
 
-    try:
-        config['SQL']['SQL_STATEMENT_1']
-    except:
-        raise RMc.RM_Py_Exception(
-            'ERROR: SQL - SQL_STATEMENT_1 must be specified.')
-
+#   First run the SQL statements
     for n in range(1, 99):
         key_name = "SQL_STATEMENT_" + str(n)
         try:
@@ -84,6 +81,35 @@ def RunSQLFeature(config, db_connection, report_file):
         except Exception as e:
             raise RMc.RM_Py_Exception(
                 f"\nERROR: Cannot run the SQL.\n\n{str(e)}\n\n{Divider}\n")
+
+#   Next run the SQL scripts
+    for n in range(1, 99):
+        key_name = "SQL_SCRIPT_" + str(n)
+        try:
+            sql_file = config['SQL'][key_name]
+        except:
+            break
+
+        if not os.path.exists(sql_file):
+            raise RMc.RM_Py_Exception(
+                f"ERROR: The SQL script file: {sql_file} cannot be found.\n\n")
+
+        with open(sql_file, 'r') as file_h:
+            sql_script_text = file_h.read()
+
+
+        try:
+            # run the SQL script
+            cur = db_connection.cursor()
+            cur.executescript(sql_script_text)
+        except Exception as e:
+            raise RMc.RM_Py_Exception(
+                f"\nERROR: Cannot run the SQL script.\n\n{str(e)}\n\n{Divider}\n")
+
+        report_file.write(
+            f"\n{Divider}"
+            f"\nThe SQL file run for {key_name}: {sql_file}"
+            f"\nNo results are displayed from scripts.\nThe script did not generate an error message.\n\n" )
 
     report_file.write(f"\n{Divider}\n")
     return

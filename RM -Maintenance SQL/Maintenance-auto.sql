@@ -229,8 +229,8 @@ AND SortDate <> 8395272672550846476;
  -- ID_WIKTR  1050  4914 = 8395835622504267788
 UPDATE EventTable
 SET SortDate = 8395835622504267788
-WHERE EventType = 1050
-AND SortDate <> 8395835622504267788;
+  WHERE EventType = 1050
+  AND SortDate <> 8395835622504267788;
 
 --===========================================DIV50==
 --REF from Citation sort order.sql
@@ -238,13 +238,14 @@ AND SortDate <> 8395835622504267788;
 --===========================================DIV50==
 -- Update all SortOrder values in CitationLinkTable
 
+-- Use first 25 chars of SourceName  concat with first 10 chars of CitationName
 UPDATE CitationLinkTable AS clt1
-SET SortOrder= ( SELECT SUBSTR(st.Name, 1,25) || SUBSTR(ct.CitationName, 1,10) 
-    FROM CitationLinkTable AS clt2
-    JOIN CitationTable AS ct USING (CitationID)
-    JOIN SourceTable AS st USING (SourceID)
-    WHERE clt1.LinkID = clt2.LinkID
-    );
+SET SortOrder=  SELECT SUBSTR(st.Name, 1,25) || SUBSTR(ct.CitationName, 1,10) 
+      FROM CitationLinkTable AS clt2
+      INNER JOIN CitationTable AS ct USING (CitationID)
+      INNER JOIN SourceTable AS st USING (SourceID)
+      WHERE clt1.LinkID = clt2.LinkID
+      ;
 
 
 --===========================================DIV50==
