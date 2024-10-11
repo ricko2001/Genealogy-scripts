@@ -97,7 +97,6 @@ def RunSQLFeature(config, db_connection, report_file):
         with open(sql_file, 'r') as file_h:
             sql_script_text = file_h.read()
 
-
         try:
             # run the SQL script
             cur = db_connection.cursor()

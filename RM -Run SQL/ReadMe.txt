@@ -10,12 +10,16 @@ to using RM.
 =========================================================================DIV80==
 Purpose
 
-This utility will run SQL statements on a database and display the
-results in a text file.
+This utility will run SQL statements and script files on a database 
+and display the results in a text file.
 
 This utility is meant to help the novice SQL user get the task done.
 It attempts to eliminate most of the complications found using more
 sophisticated off the shelf SQLite manager software.
+
+The ability to run SQL script files can be used by even advanced users to
+run database maintenance scripts which give predictable results and
+don't need to show output.
 
 
 =========================================================================DIV80==
@@ -79,6 +83,7 @@ the exe single file version:
 
 Use the py script file.  See section below, after the Notes section, entitled-
    "Which to use? Standalone .exe file or .py file"
+
 
 =========================================================================DIV80==
 unifuzz64.dll download-
@@ -147,6 +152,30 @@ The the app will accept up to 99 SQL statements.-
    ...
    SQL_STATEMENT_99
 
+This app will also run SQL script files. In this case, the file path is
+specified, not the contents.
+For example:
+
+[SQL]
+SQL_SCRIPT_1 = Maintenance-auto.sql
+
+For this key, always place the file path on the same line as the key name,
+as shown in the example.
+To specify a second script file to run, add in another key name as:
+
+SQL_SCRIPT_2 =  C:\my script folder\SecondScriptFile.sql
+
+Up to 99 scripts can be run.
+
+If you want none of the SQL Statements to run, just change the name of 
+SQL_STATEMENT_1  to anything else, such as:
+INACTIVE_SQL_STATEMENT_1 
+Since the SQL_STATEMENT_1  won't be found, noen of the other SQL_STATEMENTs 
+will run.
+
+Same for SQL script file keys. Renaming SQL_SCRIPT_1 will stop any scripts 
+from running.
+
 
 =========================================================================DIV80==
 =========================================================================DIV80==
@@ -156,12 +185,15 @@ NOTES
    If your SQL makes any **changes** to an RMONCASE collated column, you must
    run the SQL:
    REINDEX RMNOCASE;
-   as SQL_STATEMENT_1, and put your updating SQL following statements.
-   THEN- run the RM "Rebuild Indexes" tool immediately after opening
+   as SQL_STATEMENT_1 or at the start of your script file. 
+   Put your updating SQL in following statements. After running the SQL,
+   IMPORTANT- run the RM "Rebuild Indexes" tool immediately after opening
    the modified database in RM.
 
    For fully reliable results, any queries using RMONCASE collated columns
-   should be coded to use the built-in NOCASE collation.
+   should be coded to use the SQLite built-in NOCASE collation, as above,
+   Start with REINDEX RMNOCASE; do the query and then run the RM "Rebuild 
+   Indexes" tool immediately after opening the modified database in RM.
 
 
 *  Database modification statements should usually be followed by a
