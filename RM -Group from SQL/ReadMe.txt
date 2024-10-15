@@ -213,8 +213,10 @@ effect of the group having been updated.
 
 *    On some occasions, the utility report file will display a "Database
 Locked" message. In that case, close RM and re-run the utility, then re-open 
-RM. It's not clear why this sometimes happens, but it is rare. No database
-damage has ever been seem after many hundreds of uses as expected. 
+RM. It's not clear why this sometimes happens, but it is rare. 
+For some reason, RM keeps an open transaction which prevents other processes
+from making updates.
+No database damage has ever been seem after many hundreds of uses. 
 "Database locked" is a normal message encountered from SQLite.
 
 

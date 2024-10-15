@@ -144,10 +144,21 @@ def launcher(script_path,
                           + RMc.get_SQLite_library_version(db_connection) + "\n\n\n\n")
 
         run_features_function(config, db_connection, report_file)
+        if allow_db_changes:
+            db_connection.commit()
 
     except (sqlite3.OperationalError, sqlite3.ProgrammingError) as e:
-        report_file.write(
-            "ERROR: SQL execution returned an error \n\n" + str(e))
+        if str(e) == "database is locked":
+            divider = "="*50 + "===DIV60=="
+            div_line= divider + "\n"
+            report_file.seek(0, os.SEEK_SET)
+            report_file.write( div_line + div_line + div_line
+                + "Database is locked.\nRootsMagic is preventing the group updates\n"
+                + "Close RootsMagic and rerun this app.\n"
+                + div_line + div_line  + div_line +"\n\n\n\n")
+        else:
+            report_file.write(
+                "ERROR: SQL execution returned an error \n\n" + str(e))
         return 1
     except RMc.RM_Py_Exception as e:
         report_file.write(str(e))
@@ -157,10 +168,9 @@ def launcher(script_path,
         report_file.write(
             "\n\n" "ERROR: Application failed. Please email report file to author. ")
         return 1
+
     finally:
         if db_connection is not None:
-            if allow_db_changes:
-                db_connection.commit()
             db_connection.close()
         report_file.close()
         if report_display_app is not None:
