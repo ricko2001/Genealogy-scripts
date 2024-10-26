@@ -163,7 +163,7 @@ https://www.sqlite.org/src/artifact?ci=trunk&filename=ext/icu/README.txt
 
 https://github.com/nalgeon/sqlean
 
-## Where is RMNOCASE used in v9 schema
+## Where is RMNOCASE used in v10 schema
 
 ``` TEXT
 SELECT tbl_name, sql
@@ -273,6 +273,37 @@ SourceTable
 Name COLLATE RMNOCASE
 ```
 
+## INDEXES using RMNOCASE
+
+```
+implicitly RMNOCASE from table def
+
+CREATE INDEX idxAddressName        ON AddressTable (Name)
+CREATE INDEX idxCitationName       ON CitationTable (CitationName)
+CREATE INDEX idxFactTypeName       ON FactTypeTable (Name)
+CREATE INDEX idxFANTypeName        ON FANTypeTable (Name)
+CREATE INDEX idxMediaFile          ON MultimediaTable (MediaFile)
+
+CREATE INDEX idxSurname            ON NameTable (Surname)
+CREATE INDEX idxGiven              ON NameTable (Given)
+CREATE INDEX idxSurnameGiven       ON NameTable (Surname, Given, BirthYear, DeathYear)
+
+CREATE INDEX idxPlaceName          ON PlaceTable (Name)
+CREATE INDEX idxReversePlaceName   ON PlaceTable (Reverse)
+
+CREATE INDEX idxSourceTemplateName ON SourceTemplateTable (Name)
+CREATE INDEX idxTaskName           ON TaskTable (Name)
+
+
+explicitly mentioned in CreateINDEX
+
+CREATE INDEX idxSourceName         ON SourceTable (Name COLLATE RMNOCASE)
+
+```
+
 13 tables and 1 index on name in SourceTable
 
 The index use of RMNOCASE can be ignored since the table already specifies RMNOCASE as the default collation for SourceTable.Name. Why was it specified for this one index? Why were the tables set up with default collations instead of the collation being specified in the Index declaration statements?
+
+Note: new tables in RM v10, like DNATable and HealthTable contain columns which might have been collated with RMNOCASE, but are not.
+Also, some new columns in the NameTable, introduced in ver 8, are not RMNOCASE collated.
