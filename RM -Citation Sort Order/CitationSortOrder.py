@@ -1,15 +1,9 @@
-import os
 import sys
-import sqlite3
-from datetime import datetime
-from pathlib import Path
+sys.path.append(r'..\RM -RMpy package')
+import RMpy.launcher          # type: ignore
+import RMpy.common as RMc     # type: ignore
+from RMpy.common import q_str # type: ignore
 
-
-sys.path.append( r'..\\RM -RMpy package' )
-# OR have a copy in the same dir as this script1
-import RMpy.RMDate # type: ignore
-import RMpy.launcher # type: ignore
-import RMpy.common as RMc # type: ignore
 
 
 # Requirements:

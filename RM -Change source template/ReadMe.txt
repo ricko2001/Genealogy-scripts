@@ -746,6 +746,7 @@ CITATION_MAPPING =
 Developer Notes   (not needed to use utility)
 =========================================================================DIV80==
 =========================================================================DIV80==
+
 The XML fields in the source and citation record are just a collection of
 FieldName-Value pairs.
 The order of these pairs in the XML is not significant.
@@ -753,9 +754,9 @@ The Template determines the order of the values in the default citation name.
 There is no point to reordering the data in the source and citation XML.
 
 the three tables having source type XML data-
-SourceTemplateTable		FieldDefs
-SourceTable				Fields
-CitationTable			Fields
+SourceTemplateTable      FieldDefs
+SourceTable              Fields
+CitationTable            Fields
 
 ===========================================DIV50==
 XML tag info

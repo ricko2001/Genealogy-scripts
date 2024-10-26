@@ -6,6 +6,7 @@ RootsMagic (RM) software uses a SQLite relational database as its data storage
 file. Having access to that file via third party tools is a major advantage
 to using RM.
 
+
 =========================================================================DIV80==
 Purpose
 
@@ -307,10 +308,9 @@ before you can read it, try first opening a command line console and then
 running the exe or py file from the command line. The window will not close
 and you'll be able to read any error messages.
 
-=========================================================================DIV80==
-=========================================================================DIV80==
-=========================================================================DIV80==
 
+=========================================================================DIV80==
+=========================================================================DIV80==
 Which to use? Standalone .exe file or .py file
 
 Decide whether you wish to use the script file (.py) or the executable

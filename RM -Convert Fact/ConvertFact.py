@@ -1,9 +1,10 @@
-import os
 import sys
+sys.path.append(r'..\RM -RMpy package')
+import RMpy.launcher          # type: ignore
+import RMpy.common as RMc     # type: ignore
+from RMpy.common import q_str # type: ignore
 
-sys.path.append( r'..\\RM -RMpy package' )
-import RMpy.launcher # type: ignore
-import RMpy.common as RMc # type: ignore
+import os
 
 # Convert all Facts of one fact type to another fact type
 # A family event type, may be converted to an individual fact type.

@@ -1,11 +1,10 @@
-import os
 import sys
-import sqlite3
-from datetime import datetime
+sys.path.append(r'..\RM -RMpy package')
+import RMpy.launcher          # type: ignore
+import RMpy.common as RMc     # type: ignore
+from RMpy.common import q_str # type: ignore
 
-sys.path.append( r'..\\RM -RMpy package' )
-import RMpy.launcher # type: ignore
-import RMpy.common as RMc # type: ignore
+import os
 
 # List all citations associated with a Person
 
@@ -64,10 +63,10 @@ def display_sources_feature(config, db_connection, report_file):
         try:
             PersonID = int(PersonID_str)
         except:
-            raise RM_Py_Exception(
+            raise RMc.RM_Py_Exception(
                 'ERROR: Enter an integer for the PersonID/RIN.')
         if not PersonID > 0:
-            raise RM_Py_Exception('ERROR: Enter an integer larger than 0.')
+            raise RMc.RM_Py_Exception('ERROR: Enter an integer larger than 0.')
 
     SqlStmt = """\
 WITH
@@ -164,71 +163,6 @@ ORDER BY st.Name COLLATE NOCASE;
         "================================================" "\n\n")
 
     return
-
-
-# ===================================================DIV60==
-def create_db_connection(db_file_path, db_extension_file_path):
-
-    dbConnection = None
-    try:
-        dbConnection = sqlite3.connect(db_file_path)
-        if db_extension_file_path is not None:
-            # load SQLite extension
-            dbConnection.enable_load_extension(True)
-            dbConnection.load_extension(db_extension_file_path)
-    except Exception as e:
-        raise RM_Py_Exception(
-            e, "\n\n" "Cannot open the RM database file." "\n")
-    return dbConnection
-
-
-# ===================================================DIV60==
-def get_SQLite_library_version(dbConnection):
-
-    # returns a string like 3.42.0
-    SqlStmt = "SELECT sqlite_version()"
-    cur = dbConnection.cursor()
-    cur.execute(SqlStmt)
-    return cur.fetchone()[0]
-
-
-# ===================================================DIV60==
-def time_stamp_now(type=""):
-
-    # return a TimeStamp string
-    now = datetime.now()
-    if type == '':
-        dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
-    elif type == 'file':
-        dt_string = now.strftime("%Y-%m-%d_%H%M%S")
-    return dt_string
-
-
-# ===================================================DIV60==
-def pause_with_message(message=None):
-
-    if (message != None):
-        print(str(message))
-    input("\n" "Press the <Enter> key to continue...")
-    return
-
-
-# ===================================================DIV60==
-def get_current_directory():
-
-    # Determine if application is a script file or frozen exe and get its directory
-    # see   https://pyinstaller.org/en/stable/runtime-information.html
-    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        application_path = os.path.dirname(sys.executable)
-    else:
-        application_path = os.path.dirname(__file__)
-    return application_path
-
-
-# ===================================================DIV60==
-class RM_Py_Exception(Exception):
-
-    '''Exceptions thrown for configuration/database issues'''
 
 
 # ===================================================DIV60==
