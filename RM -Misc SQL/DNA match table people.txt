@@ -1,0 +1,16 @@
+-- Select people who appear in a specified person's DNA match table
+
+WITH
+  constants(C_Person) AS (
+    SELECT   ?   AS C_Person
+    )
+SELECT DISTINCT ID2
+FROM DNATable
+WHERE ID1 = (SELECT C_Person FROM constants)
+
+UNION
+
+SELECT DISTINCT ID1
+FROM DNATable
+WHERE ID2 = (SELECT C_Person FROM constants)
+

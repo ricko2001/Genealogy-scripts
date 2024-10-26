@@ -1,14 +1,14 @@
-import os
 import sys
-from datetime import datetime
+sys.path.append(r'..\RM -RMpy package')
+import RMpy.launcher  # type: ignore
+import RMpy.common as RMc  # type: ignore
+
+import os
 from pathlib import Path
 import xml.etree.ElementTree as ET
 import hashlib
 
 
-sys.path.append(r'..\\RM -RMpy package')
-import RMpy.launcher  # type: ignore
-import RMpy.common as RMc  # type: ignore
 
 
 # This script can only read a RootsMagic database file and cannot change it.

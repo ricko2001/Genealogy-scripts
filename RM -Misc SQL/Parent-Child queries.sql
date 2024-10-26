@@ -57,6 +57,16 @@ AND  nt1.Surname = 'Saito'
 
 
 
+-- list all children of a particular familyID
+
+SELECT  ft.FamilyID, ct.ChildID, nt2.Given, nt2.Surname
+FROM NameTable AS nt1 
+INNER JOIN FamilyTable AS ft ON nt1.OwnerID = ft.MotherID
+INNER JOIN ChildTable AS ct ON ct.FamilyID = ft.FamilyID
+INNER JOIN NameTable AS nt2 ON ct.ChildID = nt2.OwnerID
+WHERE
+     nt1.IsPrimary = 1 AND nt2.IsPrimary = 1
+AND  ft.FamilyID=125
 
 ===========================================DIV50==
 ===========================================DIV50==
