@@ -3,8 +3,9 @@ sys.path.append(r'..\RM -RMpy package')
 import RMpy.launcher          # type: ignore
 import RMpy.common as RMc     # type: ignore
 from RMpy.common import q_str # type: ignore
+import RMpy.RMDate
 
-
+import os
 
 # Requirements:
 #   RootsMagic database file
@@ -32,9 +33,10 @@ def main():
 
     RMpy.launcher.launcher(os.path.dirname(__file__),
                     config_file_name,
-                    RMNOCASE_required,
+                    run_selected_features,
                     allow_db_changes,
-                    run_selected_features)
+                    RMNOCASE_required,
+                    RegExp_required = False)
 
 
 # ===================================================DIV60==
