@@ -74,28 +74,28 @@ UPDATE CitationTable
 
 UPDATE URLTable
   SET Name='otter-saito'
-  WHERE OwnerType =0 
+  WHERE OwnerType =0
     AND URL LIKE 'https://www.ancestry.com/family-tree/person/tree/14741034/person%'
     AND Name <> 'otter-saito';
 
 
 UPDATE URLTable
   SET Name='lumsden-horn'
-  WHERE OwnerType =0 
+  WHERE OwnerType =0
     AND URL LIKE 'https://www.ancestry.com/family-tree/person/tree/111641456/person%'
     AND Name <> 'lumsden-horn';
 
 
 UPDATE URLTable
   SET Name='felton-tsujimoto'
-  WHERE OwnerType =0 
+  WHERE OwnerType =0
     AND URL LIKE 'https://www.ancestry.com/family-tree/person/tree/111652204/person%'
     AND Name <> 'felton-tsujimoto';
 
 
 UPDATE URLTable
   SET Name='smith-burke'
-  WHERE OwnerType =0 
+  WHERE OwnerType =0
     AND URL LIKE 'https://www.ancestry.com/family-tree/person/tree/111800644/person%'
     AND Name <> 'smith-burke';
 

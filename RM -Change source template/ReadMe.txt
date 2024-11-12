@@ -658,8 +658,9 @@ If there are any non-ASCII characters in the config file then the file must be
 saved in UTF-8 format, with no byte order mark (BOM).
 The included sample config file has an accented ä in the first line comment to
 force it to be in the correct format.
+
 File format is an option in the "Save file" dialog box in NotePad.
-The [END] section is entirely optional.
+
 
 config file path names may be absolute or relative to the current directory.
 

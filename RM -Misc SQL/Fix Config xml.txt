@@ -1,0 +1,29 @@
+
+I’m another user, not Tech Support, but have delved under the hood of the RootsMagic database for many years. A vague recollection of what I had seen before in a table that I’ve rarely touched prompted me to look in again. Using SQLiteSpy, I’ve been able to both:
+
+simulate your problem
+fix it
+I’ve realized that the instructions I gave to you earlier about window maximising, sliding this and that, and, likewise, any one else’s such suggestions are doomed to failure because the Date column has been blown wider than the maximum width allowed for the Edit Person Window. It’s not possible to bring the Date column’s right-hand divider into view. I also tried a drag’n’drop to a new database which fixed that issue as did your GEDCOM transfer but also lost groups.
+
+So here’s the repair:
+
+UPDATE ConfigTable
+ SET DataRec=
+  CAST(
+       RegExp_Replace
+       (
+        DataRec,
+        '<EditPersonDateWidth>[^<]+</EditPersonDateWidth>',
+        '<EditPersonDateWidth>100</EditPersonDateWidth>'  -- 100 for a new database
+        ) AS BLOB
+       )
+ WHERE RecID=1
+;
+
+https://community.rootsmagic.com/t/info-view-has-gone-awry/11809/15?u=tomh&fbclid=IwY2xjawGKMqRleHRuA2FlbQIxMAABHUck6RblTeZvvZTI_kx6cxEuuvT3nzpUXnd1u_vOyxuggW8tC0J19oXL2A_aem_0IHKKO0bGx1LWXprXCmCMA
+
+
+I daresay there are two other columns or field widths in that window that have their width parameters stored in the database, independently of that XML file. These are:
+
+<EditPersEventWidth>100</EditPersEventWidth>
+<EditPersonSourceWidth>250</EditPersonSourceWidth>.
