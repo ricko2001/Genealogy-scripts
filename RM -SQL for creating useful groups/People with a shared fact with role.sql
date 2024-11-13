@@ -9,6 +9,6 @@
   INNER JOIN WitnessTable  AS wt  ON wt.PersonID = pt.PersonId
   INNER JOIN RoleTable     AS rt  ON rt.RoleID = wt.Role
   INNER JOIN FactTypeTable AS ftt ON ftt.FactTypeID = rt.EventType
-  WHERE ftt.Name     LIKE((SELECT C_FactName FROM constants))
-    AND  rt.RoleName LIKE((SELECT C_RoleName FROM constants))
+  WHERE ftt.Name     LIKE (SELECT C_FactName FROM constants)
+    AND  rt.RoleName LIKE (SELECT C_RoleName FROM constants)
 

@@ -13,34 +13,6 @@ SELECT pt.PersonID, nt.Surname, nt.Given, ftt.Name, COUNT(*)
   HAVING COUNT(*) >1;
 
 
---===========================================DIV50==
---Some people have facts of blank type
---They have 0 as fact type
-
-SELECT personID, 'has Fact type 0 event'
-  FROM PersonTable
-  JOIN EventTable ON PersonID = OwnerID
-  WHERE OwnerType =0 AND EventType=0;
-
-
---===========================================DIV50==
---Check for missing or misplaced event data
-
-SELECT OwnerID, Date, EventType, Details
-  FROM EventTable
-  WHERE 
-    (   EventType = 1094  --ID_FG
-    OR  EventType = 1063  --ID_FSFT
-    OR  EventType = 26    --Occupation
-    OR  EventType = 1064  --ID_TMG 
-    )
-    AND Details = ''
-    AND OwnerType = 0
-  ORDER BY OwnerID, Date;
-
-
---===========================================DIV50==
---Check PlaceTable  for 0 ?
 
 
 --===========================================DIV50==
@@ -61,13 +33,4 @@ FROM EventTable et
 WHERE et.OwnerType = 0 and EventType = 3 -- Death 
 GROUP BY et.OwnerID
 HAVING COUNT(EventID) > 1
-
-
---===========================================DIV50==
---Check for Person # 0
-
-
-
---===========================================DIV50==
---Check for FamilyID # 0
 
