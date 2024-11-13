@@ -1,3 +1,5 @@
+--[REL: cousin+spouses+parents]
+--SQL_QUERY =
   -- Hard coded for starting with PersonID/RIN = 2361  CAO
   -- See line 3         SELECT   2361   AS C_StartPerson
   -- C_BirthParentOnly = 0 or 1.   1=only birth parents included

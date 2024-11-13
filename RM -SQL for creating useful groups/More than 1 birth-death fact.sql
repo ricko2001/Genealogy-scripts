@@ -1,3 +1,5 @@
+--[FACT-Bir-Dea:  >1]
+--SQL_QUERY =
   SELECT et.OwnerID as PersonID
   FROM EventTable et
   INNER JOIN FactTypeTable AS ftt ON ftt.FactTypeID = et.EventType

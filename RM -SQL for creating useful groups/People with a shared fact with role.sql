@@ -1,3 +1,5 @@
+-- [FACT-any: role]
+-- SQL_QUERY =
   -- Query on Role Name and optionally, FactType Name
   WITH
   constants(C_FactName, C_RoleName) AS (

@@ -1,3 +1,5 @@
+--[FACT-Census:  missing]
+--SQL_QUERY =
   -- Search for missing Census on people with constraints:
   -- people who might be in census but have no FACT or SHARED FACT
   -- Requires Birth place in "United States"
