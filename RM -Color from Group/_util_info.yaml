@@ -1,0 +1,30 @@
+InternalName:  ColorFromGroup
+OriginalFilename: ColorFromGroup.exe
+
+# Use 4 place version here. Last dot and zero will be truncated for folder name.
+# Last Release none
+Version: 1.0.0.0
+
+DistributionFileList:
+# <InternalName>.py amd <InternalName>.exe always included by build script
+  - ReadMe.txt
+  - RM-Python-config.ini
+
+DistributionFolderList:
+  - ..\RM -RMpy package\RMpy
+
+PyInstaller_extra_params:
+# note the - for array and -- for param
+  - --paths="../../../RM -RMpy package"
+  - --hidden-import=sqlite3
+  - --hidden-import=configparser
+
+CompanyName: RJOtter SW
+FileDescription: Utility to work with RootsMagic database files
+LegalCopyright: Open Source
+ProductName: RM utilities
+Translation:
+  - langID: 0
+    charsetID: 1200
+  - langID: 1033
+    charsetID: 1252
