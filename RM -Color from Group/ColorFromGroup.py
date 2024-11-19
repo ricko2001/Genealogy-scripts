@@ -19,6 +19,21 @@ import os
 
 # See ReadMe.txt file for more details
 
+
+# Config files fields used
+#    [FILE_PATHS]  DB_PATH
+#    [FILE_PATHS]  REPORT_FILE_PATH
+#    [FILE_PATHS]  REPORT_FILE_DISPLAY_APP
+#    [OPTIONS]     COLOR_COMMAND
+#  note: COLOR_COMMAND may be a single name or a list of names, one per line.
+
+#  note:Section name is the same label as [OPTIONS] COLOR's value
+#    [GROUP_NAME_Value]  ACTION   what to do
+#    [GROUP_NAME_Value]  COLOR_CODE_SET   which set to modify
+#    [GROUP_NAME_Value]  COLOR   which color to modify
+#    [GROUP_NAME_Value]  GROUP   which group to use
+
+
 # ===================================================DIV60==
 def main():
 
@@ -39,18 +54,23 @@ def main():
 # ===================================================DIV60==
 def run_selected_features(config, db_connection, report_file):
 
+    # this indirection is needed when util has several 
+    # features and user cna choose which to run
     color_from_group_feature(config, db_connection, report_file)
 
 
 # ===================================================DIV60==
 def color_from_group_feature(config, db_connection, report_file):
 
+# confirm config keys and sections
+# iterate thru the color commands
+
     try:
         color_command_list = config['OPTIONS'].get(
-            'COLOR').split('\n')
+            'COLOR_COMMAND').split('\n')
     except:
         raise RMc.RM_Py_Exception(
-            'section: [OPTIONS],  key: COLOR   not found.')
+            'section: [OPTIONS],  key: COLOR_COMMAND   not found.')
 
     # confirm that the corresponding sections exist
     for color_cmd in color_command_list:
@@ -72,6 +92,7 @@ def color_from_group_feature(config, db_connection, report_file):
 
 # ===================================================DIV60==
 def exec_color_cmd(db_connection, config, report_file, color_cmd):
+# execute a color command (named section)
 
     try:
         group_name = config[color_cmd].get('GROUP')
@@ -165,7 +186,7 @@ WHERE pt.PersonID = id.PersonID;
     proto_clear_SqlStmt = """
 UPDATE  PersonTable
 SET Color{num}  = 0
-WHERE Color{num} <> 0;
+WHERE Color{num} = :color;
 """
 
     if action == "set":
@@ -175,12 +196,12 @@ WHERE Color{num} <> 0;
 
     elif action == "clear":
         SqlStmt = proto_clear_SqlStmt.format(num=col_num_str)
-        cur = db_connection.cursor()
+        cur = db_connection.cursor(SqlStmt, { "color":str(db_color_num)})
         cur.execute(SqlStmt)
 
 
 # ===================================================DIV60==
-def translate_ui_color_to_db( ui_number=None, ui_color_name=None, ui_name=None):
+def translate_ui_color_to_db( ui_number=None, ui_color_name=None, ui_custom_name=None):
     # provide one of either input argument
 #def translate_ui_color_to_db( ui_number, ui_color_name=None, ui_name=None):
 
@@ -239,9 +260,11 @@ def translate_ui_color_to_db( ui_number=None, ui_color_name=None, ui_name=None):
             db_color= 26
         elif ui_number == 27:
             db_color= 27
+        else:
+            raise RMc.RM_Py_Exception(" Color number out of range 1-27")
 
     elif ui_color_name is not None:
-        ui_color_name_lower = ui.color_name.lower()
+        ui_color_name_lower = ui_color_name.lower()
 
         if ui_color_name_lower == "Pink".lower():
             db_color = 4
@@ -297,9 +320,11 @@ def translate_ui_color_to_db( ui_number=None, ui_color_name=None, ui_name=None):
             db_color= 26
         elif ui_color_name_lower == "Slate".lower():
             db_color= 27
+        else:
+            raise RMc.RM_Py_Exception("Color name not found. Check spelling.")
 
-    elif ui_name is not None:
-        raise RMc.RM_Py_Exception( "ui_name translation not yet implemented")
+    elif ui_custom_name is not None:
+        raise RMc.RM_Py_Exception( "ui_custom_name translation not yet implemented")
     else:
         raise RMc.RM_Py_Exception( "An argument must be provided to translate_ui_color_to_db")
 
