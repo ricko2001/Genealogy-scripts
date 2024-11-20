@@ -10,10 +10,11 @@ to using RM.
 =========================================================================DIV80==
 Purpose
 
-This utility will change the color coding/color-high-lighting of people in
+This utility will change the color coding/color high-lighting of people in
 the database based on their group membership.
 While this is easily done with RM, this utility allows a series of commands
-to be executed with one run. It is a perfect complement to the utility GroupFromSQL.
+to be executed with one run. It is a perfect complement to the 
+utility GroupFromSQL.
 
 
 =========================================================================DIV80==
@@ -28,7 +29,7 @@ current known-good backup.
 Compatibility
 
 Tested with
-       RootsMagic v10.
+       RootsMagic v10
 
 .exe file version
        Windows 64bit only. Tested with Window 11.
@@ -75,27 +76,31 @@ Use the py script file.  See section below, after the Notes section, entitled-
 =========================================================================DIV80==
 Config file contents and editing
 
-Before starting, you will want to confirm that a group exists in your database that will be the
-basis of the color operation. Make sure that you know the exact spelling of the name and that there
-is only one group with that name.
+Before starting, you will want to confirm that a group exists in your database
+that will be the basis of the color operation. Make sure that you know the
+exact spelling of the name and that there is only one group with that name.
 
-Next, determine the color group that you wish to modify and the specific color number.
-To get the numbers, open the color coding window in RM. 
-Looking at the "Current color code Set" drop down menu, the top-most item is set 1, the bottom is set 10.
-By default they are named "Color code set 1"  etc.. If they have been renamed, you'll have to count.
-Looking at the left hand column of colors, counting from the top color, Pink is 1, Slate is 27.
+Next, determine the color group that you wish to modify and the specific color 
+number. To get the numbers, open the color coding window in RM. 
+Looking at the "Current color code set" drop down menu at the top of the window,
+the top-most item is set 1, the bottom is set 10. By default they are named
+"Color code set 1"  etc.. If they have been renamed, you'll have to count.
+Looking at the left hand column of colors, counting from the top color, Pink 
+is 1, Slate is 27.
 
-Next, determine whether there will be more than one action to perform. Usually, if you 
-want to make a group correspond to a color, you will want to reset/clear that color
-before assigning group members.
+Next, determine whether there will be more than one action to perform. Usually,
+if you want to make a group correspond to a color, you will want to reset/clear 
+that color before assigning group members. This will take care of cases in which
+people have been removed from groups.
 
-To edit the config file, open NotePad and drag the config file onto the NotePad window.
+To edit the config file, open NotePad and drag the config file onto the NotePad 
+window.
 
-The config file is made up of Sections, Keys, Values and Comments. The names in square 
-brackets are Section Names that identify the start of a section. A Section contains 
-Key = Value pairs. Names on the left of the = sign are Keys. Text on the right side of
-the = is the Value of the Key. Comment lines start with # and are only included to 
-help the user read and understand the file.
+The config file is made up of Sections, Keys, Values and Comments. The names
+in square brackets are Section Names that identify the start of a section. A
+Section contains Key = Value pairs. Names on the left of the = sign are Keys.
+Text on the right side of the = is the Value of the Key. Comment lines start
+with # and are only included to help the user read and understand the file.
 
 [FILE_PATHS]
 DB_PATH  = TEST.rmtree
@@ -122,7 +127,8 @@ GROUP = FamGroup
 
 #-----------------------------------------------
 
-Shown are four sections: FILE_PATHS, OPTIONS and Color_my_family_C and Color_my_family_S
+Shown are four sections: FILE_PATHS, OPTIONS and Color_my_family_C and 
+Color_my_family_S
 
 These sections have varying numbers of keys-
 section                  number of keys
@@ -131,7 +137,8 @@ OPTIONS                     1
 Color_my_family_C           4
 Color_my_family_S           4
 
-The FILE_PATH keys are self explanatory. Just note that either absolute or relative paths may be used.
+The FILE_PATH keys are self explanatory. Just note that either absolute or 
+relative paths may be used for any of the paths.
 
 The COLOR_COMMAND key in OPTIONS list the sections that contain actions to execute.
 The key can contain one section name, like
@@ -149,44 +156,44 @@ COLOR_COMMAND =
 Note that the second and following section names must be indented.
 
 The last two sections are color commands. Each color command section must 
-have the show four keys.
-The name of the color command section is set by the user.
-
+have the four shown keys.
+The name of the color command section is set by the user. (You may want to use
+the same name as the group.)
 
 Your config file can contain multiple color command sections, but only those 
-listed in COLOR_COMMAND will be executed
-Only the Sections specified by [OPTIONS] COLOR will be executed. The others
-are ignored.
+listed in COLOR_COMMAND will be executed. The others are ignored. You may want
+to keep unused sections in the config file for future use. (Just like 
+the GroupFromSQL utility.)
 
-The keys in the color command section are ACTION, COLOR_CODE_SET, COLOR,  and GROUP.
+The keys in the color command section are ACTION, COLOR_CODE_SET, COLOR, and GROUP.
 ACTION is either set or clear
 COLOR_CODE_SET is a number from 1 to 10.
 COLOR is the color to use 1-27
-GROUP is the RM group name that sys which people are to have their code code set.
-If the ACTION is clear, then the GROUP should be set to _ALL
+GROUP is the RM group name that specifies which people are to have their code 
+code set.
+If the ACTION is clear, then the GROUP should be set to "_ALL".
+If ACTION is set, then GROUP must be the name of an existing RM group.
 
-clear only clears a particular color in a particular color code set.
+ACTION clear only clears a particular color in a particular color code set.
 It does this for all people (thus the group name placeholder "_ALL")
 
 The utility does not allow clearing all colors in a color code set or 
-clearing colors in multiple color code sets. Such "dangerous"features are
-not needed.
+clearing colors in multiple color code sets.
 
 
 =========================================================================DIV80==
 =========================================================================DIV80==
 NOTES
 
-*    Updating the colorization of a group while the database is open in RM works OK.
-However, RM will not refresh the screen based on n external update. 
+*    Updating the colorization of a group while the database is open in RM 
+works OK. However, RM will not refresh the screen based on an external update. 
+So, switch screens and then return to see the updated color coding.
 
 *    On some occasions, the utility report file will display a "Database
 Locked" message. In that case, close RM and re-run the utility, then re-open 
 RM. It's not clear why this sometimes happens, but it is rare.
-For some reason, RM keeps an open transaction which prevents other processes
-from making updates.
 No database damage has ever been seem after many hundreds of uses.
-"Database locked" is a normal operating message encountered from SQLite.
+"Database locked" is a normal operating message encountered from SQLite. 
 
 
 Less important notes.
@@ -201,8 +208,9 @@ File format is an option in the "Save file" dialog box in NotePad.
 *    This utility only changes the database's PersonTable.
 If I add the feature of renaming colors, that will affect the Config table.
 
-*    This utility will, if so configured, modify a pre-existing color coding that may be
-important to you. Take care when assigning the actions in the config file.
+*    This utility will, if so configured, modify a pre-existing color coding 
+that may be important to you. Take care when assigning the actions in the
+config file.
 
 
 =========================================================================DIV80==
