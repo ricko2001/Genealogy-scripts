@@ -72,27 +72,6 @@ Use the py script file.  See section below, after the Notes section, entitled-
 "Which to use? Standalone .exe file or .py file"
 
 
-
-
-
-
-
-
-
-2:  Determine the color group that you wish to modify and the specific color number.
-(To get the number, open the color coding window. Counting from the top, 
-Pink is 1, Slate is 27)
-
-2:   The utility needs to know where the RM database
-file is located, what color set to modify, what color to set and which group of
-people to colorize. See Config file format for complete details.
-
-2:  Double click the ColorFromGroup file. This momentarily displays the black
-command console window and then displays a report file in Notepad.
-At the same time, the people in the database specified by the config file has is colors modified.
-
-
-
 =========================================================================DIV80==
 Config file contents and editing
 
@@ -119,45 +98,79 @@ the = is the Value of the Key. Comment lines start with # and are only included 
 help the user read and understand the file.
 
 [FILE_PATHS]
-DB_PATH
-REPORT_FILE_DISPLAY_APP
-REPORT_FILE_PATH
+DB_PATH  = TEST.rmtree
+REPORT_FILE_DISPLAY_APP  = C:\Windows\system32\Notepad.exe
+REPORT_FILE_PATH  = Report_ColorFromGroup.txt
 
 [OPTIONS]
-COLOR_COMMAND = GroupEveryone
+COLOR_COMMAND = 
+  Color_my_family_C
+  Color_my_family_S
 
 #-----------------------------------------------
-[ColorEveryone]
+[Color_my_family_C]
+ACTION = clear
+COLOR_CODE_SET = 5
+COLOR = 1
+GROUP = _ALL
+
+[Color_my_family_S]
 ACTION = set
 COLOR_CODE_SET = 5
 COLOR = 1
-GROUP = 
+GROUP = FamGroup
 
 #-----------------------------------------------
 
-Shown are two sections: "OPTIONS" and "GroupEveryone".
+Shown are four sections: FILE_PATHS, OPTIONS and Color_my_family_C and Color_my_family_S
 
-Section "OPTIONS" has one key :"COLOR" which has the value "GroupEveryone".
+These sections have varying numbers of keys-
+section                  number of keys
+FILE_PATHS                  3
+OPTIONS                     1
+Color_my_family_C           4
+Color_my_family_S           4
 
-Section "GroupEveryone" has four keys.
+The FILE_PATH keys are self explanatory. Just note that either absolute or relative paths may be used.
 
-This example, if run with the utility, will update the members of  group_everyone 
-by setting their colorSet 5 to Color 1.
+The COLOR_COMMAND key in OPTIONS list the sections that contain actions to execute.
+The key can contain one section name, like
+COLOR_COMMAND =   Color_my_family_C
 
-The COLOR_COMMAND key specifies the color command set or set of color command sets to execute.
+or multiple section names, like-
+COLOR_COMMAND = Color_my_family_C
+  Color_my_family_S
 
-[FILE_PATHS]
-DB_PATH
-REPORT_FILE_DISPLAY_APP
-REPORT_FILE_PATH
+  or, like
+COLOR_COMMAND = 
+  Color_my_family_C
+  Color_my_family_S
 
-The COLOR_COMMAND value in OPTIONS may have one or multiple lines have multiple lines, that is
-multiple section names. Each of those group will be updated in the same run
-of the utility.
+Note that the second and following section names must be indented.
 
-Your config file can contain multiple Sections each with SQL statements.
+The last two sections are color commands. Each color command section must 
+have the show four keys.
+The name of the color command section is set by the user.
+
+
+Your config file can contain multiple color command sections, but only those 
+listed in COLOR_COMMAND will be executed
 Only the Sections specified by [OPTIONS] COLOR will be executed. The others
 are ignored.
+
+The keys in the color command section are ACTION, COLOR_CODE_SET, COLOR,  and GROUP.
+ACTION is either set or clear
+COLOR_CODE_SET is a number from 1 to 10.
+COLOR is the color to use 1-27
+GROUP is the RM group name that sys which people are to have their code code set.
+If the ACTION is clear, then the GROUP should be set to _ALL
+
+clear only clears a particular color in a particular color code set.
+It does this for all people (thus the group name placeholder "_ALL")
+
+The utility does not allow clearing all colors in a color code set or 
+clearing colors in multiple color code sets. Such "dangerous"features are
+not needed.
 
 
 =========================================================================DIV80==
@@ -166,7 +179,6 @@ NOTES
 
 *    Updating the colorization of a group while the database is open in RM works OK.
 However, RM will not refresh the screen based on n external update. 
-
 
 *    On some occasions, the utility report file will display a "Database
 Locked" message. In that case, close RM and re-run the utility, then re-open 
@@ -186,13 +198,11 @@ The included sample ini file has an accented ä in the first line comment to
 force it to be in the correct format.
 File format is an option in the "Save file" dialog box in NotePad.
 
-
 *    This utility only changes the database's PersonTable.
 If I add the feature of renaming colors, that will affect the Config table.
 
 *    This utility will, if so configured, modify a pre-existing color coding that may be
 important to you. Take care when assigning the actions in the config file.
-
 
 
 =========================================================================DIV80==

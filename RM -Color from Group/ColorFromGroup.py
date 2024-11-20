@@ -26,12 +26,13 @@ import os
 #    [FILE_PATHS]  REPORT_FILE_DISPLAY_APP
 #    [OPTIONS]     COLOR_COMMAND
 #  note: COLOR_COMMAND may be a single name or a list of names, one per line.
+# name(s) refer to sections in the same config file that contain color coding instructions.
 
 #  note:Section name is the same label as [OPTIONS] COLOR's value
 #    [GROUP_NAME_Value]  ACTION   what to do
 #    [GROUP_NAME_Value]  COLOR_CODE_SET   which set to modify
 #    [GROUP_NAME_Value]  COLOR   which color to modify
-#    [GROUP_NAME_Value]  GROUP   which group to use
+#    [GROUP_NAME_Value]  GROUP   which group to use or _ALL when action is clear
 
 
 # ===================================================DIV60==
@@ -82,29 +83,35 @@ def color_from_group_feature(config, db_connection, report_file):
             raise RMc.RM_Py_Exception(
                 f'section: [{q_str(color_cmd)}]   not found.')
 
+    Divider = "="*50 + "===DIV60=="
+
     for color_cmd in color_command_list:
         if color_cmd == '':
             continue
+        report_file.write(f"\n{Divider}\n")
+        report_file.write(f"Run {color_cmd}\n")
         exec_color_cmd(db_connection, config, report_file, color_cmd)
 
+    report_file.write(f"\n{Divider}\n")
+    report_file.write( "Last command set done.")
     return
 
 
 # ===================================================DIV60==
 def exec_color_cmd(db_connection, config, report_file, color_cmd):
-# execute a color command (named section)
-
-    try:
-        group_name = config[color_cmd].get('GROUP')
-    except:
-        raise RMc.RM_Py_Exception(
-            f'section: [{color_cmd}],  key: GROUP    not found.')
+# execute a color command set (named section)
 
     try:
         action = config[color_cmd].get('ACTION')
     except:
         raise RMc.RM_Py_Exception(
             f'section: [{color_cmd}],  key: ACTION    not found.')
+    
+    try:
+        code_set = config[color_cmd].get('COLOR_CODE_SET')
+    except:
+        raise RMc.RM_Py_Exception(
+            f'section: [{color_cmd}],  key: COLOR_CODE_SET    not found.')
 
     try:
         color_txt = config[color_cmd].get('COLOR')
@@ -113,57 +120,57 @@ def exec_color_cmd(db_connection, config, report_file, color_cmd):
             f'section: [{color_cmd}],  key: COLOR    not found.')
 
     try:
-        code_set = config[color_cmd].get('COLOR_CODE_SET')
+        group_name = config[color_cmd].get('GROUP')
     except:
         raise RMc.RM_Py_Exception(
-            f'section: [{color_cmd}],  key: COLOR_CODE_SET    not found.')
+            f'section: [{color_cmd}],  key: GROUP    not found.')
 
     # Validate the input
+
     # group_name
     if group_name == "_ALL":
         group_id = 0
     else:
-        group_id = confirm_DB_group_name(group_name, report_file, db_connection)
+        group_id = validate_DB_group_name(group_name, report_file, db_connection)
 
     # action
     if (action != "set"
         and action != "clear"
         ):
         raise RMc.RM_Py_Exception(
-            f'section: [{color_cmd}],  key: ACTION    is not supported.')
+            f'section: [{color_cmd}],  key: ACTION {action}   is not supported.')
+    
+    if action == "clear" and group_name != "_ALL":
+        raise RMc.RM_Py_Exception(
+            f'section: [{color_cmd}],  clear action requires group to be "_ALL""')
 
     # color_txt
-    try:
-        if (int(color_txt) <0 or int(color_txt) >27):
-            raise RMc.RM_Py_Exception(
-                f'section: [{color_cmd}],  key: COLOR    is out of range.')
-    except TypeError:
-            raise RMc.RM_Py_Exception(
-                f'section: [{color_cmd}],  key: COLOR    is not an integer.')
+    # for now, the color must be a number
+    db_color_num = translate_ui_color_to_db( ui_number = int(color_txt))
 
     # code_set
     try:
         if (int(code_set) <1 or int(code_set) >10):
             raise RMc.RM_Py_Exception(
-                f'section: [{color_cmd}],  key: COLOR_CODE_SET    is out of range.')
+                f'section: [{color_cmd}],  key: COLOR_CODE_SET {code_set}   is out of range.')
     except TypeError:
             raise RMc.RM_Py_Exception(
                 f'section: [{color_cmd}],  key: COLOR_CODE_SET    is not an integer.')
 
+    report_file.write(
+        f"Parameters:\nACTION = {action}\nCOLOR_CODE_SET = {code_set}\n"
+        f"COLOR = {color_txt}\nGROUP = {group_name}\n")
 
-    update_people_colors(db_connection, group_id, int(code_set), int(color_txt), action)
+    update_people_colors(db_connection, group_id, int(code_set), db_color_num, action)
 
     return
 
 
 # ===================================================DIV60==
-def update_people_colors(db_connection, group_id, color_group, color, action):
+def update_people_colors(db_connection, group_id, color_group, db_color_num, action):
 
-# translate UI_color into DB_color
-    db_color_num = translate_ui_color_to_db( ui_number = color)
-
-# Construct SQL statement so correct color group column is updated
-# Careful- can't use a SQL variable, must use python string manipulation.
+# Construct the SQL statement so correct color group column is updated
+# can't use a SQL variable, must use python string manipulation.
 
     if color_group <1 or color_group>10:
             raise RMc.RM_Py_Exception('color_group is out of range.')
@@ -196,8 +203,8 @@ WHERE Color{num} = :color;
 
     elif action == "clear":
         SqlStmt = proto_clear_SqlStmt.format(num=col_num_str)
-        cur = db_connection.cursor(SqlStmt, { "color":str(db_color_num)})
-        cur.execute(SqlStmt)
+        cur = db_connection.cursor()
+        cur.execute(SqlStmt, { "color":str(db_color_num)})
 
 
 # ===================================================DIV60==
@@ -357,42 +364,33 @@ ORDER BY StartID
 
 
 # ===================================================DIV60==
-def confirm_DB_group_name(Name, report_file, db_connection):
+def validate_DB_group_name(group_name, report_file, db_connection):
+
     #  TagTable
     #   TagID=rowid
     #   TagType =0 for Groups
     #   TagName   duplicates not constrained
 
-    Divider = "="*50 + "===DIV60=="
-    report_file.write(f"{Divider}\n\n")
-
     # check how many groupNames with name and TagType=0 already exist
     SqlStmt = """
 SELECT count(*), TagValue 
 FROM TagTable 
-WHERE TagName=? COLLATE NOCASE AND TagType=0 COLLATE NOCASE
+WHERE TagName=:Name COLLATE NOCASE AND TagType=0 COLLATE NOCASE
 """
     cur = db_connection.cursor()
-    cur.execute(SqlStmt, (Name,))
+    cur.execute(SqlStmt, {"Name":group_name})
     result = cur.fetchone()
     existingNumber = result[0]
     GroupID = result[1]
 
     if existingNumber > 1:
-        raise RMc.RM_Py_Exception(f"\nERROR: Group: {q_str(Name)}  exists more than once in the database.\n"
+        raise RMc.RM_Py_Exception(f"\nERROR: Group: {q_str(group_name)}  exists more than once in the database.\n"
                                   "Rename one of the duplicates. \n")
-
-    if existingNumber == 1:
-        report_file.write(f"Group: {q_str(Name)} will be used to update color. \n")
-
-    else:  # existingNumber == 0
+    elif existingNumber == 0:
         raise RMc.RM_Py_Exception(
-            f"\nERROR: Group: {q_str(Name)} does not exist in the database. \n")
+            f"\nERROR: Group: {q_str(group_name)} does not exist in the database. \n")
 
     return GroupID
-
-
-
 
 
 # ===================================================DIV60==
