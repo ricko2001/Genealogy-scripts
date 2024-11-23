@@ -34,6 +34,7 @@ Draft a release at Github
 Add the zip file
 Save as draft and let it sit and age for a while
 Publish the release
+Update website.
 Write an announcement post to groups.
 
 
@@ -67,4 +68,27 @@ pyinstaller-versionfile
 implements command line:: create-version-file
 https://pypi.org/project/pyinstaller-versionfile/
 	pip install pyinstaller-versionfile
+	pip install --upgrade pyinstaller-versionfile
 
+For now,
+all copies of BuildRelease.py are hard links.
+would be nice to run the BuildRelease.py from its home folder, dev util scripts.
+
+
+
+For a new Python install or for each upgrade of python, do the following:
+
+Add to path-
+C:\Users\rotter\AppData\Local\Programs\Python\PythonNNN\Scripts
+(or update existing path to new ver number)
+
+confirm pip is working or install pip 
+Currently, see:  https://pip.pypa.io/en/stable/installation/
+
+Install these packages:
+
+pip install PyYAML
+
+pip install pyinstaller
+
+pip install pyinstaller-versionfile

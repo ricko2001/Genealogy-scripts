@@ -4,10 +4,10 @@ import RMpy.launcher  # type: ignore
 import RMpy.common as RMc  # type: ignore
 
 import os
-from pathlib import Path
+import pathlib
 import xml.etree.ElementTree as ET
 import hashlib
-
+from gitignore_parser import parse_gitignore
 
 
 
@@ -74,7 +74,7 @@ def run_selected_features(config, db_connection, report_file):
 
     global G_db_file_folder_path
     # used only in function expand_relative_dir_path, but no access to config there.
-    parent_dir = Path(config['FILE_PATHS']['DB_PATH']).parent
+    parent_dir = pathlib.Path(config['FILE_PATHS']['DB_PATH']).parent
     # get the absolute path in case the DB_PATH was relative
     G_db_file_folder_path = parent_dir.resolve()
 
@@ -159,7 +159,8 @@ def missing_files_feature(config, db_connection, report_file):
         dir_path_original = row[0]
         file_name = row[1]
         dir_path = expand_relative_dir_path(dir_path_original)
-        file_path = Path(os.path.join(dir_path, file_name))
+        #file_path = pathlib.Path(os.path.join(dir_path, file_name))
+        file_path = dir_path / file_name
 
         # First consider just the dir path (separate column in database)
         if dir_path.is_file():
@@ -221,7 +222,7 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
 
     # get options
     try:
-        ext_files_folder_path = config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH']
+        ext_files_folder_path = pathlib.Path(config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH'])
     except:
         raise RMc.RM_Py_Exception(
             "ERROR: SEARCH_ROOT_FLDR_PATH must be specified for this option. \n")
@@ -234,10 +235,10 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
     #      report_file.write("Case-insensitive search\n\n")
 
     # Validate the folder path
-    if not Path(ext_files_folder_path).exists():
+    if not ext_files_folder_path.exists():
         raise RMc.RM_Py_Exception(
             f"ERROR: Directory path not found: {RMc.q_str(ext_files_folder_path)} \n")
-    if not Path(ext_files_folder_path).is_dir():
+    if not ext_files_folder_path.is_dir():
         raise RMc.RM_Py_Exception(
             f"ERROR: Path is not a directory: {RMc.q_str(ext_files_folder_path)} \n")
 
@@ -252,11 +253,11 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
             continue
         dir_path = expand_relative_dir_path(row[0])
         file_name = row[1]
-        file_path = os.path.join(dir_path, file_name)
+        file_path = dir_path / file_name
         db_file_list.append(file_path)
 
     filesystem_folder_file_list = folder_contents_minus_ignored(
-        Path(ext_files_folder_path), config, report_file)
+        ext_files_folder_path, config, report_file)
 
     if (case_insensitive == False):
         # case sensitive
@@ -285,7 +286,7 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
         unref_files.sort()
 
         # don't print full path from root folder
-        cutoff = len(ext_files_folder_path)
+        cutoff = len(str(ext_files_folder_path))
         for i in range(len(unref_files)):
             report_file.write(RMc.q_str("." + str(unref_files[i])[cutoff:]) + "\n")
 
@@ -325,7 +326,7 @@ def files_with_no_tags_feature(config, db_connection, report_file):
         found_no_tag_files = True
         dir_path_orig = row[0]
         dir_path = expand_relative_dir_path(row[0])
-        file_path = Path(os.path.join(dir_path, row[1]))
+        file_path = dir_path / row[1]
         report_file.write(f'"{file_path}" \n')
         if show_orig_path:
             report_file.write(label_orig_path
@@ -389,7 +390,7 @@ def duplicate_file_paths_feature(db_connection, report_file):
         found_some_dup_files = True
         dirPathOrig = row[0]
         dir_path = expand_relative_dir_path(row[0])
-        file_path = Path(os.path.join(dir_path, row[1]))
+        file_path = dir_path / row[1]
         report_file.write(RMc.q_str(file_path) + "\n")
 
     if not found_some_dup_files:
@@ -434,14 +435,12 @@ def file_hash_feature(config, db_connection, report_file):
     section("START", feature_name, report_file)
     # get option
     try:
-        hash_file_folder = config['FILE_PATHS']['HASH_FILE_FLDR_PATH']
+        hash_file_folder = pathlib.Path(config['FILE_PATHS']['HASH_FILE_FLDR_PATH'])
     except:
         raise RMc.RM_Py_Exception(
             "ERROR: HASH_FILE_FLDR_PATH must be specified for this option. \n")
 
-    hash_file_path = os.path.join(
-        hash_file_folder,
-        "MediaFiles_HASH_" + RMc.time_stamp_now("file") + ".txt")
+    hash_file_path = hash_file_folder / "MediaFiles_HASH_" / RMc.time_stamp_now("file") / ".txt"
 
     try:
         hash_file = open(hash_file_path,  mode='w', encoding='utf-8')
@@ -458,7 +457,7 @@ def file_hash_feature(config, db_connection, report_file):
         if len(str(row[0])) == 0 or len(str(row[1])) == 0:
             continue
         dir_path = expand_relative_dir_path(row[0])
-        file_path = Path(os.path.join(dir_path, row[1]))
+        file_path = dir_path / row[1]
         if not dir_path.exists():
             found_some_missing_files = True
             report_file.write(
@@ -518,7 +517,7 @@ def files_not_in_media_folder_feature(config, db_connection, report_file):
         if row[0][0] != '?':
             found_files += 1
             dir_path = expand_relative_dir_path(row[0])
-            file_path = Path(os.path.join(dir_path, row[1]))
+            file_path = dir_path / row[1]
             report_file.write(f"\n{file_path} \n")
             if show_original_path:
                 report_file.write(f"{label_orig_path} {RMc.q_str(row[0])} \n")
@@ -659,7 +658,7 @@ def section(pos, name, report_file):
 
 
 # ===================================================DIV60==
-def expand_relative_dir_path(in_path):
+def expand_relative_dir_path(in_path_str):
 
     # deal with relative paths in RootsMagic v8 and later databases
     # RM7 path are always absolute and will never be processed here
@@ -667,29 +666,29 @@ def expand_relative_dir_path(in_path):
     global G_media_directory_path
     # use this global as sort of a static constant. Want it initialed once.
 
-    path = str(in_path)
+    path = str(in_path_str)
     # input parameter path should always be of type str, output will be Path
     # note when using Path / operator, second operand should not be absolute
 
     if path[0] == "~":
-        absolute_path = Path(os.path.expanduser(path))
+        absolute_path = pathlib.Path(os.path.expanduser(path))
 
     elif path[0] == "?":
         if G_media_directory_path is None:
             G_media_directory_path = get_media_directory()
         if len(path) == 1:
-            absolute_path = Path(G_media_directory_path)
+            absolute_path = pathlib.Path(G_media_directory_path)
         else:
-            absolute_path = Path(G_media_directory_path) / path[2:]
+            absolute_path = pathlib.Path(G_media_directory_path) / path[2:]
 
     elif path[0] == "*":
         if len(path) == 1:
-            absolute_path = Path(G_db_file_folder_path)
+            absolute_path = pathlib.Path(G_db_file_folder_path)
         else:
-            absolute_path = Path(G_db_file_folder_path) / path[2:]
+            absolute_path = pathlib.Path(G_db_file_folder_path) / path[2:]
 
     else:
-        absolute_path = Path(path)
+        absolute_path = pathlib.Path(path)
 
     return absolute_path
 
@@ -719,13 +718,13 @@ def get_media_directory():
 #  TODO Could base this off of the database version number, but that's not readily available.
 
 
-    xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_11))
+    xmlSettingsPath = pathlib.Path(os.path.expanduser(RM_Config_FilePath_11))
     if not xmlSettingsPath.exists():
-        xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_10))
+        xmlSettingsPath = pathlib.Path(os.path.expanduser(RM_Config_FilePath_10))
         if not xmlSettingsPath.exists():
-            xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_9))
+            xmlSettingsPath = pathlib.Path(os.path.expanduser(RM_Config_FilePath_9))
             if not xmlSettingsPath.exists():
-                xmlSettingsPath = Path(os.path.expanduser(RM_Config_FilePath_8))
+                xmlSettingsPath = pathlib.Path(os.path.expanduser(RM_Config_FilePath_8))
                 if not xmlSettingsPath.exists():
                     return media_folder_path
 
@@ -743,40 +742,150 @@ def folder_contents_minus_ignored(dir_path, config, report_file):
     # Ideally, this is also the "RM Media folder"
     # ignored objects are always case sensitive
 
-    ignored_folder_names = []
-    ignored_file_names = []
+    media_file_list = []
 
     # TODO implement
     try:
         case_insensitive = config['OPTIONS'].getboolean('CASE_INSENSITIVE')
     except:
         case_insensitive = False
+
+    method = "use_old_method"
+
     try:
-        ignored_folder_names = config['IGNORED_OBJECTS'].get(
-            'FOLDERS').split('\n')
+        if config['OPTIONS'].getboolean('IGNORED_ITEMS_FILE'):
+            method = "use_gitignore_method"
     except:
-        report_file.write("No ignored folders specified. \n\n")
+        raise RMc.RM_Py_Exception(
+            "OPTIONS  -  IGNORED_ITEMS_FILE could be be interpreted as on or off")
+
     try:
-        ignored_file_names = config['IGNORED_OBJECTS'].get(
-            'FILENAMES').split('\n')
+        if config['OPTIONS'].getboolean('IGNORED_ITEMS_GLOB'):
+            method = "use_glob_method"
     except:
-        report_file.write("No ignored files specified. \n\n")
+        raise RMc.RM_Py_Exception(
+            "OPTIONS  -  IGNORED_ITEMS_GLOB could be be interpreted as on or off")
 
-    media_file_list = []
 
-    for (dir_name, dir_names, file_names) in os.walk(dir_path, topdown=True):
+    try:
+        if config['OPTIONS'].getboolean('IGNORED_ITEMS_GLOB_2'):
+            method = "use_glob_2_method"
+    except:
+        raise RMc.RM_Py_Exception(
+            "OPTIONS  -  IGNORED_ITEMS_GLOB_2 could be be interpreted as on or off")
 
-        for igFldrName in ignored_folder_names:
-            if igFldrName in dir_names:
-                dir_names.remove(igFldrName)
 
-        for igFileName in ignored_file_names:
-            if igFileName in file_names:
-                file_names.remove(igFileName)
+# =========================================================================DIV80==
+    if  method == "use_gitignore_method":
+        matches = parse_gitignore(dir_path / "TestExternalFiles_ignore.txt")
 
-        for filename in file_names:
-            media_file_list.append(str(os.path.join(dir_name, filename)))
+        for path in dir_path.glob('**/*'):
+            if not matches(path) and path.is_file():
+                media_file_list.append(path)
+            #    report_file.write( str(path) + "\n")
+            # else:
+            #     report_file.write( "NOT     "+ str(path) + "\n")
 
+# =========================================================================DIV80==
+    elif method == "use_glob_method":
+        try:
+            ignored_items = config['OPTIONS'].get(
+                'IGNORED_ITEMS').split('\n')
+        except:
+            raise RMc.RM_Py_Exception(
+                "OPTIONS  -  IGNORED_ITEMS must be specified")
+    
+        media_file_list = []
+        media_file_ignore = []
+    
+        for pattern in ignored_items:
+            matches_for_one = dir_path.glob(pattern)
+            for match in matches_for_one:
+                media_file_ignore.append(match)
+
+
+
+#        for (dir_name, dir_names, file_names) in dir_path.walk( top_down=True):
+#            for pattern in ignored_items:
+#                test = dir_name.glob(pattern, case_sensitive=False)
+#                for ite in test:
+#                    print(str(ite))
+#                    dir_names.remove(str(ite.name))
+#                    file_names.remove(str(ite.name))
+#
+#            for filename in file_names:
+#                media_file_list.append(dir_name / filename)
+#
+# =========================================================================DIV80==
+    elif method == "use_glob_2_method":
+
+        try:
+            ignored_items = config['OPTIONS'].get(
+                'IGNORED_ITEMS').split('\n')
+        except:
+            raise RMc.RM_Py_Exception(
+                "OPTIONS  -  IGNORED_ITEMS must be specified")
+    
+        media_file_list = []
+        media_file_ignore = []
+
+        for pattern in ignored_items:
+            matches = dir_path.glob(pattern)
+            for item in matches:
+                print (item)
+                if item.is_file():
+                    media_file_list.append(item)
+
+
+#        for (dir_name, dir_names, file_names) in os.walk(dir_path, topdown=True):
+#            for dir_name_item in dir_names:
+#                for pattern in ignored_items:
+#                    if pathlib.Path(dir_name_item).match(pattern):
+#                        dir_names.remove(dir_name_item)
+#                    fpr
+#                    if pathlib.Path(file_name_item).match(pattern):
+#                        dir_names.remove(dir_name_item)
+#    
+#            for igFileName in ignored_file_names:
+#                if igFileName in file_names:
+#                    file_names.remove(igFileName)
+#    
+#            for filename in file_names:
+#                media_file_list.append(pathlib.Path(dir_name) / filename)
+
+
+
+# =========================================================================DIV80==
+    elif method == "use_old_method":
+
+        ignored_folder_names = []
+        ignored_file_names = []
+    
+        try:
+            ignored_folder_names = config['IGNORED_OBJECTS'].get(
+                'FOLDERS').split('\n')
+        except:
+            report_file.write("No ignored folders specified. \n\n")
+        try:
+            ignored_file_names = config['IGNORED_OBJECTS'].get(
+                'FILENAMES').split('\n')
+        except:
+            report_file.write("No ignored files specified. \n\n")
+    
+        media_file_list = []
+    
+        for (dir_name, dir_names, file_names) in os.walk(dir_path, topdown=True):
+        
+            for igFldrName in ignored_folder_names:
+                if igFldrName in dir_names:
+                    dir_names.remove(igFldrName)
+    
+            for igFileName in ignored_file_names:
+                if igFileName in file_names:
+                    file_names.remove(igFileName)
+    
+            for filename in file_names:
+                media_file_list.append(pathlib.Path(dir_name) / filename)
 
     return media_file_list
 
