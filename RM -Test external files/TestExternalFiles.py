@@ -757,105 +757,17 @@ def folder_contents_minus_ignored(dir_path, config, report_file):
             method = "use_gitignore_method"
     except:
         raise RMc.RM_Py_Exception(
-            "OPTIONS  -  IGNORED_ITEMS_FILE could be be interpreted as on or off")
-
-    try:
-        if config['OPTIONS'].getboolean('IGNORED_ITEMS_GLOB'):
-            method = "use_glob_method"
-    except:
-        raise RMc.RM_Py_Exception(
-            "OPTIONS  -  IGNORED_ITEMS_GLOB could be be interpreted as on or off")
+            "OPTIONS  -  IGNORED_ITEMS_FILE could be be interpreted as either on or off")
 
 
-    try:
-        if config['OPTIONS'].getboolean('IGNORED_ITEMS_GLOB_2'):
-            method = "use_glob_2_method"
-    except:
-        raise RMc.RM_Py_Exception(
-            "OPTIONS  -  IGNORED_ITEMS_GLOB_2 could be be interpreted as on or off")
-
-
-# =========================================================================DIV80==
     if  method == "use_gitignore_method":
         matches = parse_gitignore(dir_path / "TestExternalFiles_ignore.txt")
 
         for path in dir_path.glob('**/*'):
             if not matches(path) and path.is_file():
                 media_file_list.append(path)
-            #    report_file.write( str(path) + "\n")
-            # else:
-            #     report_file.write( "NOT     "+ str(path) + "\n")
-
-# =========================================================================DIV80==
-    elif method == "use_glob_method":
-        try:
-            ignored_items = config['OPTIONS'].get(
-                'IGNORED_ITEMS').split('\n')
-        except:
-            raise RMc.RM_Py_Exception(
-                "OPTIONS  -  IGNORED_ITEMS must be specified")
-    
-        media_file_list = []
-        media_file_ignore = []
-    
-        for pattern in ignored_items:
-            matches_for_one = dir_path.glob(pattern)
-            for match in matches_for_one:
-                media_file_ignore.append(match)
 
 
-
-#        for (dir_name, dir_names, file_names) in dir_path.walk( top_down=True):
-#            for pattern in ignored_items:
-#                test = dir_name.glob(pattern, case_sensitive=False)
-#                for ite in test:
-#                    print(str(ite))
-#                    dir_names.remove(str(ite.name))
-#                    file_names.remove(str(ite.name))
-#
-#            for filename in file_names:
-#                media_file_list.append(dir_name / filename)
-#
-# =========================================================================DIV80==
-    elif method == "use_glob_2_method":
-
-        try:
-            ignored_items = config['OPTIONS'].get(
-                'IGNORED_ITEMS').split('\n')
-        except:
-            raise RMc.RM_Py_Exception(
-                "OPTIONS  -  IGNORED_ITEMS must be specified")
-    
-        media_file_list = []
-        media_file_ignore = []
-
-        for pattern in ignored_items:
-            matches = dir_path.glob(pattern)
-            for item in matches:
-                print (item)
-                if item.is_file():
-                    media_file_list.append(item)
-
-
-#        for (dir_name, dir_names, file_names) in os.walk(dir_path, topdown=True):
-#            for dir_name_item in dir_names:
-#                for pattern in ignored_items:
-#                    if pathlib.Path(dir_name_item).match(pattern):
-#                        dir_names.remove(dir_name_item)
-#                    fpr
-#                    if pathlib.Path(file_name_item).match(pattern):
-#                        dir_names.remove(dir_name_item)
-#    
-#            for igFileName in ignored_file_names:
-#                if igFileName in file_names:
-#                    file_names.remove(igFileName)
-#    
-#            for filename in file_names:
-#                media_file_list.append(pathlib.Path(dir_name) / filename)
-
-
-
-# =========================================================================DIV80==
     elif method == "use_old_method":
 
         ignored_folder_names = []

@@ -2,8 +2,8 @@ InternalName:  TestExternalFiles
 OriginalFilename: TestExternalFiles.exe
 
 # Use 4 place version here. Last dot and zero will be truncated for folder name.
-# last release 1.6.0
-Version: 1.7.0.0
+# last release 1.7.0
+Version: 1.8.0.0
 
 DistributionFileList:
 # <InternalName>.py amd <InternalName>.exe always included by build script
