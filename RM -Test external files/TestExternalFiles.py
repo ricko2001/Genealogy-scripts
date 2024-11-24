@@ -9,7 +9,6 @@ import hashlib
 from gitignore_parser import parse_gitignore
 
 
-
 # This script can only read a RootsMagic database file and cannot change it.
 # However, until trust is established:
 # Always make a RM database backup before using any external script.
@@ -94,7 +93,7 @@ def run_selected_features(config, db_connection, report_file):
 
     except:
         raise RMc.RM_Py_Exception(
-            "One of the OPTIONS values could not be parsed as boolean. \n")
+            "One of the OPTIONS values could not be interpreted as either on or off.\n")
 
     # Run all of the requested options.
     if config['OPTIONS'].getboolean('CHECK_FILES'):
@@ -165,23 +164,30 @@ def missing_files_feature(config, db_connection, report_file):
                 missing_items += 1
                 report_file.write(
                     f"\n" "Directory path points to a file, not a folder:\n"
-                    f"{RMc.q_str(dir_path)}\nfor file: {RMc.q_str(file_name)} \n")
+                    f"{RMc.q_str(dir_path)}\nfor file: {RMc.q_str(file_name)}\n")
+                if show_original_path:
+                    report_file.write(
+                        f"{label_original_path} {RMc.q_str(dir_path_original)}\n")
+
                 continue
         if not dir_path.is_dir():
                 missing_items += 1
                 report_file.write(
                     f"\n" "Directory path cannot be found:\n"
-                    f"{RMc.q_str(dir_path)}\nfor file: {RMc.q_str(file_name)} \n")
+                    f"{RMc.q_str(dir_path)}\nfor file: {RMc.q_str(file_name)}\n")
+                if show_original_path:
+                    report_file.write(
+                        f"{label_original_path} {RMc.q_str(dir_path_original)}\n")
                 continue
         if file_path.is_file():
             if not case_insensitive and str(file_path) != str(file_path.resolve()):
                 missing_items += 1
                 report_file.write(
-                    f"\n" "Directory path with correct case not found:\n"
-                    f"{RMc.q_str(dir_path)}\nfor file: {RMc.q_str(file_name)} \n")
+                    f"\n" "File path with correct case not found:\n"
+                    f"{RMc.q_str(dir_path)}\nfor file: {RMc.q_str(file_name)}\n")
                 if show_original_path:
-                    report_file.write(f"{label_original_path} {
-                                    RMc.q_str(dir_path_original)} \n")
+                    report_file.write(
+                        f"{label_original_path} {RMc.q_str(dir_path_original)}\n")
             else:
                 # found the file, on to the next one
                 continue
@@ -189,18 +195,19 @@ def missing_files_feature(config, db_connection, report_file):
             if file_path.is_dir():
                 missing_items += 1
                 report_file.write(
-                    f"\nPath is not a file:\n{RMc.q_str(file_path)} \n")
+                    f"\nPath does not lead to a file (perhaps a folder):\n"
+                    f"{RMc.q_str(file_path)} \n")
                 if show_original_path:
-                    report_file.write(f"{label_original_path} {
-                                        RMc.q_str(row[0])} \n")
+                    report_file.write(
+                        f"{label_original_path} {RMc.q_str(row[0])} \n")
             else:
                 missing_items += 1
                 report_file.write(
                     f"\n" "File path not found:\n"
                     f"{RMc.q_str(dir_path)}\nfor file: {RMc.q_str(file_name)} \n")
                 if show_original_path:
-                    report_file.write(f"{label_original_path} {
-                                    RMc.q_str(dir_path_original)} \n")
+                    report_file.write(
+                        f"{label_original_path} {RMc.q_str(dir_path_original)} \n")
 
     if missing_items > 0:
         report_file.write(f"\nNumber of file links in "
@@ -223,7 +230,7 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
         ext_files_folder_path = Path(config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH'])
     except:
         raise RMc.RM_Py_Exception(
-            "ERROR: SEARCH_ROOT_FLDR_PATH must be specified for this option. \n")
+            "ERROR: SEARCH_ROOT_FLDR_PATH must be specified for the selected option.\n")
     try:
         case_insensitive = config['OPTIONS'].getboolean('CASE_INSENSITIVE')
     except:
@@ -235,7 +242,7 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
     # Validate the folder path
     if not ext_files_folder_path.exists():
         raise RMc.RM_Py_Exception(
-            f"ERROR: Directory path not found: {RMc.q_str(ext_files_folder_path)} \n")
+            f"ERROR: Directory path for SEARCH_ROOT_FLDR_PATH was not found: {RMc.q_str(ext_files_folder_path)}\n")
     if not ext_files_folder_path.is_dir():
         raise RMc.RM_Py_Exception(
             f"ERROR: Path is not a directory: {RMc.q_str(ext_files_folder_path)} \n")
@@ -393,7 +400,7 @@ def duplicate_file_paths_feature(db_connection, report_file):
 
     if not found_some_dup_files:
         report_file.write(
-            "\n    No Duplicate File Paths in Media Gallery were found. \n")
+            "\n    No Duplicate File Paths in Media Gallery were found.\n")
 
     section("END", feature_name, report_file)
     return
@@ -436,7 +443,7 @@ def file_hash_feature(config, db_connection, report_file):
         hash_file_folder = Path(config['FILE_PATHS']['HASH_FILE_FLDR_PATH'])
     except:
         raise RMc.RM_Py_Exception(
-            "ERROR: HASH_FILE_FLDR_PATH must be specified for this option. \n")
+            "ERROR: HASH_FILE_FLDR_PATH must be specified for this option.\n")
 
     hash_file_path = hash_file_folder / "MediaFiles_HASH_" / RMc.time_stamp_now("file") / ".txt"
 
@@ -757,9 +764,14 @@ def folder_contents_minus_ignored(dir_path, config, report_file):
         raise RMc.RM_Py_Exception(
             "OPTIONS  -  IGNORED_ITEMS_FILE could be be interpreted as either on or off")
 
-
     if  method == "use_gitignore_method":
-        matches = parse_gitignore(dir_path / "TestExternalFiles_ignore.txt")
+        ignore_file_name = "TestExternalFiles_ignore.txt"
+        ignore_file_path = dir_path / ignore_file_name
+        if not ignore_file_path.exists():
+            raise RMc.RM_Py_Exception(
+                f"Option:IGNORED_ITEMS_FILE requires the file:\n{ignore_file_path}")
+
+        matches = parse_gitignore(str(ignore_file_path))
 
         for path in dir_path.glob('**/*'):
             if not matches(path) and path.is_file():
@@ -775,12 +787,12 @@ def folder_contents_minus_ignored(dir_path, config, report_file):
             ignored_folder_names = config['IGNORED_OBJECTS'].get(
                 'FOLDERS').split('\n')
         except:
-            report_file.write("No ignored folders specified. \n\n")
+            report_file.write("No ignored folders specified.\n\n")
         try:
             ignored_file_names = config['IGNORED_OBJECTS'].get(
                 'FILENAMES').split('\n')
         except:
-            report_file.write("No ignored files specified. \n\n")
+            report_file.write("No ignored files specified.\n\n")
     
         media_file_list = []
     
