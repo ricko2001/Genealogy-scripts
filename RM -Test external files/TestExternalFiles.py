@@ -3,8 +3,7 @@ sys.path.append(r'..\RM -RMpy package')
 import RMpy.launcher  # type: ignore
 import RMpy.common as RMc  # type: ignore
 
-import os
-import pathlib
+from pathlib import Path
 import xml.etree.ElementTree as ET
 import hashlib
 from gitignore_parser import parse_gitignore
@@ -61,7 +60,7 @@ def main():
     RMNOCASE_required = False
     RegExp_required = False
 
-    RMpy.launcher.launcher(os.path.dirname(__file__),
+    RMpy.launcher.launcher(Path(__file__).parent,
                            config_file_name,
                            run_selected_features,
                            allow_db_changes,
@@ -74,7 +73,7 @@ def run_selected_features(config, db_connection, report_file):
 
     global G_db_file_folder_path
     # used only in function expand_relative_dir_path, but no access to config there.
-    parent_dir = pathlib.Path(config['FILE_PATHS']['DB_PATH']).parent
+    parent_dir = Path(config['FILE_PATHS']['DB_PATH']).parent
     # get the absolute path in case the DB_PATH was relative
     G_db_file_folder_path = parent_dir.resolve()
 
@@ -159,7 +158,6 @@ def missing_files_feature(config, db_connection, report_file):
         dir_path_original = row[0]
         file_name = row[1]
         dir_path = expand_relative_dir_path(dir_path_original)
-        #file_path = pathlib.Path(os.path.join(dir_path, file_name))
         file_path = dir_path / file_name
 
         # First consider just the dir path (separate column in database)
@@ -222,7 +220,7 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
 
     # get options
     try:
-        ext_files_folder_path = pathlib.Path(config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH'])
+        ext_files_folder_path = Path(config['FILE_PATHS']['SEARCH_ROOT_FLDR_PATH'])
     except:
         raise RMc.RM_Py_Exception(
             "ERROR: SEARCH_ROOT_FLDR_PATH must be specified for this option. \n")
@@ -435,7 +433,7 @@ def file_hash_feature(config, db_connection, report_file):
     section("START", feature_name, report_file)
     # get option
     try:
-        hash_file_folder = pathlib.Path(config['FILE_PATHS']['HASH_FILE_FLDR_PATH'])
+        hash_file_folder = Path(config['FILE_PATHS']['HASH_FILE_FLDR_PATH'])
     except:
         raise RMc.RM_Py_Exception(
             "ERROR: HASH_FILE_FLDR_PATH must be specified for this option. \n")
@@ -671,24 +669,24 @@ def expand_relative_dir_path(in_path_str):
     # note when using Path / operator, second operand should not be absolute
 
     if path[0] == "~":
-        absolute_path = pathlib.Path(os.path.expanduser(path))
+        absolute_path = Path.expanduser(path)
 
     elif path[0] == "?":
         if G_media_directory_path is None:
             G_media_directory_path = get_media_directory()
         if len(path) == 1:
-            absolute_path = pathlib.Path(G_media_directory_path)
+            absolute_path = Path(G_media_directory_path)
         else:
-            absolute_path = pathlib.Path(G_media_directory_path) / path[2:]
+            absolute_path = Path(G_media_directory_path) / path[2:]
 
     elif path[0] == "*":
         if len(path) == 1:
-            absolute_path = pathlib.Path(G_db_file_folder_path)
+            absolute_path = Path(G_db_file_folder_path)
         else:
-            absolute_path = pathlib.Path(G_db_file_folder_path) / path[2:]
+            absolute_path = Path(G_db_file_folder_path) / path[2:]
 
     else:
-        absolute_path = pathlib.Path(path)
+        absolute_path = Path(path)
 
     return absolute_path
 
@@ -701,10 +699,10 @@ def get_media_directory():
 
     #  Relies on the RM installed xml file containing application preferences
     #  File location set by RootsMagic installer
-    RM_Config_FilePath_11 = r"~\AppData\Roaming\RootsMagic\Version 11\RootsMagicUser.xml"
-    RM_Config_FilePath_10 = r"~\AppData\Roaming\RootsMagic\Version 10\RootsMagicUser.xml"
-    RM_Config_FilePath_9 = r"~\AppData\Roaming\RootsMagic\Version 9\RootsMagicUser.xml"
-    RM_Config_FilePath_8 = r"~\AppData\Roaming\RootsMagic\Version 8\RootsMagicUser.xml"
+    RM_Config_FilePath_11 = Path(r"AppData\Roaming\RootsMagic\Version 11\RootsMagicUser.xml")
+    RM_Config_FilePath_10 = Path(r"AppData\Roaming\RootsMagic\Version 10\RootsMagicUser.xml")
+    RM_Config_FilePath_9 =  Path(r"~ppData\Roaming\RootsMagic\Version 9\RootsMagicUser.xml")
+    RM_Config_FilePath_8 =  Path(r"~ppData\Roaming\RootsMagic\Version 8\RootsMagicUser.xml")
 
     media_folder_path = "RM8 or later not installed"
 
@@ -717,14 +715,14 @@ def get_media_directory():
 
 #  TODO Could base this off of the database version number, but that's not readily available.
 
-
-    xmlSettingsPath = pathlib.Path(os.path.expanduser(RM_Config_FilePath_11))
+    home_dir = Path.home()
+    xmlSettingsPath = home_dir / RM_Config_FilePath_11
     if not xmlSettingsPath.exists():
-        xmlSettingsPath = pathlib.Path(os.path.expanduser(RM_Config_FilePath_10))
+        xmlSettingsPath = home_dir / RM_Config_FilePath_10
         if not xmlSettingsPath.exists():
-            xmlSettingsPath = pathlib.Path(os.path.expanduser(RM_Config_FilePath_9))
+            xmlSettingsPath = home_dir / RM_Config_FilePath_9
             if not xmlSettingsPath.exists():
-                xmlSettingsPath = pathlib.Path(os.path.expanduser(RM_Config_FilePath_8))
+                xmlSettingsPath = home_dir / RM_Config_FilePath_8
                 if not xmlSettingsPath.exists():
                     return media_folder_path
 
@@ -786,7 +784,7 @@ def folder_contents_minus_ignored(dir_path, config, report_file):
     
         media_file_list = []
     
-        for (dir_name, dir_names, file_names) in os.walk(dir_path, topdown=True):
+        for (dir_name, dir_names, file_names) in Path.walk(dir_path, top_down=True):
         
             for igFldrName in ignored_folder_names:
                 if igFldrName in dir_names:
@@ -797,7 +795,7 @@ def folder_contents_minus_ignored(dir_path, config, report_file):
                     file_names.remove(igFileName)
     
             for filename in file_names:
-                media_file_list.append(pathlib.Path(dir_name) / filename)
+                media_file_list.append(Path(dir_name) / filename)
 
     return media_file_list
 
