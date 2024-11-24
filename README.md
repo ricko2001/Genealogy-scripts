@@ -4,8 +4,7 @@ updated: 2024-06-22
 
 These are scripts I've written to help my work with RootsMagic genealogy software. They directly access the SQLite database used by RootsMagic (RM) to store its data.
 
-Some are simple SQL in txt files, there are several Windows command files, and a number of Python
-scripts.
+Some are simple SQL in txt files, there are several Windows command files, and a number of Python scripts.
 
 The are tested only on Windows 11 x64 OS with Python 3x. Most have been tested only with RM v10 databases.
 I don't have a MacOS computer to test with, but I'd guess that most could easily be ported. Let me know if you have any results.
@@ -33,7 +32,7 @@ It attempts to eliminate most of the complications found using more
 sophisticated off the shelf software.
 
 This utility will run one or two SQL statements on a database and display the
-results in a report file.
+results in a report file. It will also run a SQL command script. 
 
 ### RM -Test external files
 
@@ -45,6 +44,11 @@ I find use of this app invaluable as part of my backup routine.
 
 A utility to quickly update a RM group by running an SQL query.\
 Makes changes only to GroupTable.
+
+### RM -Color from Group
+
+A utility to quickly update a the color coding of people in specified RM groups.\
+Makes changes only to PersonTable.
 
 ### RM -Change Source for a Citation
 
@@ -71,7 +75,13 @@ Utility to change the fact type for a set of facts. For instance, convert all
 "Census (fam)" facts with date 1940 to "Census" facts. Handles witnesses and Fam->Personal conversions.\
 Probably most useful for projects imported from TMG, or when introducing a custom fact.
 
-### Non Python
+## NOT RELEASED
+
+### RM -Lump misc sources
+
+I started in TMG as splitting all sources. Now in RM, I am lumping the sources for which it makes sense to me. So far, Find_a_Grave, Census and Social Security SSDI, and all Ancestry collections. These scripts do that. They will need modification for your circumstances. These are not released and require Python development to run.
+
+## Non Python
 
 ### RM -SQL for creating useful groups
 
@@ -83,17 +93,9 @@ They don't modify the database, so little risk involved.
 
 ### RM -Maintenance SQL
 
-Consists of a Windows cmd script that runs a SQL file containing SQL updates
-that fix reoccurring problems in my database caused by user errors during
-data entry. The cmd script generates a report file which is then
-automatically displayed in NotePad.\
+Consists of a SQL command file containing SQL updates that fix reoccurring problems in my database caused by user errors during data entry.
+There are parts of the script that are specific to my data entry practices. Read it before you run it.
 The Maintenance SQL has been run on my production database many times.
-
-## NOT RELEASED
-
-### RM -Lump misc sources
-
-I started in TMG as splitting all sources. Now in RM, I am lumping the sources for which it makes sense to me. So far, Find_a_Grave, Census and Social Security SSDI, and all Ancestry collections. These scripts do that. They will need modification for your circumstances. These are not released and require Python development to run.
 
 
 ## NOTE-
@@ -105,27 +107,53 @@ https://RichardOtter.github.io
 
 ## Required packages for running the scripts
 
-My leter releases use the custom "RMpy" python package located in the "RM -RMpy package" folder.
-The exe files have it already included.
-Those scripts using the package will find it if the folder structure is preserved. If the main script is 
-moved elsewhere, copy the "RMpy" folder to be in the same directory as the main script.
+My later releases use the custom "RMpy" python package located in the "RM -RMpy package" folder. The exe files have it already included.
+
+Those scripts using the package will find it if the folder structure is preserved. If the main script is moved elsewhere, copy the "RMpy" folder to be in the same directory as the main script.
 
 ## Required packages for building frozen executables (exe files)
 
-For a new install or each upgrade of python, do the following:
+NOTE: the following lines substitute "me" for your user name, and NNN for the python ver code.
 
-Add to path-
-C:\Users\rotter\AppData\Local\Programs\Python\PythonNNN\Scripts
-(or update existing path to new ver number)
+For a new install or each major upgrade of python, do the following:
 
-confirm pip is working or install pip 
+Adjust path to include-
+C:\Users\me\AppData\Local\Programs\Python\PythonNNN
+
+so can start python with "python"
+if you don't add it, use full path to invoke-
+C:\Users\me\AppData\Local\Programs\Python\PythonNNN\Python
+
+
+Adjust path to include-
+C:\Users\me\AppData\Local\Programs\Python\PythonNNN\Scripts
+
+if you don't add it, use full path to invoke-
+C:\Users\me\AppData\Local\Programs\Python\PythonNNN\Scripts\pip
+
+
+confirm pip is working 
+by attempting to run it-
+
+or install pip \
 Currently, see:  https://pip.pypa.io/en/stable/installation/
+
+can start pip in several ways:
+
+|   command       |  comment  |
+|---|---|
+| pip | will work only if it is in the path|
+| python -m pip |  will work only if python is in the path |
+| py -m pip | only available as optional install using installer from python web site |
+
 
 Install these packages:
 
-pip install PyYAML
+pip install --upgrade pip
 
-pip install pyinstaller
+pip install --upgrade PyYAML
 
-pip install pyinstaller-versionfile
+pip install --upgrade pyinstaller
+
+pip install --upgrade pyinstaller-versionfile
 
