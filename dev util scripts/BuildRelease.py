@@ -3,7 +3,6 @@ from pathlib import Path
 import yaml
 from datetime import datetime
 from pathlib import Path
-import subprocess
 import zipfile
 import shutil
 
@@ -15,11 +14,6 @@ def main():
             version_number_full = doc["Version"]
             util_name = doc["InternalName"]
             util_file_name = doc["OriginalFilename"]
-            try:
-                build_file_list = doc["BuildFileList"]
-            except:
-                print( "BuildFileList must be defined")
-                return
 
             try:
                 distribution_file_list = doc["DistributionFileList"]
@@ -29,14 +23,10 @@ def main():
                 distribution_folder_list = doc["DistributionFolderList"]
             except:
                 distribution_folder_list = []
-            try:
-                PyInstaller_extra_params = doc["PyInstaller_extra_params"]
-            except:
-                PyInstaller_extra_params = []
+
 
         version_number_short = version_number_full[0:-2]
         project_dir_path = Path.cwd()
-        generated_build_fldr_name = util_name
 
         release_dir_name = ("Release " + util_name + ' v'
                             + version_number_short + "  " + time_stamp_now('file'))
@@ -50,62 +40,16 @@ def main():
 
         Path.mkdir(release_dir_path)
 
-        # create empty build log file to be filled in by user  TODO
-        Path(os.path.join(release_dir_name, "Build_Log.txt")).touch()
-
-        # copy files needed for pyInstaller
-        for file in build_file_list:
-            shutil.copy(file, release_dir_path)
-
-        # create the Version_rc.txt file for pyinstaller from _util_info.yaml
-        version_file_path = release_dir_path / "Version_rc.txt"
-
-        subprocess.run(
-            'create-version-file.exe _util_info.yaml --outfile ' + f'"{version_file_path}"')
-
-
-
-        # set up PyInstaller command line
-        normal_params= (" " + util_name + ".py")
-        normal_params += " --clean"
-#        normal_params += " --onefile"
-        normal_params += " --onedir"
-        normal_params += " --version-file Version_rc.txt"
-        normal_params += (" " + f'--distpath "{distribution_dir_name}"')
-
-        extra_params = ''
-        # get any extra params for PyInstaller
-        for item in PyInstaller_extra_params:
-            extra_params += (" " + item)
-
-        py_installer_cmd_line= "pyinstaller " + extra_params + normal_params
-
-        print(f"\n\n{py_installer_cmd_line=}\n\n")
-
-        # PyInstaller puts files in current dir
-        # Avoid a mess in the project folder by changing working dir
-        # maybe can specify paths for all files and won't need this  (or os package)
-        os.chdir(release_dir_path)
-
-        # create the package
-        subprocess.run(py_installer_cmd_line)
-
-        # switch back to previous working dir
-        os.chdir(project_dir_path)
-
 #        # These are files that will be distributed in the zip
+        Path.mkdir(distribution_dir_path)
 
         # copy files to the distribution folder
         for file in distribution_file_list:
             shutil.copy(file, distribution_dir_path)
 
-        # PyInstaller creates a subfolder in the distribution folder
-        # move the exe and the _internal folder up one level and delete the folder
-        # not needed for onefile builds, so test first
-        if (distribution_dir_path / util_name).exists():
-            shutil.move(distribution_dir_path / util_name /util_file_name, distribution_dir_path )
-            shutil.move(distribution_dir_path / util_name / "_internal", distribution_dir_path )
-            shutil.rmtree(distribution_dir_path / util_name )
+        # copy folder to the distribution folder
+        for folder in distribution_folder_list:
+            shutil.copytree(folder, distribution_dir_path /os.path.basename(folder) )
 
         make_zipfile(
             release_dir_path / (str(distribution_dir_name) + ".zip"), 
