@@ -78,7 +78,7 @@ def get_current_directory(script_path: Path) ->Path:
     # Determine if application is a script file or frozen exe and get its directory
     # see   https://pyinstaller.org/en/stable/runtime-information.html
     if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        application_path = sys.executable.parent()
+        application_path = (Path(sys.executable)).parent
     else:
         application_path = script_path
     return application_path
