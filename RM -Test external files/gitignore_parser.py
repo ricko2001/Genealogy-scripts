@@ -12,11 +12,13 @@ def handle_negation(file_path, rules: Reversible["IgnoreRule"]):
             return not rule.negation
     return False
 
-def parse_gitignore(full_path, base_dir=None):
+def parse_gitignore(full_path, base_dir=None, *, encoding=None):
+#def parse_gitignore(full_path, base_dir=None):
     if base_dir is None:
         base_dir = dirname(full_path)
     rules = []
-    with open(full_path) as ignore_file:
+#    with open(full_path) as ignore_file:
+    with open(full_path, encoding=encoding) as ignore_file:
         counter = 0
         for line in ignore_file:
             counter += 1

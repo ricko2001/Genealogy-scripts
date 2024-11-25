@@ -1,4 +1,3 @@
-import os
 import sys
 import sqlite3
 from pathlib import Path
@@ -11,7 +10,7 @@ sys.path.append( r'.' )
 import RMpy.common as RMc  # type: ignore
 
 # ===================================================DIV60==
-def launcher(script_path,
+def launcher(script_path: Path,
             config_file_name,
             run_features_function,
             allow_db_changes = False,
@@ -28,33 +27,34 @@ def launcher(script_path,
     try:
         # config file must be in "current directory" and encoded as UTF-8 (no BOM).
         # see   https://docs.python.org/3/library/configparser.html
-        config_file_path = os.path.join(RMc.get_current_directory(script_path), config_file_name)
+        config_file_path = RMc.get_current_directory(script_path) / config_file_name
         # Check that config file is at expected path and that it is readable & valid.
-        if not os.path.exists(config_file_path):
+        if not config_file_path.exists():
             raise RMc.RM_Py_Exception(
-                "ERROR: The configuration file, " + config_file_name
-                + " must be in the same directory as the .py or .exe file." "\n\n")
+                f"\n\nERROR: The configuration file, {config_file_name}"
+                f" must be in the same directory as the .py or .exe file.\n\n")
 
         config = configparser.ConfigParser(empty_lines_in_values=False,
                                            interpolation=None)
         try:
-            config.read(config_file_path, 'UTF-8')
+            config.read(config_file_path, 'utf-8')
         except:
             raise RMc.RM_Py_Exception(
-                "ERROR: The " + config_file_name
-                + " file contains a format error and cannot be parsed." "\n\n")
+                f"\n\nERROR: The {config_file_name}"
+                f" file contains a format error and cannot be parsed.\n")
         try:
             report_path = config['FILE_PATHS']['REPORT_FILE_PATH']
         except:
             raise RMc.RM_Py_Exception(
-                'ERROR: REPORT_FILE_PATH must be defined in the '
-                + config_file_name + "\n\n")
+                f"\n\nERROR: REPORT_FILE_PATH must be specified in the"
+                f" {config_file_name}\n\n")
         try:
             # Use UTF-8 encoding for the report file. Test for write-ability
             open(report_path,  mode='w', encoding='utf-8')
         except:
-            raise RMc.RM_Py_Exception('ERROR: Cannot create the report file '
-                                  + report_path + "\n\n")
+            raise RMc.RM_Py_Exception(
+                f"\n\nERROR: Cannot create the report file as specified:\n"
+                f"{report_path}\n\n")
 
     except RMc.RM_Py_Exception as e:
         RMc.pause_with_message(e)
@@ -62,9 +62,8 @@ def launcher(script_path,
     except Exception as e:
         traceback.print_exception(e, file=sys.stdout)
         RMc.pause_with_message(
-            "ERROR: Application failed. Please email error report:" "\n\n " +
-            str(e)
-            + "\n\n" "to the author")
+            f"\n\nERROR: Application failed. Please email error report:\n\n "
+            f"{e} \n\nto the author")
         return 1
 
     # open the already tested report file
@@ -75,36 +74,35 @@ def launcher(script_path,
     # ===========================================DIV50==
     try:
         try:
-            report_display_app = config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP']
+            report_display_app = Path(config['FILE_PATHS']['REPORT_FILE_DISPLAY_APP'])
         except:
             pass
-        if report_display_app is not None and not os.path.exists(report_display_app):
+        if report_display_app is not None and not report_display_app.exists():
+            bad_path = report_display_app
+            report_display_app = None
             raise RMc.RM_Py_Exception(
-                'ERROR: Path for report file display app not found: '
-                + report_display_app)
+                f"ERROR: Path for report file display app not found:"
+                f" {bad_path}")
 
         try:
-            database_path = config['FILE_PATHS']['DB_PATH']
+            database_path = Path(config['FILE_PATHS']['DB_PATH'])
         except:
             raise RMc.RM_Py_Exception('ERROR: DB_PATH must be specified.')
-        if not os.path.exists(database_path):
+        if not database_path.exists():
             raise RMc.RM_Py_Exception(
-                'ERROR: Database path not found: ' + database_path
-                + '\n\n\n' 'Absolute path checked:\n"'
-                + os.path.abspath(database_path) + '"')
+                f"ERROR: Database path not found: {database_path}\n\n\n")
+
 
         if RMNOCASE_required:
             try:
-                rmnocase_path = config['FILE_PATHS']['RMNOCASE_PATH']
+                rmnocase_path = Path(config['FILE_PATHS']['RMNOCASE_PATH'])
             except:
                 raise RMc.RM_Py_Exception(
                     'ERROR: RMNOCASE_PATH must be specified.')
-            if not os.path.exists(rmnocase_path):
+            if not rmnocase_path.exists():
                 raise RMc.RM_Py_Exception(
-                    'ERROR: Path for RMNOCASE extension (unifuzz64.dll) not found: '
-                    + rmnocase_path
-                    + '\n\n' 'Absolute path checked:\n"'
-                    + os.path.abspath(rmnocase_path) + '"')
+                    f'ERROR: Path for RMNOCASE extension (unifuzz64.dll)'
+                    f'not found: {rmnocase_path}\n\n')
             
         if RegExp_required:
             try:
@@ -112,16 +110,14 @@ def launcher(script_path,
             except:
                 raise RMc.RM_Py_Exception(
                     'ERROR: REGEXP_PATH must be specified.')
-            if not os.path.exists(rmnocase_path):
+            if not rmnocase_path.exists():
                 raise RMc.RM_Py_Exception(
-                    'ERROR: Path for REGEXP extension not found: '
-                    + rmnocase_path
-                    + '\n\n' 'Absolute path checked:\n"'
-                    + os.path.abspath(rmnocase_path) + '"')
+                    f'ERROR: Path for REGEXP extension not found:'
+                    f' {rmnocase_path}\n\n')
 
         # RM database file info
         file_modification_time = datetime.fromtimestamp(
-            os.path.getmtime(database_path))
+            database_path.stat().st_mtime)
 
         if RMNOCASE_required and not RegExp_required:
             db_connection = RMc.create_db_connection(database_path, [rmnocase_path])
@@ -133,15 +129,14 @@ def launcher(script_path,
             db_connection = RMc.create_db_connection(database_path, None)
 
         # write header to report file
-        report_file.write("Report generated at      = " + RMc.time_stamp_now()
-                          + "\n" "Database processed       = "
-                          + os.path.abspath(database_path)
-                          + "\n" "Database last changed on = "
-                          + file_modification_time.strftime("%Y-%m-%d %H:%M:%S")
-                          + "\n" "Python version           = "
-                          + sys.version
-                          + "\n" "SQLite library version   = "
-                          + RMc.get_SQLite_library_version(db_connection) + "\n\n\n\n")
+        format = "%Y-%m-%d %H:%M:%S"
+        report_file.write(
+                f"Report generated at      = {RMc.time_stamp_now()}\n"
+                f"Python version           = {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}\n"
+                f"SQLite library version   = {RMc.get_SQLite_library_version(db_connection)}\n"
+                f"Database last changed on = {file_modification_time.strftime(format)}\n"
+                f"Database processed       = {database_path.resolve()}\n"
+                f"\n\n\n")
 
         run_features_function(config, db_connection, report_file)
         if allow_db_changes:
@@ -151,14 +146,14 @@ def launcher(script_path,
         if str(e) == "database is locked":
             divider = "="*50 + "===DIV60=="
             div_line= divider + "\n"
-            report_file.seek(0, os.SEEK_SET)
-            report_file.write( div_line + div_line + div_line
-                + "Database is locked.\nRootsMagic is preventing the group updates\n"
-                + "Close RootsMagic and rerun this app.\n"
-                + div_line + div_line  + div_line +"\n\n\n\n")
+            report_file.seek(0, 0)
+            report_file.write( f"{div_line}{div_line}{div_line}"
+                f"Database is locked.\nRootsMagic is preventing the group updates\n"
+                f"Close RootsMagic and rerun this app.\n"
+                f"{div_line}{div_line}{div_line}\n\n\n\n")
         else:
             report_file.write(
-                "ERROR: SQL execution returned an error \n\n" + str(e))
+                f"ERROR: SQL execution returned an error \n\n{e}")
         return 1
     except RMc.RM_Py_Exception as e:
         report_file.write(str(e))

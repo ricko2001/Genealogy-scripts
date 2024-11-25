@@ -1,4 +1,3 @@
-import os
 import sys
 import sqlite3
 from pathlib import Path
@@ -74,12 +73,12 @@ def pause_with_message(message=None):
     return
 
 # ===================================================DIV60==
-def get_current_directory(script_path):
+def get_current_directory(script_path: Path) ->Path:
 
     # Determine if application is a script file or frozen exe and get its directory
     # see   https://pyinstaller.org/en/stable/runtime-information.html
     if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        application_path = os.path.dirname(sys.executable)
+        application_path = sys.executable.parent()
     else:
         application_path = script_path
     return application_path

@@ -755,6 +755,7 @@ def folder_contents_minus_ignored(dir_path, config, report_file):
     except:
         case_insensitive = False
 
+    # set default
     method = "use_old_method"
 
     try:
@@ -771,7 +772,7 @@ def folder_contents_minus_ignored(dir_path, config, report_file):
             raise RMc.RM_Py_Exception(
                 f"Option:IGNORED_ITEMS_FILE requires the file:\n{ignore_file_path}")
 
-        matches = parse_gitignore(str(ignore_file_path))
+        matches = parse_gitignore(ignore_file_path, encoding="utf-8")
 
         for path in dir_path.glob('**/*'):
             if not matches(path) and path.is_file():
