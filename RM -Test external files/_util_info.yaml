@@ -8,6 +8,7 @@ Version: 1.8.0.0
 DistributionFileList:
 # <InternalName>.py amd <InternalName>.exe always included by build script
   - RM-Python-config.ini
+  - gitignore_parser.py
   - doc\ReadMe.txt
   - doc\Sample report file.txt
 

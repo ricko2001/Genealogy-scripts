@@ -149,8 +149,10 @@ HASH_FILE
 =========================================================================DIV80==
 NOTES
 
-*   CHECK_FILES feature: file path capitalization in the database and in the
-    file system path name is ignored.
+*   CHECK_FILES feature: folder path and file name capitalization in the database and in the
+    file system path name must match for the file to be found by this utility. They do not
+    need to match for RM to find the file. This behavior can be reversed by the setting the
+    option CASE_INSENSITIVE to "on".
 
 *   UNREF_FILES
     This option is designed so that your goal should be to produce a report
@@ -161,17 +163,31 @@ NOTES
     However, there may be files and folders of files that you want to store
     near your media files, but are not actually referenced by the database.
 
-    To shorten the list of unreferenced items, the IGNORED_OBJECTS section can
-    be used to tell the utility to not include certain files in the list of
-    unreferenced files. See below.
+    To shorten the list of unreferenced items, a specified set of files and folders
+    within the SEARCH_ROOT_FLDR_PATH folder can be ignored and not displayed in the
+    Unreferenced Files report. There are two methods of specifying the objects to ignore:
+    1: the IGNORED_OBJECTS section can be used to tell the utility to not include 
+    certain files in the list of unreferenced files. See below.
+    2: The option IGNORED_ITEMS_FILE can be set to on of off. When the option is
+    set to on, the specification of the files/folders to ignore is done by the
+    file TestExternalFiles_ignore.txt found in the SEARCH_ROOT_FLDR_PATH folder.
+    The TestExternalFiles_ignore.txt file contains a set of exclusion patterns. A pattern
+    may contain wildcard characters.
+    The format of the patterns can be found in many on-line sources, for example-
+      https://git-scm.com/docs/gitignore
+      https://www.w3schools.com/git/git_ignore.asp
+      https://www.atlassian.com/git/tutorials/saving-changes/gitignore#git-ignore-patterns
+    
+    SO, to use these kind of match patterns containing wildcards, one must turn on the
+    option IGNORED_ITEMS_FILE, create a text file named TestExternalFiles_ignore.txt, in the
+    root of the SEARCH_ROOT_FLDR_PATH folder, and then edit that file to contain the patterns
+    for the files to ignore.
+
+    The TestExternalFiles_ignore.txt must be stored in utf-8 format if it contains non-ASCII characters.
+    (Same as for the config file)
 
 
-*   UNREF_FILES
-    The folder specified in RM's preferences as the Media folder is not 
-    necessarily the same as the folder specified by the SEARCH_ROOT_FLDR_PATH
-    variable in the config file  (but I recommended that they be the same).
-
-*   IGNORED_OBEJECTS
+*   IGNORED_OBJECTS
 
     FILES
     Add file names that should not be reported as being unreferenced.
@@ -192,14 +208,23 @@ NOTES
     all have the same name, even though there may be many of them in different
     locations in the media folder.
 
+
+*   SEARCH_ROOT_FLDR_PATH
+    The folder specified in RM's preferences as the Media folder is not 
+    necessarily the same as the folder specified by the SEARCH_ROOT_FLDR_PATH
+    variable in the config file  (but I recommended that they be the same).
+
+
 *   UNREF_FILES
     The value of- "# DB links minus # non-ignored files" should, in a
     sense, be zero. However, if a folder is ignored, but there are linked files
     within, then the value will be positive.
 
+
 *   DUP_FILEPATHS
     Files with the same path and name may be duplicated in the media tab
     intentionally as they might have different captions etc.
+
 
 *   DUP_FILENAMES
     Files listed have the same file names, ignoring case.
@@ -207,11 +232,6 @@ NOTES
     organizational tool. This feature does not check the file contents,
     only the names. Use the HASH_File feature to distinguish file contents.
 
-*   CASE_INSENSITIVE
-    Used only for the feature- CHECK_FILES
-    when set to "on", uses case insensitive file and path name comparisons. This is 
-    clear for ASCII characters, not clear how non-ASCII characters in Unicode
-    are handled.
 
 *   SHOW_ORIG_PATH (RM v8 through v10 only)
     A display option is available for files found by either the CHECK_FILES or
@@ -219,12 +239,12 @@ NOTES
     The option is turned on with the option SHOW_ORIG_PATH in the config file.
     With this option on, the path for each file is shown twice,
     - the path on disk, that is, after any RM8-9 token in the path has been expanded.
-    - the path as saved in the database with the token not expanded.
+    - the path as saved in the database with the relative path anchor token not expanded.
     See the note below "Background information" regarding relative paths in RM.
 
 *   REPORT_FILE_DISPLAY_APP
     Option to automatically open the report file in a display application.
-    The included ini sample file has this option activated and set to use Windows
+    The included config file sample has this option activated and set to use Windows
     NotePad as the display app. It can be deactivated by inserting a # character
     at the start of the line. Your favorite editor may be substituted.
 
