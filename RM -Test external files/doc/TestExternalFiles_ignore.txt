@@ -1,0 +1,26 @@
+#  https://git-scm.com/docs/gitignore
+#  https://www.atlassian.com/git/tutorials/saving-changes/gitignore#git-ignore-patterns
+
+
+**/.vscode/**
+**/UNREF/**
+**/TODO/**
+**/Generated Files/**
+**/_info/**
+**/Data Entry/**
+**/_Standard forms/**
+**/_Templates/**
+**/Unlinked/**
+**/Images_2024/**
+
+
+TestExternalFiles_ignore.txt
+_info*
+_History -Naturalization.txt
+___STATUS.txt
+_Template.txt
+MR Source attachments.txt
+Who to look for in civil MR.txt
+*.lnk
+
+

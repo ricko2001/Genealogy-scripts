@@ -51,7 +51,7 @@ Works with RootsMagic v7 through v10
        Windows 64bit only. Tested with Window 11.
 
 .py file version
-       Tested with Python for Windows v3.12   64bit
+       Tested with Python for Windows v3.12 & 3.13   64bit
        The py file has not been tested on MacOS but could probably be easily
        modified to work on MacOS with Python version 3 installed.
 
@@ -127,6 +127,11 @@ FOLDER_LIST
     A file in an unexpected location may have been accidentally added to the
     database. This list will make it obvious.
 
+NOT_MEDIA_FLDR
+    Lists all files that are not in the RM "Media folder" as specified in the 
+    RM preferences settings. Best practice is to set the "Media Folder" in 
+    preferences and use that folder as the location for all media.
+
 DUP_FILEPATHS
     Lists files that have been added more than one time to the database. These
     will appear more than once in RM's Media tab.
@@ -149,14 +154,16 @@ HASH_FILE
 =========================================================================DIV80==
 NOTES
 
-*   CHECK_FILES feature: folder path and file name capitalization in the database and in the
-    file system path name must match for the file to be found by this utility. They do not
-    need to match for RM to find the file. This behavior can be reversed by the setting the
+*   CHECK_FILES feature: By default, folder path and file name capitalization in
+    the database and in the  file system path name must match for the file to be
+    found by this utility. They do not need to match for RM to find the file. 
+    The author's opinion is that case miss-matches should be fixed.
+    This behavior can be reversed by the setting the  
     option CASE_INSENSITIVE to "on".
 
 *   UNREF_FILES
     This option is designed so that your goal should be to produce a report
-    with no unreferenced files found. That is an easy result to interpret.
+    with no unreferenced files found. That result is easy to interpret.
     If a file is added to the media folder but not added to the RM database,
     it will show up om this list.
 
@@ -170,21 +177,21 @@ NOTES
     certain files in the list of unreferenced files. See below.
     2: The option IGNORED_ITEMS_FILE can be set to on of off. When the option is
     set to on, the specification of the files/folders to ignore is done by the
-    file TestExternalFiles_ignore.txt found in the SEARCH_ROOT_FLDR_PATH folder.
-    The TestExternalFiles_ignore.txt file contains a set of exclusion patterns. A pattern
-    may contain wildcard characters.
+    file TestExternalFiles_ignore.txt which should be found in the
+    SEARCH_ROOT_FLDR_PATH folder. The TestExternalFiles_ignore.txt file contains
+    a set of exclusion patterns. A pattern may contain wildcard characters.
     The format of the patterns can be found in many on-line sources, for example-
-      https://git-scm.com/docs/gitignore
-      https://www.w3schools.com/git/git_ignore.asp
       https://www.atlassian.com/git/tutorials/saving-changes/gitignore#git-ignore-patterns
+      https://git-scm.com/docs/gitignore
+    A sample file is included in the zip file.
     
-    SO, to use these kind of match patterns containing wildcards, one must turn on the
-    option IGNORED_ITEMS_FILE, create a text file named TestExternalFiles_ignore.txt, in the
-    root of the SEARCH_ROOT_FLDR_PATH folder, and then edit that file to contain the patterns
-    for the files to ignore.
+    To use these kind of match patterns containing wild cards, one must turn on the
+    option IGNORED_ITEMS_FILE, create a text file named TestExternalFiles_ignore.txt, 
+    in the root of the SEARCH_ROOT_FLDR_PATH folder, and then edit that file to
+    contain the patterns for the files to ignore.
 
-    The TestExternalFiles_ignore.txt must be stored in utf-8 format if it contains non-ASCII characters.
-    (Same as for the config file)
+    The TestExternalFiles_ignore.txt must be stored in utf-8 format if it contains non-ASCII 
+    characters. (Same as for the config file)
 
 
 *   IGNORED_OBJECTS
@@ -242,11 +249,13 @@ NOTES
     - the path as saved in the database with the relative path anchor token not expanded.
     See the note below "Background information" regarding relative paths in RM.
 
+
 *   REPORT_FILE_DISPLAY_APP
     Option to automatically open the report file in a display application.
     The included config file sample has this option activated and set to use Windows
     NotePad as the display app. It can be deactivated by inserting a # character
     at the start of the line. Your favorite editor may be substituted.
+
 
 *   RM-Python-config.ini  (the config file)
     If there are any non-ASCII characters in the config file then the file must be
@@ -256,17 +265,20 @@ NOTES
     File format is an option in the "Save file" dialog box in NotePad.
     The [END] section is entirely optional.
 
+
 *   IGNORED_OBJECTS section of the config file
     Due to how the config file is parsed by the python library, files and folders
     whose names start with the # character cannot be added to the FILES or FOLDERS.
     Instead, they are considered comments. There is a way to overcome this
     limitation but the explanation of how is not worth the confusion it would
     create. Bottom line- if you really want to add the file or folder, change
-    its name so it doesn't start with a #.
+    its name so it doesn't start with a # - or use the new ignore file method to
+    exclude files.
 
-*   A listing of "entires with blank filename or path found" is displayed when a
+*   A listing of "DB entires with blank filename or path found" is displayed when a
     media item in the database has a blank file path or file name. These items
     should be fixed first.
+
 
 *   Background information: File paths pointing to external files
     in RM 7:   all paths are absolute starting with a drive letter
@@ -278,6 +290,7 @@ NOTES
     ?    media folder as set in RM preferences
     ~    home directory  (%USERPROFILE%)
     *    RM main database file location
+
 
 *   Switching between RM 8, RM 9 and RM 10
     This section probably applies to no-one. Please don't read it and get confused !
@@ -293,6 +306,7 @@ NOTES
     When run on a RM7 database, the Media Folder location is not needed so the
     XML file is not referenced, so switching  between ver 7 and ver 10 will not
     be an issue.
+
 
 *  Files attached to RM Tasks are not analyzed by this utility and they do not 
    appear in the RM Media tab.
@@ -373,6 +387,13 @@ FOLDERS =
 # Folder2
   Folder3
 
+incorrect format- (# comment indicator only allowed at start of line)
+
+[IGNORED_OBJECTS]
+FOLDERS =    # a comment
+  Folder1
+  Folder2
+  Folder3
 
 incorrect format (no empty lines)
 

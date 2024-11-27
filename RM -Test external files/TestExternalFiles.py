@@ -1,13 +1,12 @@
 import sys
-sys.path.append(r'..\RM -RMpy package')
-import RMpy.launcher  # type: ignore
-import RMpy.common as RMc  # type: ignore
-
 from pathlib import Path
 import xml.etree.ElementTree as ET
 import hashlib
-from gitignore_parser import parse_gitignore
+import gitignore
 
+sys.path.append( str(Path.resolve(Path.cwd() / r'..\RM -RMpy package')))
+import RMpy.launcher  # type: ignore
+import RMpy.common as RMc  # type: ignore
 
 # This script can only read a RootsMagic database file and cannot change it.
 # However, until trust is established:
@@ -772,10 +771,11 @@ def folder_contents_minus_ignored(dir_path, config, report_file):
             raise RMc.RM_Py_Exception(
                 f"Option:IGNORED_ITEMS_FILE requires the file:\n{ignore_file_path}")
 
-        matches = parse_gitignore(ignore_file_path, encoding="utf-8")
+#        matches = parse_gitignore(ignore_file_path, encoding="utf-8")
+        matches = gitignore.parse(str(ignore_file_path), encoding="utf-8")
 
         for path in dir_path.glob('**/*'):
-            if not matches(path) and path.is_file():
+            if not matches(str(path)) and path.is_file():
                 media_file_list.append(path)
 
 

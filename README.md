@@ -149,7 +149,7 @@ can start pip in several ways:
 
 Install these packages:
 
-pip install --upgrade pip
+C:\Program Files\Python313\python.exe -m pip install --upgrade pip
 
 pip install --upgrade PyYAML
 
