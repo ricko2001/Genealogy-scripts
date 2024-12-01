@@ -662,7 +662,7 @@ def section(pos, name, report_file):
 
 
 # ===================================================DIV60==
-def expand_relative_dir_path(in_path_str):
+def expand_relative_dir_path(in_path_str: str) -> Path:
 
     # deal with relative paths in RootsMagic v8 and later databases
     # RM7 path are always absolute and will never be processed here
@@ -674,16 +674,16 @@ def expand_relative_dir_path(in_path_str):
     # input parameter path should always be of type str, output will be Path
     # note when using Path / operator, second operand should not be absolute
 
-    if path[0] == "~":
-        absolute_path = Path.expanduser(path)
-
-    elif path[0] == "?":
+    if path[0] == "?":
         if G_media_directory_path is None:
             G_media_directory_path = get_media_directory()
         if len(path) == 1:
             absolute_path = Path(G_media_directory_path)
         else:
             absolute_path = Path(G_media_directory_path) / path[2:]
+
+    elif path[0] == "~":
+        absolute_path = Path(path).expanduser()
 
     elif path[0] == "*":
         if len(path) == 1:
@@ -698,7 +698,7 @@ def expand_relative_dir_path(in_path_str):
 
 
 # ===================================================DIV60==
-def get_media_directory():
+def get_media_directory() ->Path:
 
     # TODO make this work for future releases of RM
     # Maybe get a dir listing of rm folders
@@ -736,7 +736,7 @@ def get_media_directory():
     media_folder_path_ele = root.find("./Folders/Media")
     media_folder_path = media_folder_path_ele.text
 
-    return media_folder_path
+    return Path(media_folder_path)
 
 
 # ===================================================DIV60==
