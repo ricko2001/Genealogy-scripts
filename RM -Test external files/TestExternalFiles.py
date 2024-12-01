@@ -18,7 +18,7 @@ import RMpy.common as RMc  # type: ignore
 
 # Last tested with:
 #   RootsMagic database v7 through v10
-#   Python for Windows v3.12.3
+#   Python for Windows v3.13.0
 #   RootsMagic v7 through v10 installed (only for unref files option)
 
 # Config files fields used
@@ -37,6 +37,7 @@ import RMpy.common as RMc  # type: ignore
 #    OPTIONS          NOT_MEDIA_FLDR
 #    OPTIONS          SHOW_ORIG_PATH
 #    OPTIONS          CASE_INSENSITIVE
+#    OPTIONS          IGNORED_ITEMS_FILE
 #    IGNORED_OBJECTS  FOLDERS
 #    IGNORED_OBJECTS  FILES
 
@@ -44,8 +45,10 @@ import RMpy.common as RMc  # type: ignore
 # ===================================================DIV60==
 #  Globals
 
+# when set, these will both be a pathlib.Path
 G_media_directory_path = None
 G_db_file_folder_path = None
+
 G_DEBUG = False
 
 
@@ -230,13 +233,8 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
     except:
         raise RMc.RM_Py_Exception(
             "ERROR: SEARCH_ROOT_FLDR_PATH must be specified for the selected option.\n")
-    try:
-        case_insensitive = config['OPTIONS'].getboolean('CASE_INSENSITIVE')
-    except:
-        case_insensitive = False
 
-    #  if case_insensitive:
-    #      report_file.write("Case-insensitive search\n\n")
+    #  CASE_INSENSITIVE option ignored
 
     # Validate the folder path
     if not ext_files_folder_path.exists():
@@ -263,27 +261,7 @@ def list_unreferenced_files_feature(config, db_connection, report_file):
     filesystem_folder_file_list = folder_contents_minus_ignored(
         ext_files_folder_path, config, report_file)
 
-    if (case_insensitive == False):
-        # case sensitive
-        unref_files = list(
-            set(filesystem_folder_file_list).difference(db_file_list))
-    else:
-        filesystem_folder_file_list_lc = [
-            item.lower() for item in filesystem_folder_file_list]
-        db_file_list_lc = [item.lower() for item in db_file_list]
-
-        unref_files = list(
-            set(filesystem_folder_file_list_lc).difference(db_file_list_lc))
-        
-        # tried to deal with the output being all lower case, leave it alone
-        # find the unrefed files lower case, in the original case list, and then print the original case item
-        # unref_files_lc is lower case, find each in db_file_list and create a new list 
-#        unref_files = []
-#        for lc_unref in unref_files_lc:
-#            for orig_item in filesystem_folder_file_list:
-#                if orig_item.lower() == lc_unref:
-#        db_file_list_lc = [item.lower() for item in db_file_list]
-#                    unref_files.append(orig_item)
+    unref_files = list(set(filesystem_folder_file_list).difference(db_file_list))
 
     if len(unref_files) > 0:
         # print the files
@@ -539,9 +517,8 @@ def files_not_in_media_folder_feature(config, db_connection, report_file):
 
     return
 
+
 # ===================================================DIV60==
-
-
 def get_db_folder_list(dbConnection):
 
     SqlStmt = """
@@ -678,18 +655,18 @@ def expand_relative_dir_path(in_path_str: str) -> Path:
         if G_media_directory_path is None:
             G_media_directory_path = get_media_directory()
         if len(path) == 1:
-            absolute_path = Path(G_media_directory_path)
+            absolute_path = G_media_directory_path
         else:
-            absolute_path = Path(G_media_directory_path) / path[2:]
+            absolute_path = G_media_directory_path / path[2:]
 
     elif path[0] == "~":
         absolute_path = Path(path).expanduser()
 
     elif path[0] == "*":
         if len(path) == 1:
-            absolute_path = Path(G_db_file_folder_path)
+            absolute_path = G_db_file_folder_path
         else:
-            absolute_path = Path(G_db_file_folder_path) / path[2:]
+            absolute_path = G_db_file_folder_path / path[2:]
 
     else:
         absolute_path = Path(path)
