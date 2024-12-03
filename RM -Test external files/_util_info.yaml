@@ -2,13 +2,18 @@ InternalName:  TestExternalFiles
 OriginalFilename: TestExternalFiles.exe
 
 # Use 4 place version here. Last dot and zero will be truncated for folder name.
-# last release 1.8.1
-Version: 1.8.2.0
+# last release 1.8.2
+Version: 1.8.3.0
 
-DistributionFileList:
-# <InternalName>.py amd <InternalName>.exe always included by build script
-  - RM-Python-config.ini
+BuildFileList:
+  - TestExternalFiles.py
   - gitignore.py
+  - _util_info.yaml
+  
+DistributionFileList:
+  - TestExternalFiles.py
+  - gitignore.py
+  - RM-Python-config.ini
   - doc\ReadMe.txt
   - doc\Sample report file.txt
   - doc\TestExternalFiles_ignore.txt
@@ -18,7 +23,7 @@ DistributionFolderList:
   
 PyInstaller_extra_params:
 # note the - for array and -- for param
-  - --paths="../../../RM -RMpy package"
+  - --paths="../../RM -RMpy package"
   - --hidden-import=sqlite3
   - --hidden-import=configparser
  
