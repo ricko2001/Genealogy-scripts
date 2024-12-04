@@ -1,6 +1,5 @@
 import os
-import sys
-import time
+from pathlib import Path
 import yaml
 from datetime import datetime
 from pathlib import Path
@@ -17,6 +16,12 @@ def main():
             util_name = doc["InternalName"]
             util_file_name = doc["OriginalFilename"]
             try:
+                build_file_list = doc["BuildFileList"]
+            except:
+                print( "BuildFileList must be defined")
+                return
+
+            try:
                 distribution_file_list = doc["DistributionFileList"]
             except:
                 distribution_file_list = []
@@ -30,84 +35,93 @@ def main():
                 PyInstaller_extra_params = []
 
         version_number_short = version_number_full[0:-2]
-        distribution_dir_name = util_name + ' v' + version_number_short
+        project_dir_path = Path.cwd()
+        generated_build_fldr_name = util_name
+
         release_dir_name = ("Release " + util_name + ' v'
                             + version_number_short + "  " + time_stamp_now('file'))
+        release_dir_path = project_dir_path / release_dir_name
 
-        if os.path.exists(release_dir_name):
+        distribution_dir_name = util_name + ' v' + version_number_short
+        distribution_dir_path = release_dir_path / distribution_dir_name
+        
+        if release_dir_path.exists():
             raise Exception("Folder already exists")
 
-        os.mkdir(release_dir_name)
+        Path.mkdir(release_dir_path)
 
         # create empty build log file to be filled in by user  TODO
         Path(os.path.join(release_dir_name, "Build_Log.txt")).touch()
 
-        os.mkdir(os.path.join(release_dir_name, distribution_dir_name))
-        # These are files that will be distributed in the zip
+        # copy files needed for pyInstaller
+        for file in build_file_list:
+            shutil.copy(file, release_dir_path)
 
-        distribution_dir_path = os.path.join(
-            ".", release_dir_name, distribution_dir_name)
-
-        # copy files to distribution folder
-        # can't get these easily from the yaml list
-        shutil.copy(util_name + ".py",     distribution_dir_path)
-        shutil.copy("_util_info.yaml",     distribution_dir_path)
-
-        # copy more files to the distribution folder
-        for file in distribution_file_list:
-            shutil.copy(file, distribution_dir_path)
-
-        # copy the folders to the distribution folder
-        for folder in distribution_folder_list:
-            shutil.copytree(folder, os.path.join(distribution_dir_path, os.path.basename(folder) ))
-
-        os.chdir(distribution_dir_path)
         # create the Version_rc.txt file for pyinstaller from _util_info.yaml
+        version_file_path = release_dir_path / "Version_rc.txt"
+
         subprocess.run(
-            "create-version-file _util_info.yaml --outfile Version_rc.txt")
+            'create-version-file.exe _util_info.yaml --outfile ' + f'"{version_file_path}"')
+
+
 
         # set up PyInstaller command line
-        normal_params= " --onefile"
+        normal_params= (" " + util_name + ".py")
+        normal_params += " --clean"
+#        normal_params += " --onefile"
+        normal_params += " --onedir"
         normal_params += " --version-file Version_rc.txt"
-        normal_params += (" " + util_name + ".py")
+        normal_params += (" " + f'--distpath "{distribution_dir_name}"')
 
         extra_params = ''
         # get any extra params for PyInstaller
         for item in PyInstaller_extra_params:
             extra_params += (" " + item)
 
-        print(f"{extra_params=}\n\n{normal_params=}\n\n")
-
         py_installer_cmd_line= "pyinstaller " + extra_params + normal_params
 
-        # create the exe file
+        print(f"\n\n{py_installer_cmd_line=}\n\n")
+
+        # PyInstaller puts files in current dir
+        # Avoid a mess in the project folder by changing working dir
+        # maybe can specify paths for all files and won't need this  (or os package)
+        os.chdir(release_dir_path)
+
+        # create the package
         subprocess.run(py_installer_cmd_line)
 
-        os.remove("_util_info.yaml")
-        os.remove("Version_rc.txt")
-        shutil.move(util_name + ".spec",
-                    os.path.join("build", util_name + ".spec"))
+        # switch back to previous working dir
+        os.chdir(project_dir_path)
 
-        shutil.copy(os.path.join("dist", util_file_name), util_file_name)
-        shutil.move("build", "..")
-        shutil.move("dist", "..")
-        os.chdir("..")
+#        # These are files that will be distributed in the zip
 
-        make_zipfile(distribution_dir_name + ".zip", distribution_dir_name)
+        # copy files to the distribution folder
+        for file in distribution_file_list:
+            shutil.copy(file, distribution_dir_path)
+
+        make_zipfile(
+            release_dir_path / (str(distribution_dir_name) + ".zip"), 
+            distribution_dir_path )
+
+
+        # print out some instructions for archiving the build and 
+        # 
+        # 
+        # releasing on GitHub
 
         print("\n\nCopy window contents to build log in the Release folder."
               "In terminal: Ctl-Shift-A, Ctl-C\n")
-        pause_with_message(" hit Enter to continue")
+
 
         git_tag = util_name + "_v" + version_number_short
         release_name = util_name + " v" + version_number_short
 
         print("\n\nRelease tag and name for Release on GitHub\n\n")
-        print("tag git:\ngit tag --annotate " + util_name + "_v" + version_number_short)
+        print(f"tag git:\ngit tag --annotate {util_name}_v{version_number_short}")
         print("Write text in default text editor, save and close. Perhaps mini release notes")
 
-        print("\nPush tag to github:\ngit push origin " + git_tag)
-        print("\nDraft a release, title:\n" + release_name)
+        print(f"\nPush tag to github:\ngit push origin {git_tag}")
+        print(f"\nDraft a release, title:\n{release_name}")
         print('''\n\n
 ============================================
 END OF SCRIPT
@@ -121,11 +135,13 @@ END OF SCRIPT
     return 0
 
 # ===================================================DIV60==
-def make_zipfile(output_filename, source_dir):
+def make_zipfile(output_file_path: Path, source_dir: Path):
 
     # https://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory
-    relative_root = os.path.abspath(os.path.join(source_dir, os.pardir))
-    with zipfile.ZipFile(output_filename, "w", zipfile.ZIP_DEFLATED) as zip:
+    #relative_root = os.path.abspath(os.path.join(source_dir, os.pardir))
+    relative_root = source_dir.parent
+
+    with zipfile.ZipFile(output_file_path, "w", zipfile.ZIP_DEFLATED) as zip:
         for root, dirs, files in os.walk(source_dir):
             # add directory (needed for empty dirs)
             zip.write(root, os.path.relpath(root, relative_root))
