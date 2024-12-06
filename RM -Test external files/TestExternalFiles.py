@@ -711,6 +711,9 @@ def get_media_directory() ->Path:
 
     root = ET.parse(xmlSettingsPath)
     media_folder_path_ele = root.find("./Folders/Media")
+    if media_folder_path_ele is None:
+        raise RMc.RM_Py_Exception(
+            "Media Folder not set in RM folder preferences.")
     media_folder_path = media_folder_path_ele.text
 
     return Path(media_folder_path)
