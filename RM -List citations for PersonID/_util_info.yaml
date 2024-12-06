@@ -3,10 +3,16 @@ OriginalFilename:  ListCitationsForPersonID.exe
 
 # Use 4 place version here. Last dot and zero will be truncated for folder name.
 # Last Release  1.1.0
-Version: 1.2.0.0
+Version: 1.1.1.0
+
+BuildFileList:
+  - ListCitationsForPersonID.py
+  - _util_info.yaml
 
 DistributionFileList:
-# <InternalName>.py amd <InternalName>.exe always included by build script
+# <InternalName>.exe  and _internal folder, if applicable
+# are is always included by build script
+  - ListCitationsForPersonID.py
   - ReadMe.txt
   - RM-Python-config.ini
 

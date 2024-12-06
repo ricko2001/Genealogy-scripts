@@ -2,11 +2,15 @@ InternalName: RunSQL
 OriginalFilename: RunSQL.exe
 
 # Use 4 place version here. Last dot and zero will be truncated for folder name.
-# Last Release  1.1.0.0
-Version: 1.2.0.0
+# Last Release  1.2.0.0
+Version: 1.2.1.0
+
+BuildFileList:
+  - RunSQL.py
+  - _util_info.yaml
 
 DistributionFileList:
-# <InternalName>.py amd <InternalName>.exe always included by build script
+  - RunSQL.py
   - ReadMe.txt
   - RM-Python-config.ini
 
@@ -15,7 +19,7 @@ DistributionFolderList:
 
 PyInstaller_extra_params:
 # note the - for array and -- for param
-  - --paths="../../../RM -RMpy package"
+  - --paths="../../RM -RMpy package"
   - --hidden-import=sqlite3
   - --hidden-import=configparser
 

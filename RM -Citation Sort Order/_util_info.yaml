@@ -2,11 +2,17 @@ InternalName:  CitationSortOrder
 OriginalFilename: CitationSortOrder.exe
 
 # Use 4 place version here. Last dot and zero will be truncated for folder name.
-# Last Release v1.0.0.0
-Version: 1.0.1.0
+# Last Release v1.0.1.0
+Version: 1.0.2.0
+
+BuildFileList:
+  - CitationSortOrder.py
+  - _util_info.yaml
 
 DistributionFileList:
-# <InternalName>.py amd <InternalName>.exe always included by build script
+# <InternalName>.exe  and _internal folder, if applicable
+# are always included by build script
+  - CitationSortOrder.py
   - ReadMe.txt
   - RM-Python-config.ini
 
@@ -15,7 +21,7 @@ DistributionFolderList:
 
 PyInstaller_extra_params:
 # note the - for array and -- for param
-  - --paths="../../../RM -RMpy package"
+  - --paths="../../RM -RMpy package"
   - --hidden-import=sqlite3
   - --hidden-import=configparser
 

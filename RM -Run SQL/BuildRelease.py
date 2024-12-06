@@ -99,6 +99,14 @@ def main():
         for file in distribution_file_list:
             shutil.copy(file, distribution_dir_path)
 
+        # PyInstaller creates a subfolder in the distribution folder
+        # move the exe and the _internal folder up one level and delete the folder
+        # not needed for onefile builds, so test first
+        if (distribution_dir_path / util_name).exists():
+            shutil.move(distribution_dir_path / util_name /util_file_name, distribution_dir_path )
+            shutil.move(distribution_dir_path / util_name / "_internal", distribution_dir_path )
+            shutil.rmtree(distribution_dir_path / util_name )
+
         make_zipfile(
             release_dir_path / (str(distribution_dir_name) + ".zip"), 
             distribution_dir_path )
