@@ -73,9 +73,10 @@ the exe single file version:
 *  Create a new folder on your disk.
    This will be called the "working folder".
 
-*  Copy these files from the downloaded zip file to the working folder-
+*  Copy the following files and folder from the downloaded zip file to the working folder-
       TestExternalFiles.exe
       RM-Python-config.ini
+	  _internal
 
 *  Make a copy of your database, move the copy into the working folder.
    Rename the copy to TEST.rmtree
@@ -155,7 +156,7 @@ HASH_FILE
 NOTES
 
 *   CHECK_FILES feature: By default, folder path and file name capitalization in
-    the database and in the  file system path name must match for the file to be
+    the database and in the file system path name must match for the file to be
     found by this utility. They do not need to match for RM to find the file. 
     The author's opinion is that case miss-matches should be fixed.
     This behavior can be reversed by the setting the  
@@ -175,7 +176,7 @@ NOTES
     Unreferenced Files report. There are two methods of specifying the objects to ignore:
     1: the IGNORED_OBJECTS section can be used to tell the utility to not include 
     certain files in the list of unreferenced files. See below.
-    2: The option IGNORED_ITEMS_FILE can be set to on of off. When the option is
+    2: The option IGNORED_ITEMS_FILE can be set to on or off. When the option is
     set to on, the specification of the files/folders to ignore is done by the
     file TestExternalFiles_ignore.txt which should be found in the
     SEARCH_ROOT_FLDR_PATH folder. The TestExternalFiles_ignore.txt file contains
@@ -195,6 +196,8 @@ NOTES
 
 
 *   IGNORED_OBJECTS
+    IGNORED_OBJECTS FILES and FOLDERS settings in the config file are only used 
+    when the IGNORED_ITEMS_FILE setting is set to off.
 
     FILES
     Add file names that should not be reported as being unreferenced.
@@ -450,8 +453,9 @@ To install and use the script file version:
 *  Make a copy of your database, move the copy into the working folder.
    Rename the copy to TEST.rmtree
 
-*  Copy these files and the folder from the downloaded zip file to the working folder-
+*  Copy the following files and folder from the downloaded zip file to the working folder-
       TestExternalFiles.py
+      gitignore.py
       RM-Python-config.ini
       RMpy
 
@@ -480,8 +484,8 @@ Find the link near bottom left side of the page, in the "Stable Releases"
 section, labeled "Download Windows installer (64-bit)"
 Click it and save the installer.
 
-Direct link to recent (2024-02) version installer-
-https://www.python.org/ftp/python/3.12.2/python-3.12.2-amd64.exe
+Direct link to recent (as of 2024-12) version installer-
+https://www.python.org/ftp/python/3.13.1/python-3.13.1-amd64.exe
 
 The Python installation requires about 100 Mbytes.
 It is easily and cleanly removed using the standard method found in
