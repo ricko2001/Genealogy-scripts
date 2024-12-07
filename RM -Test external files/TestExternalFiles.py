@@ -500,9 +500,9 @@ def files_not_in_media_folder_feature(config, db_connection, report_file):
             found_files += 1
             dir_path = expand_relative_dir_path(row[0])
             file_path = dir_path / row[1]
-            report_file.write(f"\n{file_path} \n")
+            report_file.write(f"{file_path} \n")
             if show_original_path:
-                report_file.write(f"{label_orig_path} {RMc.q_str(row[0])} \n")
+                report_file.write(f"{label_orig_path} {RMc.q_str(row[0])}\n\n")
 
     if found_files > 0:
         report_file.write(
