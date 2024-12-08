@@ -14,7 +14,7 @@ def create_db_connection(db_file_path, db_extension_file_path_list):
             dbConnection.enable_load_extension(True)
             # load SQLite extensions
             for extension in db_extension_file_path_list:
-                dbConnection.load_extension(extension)
+                dbConnection.load_extension(str(extension))
     except Exception as e:
         raise RM_Py_Exception(
             e, "\n\n" "Cannot open the RM database file." "\n")

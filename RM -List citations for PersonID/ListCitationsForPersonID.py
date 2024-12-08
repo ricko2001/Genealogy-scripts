@@ -1,20 +1,20 @@
 import sys
-sys.path.append(r'..\RM -RMpy package')
-import RMpy.launcher          # type: ignore
-import RMpy.common as RMc     # type: ignore
+from pathlib import Path
+sys.path.append( str(Path.resolve(Path.cwd() / r'..\RM -RMpy package')))
+import RMpy.launcher  # type: ignore
+import RMpy.common as RMc  # type: ignore
 from RMpy.common import q_str # type: ignore
 
 import os
 
-# List all citations associated with a Person
 
 # Requirements:
 #   RootsMagic database file
 #   RM-Python-config.ini
 
 # Tested with:
-#   RootsMagic database file v10.0.1
-#   Python for Windows v3.12.3
+#   RootsMagic database file v10
+#   Python for Windows v3.13
 
 # Config files fields used
 #    FILE_PATHS  REPORT_FILE_PATH
@@ -22,9 +22,8 @@ import os
 #    FILE_PATHS  DB_PATH
 #    RIN         PERSON_RIN (optional)
 
+
 # ===================================================DIV60==
-
-
 def main():
 
     # Configuration
@@ -33,7 +32,7 @@ def main():
     RMNOCASE_required = False
     RegExp_required = False
 
-    RMpy.launcher.launcher(os.path.dirname(__file__),
+    RMpy.launcher.launcher(Path(__file__).parent,
                     config_file_name,
                     run_selected_features,
                     allow_db_changes,

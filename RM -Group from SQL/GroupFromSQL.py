@@ -1,5 +1,6 @@
 import sys
-sys.path.append(r'..\RM -RMpy package')
+from pathlib import Path
+sys.path.append( str(Path.resolve(Path.cwd() / r'..\RM -RMpy package')))
 import RMpy.launcher  # type: ignore
 import RMpy.common as RMc  # type: ignore
 from RMpy.common import q_str # type: ignore
@@ -38,7 +39,7 @@ def main():
     RMNOCASE_required = False
     RegExp_required = False
 
-    RMpy.launcher.launcher(os.path.dirname(__file__),
+    RMpy.launcher.launcher(Path(__file__).parent,
                            config_file_name,
                            run_selected_features,
                            allow_db_changes,

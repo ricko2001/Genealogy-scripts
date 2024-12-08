@@ -1,23 +1,20 @@
 import sys
-sys.path.append(r'..\RM -RMpy package')
+from pathlib import Path
+sys.path.append( str(Path.resolve(Path.cwd() / r'..\RM -RMpy package')))
 import RMpy.launcher  # type: ignore
 import RMpy.common as RMc  # type: ignore
 from RMpy.common import q_str # type: ignore
 
 import os
-import sqlite3
-import configparser
-from datetime import datetime
-import subprocess
-import traceback
+
 
 # Requirements:
 #   RootsMagic database file v8 or 9
 #   RM-Python-config.ini
 
 # Tested with:
-#   RootsMagic database file v9.1.6
-#   Python for Windows v3.12.3
+#   RootsMagic database file v10
+#   Python for Windows v3.13
 
 # Config files fields used
 #    FILE_PATHS  REPORT_FILE_PATH
@@ -38,7 +35,7 @@ def main():
     RMNOCASE_required = False
     RegExp_required = False
 
-    RMpy.launcher.launcher(os.path.dirname(__file__),
+    RMpy.launcher.launcher(Path(__file__).parent,
                            config_file_name,
                            run_selected_features,
                            allow_db_changes,

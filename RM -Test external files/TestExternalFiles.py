@@ -1,25 +1,24 @@
 import sys
 from pathlib import Path
+sys.path.append( str(Path.resolve(Path.cwd() / r'..\RM -RMpy package')))
+import RMpy.launcher  # type: ignore
+import RMpy.common as RMc  # type: ignore
+from RMpy.common import q_str # type: ignore
+
+import os
 import xml.etree.ElementTree as ET
 import hashlib
 import gitignore
 
-sys.path.append( str(Path.resolve(Path.cwd() / r'..\RM -RMpy package')))
-import RMpy.launcher  # type: ignore
-import RMpy.common as RMc  # type: ignore
-
-# This script can only read a RootsMagic database file and cannot change it.
-# However, until trust is established:
-# Always make a RM database backup before using any external script.
 
 # Requirements:
 #   RootsMagic database file with associated external media files
 #   RM-Python-config.ini
+#   RootsMagic v7 through v10 installed (only for unref files option)
 
 # Last tested with:
 #   RootsMagic database v7 through v10
-#   Python for Windows v3.13.0
-#   RootsMagic v7 through v10 installed (only for unref files option)
+#   Python for Windows v3.13
 
 # Config files fields used
 #    FILE_PATHS       DB_PATH
