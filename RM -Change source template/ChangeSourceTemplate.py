@@ -120,8 +120,8 @@ def list_template_details_feature(config, reportF, dbConnection, include_mapping
             "ERROR: LIST_TEMPLATE_DETAILS option requires specification"
             " of TEMPLATE_OLD and TEMPLATE_NEW, MAPPING_SOURCE & MAPPING_CITATION.")
 
-    old_template_ID = get_src_template_ID(dbConnection, oldTemplateName)[0][0]
-    new_template_ID = get_src_template_ID(dbConnection, newTemplateName)[0][0]
+    old_template_ID = get_src_template_IDrows(dbConnection, oldTemplateName)[0][0]
+    new_template_ID = get_src_template_IDrows(dbConnection, newTemplateName)[0][0]
     dump_src_template_fields(reportF, dbConnection, old_template_ID)
     dump_src_template_fields(reportF, dbConnection, new_template_ID)
 
@@ -159,7 +159,7 @@ def list_sources_feature(config, reportF, dbConnection):
             "ERROR: LIST_SOURCES option requires specification of"
             " both TEMPLATE_OLD and SOURCE_NAME_LIKE.")
 
-    oldTemplateID = get_src_template_ID(dbConnection, old_template_name)[0][0]
+    oldTemplateID = get_src_template_IDrows(dbConnection, old_template_name)[0][0]
     reportF.write('\nSources with template name: ' + q_str(old_template_name) + '\n'
                   + 'and source name like: ' +
                   q_str(source_names_like) + '\n\n'
@@ -194,9 +194,9 @@ def check_mapping_feature(config, report_file, dbConnection):
     field_mapping_source = parse_field_mapping(mapping_source)
     field_mapping_citation = parse_field_mapping(mapping_citation)
 
-    old_template_ID = get_src_template_ID(
+    old_template_ID = get_src_template_IDrows(
         dbConnection, old_template_name)[0][0]
-    new_template_ID = get_src_template_ID(
+    new_template_ID = get_src_template_IDrows(
         dbConnection, new_template_name)[0][0]
 
     new_st_fields = get_list_src_template_fields(new_template_ID, dbConnection)
@@ -280,8 +280,8 @@ def make_changes_feature(config, reportF, dbConnection):
             "ERROR: MAKE_CHANGES option requires specification of TEMPLATE_OLD"
             " TEMPLATE_NEW, SOURCE_NAME_LIKE, MAPPING_SOURCE & MAPPING_CITATION.")
 
-    oldTemplateID = get_src_template_ID(dbConnection, old_template_name)[0][0]
-    newTemplateID = get_src_template_ID(dbConnection, new_template_name)[0][0]
+    oldTemplateID = get_src_template_IDrows(dbConnection, old_template_name)[0][0]
+    newTemplateID = get_src_template_IDrows(dbConnection, new_template_name)[0][0]
 
     field_mapping_source = parse_field_mapping(mapping_source)
     field_mapping_citation = parse_field_mapping(mapping_citation)
@@ -536,7 +536,7 @@ def check_source_templates(reportF, dbConnection, oldTemplateName, newTemplateNa
         return
 
     IDs = []
-    IDs = get_src_template_ID(dbConnection, oldTemplateName)
+    IDs = get_src_template_IDrows(dbConnection, oldTemplateName)
     if len(IDs) == 0:
         reportF.write(
             'Could not find a SourceTemplate named: ' + q_str(oldTemplateName))
@@ -547,7 +547,7 @@ def check_source_templates(reportF, dbConnection, oldTemplateName, newTemplateNa
         return
     reportF.write(q_str(oldTemplateName) + " checks out OK\n")
 
-    IDs = get_src_template_ID(dbConnection, newTemplateName)
+    IDs = get_src_template_IDrows(dbConnection, newTemplateName)
     if len(IDs) == 0:
         reportF.write(
             'Could not find a SourceTemplate named: ' + q_str(newTemplateName))
@@ -562,7 +562,7 @@ def check_source_templates(reportF, dbConnection, oldTemplateName, newTemplateNa
 
 
 # ===================================================DIV60==
-def get_src_template_ID(dbConnection, TemplateName):
+def get_src_template_IDrows(dbConnection, TemplateName):
 
     SqlStmt = """
 SELECT TemplateID
