@@ -5,10 +5,11 @@ import RMpy.launcher  # type: ignore
 import RMpy.common as RMc  # type: ignore
 from RMpy.common import q_str # type: ignore
 
+import RMpy.gitignore  # type: ignore
 import os
 import xml.etree.ElementTree as ET
 import hashlib
-import gitignore
+
 
 
 # Requirements:
@@ -750,8 +751,7 @@ def folder_contents_minus_ignored(dir_path, config, report_file):
             raise RMc.RM_Py_Exception(
                 f"Option:IGNORED_ITEMS_FILE requires the file:\n{ignore_file_path}")
 
-#        matches = parse_gitignore(ignore_file_path, encoding="utf-8")
-        matches = gitignore.parse(str(ignore_file_path), encoding="utf-8")
+        matches = RMpy.gitignore.parse(str(ignore_file_path), encoding="utf-8")
 
         for path in dir_path.glob('**/*'):
             if not matches(str(path)) and path.is_file():
