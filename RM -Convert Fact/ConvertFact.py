@@ -5,19 +5,14 @@ import RMpy.launcher          # type: ignore
 import RMpy.common as RMc     # type: ignore
 from RMpy.common import q_str # type: ignore
 
-import os
-
-# Convert all Facts of one fact type to another fact type
-# A family event type, may be converted to an individual fact type.
-# An individual type fact may *not* be converted to a family type.
 
 # Requirements:
 #   RootsMagic database file
 #   RM-Python-config.ini
 
 # Tested with:
-#   RootsMagic database file v9.1.6
-#   Python for Windows v3.12.3
+#   RootsMagic database file v10
+#   Python for Windows v3.13
 
 # Config files fields used
 #    FILE_PATHS  REPORT_FILE_PATH
@@ -51,11 +46,11 @@ def main():
 # ===================================================DIV60==
 def run_selected_features(config, db_connection, report_file):
 
-    convert_fact(config, db_connection, report_file)
+    convert_fact_feature(config, db_connection, report_file)
 
 
 # ===================================================DIV60==
-def convert_fact(config, db_connection, report_file):
+def convert_fact_feature(config, db_connection, report_file):
 
     role_name = None
     desc_sel = None
@@ -194,7 +189,7 @@ SELECT FactTypeID, OwnerType
         report_file.write("FACTTYPE_CURRENT kind is 'FAMILY'.\n")
     else:
         facttype_is_family_curr = False
-        report_file.write("FACTTYPE_CURRENT kind is 'PERSONAL'.\n")
+        report_file.write("FACTTYPE_CURRENT kind is 'INDIVIDUAL'.\n")
 
     cur = db_connection.cursor()
     cur.execute(SqlStmt, (facttype_new_name,))
@@ -211,7 +206,7 @@ SELECT FactTypeID, OwnerType
         report_file.write("FACTTYPE_NEW kind is 'FAMILY'.\n\n\n")
     else:
         facttype_is_family_new = False
-        report_file.write("FACTTYPE_NEW kind is 'PERSONAL'.\n\n\n")
+        report_file.write("FACTTYPE_NEW kind is 'INDIVIDUAL'.\n\n\n")
 
     role_id = 0
     if facttype_is_family_curr and not facttype_is_family_new:
@@ -370,7 +365,7 @@ SELECT EventID
   FROM EventTable et
  WHERE et.EventType = ?
    AND et.OwnerType = ?
-   AND et.Details LIKE (?)
+   AND et.Details LIKE ?
  ORDER BY OwnerID
 """
         cur = db_connection.cursor()
@@ -403,7 +398,7 @@ SELECT EventID
  WHERE et.EventType = ?
    AND et.OwnerType = ?
    AND SUBSTR(et.Date,4,4) = ?
-   AND et.Details LIKE (?)
+   AND et.Details LIKE ?
  ORDER BY OwnerID
 """
         cur = db_connection.cursor()
