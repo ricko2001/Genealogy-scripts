@@ -120,41 +120,45 @@ Run the Python installer selecting all default options.
 =========================================================================DIV80==
 NOTES
 
-*   All interactions with the utility are through the RM-Python-config.ini file
-    and the command line console window.
-    The RM-Python-config.ini file just give the location of the database to
-    modify. The same RM-Python-config.ini file can be shared with other utility
-    applications such as TestExternalFiles and GroupFromSQL.
+=========-
+All interactions with the utility are through the RM-Python-config.ini file
+and the command line console window.
+The RM-Python-config.ini file just gives the location of the database to
+modify. The same RM-Python-config.ini file can be shared with other RM 
+utilities.
 
-*   Information that the user enters in the command window is checked before
-    it is used. It is unlikely that random data would be accepted by
-    the utility.
+=========-
+Information that the user enters in the command window is checked before
+ it is used. It is unlikely that random data would be accepted by
+ the utility.
 
-*   The utility asks for the name of the citation to change and the source
-    that it should use. In both cases, only enough of the name needs to be
-    entered to make it unique among all citations for all sources. 
-    It is suggested that you copy and paste from the RM source edit window.
-    There is no need to manually type input.
-    One may start the name entry with a % char and it will be used as the
-    standard  'SQL Like' wild card.
-    If the full citation name is not unique, then as a workaround, you
-    could add some text to the citation name of the citation you want
-    to modify to make the name unique.
+=========-
+The utility asks for the name of the citation to change and the source
+that it should use. In both cases, only enough of the name needs to be
+entered to make it unique among all citations for all sources. 
+It is suggested that you copy and paste from the RM source edit window.
+There is no need to manually type input.
+One may start the name entry with a % char and it will be used as the
+standard  'SQL Like' wild card.
+If the full citation name is not unique, then as a workaround, you
+could add some text to the citation name of the citation you want
+to modify to make the name unique.
 
-*   Checks made by the utility:
-    1- User is asked for the citation name of the citation to modify.
-        a) the name must be found.
-        b) the name must be unique among all citations for all sources.
-       You will be made aware of problems.
-    2- User is asked for the source that is to be used as the new parent of
-       the citation.
-        a) the source name must be found.
-        b) the source name must be unique.
-        c) the existing source used by the citation and the new source
-           specified must both use the same source template.
-       You will be made aware of problems.
+=========-
+Checks made by the utility:
+1- User is asked for the citation name of the citation to modify.
+    a) the name must be found.
+    b) the name must be unique among all citations for all sources.
+   You will be made aware of problems.
+2- User is asked for the source that is to be used as the new parent of
+   the citation.
+    a) the source name must be found.
+    b) the source name must be unique.
+    c) the existing source used by the citation and the new source
+       specified must both use the same source template.
+   You will be made aware of problems.
 
-===========================================DIV50==
+=========-
 REPORT_FILE_DISPLAY_APP
 
 Option to automatically open the report file in a display application.
@@ -162,7 +166,7 @@ The included ini sample file has this option activated and set to use Windows
 NotePad as the display app. It can be deactivated by inserting a # character
 at the start of the line. Your favorite editor may be substituted.
 
-===========================================DIV50==
+=========-
 RM-Python-config.ini  (the config file)
 
 If there are any non-ASCII characters in the config file then the file must be
@@ -185,38 +189,28 @@ file line- REPORT_FILE_DISPLAY_APP
 
 If no report file is generated, look at the black command
 console window for error messages that will help you fix the problem.
-There is probably something wrong with the config file line-
-REPORT_FILE_PATH
+There may be something wrong with the config file line- REPORT_FILE_PATH
 
-=========-
-Error message:
+If the black console windows displays the message-
 RM-Python-config.ini file contains a format error
-
-The problem is as stated, the solution may be harder to determine.
-Start over with the supplied config file and make sure that works, Then make your
-edits one by one to identify the problem.
-You may want to look at- https://en.wikipedia.org/wiki/INI_file
-
-A reason that report file cannot be generated is if the specified REPORT_FILE_PATH
-cannot be created.
-The default value in the supplied config file should always work.
+See the section below.
 
 If no report file is generated and the black command console window closes
 before you can read it, try first opening a command line console and then
 running the exe or py file from the command line. The window will not close
 and you'll be able to read any error messages.
 
+=========-
+Error message:
+RM-Python-config.ini file contains a format error
+
+Start over with the supplied config file and make sure that works, Then make your
+edits one by one to identify the problem.
+You may want to look at- https://en.wikipedia.org/wiki/INI_file
 
 =========================================================================DIV80==
 TODO
 *  ?? what would you find useful?
-
-*  Do you have citations in different sources with the same citation name?
-That situation will prevent you from using this app.
-I could add a workflow where the utility will first ask for the source
-and then ask for a citation name that is used by that source, but 
-it increases the effort for a situation that may not be common, especially
-as there is a workaround: temporarily change one of the citation names.
 
 
 =========================================================================DIV80==

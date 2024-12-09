@@ -216,11 +216,13 @@ clearing colors in multiple color code sets.
 =========================================================================DIV80==
 NOTES
 
-*    Updating the colorization of a group while the database is open in RM 
+=========-
+Updating the colorization of a group while the database is open in RM 
 works OK. However, RM will not refresh the screen based on an external update. 
 So, switch screens and then return to see the updated color coding.
 
-*    On some occasions, the utility report file will display a "Database
+=========-
+On some occasions, the utility report file will display a "Database
 Locked" message. In that case, close RM and re-run the utility, then re-open 
 RM. It's not clear why this sometimes happens, but it is rare.
 No database damage has ever been seem after many hundreds of uses.
@@ -229,17 +231,20 @@ No database damage has ever been seem after many hundreds of uses.
 
 Less important notes.
 
-*   RM-Python-config.ini  (the config file)
+=========-
+RM-Python-config.ini  (the config file)
 If there are any non-ASCII characters in the config file then the file must be
 saved in UTF-8 format, with no byte order mark (BOM).
 The included sample ini file has an accented ä in the first line comment to
 force it to be in the correct format.
 File format is an option in the "Save file" dialog box in NotePad.
 
-*    This utility only changes the database's PersonTable.
+=========-
+This utility only changes the database's PersonTable.
 If I add the feature of renaming colors, that will affect the Config table.
 
-*    This utility will, if so configured, modify a pre-existing color coding 
+=========-
+This utility will, if so configured, modify a pre-existing color coding 
 that may be important to you. Take care when assigning the actions in the
 config file.
 

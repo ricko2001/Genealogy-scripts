@@ -183,7 +183,8 @@ are ignored.
 =========================================================================DIV80==
 NOTES
 
-*    This utility will not help you write the SQL statement and is not a good
+=========-
+This utility will not help you write the SQL statement and is not a good
 working environment in which to create your SQL statement.
 Confirm you query works before running it in this utility. (Or get the SQL from
 a source that has confirmed its results. This app is written so that incorrect
@@ -196,7 +197,8 @@ Note that the SQL statement is run in an environment that does not have the
 RMNOCASE collation used by RM for most name type columns. Use "COLLATE NOCASE"
 to avoid errors.
 
-*    Due to technical issue regarding RMNOCASE, this utility will not create a
+=========-
+Due to technical issue regarding RMNOCASE, this utility will not create a
 new group. Instead use RM to create the group name before using this utility.
 The process is simple-
 Open the database in RM,
@@ -209,13 +211,15 @@ Leave the Type set to "Simple" as is the default.
 The same Add New Group window can be accessed by clicking the large plus icon in
 the groups tab in the "Side View" which by default is on the left.
 
-*    Updating the contents of a group while the database is open in RM works OK.
+=========-
+Updating the contents of a group while the database is open in RM works OK.
 However, RM lists using group (simple style) filters do not have a refresh button,
 so, for example, if you displaying People view filtered by the group that has been
 updated, you'll need to switch to another group and then back again to see the
 effect of the group having been updated.
 
-*    On some occasions, the utility report file will display a "Database
+=========-
+On some occasions, the utility report file will display a "Database
 Locked" message. In that case, close RM and re-run the utility, then re-open 
 RM. It's not clear why this sometimes happens, but it is rare. 
 For some reason, RM keeps an open transaction which prevents other processes
@@ -223,33 +227,37 @@ from making updates.
 No database damage has ever been seem after many hundreds of uses. 
 "Database locked" is a normal message encountered from SQLite.
 
-
 Less important notes.
 
-*   RM-Python-config.ini  (the config file)
+=========-
+I have not tested all SQL statements :)
+The utility takes the input SQL and creates a temporary view based on it. If that
+fails, an appropriate error is returned. That should protect against SQL that
+modifies/deletes data. (This is not tested beyond simple cases.)
+
+=========-
+This utility will, if so configured, modify a pre-existing group that may be
+important to you. Take care when assigning the group name: [OPTIONS] GROUP_NAME.
+
+=========-
+RM-Python-config.ini  (the config file)
 If there are any non-ASCII characters in the config file then the file must be
 saved in UTF-8 format, with no byte order mark (BOM).
 The included sample ini file has an accented ä in the first line comment to
 force it to be in the correct format.
 File format is an option in the "Save file" dialog box in NotePad.
 
-*    I have not tested all SQL statements :)
-The utility takes the input SQL and creates a temporary view based on it. If that
-fails, an appropriate error is returned. That should protect against SQL that
-modifies/deletes data. (This is not tested beyond simple cases.)
+=========-
+This utility only changes the GroupsTable in the database
 
-*    This utility only changes the GroupsTable in the database
-
-*    This utility creates a temporary view named: PersonIdList_RJO_utils and
+=========-
+This utility creates a temporary view named: PersonIdList_RJO_utils and
 deletes it when done.
 
-*    This utility will, if so configured, modify a pre-existing group that may be
-important to you. Take care when assigning the group name: [OPTIONS] GROUP_NAME.
-
-*     (For testing) To create a "database locked" situation, start a transaction
+=========-
+(For testing) To create a "database locked" situation, start a transaction
 in an external SQLite tool, try to run this utility. Will get locked message 
 until transaction in SQLite Expert is either committed or RolledBack.
-
 
 
 =========================================================================DIV80==

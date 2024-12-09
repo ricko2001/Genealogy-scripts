@@ -183,164 +183,179 @@ HASH_FILE
 =========================================================================DIV80==
 NOTES
 
-*   CHECK_FILES feature: By default, folder path and file name capitalization in
-    the database and in the file system path name must match for the file to be
-    found by this utility. They do not need to match for RM to find the file. 
-    The author's opinion is that case miss-matches should be fixed.
-    This behavior can be reversed by the setting the  
-    option CASE_INSENSITIVE to "on".
+=========-
+CHECK_FILES feature: By default, folder path and file name capitalization in
+the database and in the file system path name must match for the file to be
+found by this utility. They do not need to match for RM to find the file. 
+The author's opinion is that case miss-matches should be fixed.
+This behavior can be reversed by the setting the  
+option CASE_INSENSITIVE to "on".
 
-*   UNREF_FILES
-    This option is designed so that your goal should be to produce a report
-    with no unreferenced files found. That result is easy to interpret.
-    If a file is added to the media folder but not added to the RM database,
-    it will show up om this list.
+=========-
+UNREF_FILES
+This option is designed so that your goal should be to produce a report
+with no unreferenced files found. That result is easy to interpret.
+If a file is added to the media folder but not added to the RM database,
+it will show up om this list.
 
-    However, there may be files and folders of files that you want to store
-    near your media files, but are not actually referenced by the database.
+ However, there may be files and folders of files that you want to store
+ near your media files, but are not actually referenced by the database.
 
-    To shorten the list of unreferenced items, a specified set of files and folders
-    within the SEARCH_ROOT_FLDR_PATH folder can be ignored and not displayed in the
-    Unreferenced Files report. There are two methods of specifying the objects to ignore:
-    1: the IGNORED_OBJECTS section can be used to tell the utility to not include 
-    certain files in the list of unreferenced files. See below.
-    2: The option IGNORED_ITEMS_FILE can be set to on or off. When the option is
-    set to on, the specification of the files/folders to ignore is done by the
-    file TestExternalFiles_ignore.txt which should be found in the
-    SEARCH_ROOT_FLDR_PATH folder. The TestExternalFiles_ignore.txt file contains
-    a set of exclusion patterns. A pattern may contain wildcard characters.
-    The format of the patterns can be found in many on-line sources, for example-
-      https://www.atlassian.com/git/tutorials/saving-changes/gitignore#git-ignore-patterns
-      https://git-scm.com/docs/gitignore
-    A sample file is included in the zip file.
-    
-    To use these kind of match patterns containing wild cards, one must turn on the
-    option IGNORED_ITEMS_FILE, create a text file named TestExternalFiles_ignore.txt, 
-    in the root of the SEARCH_ROOT_FLDR_PATH folder, and then edit that file to
-    contain the patterns for the files to ignore.
+ To shorten the list of unreferenced items, a specified set of files and folders
+ within the SEARCH_ROOT_FLDR_PATH folder can be ignored and not displayed in the
+ Unreferenced Files report. There are two methods of specifying the objects to ignore:
+ 1: the IGNORED_OBJECTS section can be used to tell the utility to not include 
+ certain files in the list of unreferenced files. See below.
+ 2: The option IGNORED_ITEMS_FILE can be set to on or off. When the option is
+ set to on, the specification of the files/folders to ignore is done by the
+ file TestExternalFiles_ignore.txt which should be found in the
+ SEARCH_ROOT_FLDR_PATH folder. The TestExternalFiles_ignore.txt file contains
+ a set of exclusion patterns. A pattern may contain wildcard characters.
+ The format of the patterns can be found in many on-line sources, for example-
+     https://www.atlassian.com/git/tutorials/saving-changes/gitignore#git-ignore-patterns
+     https://git-scm.com/docs/gitignore
+A sample file is included in the zip file.
+   
+To use these kind of match patterns containing wild cards, one must turn on the
+option IGNORED_ITEMS_FILE, create a text file named TestExternalFiles_ignore.txt, 
+in the root of the SEARCH_ROOT_FLDR_PATH folder, and then edit that file to
+contain the patterns for the files to ignore.
 
-    The TestExternalFiles_ignore.txt must be stored in utf-8 format if it contains non-ASCII 
-    characters. (Same as for the config file)
-
-
-*   IGNORED_OBJECTS
-    IGNORED_OBJECTS FILES and FOLDERS settings in the config file are only used 
-    when the IGNORED_ITEMS_FILE setting is set to off.
-
-    FILES
-    Add file names that should not be reported as being unreferenced.
-    One name per line. Indented with at least one space character.
-    No paths, just file names.
-    All files with this name are ignored no matter where they are within
-    the SEARCH_ROOT_FLDR_PATH folder
-
-    FOLDERS
-    Add folder names whose entire contents should not be reported as being
-    unreferenced.
-    One name per line. Indented with at least one space character.
-    No paths, just folder names. (e.g. Folder1   and not  C:\Users\me\Folder1 )
-    All folders with this name have their contents ignored no matter where they
-    are within the SEARCH_ROOT_FLDR_PATH folder
-
-    I suggest that you organize your file and folders so that ignored folders
-    all have the same name, even though there may be many of them in different
-    locations in the media folder.
+The TestExternalFiles_ignore.txt must be stored in utf-8 format if it contains non-ASCII 
+characters. (Same as for the config file)
 
 
-*   SEARCH_ROOT_FLDR_PATH
-    The folder specified in RM's preferences as the Media folder is not 
-    necessarily the same as the folder specified by the SEARCH_ROOT_FLDR_PATH
-    variable in the config file  (but I recommended that they be the same).
+=========-
+IGNORED_OBJECTS
+IGNORED_OBJECTS FILES and FOLDERS settings in the config file are only used 
+when the IGNORED_ITEMS_FILE setting is set to off.
+
+FILES
+Add file names that should not be reported as being unreferenced.
+One name per line. Indented with at least one space character.
+No paths, just file names.
+All files with this name are ignored no matter where they are within
+the SEARCH_ROOT_FLDR_PATH folder
+
+FOLDERS
+Add folder names whose entire contents should not be reported as being
+unreferenced.
+One name per line. Indented with at least one space character.
+No paths, just folder names. (e.g. Folder1   and not  C:\Users\me\Folder1 )
+All folders with this name have their contents ignored no matter where they
+are within the SEARCH_ROOT_FLDR_PATH folder
+
+I suggest that you organize your file and folders so that ignored folders
+all have the same name, even though there may be many of them in different
+locations in the media folder.
+
+=========-
+SEARCH_ROOT_FLDR_PATH
+The folder specified in RM's preferences as the Media folder is not 
+necessarily the same as the folder specified by the SEARCH_ROOT_FLDR_PATH
+variable in the config file  (but I recommended that they be the same).
 
 
-*   UNREF_FILES
-    The value of- "# DB links minus # non-ignored files" should, in a
-    sense, be zero. However, if a folder is ignored, but there are linked files
-    within, then the value will be positive.
+=========-
+UNREF_FILES
+The value of- "# DB links minus # non-ignored files" should, in a
+sense, be zero. However, if a folder is ignored, but there are linked files
+within, then the value will be positive.
 
 
-*   DUP_FILEPATHS
-    Files with the same path and name may be duplicated in the media tab
-    intentionally as they might have different captions etc.
+=========-
+DUP_FILEPATHS
+Files with the same path and name may be duplicated in the media tab
+intentionally as they might have different captions etc.
 
 
-*   DUP_FILENAMES
-    Files listed have the same file names, ignoring case.
-    Duplicate file names are not a error. This function is provided as a
-    organizational tool. This feature does not check the file contents,
-    only the names. Use the HASH_File feature to distinguish file contents.
+=========-
+DUP_FILENAMES
+Files listed have the same file names, ignoring case.
+Duplicate file names are not a error. This function is provided as a
+organizational tool. This feature does not check the file contents,
+only the names. Use the HASH_File feature to distinguish file contents.
 
 
-*   SHOW_ORIG_PATH (RM v8 through v10 only)
-    A display option is available for files found by either the CHECK_FILES or
-    NO_TAG_FILES or DUP_FILES
-    The option is turned on with the option SHOW_ORIG_PATH in the config file.
-    With this option on, the path for each file is shown twice,
-    - the path on disk, that is, after any RM8-9 token in the path has been expanded.
-    - the path as saved in the database with the relative path anchor token not expanded.
-    See the note below "Background information" regarding relative paths in RM.
+=========-
+SHOW_ORIG_PATH (RM v8 through v10 only)
+A display option is available for files found by either the CHECK_FILES or
+NO_TAG_FILES or DUP_FILES
+The option is turned on with the option SHOW_ORIG_PATH in the config file.
+With this option on, the path for each file is shown twice,
+- the path on disk, that is, after any RM8-9 token in the path has been expanded.
+- the path as saved in the database with the relative path anchor token not expanded.
+See the note below "Background information" regarding relative paths in RM.
 
 
-*   REPORT_FILE_DISPLAY_APP
-    Option to automatically open the report file in a display application.
-    The included config file sample has this option activated and set to use Windows
-    NotePad as the display app. It can be deactivated by inserting a # character
-    at the start of the line. Your favorite editor may be substituted.
+=========-
+REPORT_FILE_DISPLAY_APP
+Option to automatically open the report file in a display application.
+The included config file sample has this option activated and set to use Windows
+NotePad as the display app. It can be deactivated by inserting a # character
+at the start of the line. Your favorite editor may be substituted.
 
 
-*   RM-Python-config.ini  (the config file)
-    If there are any non-ASCII characters in the config file then the file must be
-    saved in UTF-8 format, with no byte order mark (BOM).
-    The included sample config file has an accented ä in the first line comment to
-    force it to be in the correct format.
-    File format is an option in the "Save file" dialog box in NotePad.
-    The [END] section is entirely optional.
+=========-
+RM-Python-config.ini  (the config file)
+If there are any non-ASCII characters in the config file then the file must be
+saved in UTF-8 format, with no byte order mark (BOM).
+The included sample config file has an accented ä in the first line comment to
+force it to be in the correct format.
+File format is an option in the "Save file" dialog box in NotePad.
+The [END] section is entirely optional.
 
 
-*   IGNORED_OBJECTS section of the config file
-    Due to how the config file is parsed by the python library, files and folders
-    whose names start with the # character cannot be added to the FILES or FOLDERS.
-    Instead, they are considered comments. There is a way to overcome this
-    limitation but the explanation of how is not worth the confusion it would
-    create. Bottom line- if you really want to add the file or folder, change
-    its name so it doesn't start with a # - or use the new ignore file method to
-    exclude files.
-
-*   A listing of "DB entires with blank filename or path found" is displayed when a
-    media item in the database has a blank file path or file name. These items
-    should be fixed first.
+=========-
+IGNORED_OBJECTS section of the config file
+Due to how the config file is parsed by the python library, files and folders
+whose names start with the # character cannot be added to the FILES or FOLDERS.
+Instead, they are considered comments. There is a way to overcome this
+limitation but the explanation of how is not worth the confusion it would
+create. Bottom line- if you really want to add the file or folder, change
+its name so it doesn't start with a # - or use the new ignore file method to
+exclude files.
 
 
-*   Background information: File paths pointing to external files
-    in RM 7:   all paths are absolute starting with a drive letter
-    in RM 8&9: absolute file path starting with a drive letter
-            or
-            a path relative to another location.
-    RM 8&9 Relative path symbols
-    (these are expanded when found in the first position of the stored path)
+=========-
+A listing of "DB entires with blank filename or path found" is displayed when a
+media item in the database has a blank file path or file name. These items
+should be fixed first.
+
+
+=========-
+Background information: File paths pointing to external files
+in RM 7:   all paths are absolute starting with a drive letter
+in RM 8&9: absolute file path starting with a drive letter
+        or
+        a path relative to another location.
+RM 8&9 Relative path symbols
+(these are expanded when found in the first position of the stored path)
     ?    media folder as set in RM preferences
     ~    home directory  (%USERPROFILE%)
     *    RM main database file location
 
 
-*   Switching between RM 8, RM 9 and RM 10
-    This section probably applies to no-one. Please don't read it and get confused !
-    If the machine running the script has had multiple versions of RootsMagic
-    installed, over the years, there may be slightly unexpected behavior in some
-    cases. RootsMagic saves some of its settings in an .xml file located in the
-    user's home folder/AppData/Roaming/RootsMagic. A separate sub folder is
-    created for each RM major version. The script will read the Media Folder
-    location setting found in the highest installed RM version .xml file.
-    This is fine if you are not using ver 8 after having installed ver 9, or
-    when the same media folder location has been used for ver 8 and later.
+=========-
+Switching between RM 8, RM 9 and RM 10
+This section probably applies to no-one. Please don't read it and get confused !
+If the machine running the script has had multiple versions of RootsMagic
+installed, over the years, there may be slightly unexpected behavior in some
+cases. RootsMagic saves some of its settings in an .xml file located in the
+user's home folder/AppData/Roaming/RootsMagic. A separate sub folder is
+created for each RM major version. The script will read the Media Folder
+location setting found in the highest installed RM version .xml file.
+This is fine if you are not using ver 8 after having installed ver 9, or
+when the same media folder location has been used for ver 8 and later.
 
-    When run on a RM7 database, the Media Folder location is not needed so the
-    XML file is not referenced, so switching  between ver 7 and ver 10 will not
-    be an issue.
+When run on a RM7 database, the Media Folder location is not needed so the
+XML file is not referenced, so switching  between ver 7 and ver 10 will not
+be an issue.
 
 
-*  Files attached to RM Tasks are not analyzed by this utility and they do not 
-   appear in the RM Media tab.
+=========-
+Files attached to RM Tasks are not analyzed by this utility and they do not 
+appear in the RM Media tab.
 
 
 =========================================================================DIV80==

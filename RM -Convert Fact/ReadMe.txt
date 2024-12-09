@@ -315,26 +315,24 @@ file line- REPORT_FILE_DISPLAY_APP
 
 If no report file is generated, look at the black command
 console window for error messages that will help you fix the problem.
-There is probably something wrong with the config file line-
-REPORT_FILE_PATH
+There may be something wrong with the config file line- REPORT_FILE_PATH
 
-=========-
-Error message:
+If the black console windows displays the message-
 RM-Python-config.ini file contains a format error
-
-The problem is as stated, the solution may be harder to determine.
-Start over with the supplied config file and make sure that works, Then make your
-edits one by one to identify the problem.
-You may want to look at- https://en.wikipedia.org/wiki/INI_file
-
-A reason that report file cannot be generated is if the specified REPORT_FILE_PATH
-cannot be created.
-The default value in the supplied config file should always work.
+See the section below.
 
 If no report file is generated and the black command console window closes
 before you can read it, try first opening a command line console and then
 running the exe or py file from the command line. The window will not close
 and you'll be able to read any error messages.
+
+=========-
+Error message:
+RM-Python-config.ini file contains a format error
+
+Start over with the supplied config file and make sure that works, Then make your
+edits one by one to identify the problem.
+You may want to look at- https://en.wikipedia.org/wiki/INI_file
 
 
 =========================================================================DIV80==
