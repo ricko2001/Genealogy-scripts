@@ -1,4 +1,7 @@
+=========================================================================DIV80==
 ChangeSrcForCitation
+Change source for citation
+
 
 Utility application for use with RootsMagic databases
 
@@ -42,39 +45,39 @@ are the ones desired.
 =========================================================================DIV80==
 Compatibility
 
-Tested with RootsMagic v10
+Tested with RootsMagic v 10
+Tested with Python for Windows v3.13   64bit
 
-.exe file version
-       Windows 64bit only. Tested with Window 11.
-
-.py file version
-       Tested with Python for Windows v3.12   64bit
-       The py file has not been tested on MacOS but could probably be easily
-       modified to work on MacOS with Python version 3 installed.
+The py file has not been tested on MacOS but could probably be easily
+modified to work on MacOS with Python version 3 installed.
 
 
 =========================================================================DIV80==
 Overview
 
-This program is what is called a "command line utility". To install and use
-the exe single file version:
+This program is what is called a "command line utility". 
+To install and use the script:
+
+*  Install Python for Windows x64  -see immediately below
 
 *  Create a new folder on your disk.
    This will be called the "working folder".
 
-*  Copy these files from the downloaded zip file to the working folder-
-      ChangeSrcForCitation.exe
-      RM-Python-config.ini
-
 *  Make a copy of your database, move the copy into the working folder.
    Rename the copy to TEST.rmtree
 
-*  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
-   referred to, as the "config file".)
-   The utility needs to know where the RM database file is located, the output
-   report file name and location.
+*  Copy these files and the folder from the downloaded zip file to the working folder-
+      ChangeSrcForCitation.py
+      RM-Python-config.ini
+      RMpy
 
-*  Double click the ChangeSrcForCitation.exe file to run the utility.
+*  Edit the file, RM-Python-config.ini (hereinafter referred to as the 
+   "config file") in the working folder.
+
+   The utility needs to know where the RM database file is located, the output
+   report file name and its location.
+
+*  Double click the ChangeSrcForCitation.py ile to run the utility. 
    Enter the requested information in the displayed black command
    console window.
 
@@ -82,13 +85,38 @@ the exe single file version:
    Confirm that the desired change was made in RM.
 
 
---- OR ---
-
-Use the py script file.  See section below, after the Notes section, entitled-
-   "Which to use? Standalone .exe file or .py file"
-
-
 =========================================================================DIV80==
+Python install-
+Install Python from the Microsoft Store
+or download and install from Python.org web site
+
+From Microsoft Store
+Run a command in Windows by pressing the keyboard key combination
+"Windows + R", then in the small window, type Python.
+Windows store will open in your browser and you will be be shown
+the various versions of Python.
+Click the Get button for the latest version.
+
+Web site download and install
+Download the current version of Python 3, ( or see direct link below
+for the current as of this date)
+https://www.python.org/downloads/windows/
+
+Click on the link near the top of page. Then ...
+Find the link near bottom left side of the page, in the "Stable Releases"
+section, labeled "Download Windows installer (64-bit)"
+Click it and save the installer.
+
+Direct link to recent (as of 2024-12) version installer-
+https://www.python.org/ftp/python/3.13.1/python-3.13.1-amd64.exe
+
+The Python installation requires about 100 Mbytes.
+It is easily and cleanly removed using the standard method found in
+Windows=>Settings
+
+Run the Python installer selecting all default options.
+
+
 =========================================================================DIV80==
 NOTES
 
@@ -180,90 +208,6 @@ and you'll be able to read any error messages.
 
 
 =========================================================================DIV80==
-=========================================================================DIV80==
-Which to use? Standalone .exe file or .py file
-
-Decide whether you wish to use the script file (.py) or the executable
-file (.exe) version. They produce exactly the same output at the same speed.
-Using one does not preclude using the other.
-
-Pro's and Con's
-
-*   The .exe Executable File Version
-  Pro:
-   The single exe file is all you need. No need to install Python.
-  Con:
-   The exe file is not human readable.
-   A certain amount of trust is required to run a program not distributed
-   by a major software publisher. Unknown software from an untrusted source
-   could contain mal-ware. Rely on reviews by other users to establish trust.
-
---- OR ---
-
-*   The .py Script File Version
-  Pro:
-   The script file is easily readable and one can confirm what it does.
-   You may want to learn Python and make your own changes to the script
-   and be able to use other scripts.
-  Con:
-   The script version requires an installation of the Python environment to run.
-   This is a 100 MB investment in disk space. (Not big for modern day hard disks)
-
-
-=========================================================================DIV80==
-To use the py script version of the app
-
-To install and use the script file version:
-
-*  Install Python for Windows x64  -see immediately below
-
-*  Create a new folder on your disk.
-   This will be called the "working folder".
-
-*  Make a copy of your database, move the copy into the working folder.
-   Rename the copy to TEST.rmtree
-
-*  Copy these files and the folder from the downloaded zip file to the working folder-
-      ChangeSrcForCitation.py
-      RM-Python-config.ini
-      RMpy
-
-See the Overview section for the subsequent tasks.
-
-
-=========================================================================DIV80==
-Python install-
-Install Python from the Microsoft Store
-or download and install from Python.org web site
-
-From Microsoft Store
-Run a command in Windows by pressing the keyboard key combination
-"Windows + R", then in the small window, type Python.
-Windows store will open in your browser and you will be be shown
-the various versions of Python.
-Click the Get button for the latest version.
-
-Web site download and install
-Download the current version of Python 3, ( or see direct link below
-for the current as of this date)
-https://www.python.org/downloads/windows/
-
-Click on the link near the top of page. Then ...
-Find the link near bottom left side of the page, in the "Stable Releases"
-section, labeled "Download Windows installer (64-bit)"
-Click it and save the installer.
-
-Direct link to recent (2023-07) version installer-
-https://www.python.org/ftp/python/3.11.4/python-3.11.4-amd64.exe
-
-The Python installation requires about 100 Mbytes.
-It is easily and cleanly removed using the standard method found in
-Windows=>Settings
-
-Run the Python installer selecting all default options.
-
-
-=========================================================================DIV80==
 TODO
 *  ?? what would you find useful?
 
@@ -272,13 +216,13 @@ That situation will prevent you from using this app.
 I could add a workflow where the utility will first ask for the source
 and then ask for a citation name that is used by that source, but 
 it increases the effort for a situation that may not be common, especially
-as there is a workaround: temporarily chnage one of the citation names.
+as there is a workaround: temporarily change one of the citation names.
 
 
 =========================================================================DIV80==
 Feedback
 The author appreciates comments and suggestions regarding this software.
-Richard.J.Otter@gmail.com
+RichardJOtter@gmail.com
 
 Public comments may be made at-
 https://github.com/ricko2001/Genealogy-scripts/discussions
@@ -297,6 +241,5 @@ Distribution
 Everyone is free to use this utility. However, instead of
 distributing it yourself, please instead distribute the URL
 of my website where I describe it- https://RichardOtter.github.io
-This is especially true of the exe file version.
 
 =========================================================================DIV80==

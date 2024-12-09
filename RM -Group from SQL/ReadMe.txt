@@ -1,4 +1,6 @@
+=========================================================================DIV80==
 Group from SQL
+GroupFromSQL
 
 Utility application for use with RootsMagic databases
 
@@ -39,82 +41,84 @@ easy to make unintended database changes in GUI based database manager apps.
 =========================================================================DIV80==
 Compatibility
 
-Tested with
-       RootsMagic v10.
+Tested with RootsMagic v 10
+Tested with Python for Windows v3.13   64bit
 
-.exe file version
-       Windows 64bit only. Tested with Window 11.
-
-.py file version
-       Tested with Python for Windows v3.12   64bit
-       The py file has not been tested on MacOS but could probably be easily
-       modified to work on MacOS with Python version 3 installed.
+The py file has not been tested on MacOS but could probably be easily
+modified to work on MacOS with Python version 3 installed.
 
 
 =========================================================================DIV80==
 Overview
 
-This program is what is called a "command line utility". To install and use
-the exe single file version:
+This program is what is called a "command line utility". 
+To install and use the script:
 
-To use it:
-
-1:  Create or find a SQL statement that returns the RINs of the people you are
-interested in putting in a group.
-
-2:  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
-referred to as the "config file".) The utility needs to know where the RM database
-file is located, what SQL to use for the query, and the name for the group to update.
-
-2:  Double click the GroupFromSQL file. This momentarily displays the black
-command console window and then displays a report file in Notepad.
-At the same time, the group within the database is updated.
-
-3:  Return to RootsMagic and examine the group membership.
-
-
-
-
-
-=========================================================================DIV80==
-Overview
-
-To install and use the single .exe file version:
+*  Install Python for Windows x64  -see immediately below
 
 *  Create a new folder on your disk.
    This will be called the "working folder".
 
-*  Copy these files from the downloaded zip file to the working folder-
-      GroupFromSQL.exe
-      RM-Python-config.ini
-
 *  Make a copy of your database, move the copy into the working folder.
-   Rename it TEST.rmtree
+   Rename the copy to TEST.rmtree
 
-*  Open the TEST database and create an empty group with the name of your choice
-   of Type=Simple. Its contents are not important and as they will be cleared and
-   re-populated by the utility.
+*  Copy these files and folder from downloaded zip file to the working folder-
+      GroupFromSQL.py
+      RM-Python-config.ini
+      RMpy
 
-*  Edit the config file in the working folder to specify the location
-   of the RM file, the name of the group and the SQL statement to run.
-   See section "config file structure" below for more details.
-   To edit, Open NotePad and drag the config file onto the NotePad window.
+*  Create or find a SQL statement that returns the RINs of the people you want
+   to put into a group.
 
-*  Double click the GroupFromSQL.exe file to run the utility.
+*  Edit the file, RM-Python-config.ini (hereinafter referred to as the 
+   "config file") in the working folder.
 
-*  Examine the report file to confirm success.
+   The utility needs to know where the RM database file is located, the output
+   report file name and its location.
+   
+   The config file also tells the utility what actions to perform.
 
-*  Open the database in RM, open the People view window and select the created
-   group as filter to see the results.
+*  Double click the GroupFromSQL.py file. This displays the black
+   command console window and then displays a report file in Notepad.
+   At the same time, the group within the database is updated.
 
---- OR ---
-
-Use the py script file.  See section below, after the Notes section, entitled-
-"Which to use? Standalone .exe file or .py file"
+*  Return to RootsMagic and examine the group membership.
 
 
 =========================================================================DIV80==
-Config file structure
+Python install-
+Install Python from the Microsoft Store
+or download and install from Python.org web site
+
+From Microsoft Store
+Run a command in Windows by pressing the keyboard key combination
+"Windows + R", then in the small window, type Python.
+Windows store will open in your browser and you will be be shown
+the various versions of Python.
+Click the Get button for the latest version.
+
+Web site download and install
+Download the current version of Python 3, ( or see direct link below
+for the current as of this date)
+https://www.python.org/downloads/windows/
+
+Click on the link near the top of page. Then ...
+Find the link near bottom left side of the page, in the "Stable Releases"
+section, labeled "Download Windows installer (64-bit)"
+Click it and save the installer.
+
+Direct link to recent (as of 2024-12) version installer-
+https://www.python.org/ftp/python/3.13.1/python-3.13.1-amd64.exe
+
+The Python installation requires about 100 Mbytes.
+It is easily and cleanly removed using the standard method found in
+Windows=>Settings
+
+Run the Python installer selecting all default options.
+
+
+=========================================================================DIV80==
+Config file contents and editing
 
 First, some nomenclature. The config file is made up of Sections, Keys, Values and
 Comments. The names in square brackets are Section Names that identify the start
@@ -250,6 +254,7 @@ until transaction in SQLite Expert is either committed or RolledBack.
 
 =========================================================================DIV80==
 =========================================================================DIV80==
+=========================================================================DIV80==
 Troubleshooting:
 
 =========-
@@ -329,86 +334,6 @@ GROUP_NAME =
 
 
 =========================================================================DIV80==
-=========================================================================DIV80==
-Which to use? Standalone .exe file or .py file
-
-Decide whether you wish to use the script file (.py) or the executable
-file (.exe) version. They produce exactly the same output at the same speed.
-Using one does not preclude using the other.
-
-Pro's and Con's
-
-*   The .exe Executable File Version
-  Pro:
-   The single exe file is all you need. No need to install Python.
-  Con:
-   The exe file is not human readable.
-   A certain amount of trust is required to run a program not distributed
-   by a major software publisher. Unknown software from an untrusted source
-   could contain mal-ware. Rely on reviews by other users to establish trust.
-
---- OR ---
-
-*   The .py Script File Version
-  Pro:
-   The script file is easily readable and one can confirm what it does.
-   You may want to learn Python and make your own changes to the script
-   and be able to use other scripts.
-  Con:
-   The script version requires an installation of the Python environment to run.
-   This is a 100 MB investment in disk space. (Not big for modern day hard disks)
-
-
-=========================================================================DIV80==
-To use the py script version of the app
-
-To install and use the script file version:
-
-*  Install Python for Windows x64  -see immediately below
-
-*  Create a new folder on your disk.
-   This will be called the "working folder".
-
-*  Make a copy of your database, move the copy into the working folder.
-   Rename the copy to TEST.rmtree
-
-*  Copy these files and folder from downloaded zip file to the working folder-
-      GroupFromSQL.py
-      RM-Python-config.ini
-      RMpy
-
-See the Overview section for the subsequent tasks.
-
-
-=========================================================================DIV80==
-Python install-
-Install Python from the Microsoft Store
-or download and install from Python.org web site
-
-From Microsoft Store
-Run a command in Windows by pressing the keyboard key combination "Windows + R", then in the small window, type Python.
-Windows store will open in your browser and you will be be shown the current version of Python.
-Click the Get button.
-
-Web site download and install
-Download the current version of Python 3, ( or see direct link below for the current as of this date)
-https://www.python.org/downloads/windows/
-
-Click on the link near the top of page. Then ...
-Find the link near bottom left side of the page, in the "Stable Releases"
-section, labeled "Download Windows installer (64-bit)"
-Click it and save the installer.
-
-Direct link to recent (2023-07) version installer-
-https://www.python.org/ftp/python/3.11.4/python-3.11.4-amd64.exe
-
-The Python installation requires about 100 Mbytes.
-It is easily and cleanly removed using the standard method found in Windows=>Settings
-
-Run the Python installer selecting all default options.
-
-
-=========================================================================DIV80==
 TODO
 COLOR:  Consider adding color coding functions.
 
@@ -416,7 +341,7 @@ COLOR:  Consider adding color coding functions.
 =========================================================================DIV80==
 Feedback
 The author appreciates comments and suggestions regarding this software.
-Richard.J.Otter@gmail.com
+RichardJOtter@gmail.com
 
 Public comments may be made at-
 https://github.com/ricko2001/Genealogy-scripts/discussions
@@ -435,6 +360,5 @@ Distribution
 Everyone is free to use this utility. However, instead of
 distributing it yourself, please instead distribute the URL
 of my website where I describe it- https://RichardOtter.github.io
-This is especially true of the exe file version.
 
 =========================================================================DIV80==

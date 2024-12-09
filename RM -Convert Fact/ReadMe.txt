@@ -1,3 +1,5 @@
+=========================================================================DIV80==
+Convert Fact
 ConvertFact
 
 Utility application for use with RootsMagic databases
@@ -14,7 +16,7 @@ This utility can convert facts of one fact type to facts of a different fact typ
 e.g. "Residence (fam)" to "Residence", or "Census" to "Census 1950".
 
 Simply changing the fact type for an existing fact is trivial using SQL.
-Complications arise when a family fact is converted to a personal fact or when
+Complications arise when a family fact is converted to a Individual fact or when
 the fact to be changed has witnesses.
 ConvertFact will test all of these cases and guide you.
 
@@ -39,7 +41,7 @@ configuration file. You must run this script on a copy of your database file
 and have at least several known-good backups.
 
 Once you are satisfied, don't hurry to use the resulting file. Wait a week or so
-and to allow further consideration. Then run the utility with your perfected
+to allow further consideration. Then run the utility with your perfected
 config file on a copy of your now-current database and then use the modified
 database as your normal work file. The week delay will give you time to think
 about it. If you start using the newly modified database immediately, you'll
@@ -50,58 +52,84 @@ lose work if you miss a problem and have to revert to a backup.
 Compatibility
 
 Tested with RootsMagic v10
+Tested with Python for Windows v3.13   64bit
 
-.exe file version
-       Windows 64bit only. Tested with Window 11.
-
-.py file version
-       Tested with Python for Windows v3.12   64bit
-       The py file has not been tested on MacOS but could probably be easily
-       modified to work on MacOS with Python version 3 installed.
+The py file has not been tested on MacOS but could probably be easily
+modified to work on MacOS with Python version 3 installed.
 
 
 =========================================================================DIV80==
 Overview
 
-This program is what is called a "command line utility". To install and use
-the exe single file version:
+This program is what is called a "command line utility". 
+To install and use the script:
+
+*  Install Python for Windows x64  -see immediately below
 
 *  Create a new folder on your disk.
    This will be called the "working folder".
 
-*  Copy these files from the downloaded zip file to the working folder-
-      ConvertFact.exe
-      RM-Python-config.ini
-
 *  Make a copy of your database, move the copy into the working folder.
    Rename the copy to TEST.rmtree
 
-*  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
-   referred to, as the "config file".)
-   The utility needs to know where the RM database file is located, the output
-   report file name and location, and the various configuration parameters
-   needed to tell the utility what to do.
+*  Copy these files and the folder from the downloaded zip file to the working folder-
+      ConvertFact.py
+      RM-Python-config.ini
+      RMpy
 
-*  Double click the ConvertFact.exe file to run the utility and
-   generate the report text file.
+*  Edit the file, RM-Python-config.ini (hereinafter referred to as the 
+   "config file") in the working folder.
+
+   The utility needs to know where the RM database file is located, the output
+   report file name and its location.
+   
+   The config file also tells the utility what actions to perform.
+
+
+*  Double click the ConvertFact.py file to run the utility and
+   generate the report text file. 
 
 *  Examine the report output file and confirm the changes using the RootsMagic app.
 
    Details follow below.
 
---- OR ---
-
-Use the py script file.
-
-See section below, after the Notes section, entitled-
-   "Which to use? Standalone .exe file or .py file"
-
 
 =========================================================================DIV80==
+Python install-
+Install Python from the Microsoft Store
+or download and install from Python.org web site
+
+From Microsoft Store
+Run a command in Windows by pressing the keyboard key combination
+"Windows + R", then in the small window, type Python.
+Windows store will open in your browser and you will be be shown
+the various versions of Python.
+Click the Get button for the latest version.
+
+Web site download and install
+Download the current version of Python 3, ( or see direct link below
+for the current as of this date)
+https://www.python.org/downloads/windows/
+
+Click on the link near the top of page. Then ...
+Find the link near bottom left side of the page, in the "Stable Releases"
+section, labeled "Download Windows installer (64-bit)"
+Click it and save the installer.
+
+Direct link to recent (as of 2024-12) version installer-
+https://www.python.org/ftp/python/3.13.1/python-3.13.1-amd64.exe
+
+The Python installation requires about 100 Mbytes.
+It is easily and cleanly removed using the standard method found in
+Windows=>Settings
+
+Run the Python installer selecting all default options.
+
+
 =========================================================================DIV80==
 NOTES
 
-===========================================DIV50==
+===========-
 The config file must be edited to indicate the conversion that should be done.
 
 The task is specified by the key value pairs. or example-
@@ -115,7 +143,7 @@ Note that the value can have embedded spaces.
 Space characters between the = and the value are ignored.
 
 
-===========================================DIV50==
+===========-
 Fact Type name lists
 
 Fact Type full names are listed in RM by the "Fact types" window found in
@@ -125,13 +153,13 @@ several places in the RM user interface-
   In the command pallet. (type in "fact")
 
 This window also displays, in the right side panel -
-* Whether the fact type is Personal or Family.
+* Whether the fact type is Individual or Family.
 * The full fact type name and its assigned abbreviation.
 The specification of fact types in the config file uses the full fact type name,
 not the abbreviation.
 
 
-===========================================DIV50==
+===========-
 Fact Type fields used
 
 It is best to check the fields used in both fact types before making the change.
@@ -139,10 +167,10 @@ If the fields used by the current and new fact types differ (date, place,
 description), no data is lost in the conversion.
 
 
-===========================================DIV50==
-Fact types in RM come in two categories: Personal and Family.
+===========-
+Fact types in RM come in two categories: Individual and Family.
 
-Facts of the personal type are linked to a single person while facts of the
+Facts of the Individual type are linked to a single person while facts of the
 family type are linked to a database family.
 An RM database family consists either 2 or 1 persons, labeled internally as
 Father and Mother. Either the father or mother may be "unknown"
@@ -150,25 +178,25 @@ Father and Mother. Either the father or mother may be "unknown"
 include any offspring.
 
 
-===========================================DIV50==
+===========-
 Supported fact type conversions:
 
-Personal => Personal
-Family => Personal
+Individual => Individual
+Family => Individual
 Family => Family
 
 Not allowed:
-Personal => Family
+Individual => Family
 
 
 Configuration items in config file required for each type conversion:
 
-* Personal => Personal
+* Individual => Individual
 FACTTYPE_CURRENT (full name of the fact type of the facts that that should be converted)
 FACTTYPE_NEW (full name of the fact type that existing facts should be converted to)
 (ROLE is ignored)
 
-* Family => Personal
+* Family => Individual
 FACTTYPE_CURRENT
 FACTTYPE_NEW
 ROLE (name of an existing role associated with the FACTTYPE_NEW)
@@ -179,7 +207,7 @@ FACTTYPE_NEW
 (ROLE is ignored)
 
 
-===========================================DIV50==
+===========-
 Limiting which Facts are changed
 
 There maybe situations in which only a subset of Facts should be changed to a new fact type.
@@ -225,17 +253,17 @@ DESC              =
 DATE              = 
 
 
-===========================================DIV50==
+===========-
 Complications handled by this utility
 
-The first complication comes with converting a Family fact to a personal fact.
+The first complication comes with converting a Family fact to a Individual fact.
 
 A family fact is linked to a father-mother couple. If the father is know, then
-the new personal fact will be linked to the father. If the mother is also known,
-the mother will be added as a witness to the new personal fact. Her role is
+the new Individual fact will be linked to the father. If the mother is also known,
+the mother will be added as a witness to the new Individual fact. Her role is
 specified in the config file as "ROLE =".
 
-If the father is not known then the new personal fact will be linked to the
+If the father is not known then the new Individual fact will be linked to the
 mother. There is no new witness added, so the ROLE config file item is ignored.
 
 
@@ -256,7 +284,7 @@ You don't have to recreate all of the roles that exist for the FACTTYPE_CURRENT,
 only the ones that are in use. ConvertFact will tell you which ones.
 
 
-===========================================DIV50==
+===========-
 REPORT_FILE_DISPLAY_APP
 
 Option to automatically open the report file in a display application.
@@ -264,7 +292,7 @@ The included ini sample file has this option activated and set to use Windows
 NotePad as the display app. It can be deactivated by inserting a # character
 at the start of the line. Your favorite editor may be substituted.
 
-===========================================DIV50==
+===========-
 RM-Python-config.ini  (the config file)
 
 If there are any non-ASCII characters in the config file then the file must be
@@ -310,91 +338,6 @@ and you'll be able to read any error messages.
 
 
 =========================================================================DIV80==
-=========================================================================DIV80==
-Which to use? Standalone .exe file or .py file
-
-Decide whether you wish to use the script file (.py) or the executable
-file (.exe) version. They produce exactly the same output at the same speed.
-Using one does not preclude using the other.
-
-Pro's and Con's
-
-*   The .exe Executable File Version
-  Pro:
-   The single exe file is all you need. No need to install Python.
-  Con:
-   The exe file is not human readable.
-   A certain amount of trust is required to run a program not distributed
-   by a major software publisher. Unknown software from an untrusted source
-   could contain mal-ware. Rely on reviews by other users to establish trust.
-   Only use the exe file that you downloaded from GitHub.com yourself.
-
---- OR ---
-
-*   The .py Script File Version
-  Pro:
-   The script file is easily readable and one can confirm what it does.
-   You may want to learn Python and make your own changes to the script
-   and be able to use other scripts.
-  Con:
-   The script version requires an installation of the Python environment to run.
-   This is a 100 MB investment in disk space. (Not big for modern day hard disks)
-
-
-=========================================================================DIV80==
-To use the py script version of the app
-
-To install and use the script file version:
-
-*  Install Python for Windows x64  -see immediately below
-
-*  Create a new folder on your disk.
-   This will be called the "working folder".
-
-*  Make a copy of your database, move the copy into the working folder.
-   Rename the copy to TEST.rmtree
-
-*  Copy these files and the folder from the downloaded zip file to the working folder-
-      ConvertFact.py
-      RM-Python-config.ini
-      RMpy
-
-See the Overview section for the subsequent tasks.
-
-
-=========================================================================DIV80==
-Python install-
-Install Python from the Microsoft Store
-or download and install from Python.org web site
-
-From Microsoft Store
-Run a command in Windows by pressing the keyboard key combination
-"Windows + R", then in the small window, type Python.
-Windows store will open in your browser and you will be be shown
-the various versions of Python.
-Click the Get button for the latest version.
-
-Web site download and install
-Download the current version of Python 3, ( or see direct link below
-for the current as of this date)
-https://www.python.org/downloads/windows/
-
-Click on the link near the top of page. Then ...
-Find the link near bottom left side of the page, in the "Stable Releases"
-section, labeled "Download Windows installer (64-bit)"
-Click it and save the installer.
-
-Direct link to recent (2024-02) version installer-
-https://www.python.org/ftp/python/3.12.2/python-3.12.2-amd64.exe
-
-The Python installation requires about 100 Mbytes.
-It is easily and cleanly removed using the standard method found in
-Windows=>Settings
-
-Run the Python installer selecting all default options.
-
-
-=========================================================================DIV80==
 TODO
 *  ?? what would you find useful?
 
@@ -402,7 +345,7 @@ TODO
 =========================================================================DIV80==
 Feedback
 The author appreciates comments and suggestions regarding this software.
-Richard.J.Otter@gmail.com
+RichardJOtter@gmail.com
 
 Public comments may be made at-
 https://github.com/ricko2001/Genealogy-scripts/discussions

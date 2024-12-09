@@ -1,3 +1,5 @@
+=========================================================================DIV80==
+Test External Files
 TestExternalFiles
 
 Utility application for use with RootsMagic databases
@@ -36,18 +38,20 @@ A Hash file might be generated annually and archived with the full dataset.
 =========================================================================DIV80==
 Backups
 
-IMPORTANT: This utility ONLY reads the RM database file. This utility cannot
-change your RM file. However, until you trust that this statement is true,
-you should run this script on a copy of your database file or at least
-have several known-good backups.
+IMPORTANT: You should run this script on a copy of your database file until you
+have confidence using it and confidence in its results. Or at least have a
+current known-good backup.
+
+This script only reads the database file and makes no changes.
 
 
 =========================================================================DIV80==
 Compatibility
 
 Works with RootsMagic v7 through v10
+Tested with RootsMagic v 10
+Tested with Python for Windows v3.13   64bit
 
-Tested with Python for Windows v3.12 & 3.13   64bit
 The py file has not been tested on MacOS but could probably be easily
 modified to work on MacOS with Python version 3 installed.
 
@@ -64,8 +68,7 @@ Generating a hash file for 7,000 image files takes roughly a minute.
 Overview
 
 This program is what is called a "command line utility". 
-
-To use the py scripts:
+To install and use the script:
 
 *  Install Python for Windows x64  -see immediately below
 
@@ -75,22 +78,20 @@ To use the py scripts:
 *  Make a copy of your database, move the copy into the working folder.
    Rename the copy to TEST.rmtree
 
-*  Copy the following files and folder from the downloaded zip file to the working folder-
+*  Copy these files and the folder from the downloaded zip file to the working folder-
       TestExternalFiles.py
-      gitignore.py
       RM-Python-config.ini
       RMpy
 
-*  Make a copy of your database, move the copy into the working folder.
-   Rename the copy to TEST.rmtree
-
-*  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
-   referred to, as the "config file".)
+*  Edit the file, RM-Python-config.ini (hereinafter referred to as the 
+   "config file") in the working folder.
+    
    The utility needs to know where the RM database file is located, the output
-   report file name and location, and the various configuration parameters
-   needed to tell the utility what to do
+   report file name and its location.
+   
+   The config file also tells the utility what actions to perform.
 
-*  Double click the TestExternalFiles file to run the utility and
+*  Double click the TestExternalFiles.py file to run the utility and
    generate the report text file.
 
 3:  Examine the generated report text file that was opened in Notepad.
@@ -100,8 +101,7 @@ To use the py scripts:
 =========================================================================DIV80==
 Python install-
 Install Python from the Microsoft Store
-or
-download and install from Python.org web site
+or download and install from Python.org web site
 
 From Microsoft Store
 Run a command in Windows by pressing the keyboard key combination
@@ -180,7 +180,6 @@ HASH_FILE
     for this purpose.
 
 
-=========================================================================DIV80==
 =========================================================================DIV80==
 NOTES
 
@@ -346,6 +345,7 @@ NOTES
 
 =========================================================================DIV80==
 =========================================================================DIV80==
+=========================================================================DIV80==
 Troubleshooting:
 
 =========-
@@ -447,7 +447,7 @@ TODO
 =========================================================================DIV80==
 Feedback
 The author appreciates comments and suggestions regarding this software.
-Richard.J.Otter@gmail.com
+RichardJOtter@gmail.com
 
 Public comments may be made at-
 https://github.com/ricko2001/Genealogy-scripts/discussions

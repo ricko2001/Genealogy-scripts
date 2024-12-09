@@ -1,3 +1,5 @@
+=========================================================================DIV80==
+Change Source Template
 ChangeSourceTemplate
 
 Utility application for use with RootsMagic databases
@@ -53,7 +55,7 @@ configuration file. You must run this script on a copy of your database file
 and have at least several known-good backups.
 
 Once you are satisfied, don't hurry to use the resulting file. Wait a week or so
-and to allow further consideration. Then run the utility with your perfected
+to allow further consideration. Then run the utility with your perfected
 config file on a copy of your now-current database and then use the modified
 database as your normal work file. The week delay will give you time to think
 about it. If you start using the newly modified database immediately, you'll
@@ -65,39 +67,37 @@ Compatibility
 
 Tested with RootsMagic version 10.
 Not compatible with ver 7.
+Tested with Python for Windows v3.13.1   64bit
 
-.exe file version
-       Windows 64bit only. Tested with Windows 11.
-
-.py file version
-       Tested with Python for Windows v3.12   64bit
-       The py file has not been tested on MacOS but could probably be easily
-       modified to work on MacOS with Python version 3 installed.
+The py file has not been tested on MacOS but could probably be easily
+modified to work on MacOS with Python version 3 installed.
 
 
 =========================================================================DIV80==
-Overview
+This program is what is called a "command line utility". 
+To install and use the script:
 
-This program is what is called a "command line utility". To install and use
-the exe single file version:
+*  Install Python for Windows x64  -see immediately below
 
 *  Create a new folder on your disk.
    This will be called the "working folder".
 
-*  Copy these files from the downloaded zip file to the working folder-
-      ChangeSourceTemplate.exe
-      RM-Python-config.ini
-
 *  Make a copy of your database, move the copy into the working folder.
    Rename the copy to TEST.rmtree
 
-*  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
-   referred to, as the "config file".)
-   The utility needs to know where the RM database file is located, the output
-   report file name and location, and the various configuration parameters
-   needed to tell the utility what to do.
+*  Copy these files and the folder from the downloaded zip file to the working folder-
+      ChangeSourceTemplate.py
+      RM-Python-config.ini
+      RMpy
 
-*  Double click the ChangeSourceTemplate.exe file to run the utility and
+*  Edit the file, RM-Python-config.ini (hereinafter referred to as the 
+   "config file") in the working folder.
+
+   The utility needs to know where the RM database file is located, the output
+   report file name and its location.
+   If you followed the above instructions, no edits are needed.
+
+*  Double click the ChangeSourceTemplate.py file to run the utility and
    generate the report text file.
 
 *  Examine the report text file and then, based on the output, go to the
@@ -107,12 +107,37 @@ the exe single file version:
 
    Details follow below.
 
---- OR ---
 
-Use the py script file.
+=========================================================================DIV80==
+Python install-
+Install Python from the Microsoft Store
+or download and install from Python.org web site
 
-See section below, after the Notes section, entitled-
-   "Which to use? Standalone .exe file or .py file"
+From Microsoft Store
+Run a command in Windows by pressing the keyboard key combination
+"Windows + R", then in the small window, type Python.
+Windows store will open in your browser and you will be be shown
+the various versions of Python.
+Click the Get button for the latest version.
+
+Web site download and install
+Download the current version of Python 3, ( or see direct link below
+for the current as of this date)
+https://www.python.org/downloads/windows/
+
+Click on the link near the top of page. Then ...
+Find the link near bottom left side of the page, in the "Stable Releases"
+section, labeled "Download Windows installer (64-bit)"
+Click it and save the installer.
+
+Direct link to recent (as of 2024-12) version installer-
+https://www.python.org/ftp/python/3.13.1/python-3.13.1-amd64.exe
+
+The Python installation requires about 100 Mbytes.
+It is easily and cleanly removed using the standard method found in
+Windows=>Settings
+
+Run the Python installer selecting all default options.
 
 
 =========================================================================DIV80==
@@ -156,6 +181,8 @@ Confirm all 5 options are set to off.
 
 The first four options tell the utility to execute validation runs. Only the last
 option, when set to "on", will make changes to your database.
+Please go through the validation runs. Error checking is not re-done when
+running Make_Changes.
 Either 0 or 1 of the five options may be "on" at one time in a run of the utility.
 Save the config file, and leave the file open in the editor.
 NOTE: only the first "on" action will be performed when the utility is run, the
@@ -485,7 +512,7 @@ database file and copy it to the working folder and try again.
 =========================================================================DIV80==
 NOTES
 
-===========================================DIV50==
+===========-
 All possible Source Template changes for source templates
 that are already in use by a Source and its Citations.
 
@@ -548,7 +575,7 @@ Old data not removed, but is only hidden. This is not really a problem, but
 it's not tidy.
 
 
-===========================================DIV50==
+===========-
 Selecting sources to be changed
 
 If the SOURCE_NAME_LIKE variable does not give you the set of sources you
@@ -569,7 +596,7 @@ Or, you may consider renaming your sources (temporarily ?) so they fit an
 easy to find pattern.
 
 
-===========================================DIV50==
+===========-
 Mapping rules processing
 
 * The mappings are processed in the order that they are listed.
@@ -607,7 +634,7 @@ database should be used after that.
 On ce could create an intermediate temporary name and then change that to
 the desired name in a later mapping.
 
-===========================================DIV50==
+===========-
 Source Template Names and Field Names
 
 For better or for worse source names, source template names, template field names
@@ -623,11 +650,11 @@ If the template name, field name or SOURCE_NAME_LIKE variable contains a
 space character at the start or the end it will generally be invisible when
 displayed. In any case you can quotation marks e.g. "Name ", or " Name" or "My Name".
 
-===========================================DIV50==
+===========-
 Running the utility with MAKE_CHANGES = off does not make any changes to your
 database. You can run it as many times as you need.
 
-===========================================DIV50==
+===========-
 This may not be helpful...
 
 To help understand how the system works- think of each source and citation
@@ -652,7 +679,7 @@ Rename a Key
 Delete a Key-Value pair
 Add a new, Key-Value pair with a particular Key and an empty value.-
 
-===========================================DIV50==
+===========-
 RM-Python-config.ini  (the config file)
 If there are any non-ASCII characters in the config file then the file must be
 saved in UTF-8 format, with no byte order mark (BOM).
@@ -673,7 +700,7 @@ There is one or more blank lines at the end of a value separating it
 from the next item.
 
 
-===========================================DIV50==
+===========-
 REPORT_FILE_DISPLAY_APP
 Option to automatically open the report file in a display application.
 The included ini sample file has this option activated and set to use Windows
@@ -687,7 +714,7 @@ at the start of the line.
 =========================================================================DIV80==
 Troubleshooting:
 
-=========-
+===========-
 No Report File displayed
 
 If the report is created, but not displayed, check the config
@@ -698,7 +725,7 @@ console window for error messages that will help you fix the problem.
 There is probably something wrong with the config file line-
 REPORT_FILE_PATH
 
-=========-
+===========-
 Error message:
 RM-Python-config.ini file contains a format error
 
@@ -716,7 +743,7 @@ before you can read it, try first opening a command line console and then
 running the exe or py file from the command line. The window will not close
 and you'll be able to read any error messages.
 
-=========-
+===========-
 Error Message:
 Tried to create duplicate Name in XML.
 
@@ -744,8 +771,8 @@ CITATION_MAPPING =
 
 
 =========================================================================DIV80==
-Developer Notes   (not needed to use utility)
 =========================================================================DIV80==
+Developer Notes   (not needed to use utility)
 =========================================================================DIV80==
 
 The XML fields in the source and citation record are just a collection of
@@ -759,13 +786,13 @@ SourceTemplateTable      FieldDefs
 SourceTable              Fields
 CitationTable            Fields
 
-===========================================DIV50==
+===========-
 XML tag info
 SourceTemplate XML has Field Name, Display Name, Type, Hint, LongHint, and boolean for
 field is in source or citation. Sources and Citations have XML that contain only
 Field Name/Field Value pairs.
 
-===========================================DIV50==
+===========-
 details of the XML format has changed format from v7 to v8
 
 Old style XML  (possibly only remains in built-in SourceTemplate records ?)
@@ -783,7 +810,7 @@ This app-
   Modifies XML in Source and citation records only.
   Can rename a field, can add an empty field, can delete a field.
 
-===========================================DIV50==
+===========-
 Odd cases of XML format found in my database:
 
 Found an odd Fields value in CitationTable.
@@ -794,7 +821,7 @@ To do text search for start of root element, can't look for <Root> because at
 least one entry had an empty Root element encoded by: <Root />
 So look for "<Root"
 
-===========================================DIV50==
+===========-
 LIKE (extract from SQLite doc- https://www.sqlite.org/lang_expr.html )
 
 The LIKE operator does a pattern matching comparison. The operand to the right
@@ -819,92 +846,6 @@ literal percent symbol, underscore, or a single escape character, respectively.
 
 
 =========================================================================DIV80==
-=========================================================================DIV80==
-=========================================================================DIV80==
-Which to use? Standalone .exe file or .py file
-
-Decide whether you wish to use the script file (.py) or the executable
-file (.exe) version. They produce exactly the same output at the same speed.
-Using one does not preclude using the other.
-
-Pro's and Con's
-
-*   The .exe Executable File Version
-  Pro:
-   The single exe file is all you need. No need to install Python.
-  Con:
-   The exe file is not human readable.
-   A certain amount of trust is required to run a program not distributed
-   by a major software publisher. Unknown software from an untrusted source
-   could contain mal-ware. Rely on reviews by other users to establish trust.
-   Only use the exe file that you downloaded from GitHub.com yourself.
-
---- OR ---
-
-*   The .py Script File Version
-  Pro:
-   The script file is easily readable and one can confirm what it does.
-   You may want to learn Python and make your own changes to the script
-   and be able to use other scripts.
-  Con:
-   The script version requires an installation of the Python environment to run.
-   This is a 100 MB investment in disk space. (Not big for modern day hard disks)
-
-
-=========================================================================DIV80==
-To use the py script version of the app
-
-To install and use the script file version:
-
-*  Install Python for Windows x64  -see immediately below
-
-*  Create a new folder on your disk.
-   This will be called the "working folder".
-
-*  Make a copy of your database, move the copy into the working folder.
-   Rename the copy to TEST.rmtree
-
-*  Copy these files and the folder from the downloaded zip file to the working folder-
-      ChangeSourceTemplate.py
-      RM-Python-config.ini
-      RMpy
-
-See the Overview section for the subsequent tasks.
-
-
-=========================================================================DIV80==
-Python install-
-Install Python from the Microsoft Store
-or download and install from Python.org web site
-
-From Microsoft Store
-Run a command in Windows by pressing the keyboard key combination
-"Windows + R", then in the small window, type Python.
-Windows store will open in your browser and you will be be shown
-the various versions of Python.
-Click the Get button for the latest version.
-
-Web site download and install
-Download the current version of Python 3, ( or see direct link below
-for the current as of this date)
-https://www.python.org/downloads/windows/
-
-Click on the link near the top of page. Then ...
-Find the link near bottom left side of the page, in the "Stable Releases"
-section, labeled "Download Windows installer (64-bit)"
-Click it and save the installer.
-
-Direct link to recent (2024-02) version installer-
-https://www.python.org/ftp/python/3.12.2/python-3.12.2-amd64.exe
-
-The Python installation requires about 100 Mbytes.
-It is easily and cleanly removed using the standard method found in
-Windows=>Settings
-
-Run the Python installer selecting all default options.
-
-
-=========================================================================DIV80==
 TODO
 *  consider allowing text to be used in the left side of a mapping instead of
    existing text in an existing field.
@@ -914,7 +855,7 @@ TODO
 =========================================================================DIV80==
 Feedback
 The author appreciates comments and suggestions regarding this software.
-Richard.J.Otter@gmail.com
+RichardJOtter@gmail.com
 
 Public comments may be made at-
 https://github.com/ricko2001/Genealogy-scripts/discussions

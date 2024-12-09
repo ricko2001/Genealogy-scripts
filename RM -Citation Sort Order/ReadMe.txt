@@ -1,3 +1,5 @@
+=========================================================================DIV80==
+Citation Sort Order
 CitationSortOrder
 
 Utility application for use with RootsMagic databases
@@ -23,7 +25,6 @@ IMPORTANT: You should run this script on a copy of your database file until you
 have confidence using it and confidence in its results. Or at least have a
 current known-good backup.
 
-
 CAUTION
 This utility is using an undocumented feature of the RootsMagic (RM) application.
 It is possible that a future release of RootsMagic may ignore the changes made
@@ -36,63 +37,89 @@ a single, simple SQL update statement. See Notes.
 =========================================================================DIV80==
 Compatibility
 
-Tested with RootsMagic version 10.
-Not compatible with ver 7.
+Tested with RootsMagic version 10
+Not compatible with RM ver 7.
+Tested with Python for Windows v3.13.1   64bit
 
-.exe file version
-       Windows 64bit only. Tested with Windows 11.
-
-.py file version
-       Tested with Python for Windows v3.12   64bit
-       The py file has not been tested on MacOS but could probably be easily
-       modified to work on MacOS with Python version 3 installed.
+The py file has not been tested on MacOS but could probably be easily
+modified to work on MacOS with Python version 3 installed.
 
 
 =========================================================================DIV80==
 Overview
 
-This program is what is called a "command line utility". To install and use
-the exe single file version:
+This program is what is called a "command line utility". 
+To install and use the script:
+
+*  Install Python for Windows x64  -see immediately below
 
 *  Create a new folder on your disk.
    This will be called the "working folder".
 
-*  Copy these files from downloaded zip file to the working folder-
-      CitationSortOrder.exe
-      RM-Python-config.ini
-
 *  Make a copy of your database, move the copy into the working folder.
    Rename the copy to TEST.rmtree
 
-*  Edit the supplied text file named "RM-Python-config.ini". (Hereinafter
-   referred to, as the "config file".)
-   The utility needs to know where the RM database file is located and the output
-   report file name and location.
+*  Copy these files and the folder from the downloaded zip file to the working folder-
+      CitationSortOrder.py
+      RM-Python-config.ini
+      RMpy
+
+*  Edit the file, RM-Python-config.ini (hereinafter referred to as the 
+   "config file") in the working folder.
+
+   The utility needs to know where the RM database file is located, the output
+   report file name and its location.
+
    If you followed the above instructions, no edits are needed.
 
-*  Double click the CitationSortOrder file. This displays the black command
+*  Double click the CitationSortOrder.py file. This displays the black command
    console window.
 
-3:  The console window displays a prompt asking for the RIN
+*  The console window displays a prompt asking for the RIN
 (PersonID) of the person that has the attached citation list.
 The utility will continue with prompts until the desired list of citations is
 displayed. The user then responds to prompts until the list is ordered in the
 desired way. The utility will then close.
 
-4:  Return to the RootsMagic application window. Navigate away from the changed
+*  Return to the RootsMagic application window. Navigate away from the changed
 citation listing and the return to it. Examine the modified sort order.
 
 
---- OR ---
+=========================================================================DIV80==
+Python install-
+Install Python from the Microsoft Store
+or download and install from Python.org web site
 
-Use the py script file.  See section below, after the Notes section, entitled-
-"Which to use? Standalone .exe file or .py file"
+From Microsoft Store
+Run a command in Windows by pressing the keyboard key combination
+"Windows + R", then in the small window, type Python.
+Windows store will open in your browser and you will be be shown
+the various versions of Python.
+Click the Get button for the latest version.
+
+Web site download and install
+Download the current version of Python 3, ( or see direct link below
+for the current as of this date)
+https://www.python.org/downloads/windows/
+
+Click on the link near the top of page. Then ...
+Find the link near bottom left side of the page, in the "Stable Releases"
+section, labeled "Download Windows installer (64-bit)"
+Click it and save the installer.
+
+Direct link to recent (as of 2024-12) version installer-
+https://www.python.org/ftp/python/3.13.1/python-3.13.1-amd64.exe
+
+The Python installation requires about 100 Mbytes.
+It is easily and cleanly removed using the standard method found in
+Windows=>Settings
+
+Run the Python installer selecting all default options.
 
 
 =========================================================================DIV80==
 NOTES
 
-===========================================DIV50==
 CitationSortOrder can change the sort order for citations attached to Person,
 Names, and Facts.
 Currently, this utility will not change the sort order of citations attached to
@@ -101,36 +128,36 @@ Those capabilities could be added.
 This utility only changes the database table: CitationLinkTable and within
 it, only the SortOrder column..
 
-===========================================DIV50==
+
+Due to lack of support in the RM app, the modified sort order is not utilized
+in the "slide in" workflow for facts or in reports generated by RM.
+
+
 Use of this utility may be productively combined with the use of a global
 re-ordering SQL script developed by Tom Holden and Jerry Bryan.
 https://sqlitetoolsforrootsmagic.com/forum/topic/sorting-the-order-of-rm9-citations/
 
-===========================================DIV50==
-Due to lack of support in the RM app, the modified sort order is not utilized
-in the "slide in" workflow for facts or in reports generated by RM.
 
-===========================================DIV50==
 Note that after reordering, newly added citations will appear at the top
 of the list as they will have a SortOrder number of 0.
 This contrasts with behavior seen before reordering where the citations are shown
 in "order entered" sequence because all records are added with a SortOrder number of 0.
 Use this app to make desired changes.
 
-===========================================DIV50==
+
 Updating the sort order of a set of citations while the database is open in
 RM works OK. However, the citation lists do not have a refresh button, so,
 you'll need to navigate away from the modified sort order citation list and then
 return to it to see the new sort order.
 
-===========================================DIV50==
+
 To revert all citation sort order modifications made by this utility, simply
 change the sort order column to all zeros.
 UPDATE CitationLinkTable SET SortOrder = 0;
 This will change the sort order in RM v10 to "order entered", which is
 the default.
 
-===========================================DIV50==
+
 RM-Python-config.ini  (the config file)
 If there are any non-ASCII characters in the config file then the file must be
 saved in UTF-8 format, with no byte order mark (BOM).
@@ -141,7 +168,7 @@ File format is an option in the "Save file" dialog box in NotePad.
 
 config file path names may be absolute or relative to the current directory.
 
-===========================================DIV50==
+
 REPORT_FILE_DISPLAY_APP
 Option to automatically open the report file in a display application.
 The included ini sample file has this option activated and set to use Windows
@@ -186,93 +213,6 @@ and you'll be able to read any error messages.
 
 
 =========================================================================DIV80==
-=========================================================================DIV80==
-=========================================================================DIV80==
-Which to use? Standalone .exe file or .py file
-
-Decide whether you wish to use the script file (.py) or the executable
-file (.exe) version. They produce exactly the same output at the same speed.
-Using one does not preclude using the other.
-
-Pro's and Con's
-
-*   The .exe Executable File Version
-  Pro:
-   The single exe file is all you need. No need to install Python.
-  Con:
-   The exe file is not human readable.
-   A certain amount of trust is required to run a program not distributed
-   by a major software publisher. Unknown software from an untrusted source
-   could contain mal-ware. Rely on reviews by other users to establish trust.
-   Only use the exe file that you downloaded from GitHub.com yourself.
-
---- OR ---
-
-*   The .py Script File Version
-  Pro:
-   The script file is easily readable and one can confirm what it does.
-   You may want to learn Python and make your own changes to the script
-   and be able to use other scripts.
-  Con:
-   The script version requires an installation of the Python environment to run.
-   This is a 100 MB investment in disk space. (Not big for modern day hard disks)
-
-
-
-=========================================================================DIV80==
-To use the py script version of the app
-
-To install and use the script file version:
-
-*  Install Python for Windows x64  -see immediately below
-
-*  Create a new folder on your disk.
-   This will be called the "working folder".
-
-*  Make a copy of your database, move the copy into the working folder.
-   Rename the copy to TEST.rmtree
-
-*  Copy these files and the folder from the downloaded zip file to the working folder-
-      CitationSortOrder.py
-      RM-Python-config.ini
-      RMpy
-
-See the Overview section for the subsequent tasks.
-
-
-=========================================================================DIV80==
-Python install-
-Install Python from the Microsoft Store
-or download and install from Python.org web site
-
-From Microsoft Store
-Run a command in Windows by pressing the keyboard key combination
-"Windows + R", then in the small window, type Python.
-Windows store will open in your browser and you will be be shown
-the various versions of Python.
-Click the Get button for the latest version.
-
-Web site download and install
-Download the current version of Python 3, ( or see direct link below
-for the current as of this date)
-https://www.python.org/downloads/windows/
-
-Click on the link near the top of page. Then ...
-Find the link near bottom left side of the page, in the "Stable Releases"
-section, labeled "Download Windows installer (64-bit)"
-Click it and save the installer.
-
-Direct link to recent (2024-02) version installer-
-https://www.python.org/ftp/python/3.12.2/python-3.12.2-amd64.exe
-
-The Python installation requires about 100 Mbytes.
-It is easily and cleanly removed using the standard method found in
-Windows=>Settings
-
-Run the Python installer selecting all default options.
-
-
-=========================================================================DIV80==
 TODO
 *  add an option subset of the global re-ordering code mentioned above by Tom Holden.
 
@@ -282,7 +222,7 @@ TODO
 =========================================================================DIV80==
 Feedback
 The author appreciates comments and suggestions regarding this software.
-Richard.J.Otter@gmail.com
+RichardJOtter@gmail.com
 
 Public comments may be made at-
 https://github.com/ricko2001/Genealogy-scripts/discussions
