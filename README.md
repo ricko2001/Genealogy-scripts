@@ -1,6 +1,6 @@
 # Genealogy-scripts and utilities
 
-updated: 2024-06-22
+updated: 2025-01-16
 
 These are scripts I've written to help my work with RootsMagic genealogy software. They directly access the SQLite database used by RootsMagic (RM) to store its data.
 
@@ -11,14 +11,14 @@ I don't have a MacOS computer to test with, but I'd guess that most could easily
 
 
 "Released" scripts means that-
-* I've included an .exe file version of the Python script so Python installation is not required.
-* The release is version numbered.
+
 * The ReadMe file has enough guidance for even a novice user.
 * All configuration is done through an ini file so the python code does not need to be changed.
 * All needed files are in a single zip archive for easy download.
 * I've done significant amounts of testing.
+* The release is version numbered.
 
-The Release zip file packages are found in the Releases page, here on Github (https://github.com/ricko2001/Genealogy-scripts/releases)
+The Release zip file is found in the Releases page, here on Github (https://github.com/ricko2001/Genealogy-scripts/releases)
 
 If any of the other scripts are of interest, I may be persuaded to make them release-ready. Let me know.
 Always interested in feedback.
@@ -97,7 +97,6 @@ Consists of a SQL command file containing SQL updates that fix reoccurring probl
 There are parts of the script that are specific to my data entry practices. Read it before you run it.
 The Maintenance SQL has been run on my production database many times.
 
-
 ## NOTE-
 
 I have a Github web site where I have links to these utilities and other RootsMagic related information.\
@@ -107,11 +106,11 @@ https://RichardOtter.github.io
 
 ## Required packages for running the scripts
 
-My later releases use the custom "RMpy" python package located in the "RM -RMpy package" folder. The exe files have it already included.
+My later releases use the custom "RMpy" python package located in the "RM -RMpy package" folder. 
 
 Those scripts using the package will find it if the folder structure is preserved. If the main script is moved elsewhere, copy the "RMpy" folder to be in the same directory as the main script.
 
-## Required packages for building frozen executables (exe files)
+## Required packages for building frozen executables (exe files)  NO LONGER USED
 
 NOTE: the following lines substitute "me" for your user name, and NNN for the python ver code.
 
@@ -157,3 +156,26 @@ pip install --upgrade pyinstaller
 
 pip install --upgrade pyinstaller-versionfile
 
+# RM Utilities Release Format Change
+
+News as of 2024-12-10\
+A new release format was necessitated by a problem I was not aware of until recently. People who have previously attempted to download the utilities have probably been warned that the zip file contained a virus or malware. I was just told about the problem by a user.
+
+I want to state emphatically that none of the files ever posted on my GitHub site ever posed an actual hazard. A google search for "PyInstaller virus warning" shows the magnitude of the issue. It is clear that malware has been packaged with the same software distribution system I was used (PyInstaller). The anti virus companies then created file signatures that detected these threats. Unfortunately, it seems like every piece of software packaged has the same "signature". The PyInstaller created exe file distribution method was very practical as users did not need to install Python software.
+
+The Internet has gotten to be a dangerous place, and it seems there are fewer and fewer methods for non-corporate software developers to distribute ready-to-run files.
+
+This means that I have removed the "exe" format file from the release zip and the user must now install Python to run the scripts.
+
+## There are advantages to the new format:
+
+All apps are now in the same zip file. Perhaps this will encourage users to try an app they didn't know they needed.
+
+All apps are tested with each other using the same RMPy package (common code).
+
+Less effort maintaining one release than the previous nine.
+
+All of the software is human-readable. Each user can read the code and confirm that nothing bad is happening.
+
+## TODO
+I am still in the process of creating a release build script and improving the release folder's structure.
