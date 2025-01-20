@@ -422,7 +422,7 @@ def file_hash_feature(config, db_connection, report_file):
         raise RMc.RM_Py_Exception(
             "ERROR: HASH_FILE_FLDR_PATH must be specified for this option.\n")
 
-    hash_file_path = hash_file_folder / "MediaFiles_HASH_" / RMc.time_stamp_now("file") / ".txt"
+    hash_file_path = hash_file_folder / Path("MediaFiles_HASH_" + RMc.time_stamp_now("file") + ".txt")
 
     try:
         hash_file = open(hash_file_path,  mode='w', encoding='utf-8')
