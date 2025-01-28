@@ -148,17 +148,18 @@ Create a folder on your computer that you will not confuse with other
 folders. It will be referred to as the "working folder".
 
 ==========-
-Copy these two required files from the downloaded zip file to the working folder-
-      ChangeSourceTemplate.exe
+*  Copy these files and the folder from the downloaded zip file to the working folder-
+      ChangeSourceTemplate.py
       RM-Python-config.ini
+      RMpy
 
 ==========-
 Make a copy of your database, move the copy into the working folder.
 Rename the copy to TEST.rmtree
 
 ==========-
-Edit the RM-Python-config.ini file in the working folder by opening NotePad and
-then dragging the RM-Python-config.ini file onto the opened NotePad
+Edit the RM-Python-config.ini file in the working folder by opening NotePad
+and then dragging the RM-Python-config.ini file onto the opened NotePad
 application window.
 
 Look for the section at the top-
@@ -192,7 +193,7 @@ one option is set to on.
 ==========-
 STEP 0		Option    All options = off
 
-Double click the SwitchSourceTemplate.exe file to run it. A black console window
+Double click the SwitchSourceTemplate.py file to run it. A black console window
 should momentarily open and then close.
 A new file, Report_ChangeSourceTemplate.txt, should appear in the working folder
 and then automatically open in NotePad.
@@ -239,7 +240,7 @@ CHECK_TEMPLATE_NAMES   = off
 to
 CHECK_TEMPLATE_NAMES   = on
 
-Save the file, leave it open in Notepad, double click the utility exe file to
+Save the file, leave it open in Notepad, double click the utility py file to
 run it. A black console window will momentarily open and then close.
 The Report_ChangeSourceTemplate.txt file will automatically open in NotePad.
 
@@ -273,7 +274,7 @@ two lines so they are as shown:
 CHECK_TEMPLATE_NAMES   = off
 LIST_SOURCES           = on
 
-Save the file, leave it open in Notepad, double click the utility exe file to
+Save the file, leave it open in Notepad, double click the utility py file to
 run it, etc. The Report_ChangeSourceTemplate.txt file will automatically
 open in NotePad.
 
@@ -313,7 +314,7 @@ two lines so they are as shown:
 LIST_SOURCES           = off
 LIST_TEMPLATE_DETAILS  = on
 
-Save the file, leave it open in Notepad, double click the utility exe file to
+Save the file, leave it open in Notepad, double click the utility py file to
 run it, etc. The Report_ChangeSourceTemplate.txt file will automatically
 open in NotePad.
 
@@ -376,7 +377,7 @@ citation   Date     "Date"
 Now I'll take the field names from the New template listing and place them
 on the corresponding line to the right of the old field.
 This is the key part to determining the mapping. For each field in the old
-template, where does its data go?
+template (source), where does its data go (the destination)?
 
 
 source      Text   "Repository"      "RepositoryName"
@@ -423,7 +424,7 @@ citation    Date  "Date"             "Date"
 citation           NULL             "ID-number"
 
 Check to be sure that the data type match- source & destination.
-They do not have to match, but be clear you want to make a change.
+They do not have to match, but be convinced that you want to make the change.
 
 Now, remove the first 2 columns. They are not used in the mapping.
 
@@ -460,6 +461,14 @@ The space between the columns and the ">" is flexible.
 There is one or more blank lines at the end of a value (MAPPING_SOURCE and
 MAPPING_CITATION) separating it from the next item.
 
+NOTE:
+It is not strictly necessary that all of the fields in the new source template
+be listed as destinations (right hand) in the mappings, however, in order to
+repair sources and citations that are missing fields, that field must appear
+as a destination. So, best practice is to list all the fields as destinations,
+as was done above.
+
+
 ==========-
 STEP 4		Option CHECK_MAPPING_DETAILS = on
 
@@ -468,7 +477,7 @@ two lines so they are as shown:
 LIST_TEMPLATE_DETAILS  = off
 CHECK_MAPPING_DETAILS  = on
 
-Save the file, leave it open in Notepad, double click the utility exe file to
+Save the file, leave it open in Notepad, double click the utility py file to
 run it, etc. The Report_ChangeSourceTemplate.txt file should automatically
 open in NotePad.
 
@@ -494,7 +503,7 @@ two lines so they are as shown:
 CHECK_MAPPING_DETAILS  = off
 MAKE_CHANGES  = on
 
-Save the file, leave it open in Notepad, double click the utility exe file to
+Save the file, leave it open in Notepad, double click the utility py file to
 run it, etc. The Report_ChangeSourceTemplate.txt file should automatically
 open in NotePad.
 
@@ -564,8 +573,8 @@ structure.
 If the utility is not used and these changes are made:
 *    change field name
 Data is be invisible when accessed with the new name. The old date remains, but
-is hidden. (it may still be accessible by the footnote templates, etc. Not tested.
-but the old field will not show during data entry/edit.))
+is hidden. (it will still be accessible by the footnote templates, but the old
+field will not show during data entry/edit.)
 *    add new fields
 New fields will not be correctly initialized, sentence language will not see the
 new field as empty when tested by <> in the sentence language.
@@ -630,7 +639,7 @@ have no effect.
 not create a duplicate field while in an intermediate mapping step.
 The app will prevent this but it will stop the run and a new copy of the
 database should be used after that.
-On ce could create an intermediate temporary name and then change that to
+One could create an intermediate temporary name and then change that to
 the desired name in a later mapping.
 
 ===========-
@@ -652,6 +661,38 @@ displayed. In any case you can quotation marks e.g. "Name ", or " Name" or "My N
 ===========-
 Running the utility with MAKE_CHANGES = off does not make any changes to your
 database. You can run it as many times as you need.
+
+===========-
+All runs of the utility fix sources and citations that have missing XML field elements.
+This happens when sources or citations have been created with a older template,
+before a field was added.
+
+Symptom- 
+Say a template T1, has 2 fields, F1 and F2
+Some sources S1 and S2 are created using template T1.
+
+Now the template T1 is changed by editing it to add a field, F3.
+The T1 template also has its footnote sentence adjusted to use the new field F3.
+The edited template T1 is now called T1'.
+
+Now some more sources, S3 and S4 are created using template T1'.
+The user entered text for field F3 in S3, but left field F3 blank in S4.
+
+Looking at the footnotes displayed in RM that are generated from T1',
+one sees that source S3 and S4 look as expected. The F3 in S3 shows the text that
+was entered for F3, and in S4, the F3 prints as blank.
+
+However the footnotes from S1 and S2 are unexpected. 
+Those sources do not have data in field F3. In fact, they don't even have a
+field F3. Any reference to F3 in the footnote sentence, by "[F3]" will, 
+in the footnote, print out as "[F3]" not as "" as expected.
+
+To fix, this utility can add the empty field F3 to the existing source S1 and S2.
+
+This can be accomplished by copying the Template T1' to T1'-copy.
+The T1'-copy can have changes like better names, or no changes at all.
+Just map all of the fields to themselves and run the utility.
+Each source and citation will be checked for missing fields and fixed if necessary.
 
 ===========-
 This may not be helpful...
@@ -702,7 +743,7 @@ from the next item.
 ===========-
 REPORT_FILE_DISPLAY_APP
 Option to automatically open the report file in a display application.
-The included ini sample file has this option activated and set to use Windows
+The included config sample file has this option activated and set to use Windows
 NotePad as the display app. Your favorite editor may be substituted.
 Automatic display can be deactivated by inserting a # character
 at the start of the line.
@@ -729,7 +770,7 @@ See the section below.
 
 If no report file is generated and the black command console window closes
 before you can read it, try first opening a command line console and then
-running the exe or py file from the command line. The window will not close
+running the py file from the command line. The window will not close
 and you'll be able to read any error messages.
 
 =========-
