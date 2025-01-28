@@ -379,19 +379,16 @@ def adjust_xml_fields(field_mapping, root_element):
             # check whether transform[1] already exists as a Name
             if root_element.find("Fields/Field[Name='" + transform[1] + "']") == None:
                 # if it does not exist, create it
-                # create a field with name transform[1] with empty value.
-                newPair = ET.SubElement(fields_element, "Field")
-                ET.SubElement(newPair, "Name").text = transform[1]
-                ET.SubElement(newPair, "Value")
+                create_empty_field(transform[1], fields_element)
             else:
                 raise RMc.RM_Py_Exception(
                     "Tried to create duplicate Name in XML. NULL on left")
             continue
+
         # for each existing field in the XML...
         fields_in_xml = fields_element.findall('.//Field')
         for eachField in fields_in_xml:
             current_xml_field_name = eachField.find('Name').text
-            #current_xml_field_value = eachField.find('Value').text
             if current_xml_field_name != transform[0]:
                 # not the relevant XML field, continue with the next
                 continue
@@ -413,6 +410,24 @@ def adjust_xml_fields(field_mapping, root_element):
                     "Tried to create duplicate Name in XML.")
         # end of for eachField loop
     # end of for each transform loop
+
+    # After all transforms done, *now* deal with XML that is missing a name/value element
+    # For now, make it a requirement that all fields in new template be 
+    # included as destinations in field mapping if they are to be fixed
+    for transform in field_mapping:
+        # check whether transform[1] already exists as a Name
+        if root_element.find("Fields/Field[Name='" + transform[1] + "']") == None:
+            # if it does not exist, create it
+            create_empty_field(transform[1], fields_element)
+
+
+# ===================================================DIV60==
+def create_empty_field(name_to_use, fields):
+
+    # create a new field with name_to_use and empty value, in the fields element.
+    newPair = ET.SubElement(fields, "Field")
+    ET.SubElement(newPair, "Name").text = name_to_use
+    ET.SubElement(newPair, "Value")
 
 
 # ===================================================DIV60==
