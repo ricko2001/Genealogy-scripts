@@ -11,8 +11,8 @@ pathSep = '\\'
 FileOutExt = ".txt"
 FileOutPath= FileInPath + pathSep + FileOutFldrName
 
-fileIn = open(FileInPath + pathSep + FileInName, 'r', encoding='utf-8-sig')
-prevFileOut = open(FileOutPath + pathSep + tempFileName + FileOutExt, 'w', encoding='utf-8-sig')
+fileIn = open(FileInPath + pathSep + FileInName, 'r', encoding='utf-8')
+prevFileOut = open(FileOutPath + pathSep + tempFileName + FileOutExt, 'w', encoding='utf-8')
 FileOut = prevFileOut
 
 Line = fileIn.readline() 
@@ -29,7 +29,7 @@ while (Line != ""):
         if (Line == EntrySeperator):
             FileOutName = tempFileName
         prevFileOut.close()
-        FileOut = open (FileOutPath + pathSep + FileOutName + FileOutExt, 'w', encoding='utf-8-sig')
+        FileOut = open (FileOutPath + pathSep + FileOutName + FileOutExt, 'w', encoding='utf-8')
         prevOutFile = FileOut
         FileOut.write(EntrySeperator)
     FileOut.write(Line)
