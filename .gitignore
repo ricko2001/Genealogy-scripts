@@ -22,10 +22,8 @@ TestData/
 MediaFiles_HASH*
 Report_*.txt
 
-# ignore config ini files not for distribution
-DEV_RM-Python-config.ini
-DISTRO_RM-Python-config.ini
+# ignore files and folders starting with
 HIDE_*
 
-# ignore Releases storage forlder
-Releases/
+# ignore Releases storage folder
+RM/Releases/
