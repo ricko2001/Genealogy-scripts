@@ -1,14 +1,8 @@
-InternalName:  TestExternalFiles
-OriginalFilename: TestExternalFiles.exe
 
-# Use 4 place version here. Last dot and zero will be truncated for folder name.
-# last release 1.8.2
-Version: 1.8.3.0
+UtilityName:  TestExternalFiles
 
-BuildFileList:
-  - TestExternalFiles.py
-  - gitignore.py
-  - _util_info.yaml
+# last release 1.8.3
+Version: 1.8.4
   
 DistributionFileList:
   - TestExternalFiles.py
@@ -20,19 +14,3 @@ DistributionFileList:
 
 DistributionFolderList:
   - ..\RM -RMpy package\RMpy
-  
-PyInstaller_extra_params:
-# note the - for array and -- for param
-  - --paths="../../RM -RMpy package"
-  - --hidden-import=sqlite3
-  - --hidden-import=configparser
- 
-CompanyName: RJOtter SW
-FileDescription: Utility to work with RootsMagic database files
-LegalCopyright: Open Source
-ProductName: RM utilities
-Translation:
-  - langID: 0
-    charsetID: 1200
-  - langID: 1033
-    charsetID: 1252

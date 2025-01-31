@@ -1,36 +1,13 @@
-InternalName:  CitationSortOrder
-OriginalFilename: CitationSortOrder.exe
 
-# Use 4 place version here. Last dot and zero will be truncated for folder name.
-# Last Release v1.0.1.0
-Version: 1.0.2.0
+UtilityName:  CitationSortOrder
 
-BuildFileList:
-  - CitationSortOrder.py
-  - _util_info.yaml
+# Last Release v1.0.2
+Version: 1.0.3
 
 DistributionFileList:
-# <InternalName>.exe  and _internal folder, if applicable
-# are always included by build script
   - CitationSortOrder.py
   - ReadMe.txt
   - RM-Python-config.ini
 
 DistributionFolderList:
   - ..\RM -RMpy package\RMpy
-
-PyInstaller_extra_params:
-# note the - for array and -- for param
-  - --paths="../../RM -RMpy package"
-  - --hidden-import=sqlite3
-  - --hidden-import=configparser
-
-CompanyName: RJOtter SW
-FileDescription: Utility to work with RootsMagic database files
-LegalCopyright: Open Source
-ProductName: RM utilities
-Translation:
-  - langID: 0
-    charsetID: 1200
-  - langID: 1033
-    charsetID: 1252

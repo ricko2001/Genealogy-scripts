@@ -1,36 +1,13 @@
-InternalName:  ChangeSourceTemplate
-OriginalFilename:  ChangeSourceTemplate.exe
 
-# Use 4 place version here. Last dot and zero will be truncated for folder name.
-# Last Release v1.1.0.0
-Version: 1.1.1.0
+UtilityName:  ChangeSourceTemplate
 
-BuildFileList:
-  - ChangeSourceTemplate.py
-  - _util_info.yaml
+# Last Release v1.1.1
+Version: 1.1.2
 
 DistributionFileList:
-# <InternalName>.exe  and _internal folder, if applicable
-# are always included by build script
   - ChangeSourceTemplate.py
   - ReadMe.txt
   - RM-Python-config.ini
 
 DistributionFolderList:
   - ..\RM -RMpy package\RMpy
-
-PyInstaller_extra_params:
-# note the - for array and -- for param
-  - --paths="../../RM -RMpy package"
-  - --hidden-import=sqlite3
-  - --hidden-import=configparser
-
-CompanyName: RJOtter SW
-FileDescription: Utility to work with RootsMagic database files
-LegalCopyright: Open Source
-ProductName: RM utilities
-Translation:
-  - langID: 0
-    charsetID: 1200
-  - langID: 1033
-    charsetID: 1252
