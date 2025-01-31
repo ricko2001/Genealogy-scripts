@@ -4,7 +4,6 @@
 # ignore browser url files
 *.url
 
-
 # ignore vscode stuff
 .vscode/
 
@@ -15,7 +14,7 @@ __pycache__
 DB/
 TestData/
 
-# ignore RootsMagic database file
+# ignore RootsMagic database files
 *.rmgc
 *.rmtree
 
@@ -23,17 +22,10 @@ TestData/
 MediaFiles_HASH*
 Report_*.txt
 
-# don't add exe files
-*.exe
-
+# ignore config ini files not for distribution
 DEV_RM-Python-config.ini
 DISTRO_RM-Python-config.ini
 HIDE_*
-Report_*
 
-
-# build folders
-Release*/
-
-Releases storage
+# ignore Releases storage forlder
 Releases/
