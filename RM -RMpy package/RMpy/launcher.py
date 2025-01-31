@@ -23,7 +23,6 @@ def launcher(utility_info):
         # config file must be in "current directory" and encoded as UTF-8 (no BOM).
         # see   https://docs.python.org/3/library/configparser.html
         config_file_name = utility_info["config_file_name"]
-        utility_info["script_path"]
         config_file_path = (
             RMc.get_current_directory(utility_info["script_path"]) 
             / config_file_name )
@@ -31,7 +30,7 @@ def launcher(utility_info):
         if not config_file_path.exists():
             raise RMc.RM_Py_Exception(
                 f"\n\nERROR: The configuration file, {config_file_name}"
-                f" must be in the same directory as the .py or .exe file.\n\n")
+                f" must be in the same directory as the .py file.\n\n")
 
         config = configparser.ConfigParser(empty_lines_in_values=False,
                                            interpolation=None)
@@ -100,7 +99,7 @@ def launcher(utility_info):
                     'ERROR: RMNOCASE_PATH must be specified.')
             if not rmnocase_path.exists():
                 raise RMc.RM_Py_Exception(
-                    f'ERROR: Path for RMNOCASE extension (unifuzz64.dll)'
+                    f'ERROR: Path for RMNOCASE extension (unifuzz64.dll)\n'
                     f'not found: {rmnocase_path}\n\n')
             
         if utility_info["RegExp_required"]:
@@ -139,8 +138,11 @@ def launcher(utility_info):
                 f"Database processed       = {database_path.resolve()}\n"
                 f"\n\n\n")
 
-        # Call the function pointer
+
+        # Call the function pointer to run the functional part of the app
         utility_info["run_features_function"](config, db_connection, report_file)
+
+
         if utility_info["allow_db_changes"]:
             db_connection.commit()
 
@@ -171,6 +173,7 @@ def launcher(utility_info):
             db_connection.close()
         report_file.close()
         if report_display_app is not None:
+            # display the report file
             subprocess.Popen([report_display_app, report_path])
     return 0
 
