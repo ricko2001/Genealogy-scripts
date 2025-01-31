@@ -28,19 +28,18 @@ import os
 def main():
 
     # Configuration
-    config_file_name = "RM-Python-config.ini"
-    allow_db_changes = True
-    RMNOCASE_required = False
-    RegExp_required = False
+    utility_info = {}
+    utility_info["utility_name"]      = "CitationSortOrder" 
+    utility_info["utility_version"]   = "1.0.2"
+    # utility_info["utility_version"] = "APPLICATION_VERSION_NUMBER_RM_UTILS_OVERRIDE"
+    utility_info["config_file_name"]  = "RM-Python-config.ini"
+    utility_info["script_path"]  = Path(__file__).parent
+    utility_info["run_features_function"]  = run_selected_features
+    utility_info["allow_db_changes"]  = True
+    utility_info["RMNOCASE_required"] = False
+    utility_info["RegExp_required"]   = False
 
-
-
-    RMpy.launcher.launcher(Path(__file__).parent,
-                    config_file_name,
-                    run_selected_features,
-                    allow_db_changes,
-                    RMNOCASE_required,
-                    RegExp_required)
+    RMpy.launcher.launcher(utility_info)
 
 
 # ===================================================DIV60==

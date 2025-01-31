@@ -10,12 +10,7 @@ sys.path.append( r'.' )
 import RMpy.common as RMc  # type: ignore
 
 # ===================================================DIV60==
-def launcher(script_path: Path,
-            config_file_name,
-            run_features_function,
-            allow_db_changes = False,
-            RMNOCASE_required = False,
-            RegExp_required = False  ):
+def launcher(utility_info):
     
 
     db_connection = None
@@ -27,7 +22,11 @@ def launcher(script_path: Path,
     try:
         # config file must be in "current directory" and encoded as UTF-8 (no BOM).
         # see   https://docs.python.org/3/library/configparser.html
-        config_file_path = RMc.get_current_directory(script_path) / config_file_name
+        config_file_name = utility_info["config_file_name"]
+        utility_info["script_path"]
+        config_file_path = (
+            RMc.get_current_directory(utility_info["script_path"]) 
+            / config_file_name )
         # Check that config file is at expected path and that it is readable & valid.
         if not config_file_path.exists():
             raise RMc.RM_Py_Exception(
@@ -93,7 +92,7 @@ def launcher(script_path: Path,
                 f"ERROR: Database path not found: {database_path}\n\n\n")
 
 
-        if RMNOCASE_required:
+        if utility_info["RMNOCASE_required"]:
             try:
                 rmnocase_path = Path(config['FILE_PATHS']['RMNOCASE_PATH'])
             except:
@@ -104,7 +103,7 @@ def launcher(script_path: Path,
                     f'ERROR: Path for RMNOCASE extension (unifuzz64.dll)'
                     f'not found: {rmnocase_path}\n\n')
             
-        if RegExp_required:
+        if utility_info["RegExp_required"]:
             try:
                 regexp_path = config['FILE_PATHS']['REGEXP_PATH']
             except:
@@ -119,11 +118,11 @@ def launcher(script_path: Path,
         file_modification_time = datetime.fromtimestamp(
             database_path.stat().st_mtime)
 
-        if RMNOCASE_required and not RegExp_required:
+        if utility_info["RMNOCASE_required"] and not utility_info["RegExp_required"]:
             db_connection = RMc.create_db_connection(database_path, [rmnocase_path])
-        elif not RMNOCASE_required and RegExp_required:
+        elif not utility_info["RMNOCASE_required"] and utility_info["RegExp_required"]:
             db_connection = RMc.create_db_connection(database_path, [regexp_path])
-        elif RMNOCASE_required and RegExp_required:
+        elif utility_info["RMNOCASE_required"] and utility_info["RegExp_required"]:
             db_connection = RMc.create_db_connection(database_path, [rmnocase_path, regexp_path])
         else:
             db_connection = RMc.create_db_connection(database_path, None)
@@ -132,14 +131,17 @@ def launcher(script_path: Path,
         format = "%Y-%m-%d %H:%M:%S"
         report_file.write(
                 f"Report generated at      = {RMc.time_stamp_now()}\n"
-                f"Python version           = {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}\n"
-                f"SQLite library version   = {RMc.get_SQLite_library_version(db_connection)}\n"
+                f"Utility name             = {utility_info["utility_name"]}\n"
+                f"Utility version          = v{utility_info["utility_version"]}\n"
+                f"Python version           = v{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}\n"
+                f"SQLite library version   = v{RMc.get_SQLite_library_version(db_connection)}\n"
                 f"Database last changed on = {file_modification_time.strftime(format)}\n"
                 f"Database processed       = {database_path.resolve()}\n"
                 f"\n\n\n")
 
-        run_features_function(config, db_connection, report_file)
-        if allow_db_changes:
+        # Call the function pointer
+        utility_info["run_features_function"](config, db_connection, report_file)
+        if utility_info["allow_db_changes"]:
             db_connection.commit()
 
     except (sqlite3.OperationalError, sqlite3.ProgrammingError) as e:
