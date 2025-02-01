@@ -6,11 +6,12 @@ Version: 1.8.4
   
 DistributionFileList:
   - TestExternalFiles.py
-  - gitignore.py
   - RM-Python-config.ini
   - doc\ReadMe.txt
   - doc\Sample report file.txt
   - doc\TestExternalFiles_ignore.txt
 
 DistributionFolderList:
-  - ..\RM -RMpy package\RMpy
+  - ..\RMpy package\RMpy
+  - ..\SQL for creating useful groups
+

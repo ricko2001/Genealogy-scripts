@@ -5,86 +5,121 @@ from datetime import datetime
 from pathlib import Path
 import zipfile
 import shutil
+import re
 
+# As a first step, this build script builds from local source
+# it does not get "fresh file" from GitHub
+
+# this file lives in the repo root/dev util scripts dir
+# the top level yaml config file is also here.
 
 def main():
     try:
-        with open('_util_info.yaml', 'r') as f:
-            doc = yaml.safe_load(f)
-            version_number_full = doc["Version"]
-            util_name = doc["InternalName"]
-            util_file_name = doc["OriginalFilename"]
+        repo_root = Path(r"C:\Users\rotter\Development\Genealogy\repo Genealogy-scripts")
 
-            try:
+        top_level_config_path = repo_root / "dev util scripts/_top_level_build_config.yaml"
+        # top_level_config_name = "_top_level_build_config.yaml"
+        if (not Path(top_level_config_path).exists() ):
+            print("Can't find the top level config file.\n")
+
+        with open(top_level_config_path, 'r') as top_lev:
+            doc = yaml.safe_load(top_lev)
+            suite_version = doc["SuiteVersion"]
+            suite_name = doc["SuiteName"]
+            project_root_dir_path = doc["ProjectRootDirPath"]
+            project_list = doc["ProjectList"]
+    except:
+        print("Problem getting the values from the top level yaml file.\n")
+        exit()
+
+    time_stamp = time_stamp_now("file")
+    
+    distribution_dir_name = suite_name + "_v" + suite_version
+    release_dir_name= "Release " + distribution_dir_name  + " " + time_stamp
+    release_dir_path = Path(project_root_dir_path) / release_dir_name
+    distribution_dir_path = release_dir_path / distribution_dir_name
+
+    if release_dir_path.exists():
+        raise Exception("Release dir already exists")
+    Path.mkdir(release_dir_path)
+    Path.mkdir(distribution_dir_path)
+
+    # Process each project
+    for project in project_list:
+        project_dir_path = distribution_dir_path / project
+        Path.mkdir(project_dir_path)
+        try:
+            utility_level_config_path = repo_root / "RM" / project / "_util_info.yaml"
+            # utility_level_config_path = Path("RM") / project / "_util_info.yaml"
+            with open(utility_level_config_path, 'r') as proj_lev:
+                doc = yaml.safe_load(proj_lev)
+                utility_version = doc["Version"]
+                util_name = doc["UtilityName"]
                 distribution_file_list = doc["DistributionFileList"]
-            except:
-                distribution_file_list = []
-            try:
                 distribution_folder_list = doc["DistributionFolderList"]
-            except:
-                distribution_folder_list = []
+        except:
+            print("Problem getting the values from the util level yaml file.\n")
+            pause_with_message("Press Enter to continue, window will close")
+            exit()
 
+        version_long = utility_version + "   " + time_stamp
 
-        version_number_short = version_number_full[0:-2]
-        project_dir_path = Path.cwd()
-
-        release_dir_name = ("Release " + util_name + ' v'
-                            + version_number_short + "  " + time_stamp_now('file'))
-        release_dir_path = project_dir_path / release_dir_name
-
-        distribution_dir_name = util_name + ' v' + version_number_short
-        distribution_dir_path = release_dir_path / distribution_dir_name
-        
-        if release_dir_path.exists():
-            raise Exception("Folder already exists")
-
-        Path.mkdir(release_dir_path)
-
-#        # These are files that will be distributed in the zip
-        Path.mkdir(distribution_dir_path)
+        #  copy the files and folders that will be distributed in the zip
 
         # copy files to the distribution folder
+        src_project_dir = Path(repo_root) / "RM"  / project 
         for file in distribution_file_list:
-            shutil.copy(file, distribution_dir_path)
+            shutil.copy(src_project_dir / file, distribution_dir_path / project)
 
         # copy folder to the distribution folder
         for folder in distribution_folder_list:
-            shutil.copytree(folder, distribution_dir_path /os.path.basename(folder) )
-
-        make_zipfile(
-            release_dir_path / (str(distribution_dir_name) + ".zip"), 
-            distribution_dir_path )
+            dest_dir_name = distribution_dir_path / project / os.path.basename(folder)
+            shutil.copytree(src_project_dir /folder, dest_dir_name)
+            delete_pycache_folders(dest_dir_name)
 
 
-        # print out some instructions for archiving the build and 
-        # 
-        # 
-        # releasing on GitHub
+        py_file_to_edit = distribution_dir_path / project / (util_name + ".py")
+        with open(py_file_to_edit, "r") as sources:
+            lines = sources.readlines()
+        with open(py_file_to_edit, "w") as sources:
+            for line in lines:
+                sources.write(re.sub(r'UTILITY_VERSION_NUMBER_RM_UTILS_OVERRIDE', version_long, line))
 
-        print("\n\nCopy window contents to build log in the Release folder."
-              "In terminal: Ctl-Shift-A, Ctl-C\n")
+    make_zipfile(
+        release_dir_path / (str(distribution_dir_name) + ".zip"), 
+        distribution_dir_path )
+    
+    # DONE
 
+    # now, print out some instructions for archiving the build and 
+    # releasing on GitHub
 
-        git_tag = util_name + "_v" + version_number_short
-        release_name = util_name + " v" + version_number_short
+    git_tag = suite_name + "_v" + suite_version
+    release_name = suite_name + " v" + suite_version
 
-        print("\n\nRelease tag and name for Release on GitHub\n\n")
-        print(f"tag git:\ngit tag --annotate {util_name}_v{version_number_short}")
-        print("Write text in default text editor, save and close. Perhaps mini release notes")
+    print("\nMove the Release folder into the Release storage folder\n")
 
-        print(f"\nPush tag to github:\ngit push origin {git_tag}")
-        print(f"\nDraft a release, title:\n{release_name}")
-        print('''\n\n
+    print("\n\nRelease tag and name for Release on GitHub\n\n")
+    print(f"tag git:\ngit tag --annotate {git_tag}")
+    print("Write text in default text editor, save and close. Perhaps mini release notes")
+    print(f"\nPush tag to github:\ngit push origin {git_tag}")
+    print(f"\nDraft a release, titled:\n{release_name}")
+    print('''\n\n
 ============================================
 END OF SCRIPT
 ============================================
 ''')
-    except Exception as e:
-        print(str(e))
-        pause_with_message("\n\nPress Enter to continue, window will close")
-        return 1
+
     pause_with_message("Press Enter to continue, window will close")
     return 0
+
+# ===================================================DIV60==
+def delete_pycache_folders(root_folder):
+    for dirpath, dirnames, filenames in os.walk(root_folder):
+        if '__pycache__' in dirnames:
+            pycache_path = os.path.join(dirpath, '__pycache__')
+            shutil.rmtree(pycache_path)
+
 
 # ===================================================DIV60==
 def make_zipfile(output_file_path: Path, source_dir: Path):
@@ -119,7 +154,7 @@ def time_stamp_now(type=""):
 
 # ===================================================DIV60==
 def pause_with_message(message=None):
-    
+
     if (message != None):
         input(str(message))
     else:

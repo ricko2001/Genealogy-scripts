@@ -4,13 +4,10 @@ UtilityName:  GroupFromSQL
 # Last Release v1.3.2
 Version: 1.3.3
 
-BuildFileList:
-  - GroupFromSQL.py
-  - _util_info.yaml
-
 DistributionFileList:
+  - GroupFromSQL.py
   - ReadMe.txt
   - RM-Python-config.ini
 
 DistributionFolderList:
-  - ..\RM -RMpy package\RMpy
+  - ..\RMpy package\RMpy

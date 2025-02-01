@@ -10,5 +10,5 @@ DistributionFileList:
   - RM-Python-config.ini
 
 DistributionFolderList:
-  - ..\RM -RMpy package\RMpy
+  - ..\RMpy package\RMpy
   

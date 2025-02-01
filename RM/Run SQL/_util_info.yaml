@@ -8,7 +8,8 @@ DistributionFileList:
   - RunSQL.py
   - ReadMe.txt
   - RM-Python-config.ini
+  - TestSqlScript.sql
 
 DistributionFolderList:
-  - ..\RM -RMpy package\RMpy
+  - ..\RMpy package\RMpy
 

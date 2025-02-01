@@ -25,5 +25,6 @@ Report_*.txt
 # ignore files and folders starting with
 HIDE_*
 
-# ignore Releases storage folder
-RM/Releases/
+# ignore Releases storage folder and Release build folder
+RM/Release*/
+

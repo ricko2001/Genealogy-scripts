@@ -1,0 +1,21 @@
+# Top level configuration
+
+SuiteVersion: 1.0.1
+
+SuiteName: RM_Utilities_Suite
+
+ProjectRootDirPath: C:\Users\rotter\Development\Genealogy\repo Genealogy-scripts\RM
+
+ProjectList:
+ - Change source for citation
+ - Change source template
+ - Citation Sort Order
+ - Color from Group
+ - Convert Fact
+ - Group from SQL
+ - List citations for PersonID
+ - Run SQL
+ - Test external files
+
+ 
+

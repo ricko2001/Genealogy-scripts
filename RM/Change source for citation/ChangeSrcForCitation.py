@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-sys.path.append( str(Path.resolve(Path.cwd() / r'..\RM -RMpy package')))
+sys.path.append( str(Path.resolve(Path.cwd() / r'..\RMpy package')))
 import RMpy.launcher  # type: ignore
 import RMpy.common as RMc  # type: ignore
 from RMpy.common import q_str # type: ignore
@@ -32,8 +32,7 @@ def main():
     # Configuration
     utility_info = {}
     utility_info["utility_name"]      = "ChangeSrcForCitation" 
-    utility_info["utility_version"]   = "1.0.2"
-    # utility_info["utility_version"] = "APPLICATION_VERSION_NUMBER_RM_UTILS_OVERRIDE"
+    utility_info["utility_version"] = "UTILITY_VERSION_NUMBER_RM_UTILS_OVERRIDE"
     utility_info["config_file_name"]  = "RM-Python-config.ini"
     utility_info["script_path"]  = Path(__file__).parent
     utility_info["run_features_function"]  = run_selected_features
