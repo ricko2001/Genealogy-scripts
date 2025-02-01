@@ -39,10 +39,16 @@ def main():
     release_dir_path = Path(project_root_dir_path) / release_dir_name
     distribution_dir_path = release_dir_path / distribution_dir_name
 
+    top_level_readme_path = repo_root / "RM" / "doc" / "_ReadMe.txt"
+
     if release_dir_path.exists():
         raise Exception("Release dir already exists")
     Path.mkdir(release_dir_path)
     Path.mkdir(distribution_dir_path)
+
+    # Copy the top level documentation file
+    top_level_readme_path
+    shutil.copy(top_level_readme_path, distribution_dir_path)
 
     # Process each project
     for project in project_list:
