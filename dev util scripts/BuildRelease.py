@@ -39,7 +39,7 @@ def main():
     release_dir_path = Path(project_root_dir_path) / release_dir_name
     distribution_dir_path = release_dir_path / distribution_dir_name
 
-    top_level_readme_path = repo_root / "RM" / "doc" / "_ReadMe.txt"
+    top_level_readme_path = repo_root / "RM" / "doc" / "_ReadMe Top Level.txt"
 
     if release_dir_path.exists():
         raise Exception("Release dir already exists")
